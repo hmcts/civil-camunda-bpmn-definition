@@ -4,8 +4,8 @@
 import uk.gov.hmcts.contino.AppPipelineConfig
 
 def type = "java"
-def product = "unspec"
-def component = "service"
+def product = "civil-damages"
+def component = "camunda-bpmn-definition"
 AppPipelineConfig pipelineConf
 
 static Map<String, Object> secret(String secretName, String envVariable) {
@@ -53,15 +53,6 @@ def uploadCoreCaseDataDefinitions(env) {
   }
 }
 
-def uploadBpmnDiagrams(String env) {
-  dir("${WORKSPACE}/bin") {
-    sh """
-    eval \$(./variables/load-${env}-environment-variables.sh)
-    ./import-bpmn-diagram.sh ${WORKSPACE}
-  """
-  }
-}
-
 def validateRpaContract() {
   sh """ ./gradlew contract """
 }
@@ -87,35 +78,17 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
 
-  after('checkout') {
-    onMaster {
-      withCredentials([usernamePassword(credentialsId: 'jenkins-github-hmcts-api-token', usernameVariable: 'USERNAME', passwordVariable: 'BEARER_TOKEN')]) {
-        try {
-          sh '''
-            set -e
-
-            git remote set-url origin $(git config remote.origin.url | sed "s/github.com/${BEARER_TOKEN}@github.com/g")
-
-            git fetch origin demo:demo
-            git push --force origin HEAD:demo
-          '''
-        } catch (err) {
-          notifyBuildEvent channel: '#unspec_notification', color: 'warning', message: 'Failed to update demo branch'
-        }
-      }
-    }
-    sh """ git submodule update --init """
-  }
-
   before('smoketest:preview') {
     validateRpaContract()
     sh """
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
       ./bin/add-roles-preview.sh
-      ./bin/import-ccd-definition.sh
+      ./bin/pull-latest-ccd-definition.sh
+      ./bin/pull-latest-e2e-tests.sh
+      ./bin/import-ccd-definition-preview.sh
     """
 
-    env.URL="https://xui-unspec-service-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.URL="https://xui-civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
   after('smoketest:preview') {
@@ -125,9 +98,9 @@ withPipeline(type, product, component) {
   before('functionalTest:preview') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-unspec-service-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://unspec-service-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     dir("${WORKSPACE}/bin") {
       sh """
     eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -142,10 +115,14 @@ withPipeline(type, product, component) {
 
   before('smoketest:aat') {
     validateRpaContract()
-    env.URL = "https://manage-case.aat.platform.hmcts.net"
+    sh """
+      ./bin/add-roles-preview.sh
+      ./bin/pull-latest-ccd-definition.sh
+      ./bin/pull-latest-e2e-tests.sh
+    """
+    env.URL="https://xui-civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
     archiveCoreCaseDataDefinitions('staging')
     uploadCoreCaseDataDefinitions('staging')
-    uploadBpmnDiagrams('aat')
   }
 
   after('smoketest:aat') {
@@ -155,31 +132,19 @@ withPipeline(type, product, component) {
   before('functionalTest:aat') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://unspec-service-staging.service.core-compute-aat.internal"
-  }
+    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
 
-  after('functionalTest:aat') {
-    env.URL = "https://manage-case.aat.platform.hmcts.net"
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
-    archiveCoreCaseDataDefinitions('aat')
-    uploadCoreCaseDataDefinitions('aat')
-    publishRpaContract()
-  }
-
-  before('buildinfra:demo') {
-    def subscription = 'nonprod'
-    withSubscription(subscription) {
-      withTeamSecrets(pipelineConf, 'demo') {
-        archiveCoreCaseDataDefinitions('demo')
-        uploadCoreCaseDataDefinitions('demo')
-        uploadBpmnDiagrams('demo')
-      }
+    dir("${WORKSPACE}/bin") {
+      sh """
+    eval \$(./variables/load-staging-environment-variables.sh)
+    ./import-bpmn-diagram.sh ${WORKSPACE}
+  """
     }
   }
 
-  after('smoketest:demo') {
+  after('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
 }
