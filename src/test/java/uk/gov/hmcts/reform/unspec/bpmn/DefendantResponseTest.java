@@ -7,9 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.unspec.handler.tasks.StartBusinessProcessTaskHandler.FLOW_STATE;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.PROCEEDS_WITH_OFFLINE_JOURNEY;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.RESPONDED_TO_CLAIM;
 
 class DefendantResponseTest extends BpmnBaseTest {
 
@@ -50,7 +47,7 @@ class DefendantResponseTest extends BpmnBaseTest {
         //complete the start business process
         ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, "MAIN.OFFLINE");
+        variables.putValue("flowState", "MAIN.OFFLINE");
         assertCompleteExternalTask(
             startBusinessTask,
             START_BUSINESS_TOPIC,
@@ -105,7 +102,7 @@ class DefendantResponseTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, RESPONDED_TO_CLAIM.fullName());
+        variables.putValue("flowState", "MAIN.RESPONDED_TO_CLAIM");
 
         assertCompleteExternalTask(
             startBusiness,
@@ -149,7 +146,7 @@ class DefendantResponseTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, PROCEEDS_WITH_OFFLINE_JOURNEY.fullName());
+        variables.putValue("flowState", "MAIN.PROCEEDS_WITH_OFFLINE_JOURNEY");
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

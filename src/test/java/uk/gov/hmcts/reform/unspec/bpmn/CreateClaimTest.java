@@ -7,12 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.unspec.callback.CaseEvent.MAKE_PBA_PAYMENT;
-import static uk.gov.hmcts.reform.unspec.handler.tasks.StartBusinessProcessTaskHandler.FLOW_STATE;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.PAYMENT_FAILED;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.PAYMENT_SUCCESSFUL;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.PENDING_CASE_ISSUED;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.PROCEEDS_WITH_OFFLINE_JOURNEY;
 
 class CreateClaimTest extends BpmnBaseTest {
 
@@ -49,7 +43,7 @@ class CreateClaimTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, PENDING_CASE_ISSUED.fullName());
+        variables.putValue("flowState", "MAIN.PENDING_CASE_ISSUED");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -61,14 +55,14 @@ class CreateClaimTest extends BpmnBaseTest {
             variables
         );
 
-        variables.putValue(FLOW_STATE, PAYMENT_SUCCESSFUL.fullName());
+        variables.putValue("flowState", "MAIN.PAYMENT_SUCCESSFUL");
 
         //complete the payment
         ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
         assertCompleteExternalTask(
             paymentTask,
             PROCESS_PAYMENT_TOPIC,
-            MAKE_PBA_PAYMENT.name(),
+            "MAKE_PBA_PAYMENT",
             MAKE_PAYMENT_ACTIVITY_ID,
             variables
         );
@@ -105,7 +99,7 @@ class CreateClaimTest extends BpmnBaseTest {
             .isEqualTo("CREATE_CLAIM_PROCESS_ID");
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, PENDING_CASE_ISSUED.fullName());
+        variables.putValue("flowState", "MAIN.PENDING_CASE_ISSUED");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -117,14 +111,14 @@ class CreateClaimTest extends BpmnBaseTest {
             variables
         );
 
-        variables.putValue(FLOW_STATE, PAYMENT_FAILED.fullName());
+        variables.putValue("flowState", "MAIN.PAYMENT_FAILED");
 
         //complete the payment
         ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
         assertCompleteExternalTask(
             paymentTask,
             PROCESS_PAYMENT_TOPIC,
-            MAKE_PBA_PAYMENT.name(),
+            "MAKE_PBA_PAYMENT",
             MAKE_PAYMENT_ACTIVITY_ID,
             variables
         );
@@ -155,7 +149,7 @@ class CreateClaimTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, PROCEEDS_WITH_OFFLINE_JOURNEY.fullName());
+        variables.putValue("flowState", "MAIN.PROCEEDS_WITH_OFFLINE_JOURNEY");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -193,7 +187,7 @@ class CreateClaimTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, PROCEEDS_WITH_OFFLINE_JOURNEY.fullName());
+        variables.putValue("flowState", "MAIN.PROCEEDS_WITH_OFFLINE_JOURNEY");
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
