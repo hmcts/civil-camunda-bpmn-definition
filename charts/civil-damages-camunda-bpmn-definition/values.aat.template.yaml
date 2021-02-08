@@ -5,8 +5,9 @@ postgresql:
   enabled: true
   image:
     registry: hmctspublic.azurecr.io
-    repository: imported/postgres
-    tag: '11.3'
+    repository: imported/bitnami/postgresql
+    tag: '11.3.0'
+    pullPolicy: Always
   resources:
     requests:
       cpu: 25m
@@ -17,16 +18,16 @@ postgresql:
       CREATE DATABASE "definition-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "user-profile" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-  securityContext:
-    runAsUser: 0
   postgresqlUsername: hmcts
   postgresqlPassword: hmcts
   persistence:
     enabled: false
 
 java:
+  applicationPort: 4000
   image: 'hmctspublic.azurecr.io/civil-damages/service:latest'
-  ingressHost: ${SERVICE_FQDN}
+  ingressHost: civil-damages-camunda-bpmn-definition-staging.service.core-compute-aat.internal
+  aadIdentityName: unspec
   keyVaults:
     unspec:
       resourceGroup: unspec
@@ -37,6 +38,7 @@ java:
         - system-update-user-password
         - AppInsightsInstrumentationKey
         - docmosis-api-key
+        - cmc-db-password
         - gov-notify-api-key
         - sendgrid-api-key
         - robotics-notification-sender
@@ -44,12 +46,13 @@ java:
         - launch-darkly-sdk-key
   environment:
     IDAM_CLIENT_ID: unspec-service
-    IDAM_CLIENT_REDIRECT_URI: https://civil-damages-ccd-definition-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2/callback
+    IDAM_CLIENT_REDIRECT_URI: https://civil-damages-bpmn-definition-definition-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2/callback
     IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     IDAM_WEB_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     IDAM_S2S_AUTH_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     MANAGE_CASE_UI_BASE_URL: https://manage-case.{{ .Values.global.environment }}.platform.hmcts.net
     SPRING_SECURITY_ENABLED: true
+    CMC_DB_NAME: cmc
     CMC_DB_PORT: 5432
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}.internal:8443/openam/oauth2/hmcts
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net/o/jwks
