@@ -12,6 +12,6 @@ echo "export CCD_DEFINITION_STORE_API_BASE_URL=http://ccd-definition-store-api-d
 echo "export CAMUNDA_BASE_URL=http://camunda-api-demo.service.core-compute-demo.internal"
 
 # definition placeholders
-echo "export CCD_DEF_CASE_SERVICE_BASE_URL=http://civil-damages-camunda-bpmn-definition-demo.service.core-compute-demo.internal"
+echo "export CCD_DEF_CASE_SERVICE_BASE_URL=http://civil-damages-camunda-demo.service.core-compute-demo.internal"
 echo "export https_proxy=proxyout.reform.hmcts.net:8080"
 echo "export http_proxy=proxyout.reform.hmcts.net:8080"

@@ -12,4 +12,4 @@ echo "export CCD_DEFINITION_STORE_API_BASE_URL=http://ccd-definition-store-api-a
 echo "export CAMUNDA_BASE_URL=http://camunda-api-aat.service.core-compute-aat.internal"
 
 # definition placeholders
-echo "export CCD_DEF_CASE_SERVICE_BASE_URL=http://civil-damages-camunda-bpmn-definition-aat.service.core-compute-aat.internal"
+echo "export CCD_DEF_CASE_SERVICE_BASE_URL=http://civil-damages-camunda-aat.service.core-compute-aat.internal"

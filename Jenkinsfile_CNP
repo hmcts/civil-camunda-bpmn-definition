@@ -5,7 +5,7 @@ import uk.gov.hmcts.contino.AppPipelineConfig
 
 def type = "java"
 def product = "civil-damages"
-def component = "camunda-bpmn-definition"
+def component = "camunda"
 AppPipelineConfig pipelineConf
 
 static Map<String, Object> secret(String secretName, String envVariable) {
@@ -53,15 +53,6 @@ def uploadCoreCaseDataDefinitions(env) {
   }
 }
 
-def validateRpaContract() {
-  sh """ ./gradlew contract """
-}
-
-def publishRpaContract() {
-  env.PACT_BROKER_FULL_URL="https://pact-broker.platform.hmcts.net/"
-  sh """ ./gradlew pactPublish """
-}
-
 withPipeline(type, product, component) {
   pipelineConf = config
   disableLegacyDeployment()
@@ -79,7 +70,6 @@ withPipeline(type, product, component) {
   }
 
   before('smoketest:preview') {
-    validateRpaContract()
     sh """
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
       ./bin/add-roles-preview.sh
@@ -88,7 +78,7 @@ withPipeline(type, product, component) {
       ./bin/import-ccd-definition-preview.sh
     """
 
-    env.URL="https://xui-civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.URL="https://xui-civil-damages-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
   after('smoketest:preview') {
@@ -98,9 +88,9 @@ withPipeline(type, product, component) {
   before('functionalTest:preview') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-bpmn-definition-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     dir("${WORKSPACE}/bin") {
       sh """
     eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -114,13 +104,12 @@ withPipeline(type, product, component) {
   }
 
   before('smoketest:aat') {
-    validateRpaContract()
     sh """
       ./bin/add-roles-preview.sh
       ./bin/pull-latest-ccd-definition.sh
       ./bin/pull-latest-e2e-tests.sh
     """
-    env.URL="https://xui-civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
+    env.URL="https://xui-civil-damages-camunda-staging.service.core-compute-preview.internal"
     archiveCoreCaseDataDefinitions('staging')
     uploadCoreCaseDataDefinitions('staging')
   }
@@ -132,9 +121,9 @@ withPipeline(type, product, component) {
   before('functionalTest:aat') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-damages-camunda-staging.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-bpmn-definition-staging.service.core-compute-preview.internal"
+    env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-staging.service.core-compute-preview.internal"
 
     dir("${WORKSPACE}/bin") {
       sh """
