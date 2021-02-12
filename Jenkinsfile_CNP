@@ -33,26 +33,6 @@ def secrets = [
   ]
 ]
 
-def archiveCoreCaseDataDefinitions(env) {
-  dir("${WORKSPACE}/bin") {
-    sh "./build-release-ccd-definition.sh ${env}"
-  }
-
-  dir("${WORKSPACE}/build") {
-    steps.archiveArtifacts artifacts: "ccd-release-config/ccd-unspec-${env}.xlsx"
-  }
-}
-
-def uploadCoreCaseDataDefinitions(env) {
-  dir("${WORKSPACE}/bin"){
-    ccdDefinitionFilePath="${WORKSPACE}/build/ccd-release-config/ccd-unspec-${env}.xlsx"
-    sh """
-    eval \$(./variables/load-${env}-environment-variables.sh)
-    ${WORKSPACE}/civil-unspecified-docker/bin/utils/ccd-import-definition.sh ${ccdDefinitionFilePath}
-  """
-  }
-}
-
 withPipeline(type, product, component) {
   pipelineConf = config
   disableLegacyDeployment()
@@ -72,10 +52,10 @@ withPipeline(type, product, component) {
   before('smoketest:preview') {
     sh """
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
-      ./bin/add-roles-preview.sh
-      ./bin/pull-latest-ccd-definition.sh
-      ./bin/pull-latest-e2e-tests.sh
-      ./bin/import-ccd-definition-preview.sh
+      ./bin/add-roles.sh
+      ./bin/pull-latest-release-asset.sh civil-damages-ccd-definition civil-damages-ccd-definition.zip
+      ./bin/pull-latest-release-asset.sh civil-damages-ccd-definition civil-damages-e2e.zip
+      ./bin/import-ccd-definition.sh
     """
 
     env.URL="https://xui-civil-damages-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
@@ -93,9 +73,9 @@ withPipeline(type, product, component) {
     env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     dir("${WORKSPACE}/bin") {
       sh """
-    eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
-    ./import-bpmn-diagram.sh ${WORKSPACE}
-  """
+        eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
+        ./import-bpmn-diagram.sh ${WORKSPACE}
+      """
     }
   }
 
@@ -105,13 +85,13 @@ withPipeline(type, product, component) {
 
   before('smoketest:aat') {
     sh """
-      ./bin/add-roles-preview.sh
-      ./bin/pull-latest-ccd-definition.sh
-      ./bin/pull-latest-e2e-tests.sh
+      eval \$(./bin/variables/load-staging-environment-variables.sh)
+      ./bin/add-roles.sh
+      ./bin/pull-latest-release-asset.sh civil-damages-ccd-definition civil-damages-ccd-definition.zip
+      ./bin/pull-latest-release-asset.sh civil-damages-ccd-definition civil-damages-e2e.zip
+      ./bin/import-ccd-definition.sh
     """
     env.URL="https://xui-civil-damages-camunda-staging.service.core-compute-preview.internal"
-    archiveCoreCaseDataDefinitions('staging')
-    uploadCoreCaseDataDefinitions('staging')
   }
 
   after('smoketest:aat') {
@@ -127,9 +107,9 @@ withPipeline(type, product, component) {
 
     dir("${WORKSPACE}/bin") {
       sh """
-    eval \$(./variables/load-staging-environment-variables.sh)
-    ./import-bpmn-diagram.sh ${WORKSPACE}
-  """
+        eval \$(./variables/load-staging-environment-variables.sh)
+        ./import-bpmn-diagram.sh ${WORKSPACE}
+      """
     }
   }
 

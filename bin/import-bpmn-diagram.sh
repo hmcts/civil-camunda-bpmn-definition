@@ -2,10 +2,10 @@
 
 set -eu
 workspace=${1}
-echo $workspace
+
+serviceToken=$($(realpath $workspace)/bin/utils/idam-lease-service-token.sh unspec_service \
+  $(docker run --rm toolbelt/oathtool --totp -b ${S2S_SECRET:-AABBCCDDEEFFGGHH}))
 filepath="$(realpath $workspace)/src/main/resources/camunda"
-echo $filepath
-serviceToken=$($(realpath $workspace)/civil-unspecified-docker/bin/utils/idam-lease-service-token.sh unspec_service $(docker run --rm toolbelt/oathtool --totp -b ${S2S_SECRET:-AABBCCDDEEFFGGHH}))
 
 for file in $(find ${filepath} -name '*.bpmn')
 do

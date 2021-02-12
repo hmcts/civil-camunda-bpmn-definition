@@ -20,5 +20,5 @@ echo "Additional parameters: ${additionalParameters}"
 
 mkdir -p $(dirname ${definition_output_file})
 
-${dir}/utils/process-definition.sh ${definition_input_dir} ${definition_output_file} "${additionalParameters}"
-${dir}/utils/ccd-import-definition.sh ${definition_output_file}
+${dir}/process-definition.sh ${definition_input_dir} ${definition_output_file} "${additionalParameters}"
+${dir}/ccd-import-definition.sh ${definition_output_file}
