@@ -33,6 +33,15 @@ def secrets = [
   ]
 ]
 
+def uploadBpmnDiagrams(String env) {
+  dir("${WORKSPACE}/bin") {
+    sh """
+      eval \$(./variables/load-${env}-environment-variables.sh)
+      ./import-bpmn-diagram.sh ${WORKSPACE}
+    """
+  }
+}
+
 withPipeline(type, product, component) {
   pipelineConf = config
   disableLegacyDeployment()
@@ -105,15 +114,22 @@ withPipeline(type, product, component) {
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
     env.UNSPEC_SERVICE_URL="http://civil-damages-camunda-staging.service.core-compute-preview.internal"
 
-    dir("${WORKSPACE}/bin") {
-      sh """
-        eval \$(./variables/load-staging-environment-variables.sh)
-        ./import-bpmn-diagram.sh ${WORKSPACE}
-      """
-    }
+    uploadBpmnDiagrams('staging')
   }
 
   after('functionalTest:aat') {
+    //TODO: uncomment once pipeline gets stable
+//    uploadBpmnDiagrams('aat')
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+  }
+
+  before('buildinfra:demo') {
+    def subscription = 'nonprod'
+    withSubscription(subscription) {
+      withTeamSecrets(pipelineConf, 'demo') {
+        //TODO: uncomment once pipeline gets stable
+//        uploadBpmnDiagrams('demo')
+      }
+    }
   }
 }

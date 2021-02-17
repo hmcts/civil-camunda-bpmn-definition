@@ -39,6 +39,12 @@ uploadReleaseAsset() {
     --data-binary @$assetName \
     https://uploads.github.com/repos/hmcts/${repoName}/releases/${releaseId}/assets?name=${assetName}
 }
+
+if [ -z "$BUILD_URL" ]; then
+  echo "Error: this script should only be run by Jenkins"
+  exit 1
+fi
+
 cp -r src/main/resources/camunda camunda
 zip -r civil-damages-camunda-bpmn-definition.zip camunda
 rm -r camunda
