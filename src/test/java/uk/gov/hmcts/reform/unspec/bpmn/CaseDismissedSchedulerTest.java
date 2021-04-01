@@ -10,16 +10,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CaseStayedSchedulerTest extends BpmnBaseTest {
+class CaseDismissedSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "CASE_STAYED_FINDER";
+    public static final String TOPIC_NAME = "CASE_DISMISSED";
 
-    public CaseStayedSchedulerTest() {
-        super("case_stayed_scheduler.bpmn", "CASE_STAYED_SCHEDULER");
+    public CaseDismissedSchedulerTest() {
+        super("claim_dismissed_scheduler.bpmn", "CASE_DISMISSED_SCHEDULER");
     }
 
     @Test
-    void caseStayedSchedulerBpmnShouldFireCaseStayedExternalTask_whenStarted() {
+    void claimDismissedSchedulerShouldFireCaseDismissedExternalTask_whenStarted() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,7 +33,7 @@ class CaseStayedSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: 0 0 2 ? * * *");
+        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: 5 16 * * * ?");
 
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();

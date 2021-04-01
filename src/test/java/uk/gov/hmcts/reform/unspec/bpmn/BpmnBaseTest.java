@@ -81,6 +81,13 @@ public abstract class BpmnBaseTest {
         engine.close();
     }
 
+    void deployDiagram(String bpmnFileName) {
+        deployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
+            .deploy();
+    }
+
     /**
      * Retrieves an explicit representation of a task to trigger a process execution, i.e whenever a wait
      * state is triggered in a bmpn diagram, for example, a timer event or a user task.

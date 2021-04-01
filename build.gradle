@@ -4,8 +4,8 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.4.2'
-  id 'org.owasp.dependencycheck' version '6.0.5'
-  id 'com.github.ben-manes.versions' version '0.36.0'
+  id 'org.owasp.dependencycheck' version '6.1.2'
+  id 'com.github.ben-manes.versions' version '0.38.0'
   id 'org.sonarqube' version '3.1'
 }
 
@@ -66,12 +66,18 @@ allprojects {
       // CVE-2018-10237 - Unbounded memory allocation
       dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.6'
       // CVE-2020-26945 - Mishandles deserialization of object streams.
-      dependencySet(group: 'com.google.guava', version: '30.1-jre') {
+      dependencySet(group: 'com.google.guava', version: '30.1.1-jre') {
         entry 'guava'
       }
+      dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-common', version: '1.4.32'
+      dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk7', version: '1.4.32'
+      dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.4.32'
+      dependency group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.4.31'
+      dependency group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.4.32'
+      // CVE-2020-29582
     }
     imports {
-      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.0'
+      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.2'
     }
   }
 
@@ -117,6 +123,7 @@ task checkDependenciesIntegrity(type: Exec, description: 'Checks integrity of Ya
 
 task awaitApplicationReadiness(type: Exec, description: 'Awaits until application is ready.') {
   commandLine './bin/wait-for.sh', System.env.URL
+  commandLine './bin/wait-for.sh', System.env.UNSPEC_SERVICE_URL
 }
 
 task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
@@ -125,6 +132,10 @@ task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
 
 task runFunctionalTests(type: Exec, description: 'Runs functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:functional'
+}
+
+task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'test:rpa'
 }
 
 def inStrictOrder(Task... tasks) {
@@ -172,7 +183,7 @@ jacocoTestReport.dependsOn {
 
 def versions = [
   junit              : '5.7.0',
-  junitPlatform      : '1.7.0',
+  junitPlatform      : '1.7.1',
   reformLogging      : '5.1.5',
   springBoot         : springBoot.class.package.implementationVersion,
   springfoxSwagger   : '2.9.2',
@@ -190,6 +201,7 @@ ext.libraries = [
 
 dependencies {
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
   implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '1.4.1'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.4'
 

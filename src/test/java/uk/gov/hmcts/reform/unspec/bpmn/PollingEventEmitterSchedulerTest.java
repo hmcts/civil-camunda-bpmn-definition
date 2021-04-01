@@ -19,7 +19,7 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
     }
 
     @Test
-    void caseStayedSchedulerBmpnShouldFireCaseStayedExternalTask_whenStarted() {
+    void pollingEventBmpnShouldFirePollingEventEmmiterExternalTask_whenStarted() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 

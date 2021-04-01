@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
+  <bpmn:process id="RETRY_RPA_NOTIFICATION_PROCESS_ID" isExecutable="true">
+    <bpmn:serviceTask id="RetryRoboticsNotification" name="Retry robotics notification" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a2vj44</bpmn:incoming>
+      <bpmn:outgoing>Flow_15o1b71</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_15o1b71" sourceRef="RetryRoboticsNotification" targetRef="Activity_1xyawja" />
+    <bpmn:endEvent id="Event_0a4ru5o">
+      <bpmn:incoming>Flow_1yiy8ib</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1yiy8ib" sourceRef="Activity_1xyawja" targetRef="Event_0a4ru5o" />
+    <bpmn:callActivity id="Activity_1xyawja" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15o1b71</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yiy8ib</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0kz6paj" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bnqopm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a2vj44</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0nyii4z">
+      <bpmn:incoming>Flow_0c3a0jx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0qo02p4" name="Abort" attachedToRef="Activity_0kz6paj">
+      <bpmn:outgoing>Flow_0c3a0jx</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0mbx1eq" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0c3a0jx" sourceRef="Event_0qo02p4" targetRef="Event_0nyii4z" />
+    <bpmn:sequenceFlow id="Flow_0a2vj44" sourceRef="Activity_0kz6paj" targetRef="RetryRoboticsNotification" />
+    <bpmn:sequenceFlow id="Flow_1bnqopm" sourceRef="StartEvent_1" targetRef="Activity_0kz6paj" />
+    <bpmn:startEvent id="StartEvent_1" name="start">
+      <bpmn:outgoing>Flow_1bnqopm</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0hvzew0" messageRef="Message_1m9uzfu" />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_1m9uzfu" name="RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE" />
+  <bpmn:error id="Error_00df5rf" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RETRY_RPA_NOTIFICATION_PROCESS_ID">
+      <bpmndi:BPMNEdge id="Flow_1bnqopm_di" bpmnElement="Flow_1bnqopm">
+        <di:waypoint x="208" y="207" />
+        <di:waypoint x="310" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a2vj44_di" bpmnElement="Flow_0a2vj44">
+        <di:waypoint x="410" y="207" />
+        <di:waypoint x="480" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c3a0jx_di" bpmnElement="Flow_0c3a0jx">
+        <di:waypoint x="360" y="149" />
+        <di:waypoint x="360" y="98" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yiy8ib_di" bpmnElement="Flow_1yiy8ib">
+        <di:waypoint x="760" y="207" />
+        <di:waypoint x="802" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15o1b71_di" bpmnElement="Flow_15o1b71">
+        <di:waypoint x="580" y="207" />
+        <di:waypoint x="660" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="RetryRoboticsNotification">
+        <dc:Bounds x="480" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0a4ru5o_di" bpmnElement="Event_0a4ru5o">
+        <dc:Bounds x="802" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oqt68l_di" bpmnElement="Activity_1xyawja">
+        <dc:Bounds x="660" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kz6paj_di" bpmnElement="Activity_0kz6paj">
+        <dc:Bounds x="310" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nyii4z_di" bpmnElement="Event_0nyii4z">
+        <dc:Bounds x="342" y="62" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="189" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="179" y="232" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qo02p4_di" bpmnElement="Event_0qo02p4">
+        <dc:Bounds x="342" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="376" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
