@@ -8,20 +8,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RequestExtensionTest extends BpmnBaseTest {
+class RetryRpaNotificationTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "REQUEST_EXTENSION";
-    public static final String PROCESS_ID = "REQUEST_EXTENSION_PROCESS_ID";
+    public static final String MESSAGE_NAME = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    public static final String PROCESS_ID = "RETRY_RPA_NOTIFICATION_PROCESS_ID";
 
-    public static final String NOTIFY_APPLICANT_SOLICITOR_1 = "NOTIFY_APPLICANT_SOLICITOR1_FOR_REQUEST_FOR_EXTENSION";
-    private static final String ACTIVITY_ID = "RequestExtensionNotifyApplicantSolicitor1";
+    public static final String RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    private static final String ACTIVITY_ID = "RetryRoboticsNotification";
 
-    public RequestExtensionTest() {
-        super("request_extension.bpmn", "REQUEST_EXTENSION_PROCESS_ID");
+    public RetryRpaNotificationTest() {
+        super("retry_rpa_notification.bpmn", "RETRY_RPA_NOTIFICATION_PROCESS_ID");
     }
 
     @Test
-    void shouldSuccessfullyCompleteRequestExtension() {
+    void shouldSuccessfullyCompleteRetryRpaNotification() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -34,7 +34,9 @@ class RequestExtensionTest extends BpmnBaseTest {
 
         //complete the notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_APPLICANT_SOLICITOR_1, ACTIVITY_ID);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, ACTIVITY_ID
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -52,7 +54,6 @@ class RequestExtensionTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.PROCEEDS_WITH_OFFLINE_JOURNEY");
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

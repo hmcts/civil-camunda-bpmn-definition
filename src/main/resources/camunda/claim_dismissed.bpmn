@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.3">
-  <bpmn:process id="CLAIM_STRIKEOUT_PROCESS_ID" isExecutable="true">
-    <bpmn:serviceTask id="ClaimStrikeoutNotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+  <bpmn:process id="DISMISS_CLAIM" isExecutable="true">
+    <bpmn:serviceTask id="ClaimDismissedNotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_CASE_STRIKE_OUT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_CLAIM_DISMISSED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_14aod2o</bpmn:incoming>
@@ -14,7 +14,7 @@
       <bpmn:outgoing>Flow_08myj65</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_0slk3de" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0jvjzsz" sourceRef="ClaimStrikeoutNotifyRespondentSolicitor1" targetRef="ClaimStrikeoutNotifyApplicantSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_0jvjzsz" sourceRef="ClaimDismissedNotifyRespondentSolicitor1" targetRef="ClaimDismissedNotifyApplicantSolicitor1" />
     <bpmn:endEvent id="Event_0r8yo0r">
       <bpmn:incoming>Flow_1hce35l</bpmn:incoming>
     </bpmn:endEvent>
@@ -26,16 +26,16 @@
       <bpmn:incoming>Flow_1gsn98m</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="ClaimStrikeoutNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ClaimDismissedNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_CASE_STRIKE_OUT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_CLAIM_DISMISSED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0jvjzsz</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsn98m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="ClaimStrikeoutNotifyApplicantSolicitor1" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="ClaimDismissedNotifyApplicantSolicitor1" targetRef="Activity_0wretog" />
     <bpmn:callActivity id="Activity_0emdthr" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -53,12 +53,12 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0yvpi10" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
     <bpmn:sequenceFlow id="Flow_08myj65" sourceRef="Event_0t2zome" targetRef="Activity_0emdthr" />
-    <bpmn:sequenceFlow id="Flow_14aod2o" sourceRef="Activity_0emdthr" targetRef="ClaimStrikeoutNotifyRespondentSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_14aod2o" sourceRef="Activity_0emdthr" targetRef="ClaimDismissedNotifyRespondentSolicitor1" />
   </bpmn:process>
-  <bpmn:message id="Message_0slk3de" name="MOVE_CLAIM_TO_STRUCK_OUT" />
+  <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLAIM_STRIKEOUT_PROCESS_ID">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DISMISS_CLAIM">
       <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
         <di:waypoint x="620" y="210" />
         <di:waypoint x="660" y="210" />
@@ -83,7 +83,7 @@
         <di:waypoint x="330" y="210" />
         <di:waypoint x="380" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0bn79uc_di" bpmnElement="ClaimStrikeoutNotifyRespondentSolicitor1">
+      <bpmndi:BPMNShape id="Activity_0bn79uc_di" bpmnElement="ClaimDismissedNotifyRespondentSolicitor1">
         <dc:Bounds x="380" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
@@ -98,7 +98,7 @@
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
         <dc:Bounds x="660" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="ClaimStrikeoutNotifyApplicantSolicitor1">
+      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="ClaimDismissedNotifyApplicantSolicitor1">
         <dc:Bounds x="520" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_0emdthr">

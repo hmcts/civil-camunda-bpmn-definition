@@ -11,14 +11,15 @@ properties([
       description: 'The URL of idam api'),
     string(name: 'DM_STORE_URL', defaultValue: 'http://dm-store-aat.service.core-compute-aat.internal',
       description: 'The URL of dm store'),
-    string(name: 'PROXY_SERVER', defaultValue: 'proxyout.reform.hmcts.net:8080',
-      description: 'The proxy server to use'),
     string(name: 'SERVICE_AUTH_PROVIDER_API_BASE_URL', defaultValue: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
       description: 'The URL of service auth provider'),
     string(name: 'CCD_DATA_STORE_URL', defaultValue: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal',
       description: 'The URL of ccd data store'),
     string(name: 'UNSPEC_SERVICE_URL', defaultValue: 'http://unspec-service-aat.service.core-compute-aat.internal',
       description: 'The URL of unspec service'),
+    string(name: 'WAIT_FOR_TIMEOUT_MS',
+      defaultValue: '120000',
+      description: 'Functional tests waitForTimeout value'),
     string(name: 'SECURITY_RULES',
       defaultValue: 'https://raw.githubusercontent.com/hmcts/security-test-rules/master/conf/security-rules.conf',
       description: 'The security rules to use'),
@@ -53,10 +54,10 @@ withNightlyPipeline(type, product, component) {
   env.DM_STORE_URL=params.DM_STORE_URL
   env.IDAM_API_URL=params.IDAM_API_URL
   env.CASE_SERVICE_URL=params.CASE_SERVICE_URL
-  env.PROXY_SERVER = params.PROXY_SERVER
   env.SERVICE_AUTH_PROVIDER_API_BASE_URL = params.SERVICE_AUTH_PROVIDER_API_BASE_URL
   env.CCD_DATA_STORE_URL = params.CCD_DATA_STORE_URL
   env.UNSPEC_SERVICE_URL = params.UNSPEC_SERVICE_URL
+  env.WAIT_FOR_TIMEOUT_MS = params.WAIT_FOR_TIMEOUT_MS
   env.URL_FOR_SECURITY_SCAN = params.CASE_SERVICE_URL
   loadVaultSecrets(secrets)
 
@@ -67,6 +68,7 @@ withNightlyPipeline(type, product, component) {
   enableFullFunctionalTest(200)
 
   after('fullFunctionalTest') {
+    sh """ ./gradlew runRpaHandOffTests """
     archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
 }

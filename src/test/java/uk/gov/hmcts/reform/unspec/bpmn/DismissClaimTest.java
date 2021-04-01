@@ -8,23 +8,22 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class AcknowledgeServiceTest extends BpmnBaseTest {
+class DismissClaimTest extends BpmnBaseTest {
 
-    private static final String MESSAGE_NAME = "ACKNOWLEDGE_SERVICE";
-    private static final String PROCESS_ID = "ACKNOWLEDGE_SERVICE_PROCESS_ID";
+    public static final String MESSAGE_NAME = "DISMISS_CLAIM";
+    public static final String PROCESS_ID = "DISMISS_CLAIM";
 
-    private static final String NOTIFY_APPLICANT_SOLICITOR_1
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_SERVICE_ACKNOWLEDGEMENT";
-    private static final String GENERATE_ACKNOWLEDGEMENT_OF_SERVICE = "GENERATE_ACKNOWLEDGEMENT_OF_SERVICE";
-    private static final String NOTIFICATION_ACTIVITY_ID = "AcknowledgeServiceNotifyApplicantSolicitor1";
-    private static final String GENERATE_CERTIFICATE_ACTIVITY_ID = "AcknowledgeServiceGenerateAcknowledgementOfService";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR_1 = "NOTIFY_RESPONDENT_SOLICITOR1_CLAIM_DISMISSED";
+    public static final String RESPONDENT_SOLICITOR_1_ACTIVITY_ID = "ClaimDismissedNotifyRespondentSolicitor1";
+    public static final String NOTIFY_APPLICANT_SOLICITOR_1 = "NOTIFY_APPLICANT_SOLICITOR1_CLAIM_DISMISSED";
+    public static final String APPLICANT_SOLICITOR_1_ACTIVITY_ID = "ClaimDismissedNotifyApplicantSolicitor1";
 
-    public AcknowledgeServiceTest() {
-        super("acknowledge_service.bpmn", "ACKNOWLEDGE_SERVICE_PROCESS_ID");
+    public DismissClaimTest() {
+        super("claim_dismissed.bpmn", "DISMISS_CLAIM");
     }
 
     @Test
-    void shouldSuccessfullyCompleteAcknowledgeService() {
+    void shouldSuccessfullyCompleteDismissClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -35,15 +34,23 @@ class AcknowledgeServiceTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(documentGeneration, PROCESS_CASE_EVENT, GENERATE_ACKNOWLEDGEMENT_OF_SERVICE,
-                                   GENERATE_CERTIFICATE_ACTIVITY_ID);
+        //complete the notification to respondent solicitor 1
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT_SOLICITOR_1,
+            RESPONDENT_SOLICITOR_1_ACTIVITY_ID
+        );
 
-        //complete the notification to applicant
-        ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notification, PROCESS_CASE_EVENT, NOTIFY_APPLICANT_SOLICITOR_1,
-                                   NOTIFICATION_ACTIVITY_ID);
+        //complete the notification to applicant solicitor 1
+        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicantNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_1,
+            APPLICANT_SOLICITOR_1_ACTIVITY_ID
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -61,7 +68,6 @@ class AcknowledgeServiceTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.PROCEEDS_WITH_OFFLINE_JOURNEY");
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
