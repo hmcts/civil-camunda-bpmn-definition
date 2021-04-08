@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -29,8 +29,8 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
     <bpmn:sequenceFlow id="Flow_03t3ygq" sourceRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
-    <bpmn:sequenceFlow id="Flow_1uhc41o" name="Respondent 1 not represented" sourceRef="Gateway_1i24lv2" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT"}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_1uhc41o" name="Respondent 1 unrepresented / unregistered" sourceRef="Gateway_1i24lv2" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1fr3g5j" sourceRef="GenerateClaimForm" targetRef="Gateway_1i24lv2" />
     <bpmn:sequenceFlow id="Flow_0ske5li" name="Payment successful" sourceRef="Gateway_0ea6cjs" targetRef="GenerateClaimForm">
@@ -42,7 +42,7 @@
     <bpmn:sequenceFlow id="Flow_0eps4bo" sourceRef="CreateClaimMakePayment" targetRef="Gateway_0ea6cjs" />
     <bpmn:sequenceFlow id="Flow_0oy1b4w" sourceRef="Activity_032r20h" targetRef="CaseAssignmentToApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1av9hkz" sourceRef="CreateClaimPaymentFailedNotifyApplicantSolicitor1" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_1mjmvjy" name="Respondent 1 represented" sourceRef="Gateway_1i24lv2" targetRef="Activity_19rrcw0">
+    <bpmn:sequenceFlow id="Flow_1mjmvjy" name="Respondent 1 represented and registered" sourceRef="Gateway_1i24lv2" targetRef="Activity_19rrcw0">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.AWAITING_CASE_NOTIFICATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1mak1f7" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19rrcw0" />
@@ -131,6 +131,10 @@
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
         <dc:Bounds x="160" y="60" width="1350" height="350" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1yheet4_di" bpmnElement="Flow_1yheet4">
+        <di:waypoint x="540" y="260" />
+        <di:waypoint x="580" y="260" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0znizfx_di" bpmnElement="Flow_0znizfx">
         <di:waypoint x="248" y="260" />
         <di:waypoint x="290" y="260" />
@@ -149,7 +153,7 @@
         <di:waypoint x="940" y="240" />
         <di:waypoint x="1250" y="240" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="927" y="266" width="69" height="27" />
+          <dc:Bounds x="921" y="266" width="81" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1av9hkz_di" bpmnElement="Flow_1av9hkz">
@@ -190,7 +194,7 @@
         <di:waypoint x="940" y="140" />
         <di:waypoint x="1010" y="140" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="906" y="86" width="87" height="27" />
+          <dc:Bounds x="911" y="86" width="78" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03t3ygq_di" bpmnElement="Flow_03t3ygq">
@@ -200,10 +204,6 @@
       <bpmndi:BPMNEdge id="Flow_0o4v7r8_di" bpmnElement="Flow_0o4v7r8">
         <di:waypoint x="340" y="202" />
         <di:waypoint x="340" y="168" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yheet4_di" bpmnElement="Flow_1yheet4">
-        <di:waypoint x="540" y="260" />
-        <di:waypoint x="580" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0yfoky6_di" bpmnElement="Event_0yfoky6">
         <dc:Bounds x="212" y="242" width="36" height="36" />
