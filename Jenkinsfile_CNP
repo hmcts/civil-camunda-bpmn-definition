@@ -81,6 +81,15 @@ withPipeline(type, product, component) {
         }
       }
     }
+
+    onDemo {
+      def subscription = 'nonprod'
+      withSubscription(subscription) {
+        withTeamSecrets(pipelineConf, 'demo') {
+          uploadBpmnDiagrams('demo')
+        }
+      }
+    }
   }
 
   before('smoketest:preview') {
@@ -147,14 +156,5 @@ withPipeline(type, product, component) {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
-  }
-
-  before('buildinfra:demo') {
-    def subscription = 'nonprod'
-    withSubscription(subscription) {
-      withTeamSecrets(pipelineConf, 'demo') {
-        uploadBpmnDiagrams('demo')
-      }
-    }
   }
 }
