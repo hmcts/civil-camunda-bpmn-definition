@@ -7,9 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.unspec.handler.tasks.StartBusinessProcessTaskHandler.FLOW_STATE;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.FULL_DEFENCE_NOT_PROCEED;
-import static uk.gov.hmcts.reform.unspec.service.flowstate.FlowState.Main.FULL_DEFENCE_PROCEED;
 
 class ClaimantResponseTest extends BpmnBaseTest {
 
@@ -39,7 +36,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
             .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID");
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, FULL_DEFENCE_PROCEED.fullName());
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -108,7 +105,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
             .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID");
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE, FULL_DEFENCE_NOT_PROCEED.fullName());
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
