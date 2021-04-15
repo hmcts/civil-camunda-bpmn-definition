@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <bpmn:process id="TAKE_CASE_OFFLINE" isExecutable="true">
+    <bpmn:startEvent id="Event_StartClaimTakenOffline" name="Start">
+      <bpmn:outgoing>Flow_NextStartBusinessProcess</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_0slk3de" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_EndClaimTakenOffline">
+      <bpmn:incoming>Flow_NextEndEvent</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_NextEndEvent" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndClaimTakenOffline" />
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_NextEndBusinessProcess</bpmn:incoming>
+      <bpmn:outgoing>Flow_NextEndEvent</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_NextStartBusinessProcess</bpmn:incoming>
+      <bpmn:outgoing>Flow_NextNotifyRpa</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1nsmt51">
+      <bpmn:incoming>Flow_StartBusinessProcessAbort</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1fn0bf1" name="Abort" attachedToRef="Activity_StartBusinessProcess">
+      <bpmn:outgoing>Flow_StartBusinessProcessAbort</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1ilh7qa" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartBusinessProcessAbort" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
+    <bpmn:sequenceFlow id="Flow_NextStartBusinessProcess" sourceRef="Event_StartClaimTakenOffline" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_NextNotifyRpa" sourceRef="Activity_StartBusinessProcess" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_NextNotifyRpa</bpmn:incoming>
+      <bpmn:outgoing>Flow_NextEndBusinessProcess</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_NextEndBusinessProcess" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_EndBusinessProcess" />
+  </bpmn:process>
+  <bpmn:message id="Message_0slk3de" name="TAKE_CASE_OFFLINE" />
+  <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TAKE_CASE_OFFLINE">
+      <bpmndi:BPMNEdge id="Flow_14aod2o_di" bpmnElement="Flow_NextNotifyRpa">
+        <di:waypoint x="330" y="210" />
+        <di:waypoint x="430" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_NextStartBusinessProcess">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_StartBusinessProcessAbort">
+        <di:waypoint x="280" y="152" />
+        <di:waypoint x="280" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_NextEndEvent">
+        <di:waypoint x="740" y="210" />
+        <di:waypoint x="802" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09loe5v_di" bpmnElement="Flow_NextEndBusinessProcess">
+        <di:waypoint x="530" y="210" />
+        <di:waypoint x="640" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_StartClaimTakenOffline">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="235" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
+        <dc:Bounds x="802" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_StartBusinessProcess">
+        <dc:Bounds x="230" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
+        <dc:Bounds x="262" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="640" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08ndbvb_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="430" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
+        <dc:Bounds x="262" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="133" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
