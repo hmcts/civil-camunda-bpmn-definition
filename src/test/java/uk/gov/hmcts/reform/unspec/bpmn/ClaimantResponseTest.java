@@ -12,6 +12,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
 
     private static final String RESPONDENT_SOLICITOR_1
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TRANSFERRED_TO_LOCAL_COURT";
+    private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String RESPONDENT_ACTIVITY = "ClaimantResponseNotifyRespondentSolicitor1";
     private static final String APPLICANT_SOLICITOR_1
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TRANSFERRED_TO_LOCAL_COURT";
@@ -21,6 +22,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         = "ClaimantResponseGenerateDirectionsQuestionnaire";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
+        = "ProceedOfflineForResponseToDefence";
 
     public ClaimantResponseTest() {
         super("claimant_response.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID");
@@ -45,6 +48,16 @@ class ClaimantResponseTest extends BpmnBaseTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the take offline event
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            takeOffline,
+            PROCESS_CASE_EVENT,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
 
@@ -114,6 +127,16 @@ class ClaimantResponseTest extends BpmnBaseTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the take offline event
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            takeOffline,
+            PROCESS_CASE_EVENT,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
 

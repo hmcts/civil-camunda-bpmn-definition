@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
   <bpmn:process id="DEFENDANT_RESPONSE_PROCESS_ID" isExecutable="true">
     <bpmn:serviceTask id="DefendantResponseFullDefenceNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -7,7 +7,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17u38kw</bpmn:incoming>
+      <bpmn:incoming>Flow_0d9085k</bpmn:incoming>
       <bpmn:outgoing>Flow_1tgi30k</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:startEvent id="StartEvent_1" name="start">
@@ -29,7 +29,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_01e5t4p</bpmn:incoming>
+      <bpmn:incoming>Flow_1rg9j0x</bpmn:incoming>
       <bpmn:outgoing>Flow_1shs5t2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1shs5t2" sourceRef="DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1" targetRef="DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1" />
@@ -43,10 +43,10 @@
       <bpmn:outgoing>Flow_17u38kw</bpmn:outgoing>
       <bpmn:outgoing>Flow_01e5t4p</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_17u38kw" sourceRef="Gateway_1q9qem9" targetRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.RESPONDENT_FULL_DEFENCE"}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_17u38kw" sourceRef="Gateway_1q9qem9" targetRef="FullDefenceResponse">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.RESPONDENT_FULL_DEFENCE" || flowState == "MAIN.FULL_DEFENCE"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01e5t4p" sourceRef="Gateway_1q9qem9" targetRef="DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1">
+    <bpmn:sequenceFlow id="Flow_01e5t4p" sourceRef="Gateway_1q9qem9" targetRef="ProceedOfflineForNonDefenceResponse">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.RESPONDENT_FULL_ADMISSION" || flowState == "MAIN.RESPONDENT_PART_ADMISSION" || flowState == "MAIN.RESPONDENT_COUNTER_CLAIM"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0qgvakl" sourceRef="DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
@@ -101,6 +101,26 @@
       <bpmn:incoming>Flow_0qgvakl</bpmn:incoming>
       <bpmn:outgoing>Flow_1a2n9ax</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1rg9j0x" sourceRef="ProceedOfflineForNonDefenceResponse" targetRef="DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_0d9085k" sourceRef="FullDefenceResponse" targetRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1" />
+    <bpmn:serviceTask id="ProceedOfflineForNonDefenceResponse" name="Proceed offline (Other defence responses)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01e5t4p</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rg9j0x</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="FullDefenceResponse" name="Full defence response" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCESS_FULL_DEFENCE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17u38kw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d9085k</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_18hpho5">
       <bpmn:text>Case Handed Offline</bpmn:text>
     </bpmn:textAnnotation>
@@ -114,9 +134,19 @@
   <bpmn:error id="Error_0z3vvae" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DEFENDANT_RESPONSE_PROCESS_ID">
+      <bpmndi:BPMNEdge id="Flow_0d9085k_di" bpmnElement="Flow_0d9085k">
+        <di:waypoint x="610" y="297" />
+        <di:waypoint x="680" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rg9j0x_di" bpmnElement="Flow_1rg9j0x">
+        <di:waypoint x="610" y="180" />
+        <di:waypoint x="680" y="180" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a2n9ax_di" bpmnElement="Flow_1a2n9ax">
-        <di:waypoint x="850" y="180" />
-        <di:waypoint x="950" y="180" />
+        <di:waypoint x="1090" y="180" />
+        <di:waypoint x="1140" y="180" />
+        <di:waypoint x="1140" y="240" />
+        <di:waypoint x="1210" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01gz2ld_di" bpmnElement="Flow_01gz2ld">
         <di:waypoint x="188" y="300" />
@@ -131,38 +161,38 @@
         <di:waypoint x="290" y="208" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bv320r_di" bpmnElement="Flow_1bv320r">
-        <di:waypoint x="800" y="297" />
-        <di:waypoint x="910" y="297" />
-        <di:waypoint x="910" y="180" />
-        <di:waypoint x="950" y="180" />
+        <di:waypoint x="940" y="297" />
+        <di:waypoint x="1140" y="297" />
+        <di:waypoint x="1140" y="240" />
+        <di:waypoint x="1210" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tgi30k_di" bpmnElement="Flow_1tgi30k">
-        <di:waypoint x="650" y="297" />
-        <di:waypoint x="700" y="297" />
+        <di:waypoint x="780" y="297" />
+        <di:waypoint x="840" y="297" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jauxrx_di" bpmnElement="Flow_0jauxrx">
-        <di:waypoint x="1050" y="180" />
-        <di:waypoint x="1092" y="180" />
+        <di:waypoint x="1310" y="240" />
+        <di:waypoint x="1372" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qgvakl_di" bpmnElement="Flow_0qgvakl">
-        <di:waypoint x="710" y="180" />
-        <di:waypoint x="750" y="180" />
+        <di:waypoint x="940" y="180" />
+        <di:waypoint x="990" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01e5t4p_di" bpmnElement="Flow_01e5t4p">
         <di:waypoint x="420" y="272" />
         <di:waypoint x="420" y="180" />
-        <di:waypoint x="470" y="180" />
+        <di:waypoint x="510" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17u38kw_di" bpmnElement="Flow_17u38kw">
         <di:waypoint x="445" y="297" />
-        <di:waypoint x="550" y="297" />
+        <di:waypoint x="510" y="297" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1shs5t2_di" bpmnElement="Flow_1shs5t2">
-        <di:waypoint x="570" y="180" />
-        <di:waypoint x="610" y="180" />
+        <di:waypoint x="780" y="180" />
+        <di:waypoint x="840" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="DefendantResponseFullDefenceNotifyApplicantSolicitor1">
-        <dc:Bounds x="550" y="257" width="100" height="80" />
+        <dc:Bounds x="680" y="257" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1pp6fod_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="282" width="36" height="36" />
@@ -171,22 +201,22 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0u1unx7_di" bpmnElement="DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1">
-        <dc:Bounds x="610" y="140" width="100" height="80" />
+        <dc:Bounds x="840" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_080rc91_di" bpmnElement="DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1">
-        <dc:Bounds x="470" y="140" width="100" height="80" />
+        <dc:Bounds x="680" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1q9qem9_di" bpmnElement="Gateway_1q9qem9" isMarkerVisible="true">
         <dc:Bounds x="395" y="272" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15p049m_di" bpmnElement="Event_15p049m">
-        <dc:Bounds x="1092" y="162" width="36" height="36" />
+        <dc:Bounds x="1372" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
-        <dc:Bounds x="950" y="140" width="100" height="80" />
+        <dc:Bounds x="1210" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_10mwnra_di" bpmnElement="DefendantResponseFullDefenceGenerateDirectionsQuestionnaire">
-        <dc:Bounds x="700" y="257" width="100" height="80" />
+        <dc:Bounds x="840" y="257" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nraabm_di" bpmnElement="Activity_1nraabm">
         <dc:Bounds x="240" y="257" width="100" height="80" />
@@ -195,13 +225,19 @@
         <dc:Bounds x="272" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0izbqh1_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="750" y="140" width="100" height="80" />
+        <dc:Bounds x="990" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oz9esu_di" bpmnElement="ProceedOfflineForNonDefenceResponse">
+        <dc:Bounds x="510" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04o87hd_di" bpmnElement="FullDefenceResponse">
+        <dc:Bounds x="510" y="257" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_18hpho5_di" bpmnElement="TextAnnotation_18hpho5">
         <dc:Bounds x="370" y="110" width="100" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yaoqdd_di" bpmnElement="TextAnnotation_0yaoqdd">
-        <dc:Bounds x="470" y="330" width="100" height="40" />
+        <dc:Bounds x="470" y="340" width="100" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="239" width="36" height="36" />
@@ -214,8 +250,8 @@
         <di:waypoint x="420" y="150" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0xe3lfi_di" bpmnElement="Association_0xe3lfi">
-        <di:waypoint x="436" y="306" />
-        <di:waypoint x="482" y="330" />
+        <di:waypoint x="435" y="307" />
+        <di:waypoint x="488" y="340" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
