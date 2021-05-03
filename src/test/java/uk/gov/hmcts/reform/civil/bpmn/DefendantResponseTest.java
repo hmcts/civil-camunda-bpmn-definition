@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;

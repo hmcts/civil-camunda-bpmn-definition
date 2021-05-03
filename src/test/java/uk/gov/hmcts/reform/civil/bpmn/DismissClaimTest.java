@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
@@ -8,20 +8,22 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RetryRpaNotificationTest extends BpmnBaseTest {
+class DismissClaimTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    public static final String PROCESS_ID = "RETRY_RPA_NOTIFICATION_PROCESS_ID";
+    public static final String MESSAGE_NAME = "DISMISS_CLAIM";
+    public static final String PROCESS_ID = "DISMISS_CLAIM";
 
-    public static final String RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    private static final String ACTIVITY_ID = "RetryRoboticsNotification";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR_1 = "NOTIFY_RESPONDENT_SOLICITOR1_CLAIM_DISMISSED";
+    public static final String RESPONDENT_SOLICITOR_1_ACTIVITY_ID = "ClaimDismissedNotifyRespondentSolicitor1";
+    public static final String NOTIFY_APPLICANT_SOLICITOR_1 = "NOTIFY_APPLICANT_SOLICITOR1_CLAIM_DISMISSED";
+    public static final String APPLICANT_SOLICITOR_1_ACTIVITY_ID = "ClaimDismissedNotifyApplicantSolicitor1";
 
-    public RetryRpaNotificationTest() {
-        super("retry_rpa_notification.bpmn", "RETRY_RPA_NOTIFICATION_PROCESS_ID");
+    public DismissClaimTest() {
+        super("claim_dismissed.bpmn", "DISMISS_CLAIM");
     }
 
     @Test
-    void shouldSuccessfullyCompleteRetryRpaNotification() {
+    void shouldSuccessfullyCompleteDismissClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -32,10 +34,22 @@ class RetryRpaNotificationTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the notification
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, ACTIVITY_ID
+        //complete the notification to respondent solicitor 1
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT_SOLICITOR_1,
+            RESPONDENT_SOLICITOR_1_ACTIVITY_ID
+        );
+
+        //complete the notification to applicant solicitor 1
+        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicantNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_1,
+            APPLICANT_SOLICITOR_1_ACTIVITY_ID
         );
 
         //end business process

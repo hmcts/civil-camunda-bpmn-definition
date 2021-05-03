@@ -26,8 +26,8 @@ def secrets = [
     secret('ccd-api-gateway-oauth2-client-secret', 'CCD_API_GATEWAY_IDAM_CLIENT_SECRET'),
     secret('postcode-info-address-lookup-token', 'ADDRESS_LOOKUP_TOKEN')
   ],
-  'unspec-${env}': [
-    secret('microservicekey-unspec-service', 'S2S_SECRET'),
+  'civil-${env}': [
+    secret('microservicekey-civil-service', 'S2S_SECRET'),
     secret('ccd-importer-username', 'CCD_CONFIGURER_IMPORTER_USERNAME'),
     secret('ccd-importer-password', 'CCD_CONFIGURER_IMPORTER_PASSWORD')
   ]
@@ -101,7 +101,7 @@ withPipeline(type, product, component) {
       ./bin/import-ccd-definition.sh
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
-    env.UNSPEC_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
   after('smoketest:preview') {
@@ -113,7 +113,7 @@ withPipeline(type, product, component) {
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -135,7 +135,7 @@ withPipeline(type, product, component) {
       ./bin/import-ccd-definition.sh
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.UNSPEC_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
   }
 
   after('smoketest:aat') {
@@ -147,7 +147,7 @@ withPipeline(type, product, component) {
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "http://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.UNSPEC_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
 
     uploadBpmnDiagrams('staging')
   }
