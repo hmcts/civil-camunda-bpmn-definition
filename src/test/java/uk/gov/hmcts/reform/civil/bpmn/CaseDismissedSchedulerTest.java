@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
@@ -10,16 +10,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class TakeCaseOfflineSchedulerTest extends BpmnBaseTest {
+class CaseDismissedSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "TAKE_CASE_OFFLINE";
+    public static final String TOPIC_NAME = "CASE_DISMISSED";
 
-    public TakeCaseOfflineSchedulerTest() {
-        super("take_case_offline_scheduler.bpmn", "TAKE_CASE_OFFLINE_SCHEDULER");
+    public CaseDismissedSchedulerTest() {
+        super("claim_dismissed_scheduler.bpmn", "CASE_DISMISSED_SCHEDULER");
     }
 
     @Test
-    void schedulerShouldRaiseTakeCaseOfflineExternalTask_whenStarted() {
+    void claimDismissedSchedulerShouldFireCaseDismissedExternalTask_whenStarted() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
