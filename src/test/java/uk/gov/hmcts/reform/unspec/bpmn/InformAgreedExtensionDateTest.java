@@ -6,20 +6,17 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RetryRpaNotificationTest extends BpmnBaseTest {
+class InformAgreedExtensionDateTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    public static final String PROCESS_ID = "RETRY_RPA_NOTIFICATION_PROCESS_ID";
+    public static final String MESSAGE_NAME = "INFORM_AGREED_EXTENSION_DATE";
+    public static final String PROCESS_ID = "INFORM_AGREED_EXTENSION_DATE_PROCESS_ID";
 
-    public static final String RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    private static final String ACTIVITY_ID = "RetryRoboticsNotification";
-
-    public RetryRpaNotificationTest() {
-        super("retry_rpa_notification.bpmn", "RETRY_RPA_NOTIFICATION_PROCESS_ID");
+    public InformAgreedExtensionDateTest() {
+        super("inform_agreed_extension_date.bpmn", PROCESS_ID);
     }
 
     @Test
-    void shouldSuccessfullyCompleteRetryRpaNotification() {
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -28,12 +25,27 @@ class RetryRpaNotificationTest extends BpmnBaseTest {
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY
+        );
 
-        //complete the notification
+        //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   RETRY_NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, ACTIVITY_ID
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE",
+                                   "AgreedExtensionDateNotifyApplicantSolicitor1"
+        );
+
+        //complete the CC notification to respondent
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
+                                   "AgreedExtensionDateNotifyRespondentSolicitor1CC"
         );
 
         //end business process

@@ -128,6 +128,15 @@ class CreateClaimTest extends BpmnBaseTest {
                 variables
             );
 
+            //complete the notification
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE",
+                "CreateClaimContinuingOnlineNotifyApplicantSolicitor1"
+            );
+
             //end business process
             ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
             completeBusinessProcess(endBusinessProcess);
@@ -439,6 +448,15 @@ class CreateClaimTest extends BpmnBaseTest {
                 ISSUE_CLAIM_EVENT,
                 ISSUE_CLAIM_ACTIVITY_ID,
                 variables
+            );
+
+            //complete the notification
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE",
+                "CreateClaimContinuingOnlineNotifyApplicantSolicitor1"
             );
 
             //end business process

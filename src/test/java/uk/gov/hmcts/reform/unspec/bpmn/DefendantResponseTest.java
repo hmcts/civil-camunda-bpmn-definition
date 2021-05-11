@@ -138,13 +138,22 @@ class DefendantResponseTest extends BpmnBaseTest {
             FULL_DEFENCE_RESPONSE_ACTIVITY_ID
         );
 
-        //complete the notification to respondent
+        //complete the notification to applicant
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
             FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1,
             FULL_DEFENCE_NOTIFICATION_ACTIVITY_ID
+        );
+
+        //complete the CC notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC",
+            "DefendantResponseFullDefenceNotifyRespondentSolicitor1CC"
         );
 
         //complete the document generation
@@ -170,8 +179,6 @@ class DefendantResponseTest extends BpmnBaseTest {
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
