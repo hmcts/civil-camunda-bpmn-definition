@@ -43,8 +43,7 @@ class DefendantResponseTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "MAIN.RESPONDENT_FULL_ADMISSION", "MAIN.RESPONDENT_PART_ADMISSION", "MAIN.RESPONDENT_COUNTER_CLAIM"})
+    @ValueSource(strings = {"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION", "MAIN.COUNTER_CLAIM"})
     void shouldSuccessfullyCompleteOfflineDefendantResponse(String flowState) {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -119,7 +118,7 @@ class DefendantResponseTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.RESPONDENT_FULL_DEFENCE");
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE");
 
         assertCompleteExternalTask(
             startBusiness,
