@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifyClaimTest extends BpmnBaseTest {
+class NotifyClaimDetailsTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "NOTIFY_DEFENDANT_OF_CLAIM";
-    public static final String PROCESS_ID = "NOTIFY_CLAIM";
+    public static final String MESSAGE_NAME = "NOTIFY_DEFENDANT_OF_CLAIM_DETAILS";
+    public static final String PROCESS_ID = "NOTIFY_CLAIM_DETAILS";
 
-    public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
-        = "NotifyDefendantSolicitor1";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS
+        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
+        = "NotifyClaimDetailsRespondentSolicitor1";
 
-    public NotifyClaimTest() {
-        super("notify_claim.bpmn", "NOTIFY_CLAIM");
+    public NotifyClaimDetailsTest() {
+        super("notify_claim_details.bpmn", PROCESS_ID);
     }
 
     @Test
@@ -45,16 +45,16 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         //complete the notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
         );
 
         //complete the CC notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE_CC",
-                                   "NotifyApplicantSolicitor1CC"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS_CC",
+                                   "NotifyClaimDetailsApplicantSolicitor1CC"
         );
 
         //end business process

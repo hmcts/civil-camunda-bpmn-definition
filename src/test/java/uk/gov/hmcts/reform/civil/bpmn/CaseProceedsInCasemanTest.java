@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.junit.jupiter.api.Test;
@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class AddDefendantLitigationFriendTest extends BpmnBaseTest {
+class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "ADD_DEFENDANT_LITIGATION_FRIEND";
-    public static final String PROCESS_ID = "ADD_DEFENDANT_LITIGATION_FRIEND";
+    public static final String MESSAGE_NAME = "CASE_PROCEEDS_IN_CASEMAN";
+    public static final String PROCESS_ID = "CASE_PROCEEDS_IN_CASEMAN";
 
-    public AddDefendantLitigationFriendTest() {
-        super("add_defendant_litigation_friend.bpmn", PROCESS_ID);
+    public CaseProceedsInCasemanTest() {
+        super("case_proceeds_in_caseman.bpmn", PROCESS_ID);
     }
 
     @Test
@@ -33,19 +33,19 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         );
 
         //complete the notification to respondent
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_LITIGATION_FRIEND_ADDED",
-                                   "LitigationFriendAddedNotifyApplicantSolicitor1"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+                                   "CaseProceedsInCasemanNotifyRespondentSolicitor1"
         );
 
-        //complete the CC notification to applicant
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
+        //complete the notification to applicant
+        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_LITIGATION_FRIEND_ADDED",
-                                   "LitigationFriendAddedNotifyRespondentSolicitor1"
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+                                   "CaseProceedsInCasemanNotifyApplicantSolicitor1"
         );
 
         //end business process

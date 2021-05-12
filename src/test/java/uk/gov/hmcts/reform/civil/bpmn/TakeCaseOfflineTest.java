@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.junit.jupiter.api.Test;
@@ -6,17 +6,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CaseProceedsInCasemanTest extends BpmnBaseTest {
+class TakeCaseOfflineTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "CASE_PROCEEDS_IN_CASEMAN";
-    public static final String PROCESS_ID = "CASE_PROCEEDS_IN_CASEMAN";
+    public static final String MESSAGE_NAME = "TAKE_CASE_OFFLINE";
+    public static final String PROCESS_ID = "TAKE_CASE_OFFLINE";
 
-    public CaseProceedsInCasemanTest() {
-        super("case_proceeds_in_caseman.bpmn", PROCESS_ID);
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+
+    public TakeCaseOfflineTest() {
+        super("take_case_offline.bpmn", "TAKE_CASE_OFFLINE");
     }
 
     @Test
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled() {
+    void shouldSuccessfullyCompleteTakeCaseOffline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -25,27 +28,31 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        //complete the RPA notification
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            rpaNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
         //complete the notification to respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
+                                   "TakeCaseOfflineNotifyRespondentSolicitor1"
         );
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
+                                   "TakeCaseOfflineNotifyApplicantSolicitor1"
         );
 
         //end business process

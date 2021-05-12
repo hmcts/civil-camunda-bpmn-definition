@@ -46,12 +46,12 @@ if [ -z "$BUILD_URL" ]; then
 fi
 
 cp -r src/main/resources/camunda camunda
-zip -r civil-damages-camunda-bpmn-definition.zip camunda
+zip -r civil-camunda-bpmn-definition.zip camunda
 rm -r camunda
 
 az login --identity
-releaseId=$(createNewRelease civil-damages-camunda-bpmn-definition)
+releaseId=$(createNewRelease civil-camunda-bpmn-definition)
 
-uploadReleaseAsset civil-damages-camunda-bpmn-definition $releaseId civil-damages-camunda-bpmn-definition.zip
+uploadReleaseAsset civil-camunda-bpmn-definition $releaseId civil-camunda-bpmn-definition.zip
 
-rm civil-damages-camunda-bpmn-definition.zip
+rm civil-camunda-bpmn-definition.zip

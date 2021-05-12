@@ -3,7 +3,7 @@
 set -eu
 workspace=${1}
 
-serviceToken=$($(realpath $workspace)/bin/utils/idam-lease-service-token.sh unspec_service \
+serviceToken=$($(realpath $workspace)/bin/utils/idam-lease-service-token.sh civil_service \
   $(docker run --rm toolbelt/oathtool --totp -b ${S2S_SECRET:-AABBCCDDEEFFGGHH}))
 filepath="$(realpath $workspace)/src/main/resources/camunda"
 

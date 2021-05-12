@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.unspec.bpmn;
+package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
@@ -10,16 +10,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CaseDismissedSchedulerTest extends BpmnBaseTest {
+class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
 
     public static final String TOPIC_NAME = "CASE_DISMISSED";
 
-    public CaseDismissedSchedulerTest() {
-        super("claim_dismissed_scheduler.bpmn", "CASE_DISMISSED_SCHEDULER");
+    public NotifyClaimDeadlineSchedulerTest() {
+        super("notify_claim_deadline_scheduler.bpmn", "NOTIFY_CLAIM_DEADLINE_SCHEDULER");
     }
 
     @Test
-    void claimDismissedSchedulerShouldFireCaseDismissedExternalTask_whenStarted() {
+    void notifyClaimDeadlineSchedulerShouldFireCaseDismissedExternalTask_whenStarted() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,7 +33,7 @@ class CaseDismissedSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: 5 16 * * * ?");
+        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: 5 0 * * * ?");
 
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();
