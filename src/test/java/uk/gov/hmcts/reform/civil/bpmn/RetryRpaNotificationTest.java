@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,8 +50,6 @@ class RetryRpaNotificationTest extends BpmnBaseTest {
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

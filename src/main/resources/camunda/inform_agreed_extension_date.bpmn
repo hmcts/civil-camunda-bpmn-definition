@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0d4bcaj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.5.0">
+  <bpmn:process id="INFORM_AGREED_EXTENSION_DATE_PROCESS_ID" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0cbpb7a</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1hupx5h" messageRef="Message_1b64xfv" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_023yrjd" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cbpb7a</bpmn:incoming>
+      <bpmn:outgoing>Flow_089frwq</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0e26gjw">
+      <bpmn:incoming>Flow_0c23og9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0qm6nf4" name="Abort" attachedToRef="Activity_023yrjd">
+      <bpmn:outgoing>Flow_0c23og9</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_02pyvny" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0c23og9" sourceRef="Event_0qm6nf4" targetRef="Event_0e26gjw" />
+    <bpmn:sequenceFlow id="Flow_0cbpb7a" sourceRef="StartEvent_1" targetRef="Activity_023yrjd" />
+    <bpmn:sequenceFlow id="Flow_089frwq" sourceRef="Activity_023yrjd" targetRef="AgreedExtensionDateNotifyApplicantSolicitor1" />
+    <bpmn:serviceTask id="AgreedExtensionDateNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_089frwq</bpmn:incoming>
+      <bpmn:outgoing>Flow_18b51mb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_1i1bcz2" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="variables" value="all" />
+        </camunda:properties>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14kz7pj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qyhi90</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1520zkg">
+      <bpmn:incoming>Flow_0qyhi90</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0qyhi90" sourceRef="Activity_1i1bcz2" targetRef="Event_1520zkg" />
+    <bpmn:sequenceFlow id="Flow_18b51mb" sourceRef="AgreedExtensionDateNotifyApplicantSolicitor1" targetRef="AgreedExtensionDateNotifyRespondentSolicitor1CC" />
+    <bpmn:serviceTask id="AgreedExtensionDateNotifyRespondentSolicitor1CC" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18b51mb</bpmn:incoming>
+      <bpmn:outgoing>Flow_14kz7pj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_14kz7pj" sourceRef="AgreedExtensionDateNotifyRespondentSolicitor1CC" targetRef="Activity_1i1bcz2" />
+  </bpmn:process>
+  <bpmn:message id="Message_1b64xfv" name="INFORM_AGREED_EXTENSION_DATE" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="INFORM_AGREED_EXTENSION_DATE_PROCESS_ID">
+      <bpmndi:BPMNEdge id="Flow_18b51mb_di" bpmnElement="Flow_18b51mb">
+        <di:waypoint x="500" y="177" />
+        <di:waypoint x="530" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_089frwq_di" bpmnElement="Flow_089frwq">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="400" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cbpb7a_di" bpmnElement="Flow_0cbpb7a">
+        <di:waypoint x="228" y="180" />
+        <di:waypoint x="270" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c23og9_di" bpmnElement="Flow_0c23og9">
+        <di:waypoint x="320" y="119" />
+        <di:waypoint x="320" y="85" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qyhi90_di" bpmnElement="Flow_0qyhi90">
+        <di:waypoint x="760" y="174" />
+        <di:waypoint x="792" y="174" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14kz7pj_di" bpmnElement="Flow_14kz7pj">
+        <di:waypoint x="630" y="177" />
+        <di:waypoint x="660" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0m7mqgu_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="205" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_023yrjd_di" bpmnElement="Activity_023yrjd">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0e26gjw_di" bpmnElement="Event_0e26gjw">
+        <dc:Bounds x="302" y="49" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1520zkg_di" bpmnElement="Event_1520zkg">
+        <dc:Bounds x="792" y="156" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cx0xe8_di" bpmnElement="AgreedExtensionDateNotifyApplicantSolicitor1">
+        <dc:Bounds x="400" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i1bcz2_di" bpmnElement="Activity_1i1bcz2">
+        <dc:Bounds x="660" y="134" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jtsmci_di" bpmnElement="AgreedExtensionDateNotifyRespondentSolicitor1CC">
+        <dc:Bounds x="530" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qm6nf4_di" bpmnElement="Event_0qm6nf4">
+        <dc:Bounds x="302" y="119" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="336" y="100" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

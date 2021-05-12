@@ -10,17 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ClaimantResponseTest extends BpmnBaseTest {
 
-    private static final String RESPONDENT_SOLICITOR_1
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TRANSFERRED_TO_LOCAL_COURT";
-    private static final String RESPONDENT_ACTIVITY = "ClaimantResponseNotifyRespondentSolicitor1";
-    private static final String APPLICANT_SOLICITOR_1
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TRANSFERRED_TO_LOCAL_COURT";
-    private static final String APPLICANT_ACTIVITY = "ClaimantResponseNotifyApplicantSolicitor1";
+    private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "ClaimantResponseGenerateDirectionsQuestionnaire";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
+        = "ProceedOfflineForResponseToDefence";
 
     public ClaimantResponseTest() {
         super("claimant_response.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID");
@@ -48,23 +45,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification
-        ExternalTask forRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the take offline event
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forRespondent,
+            takeOffline,
             PROCESS_CASE_EVENT,
-            RESPONDENT_SOLICITOR_1,
-            RESPONDENT_ACTIVITY,
-            variables
-        );
-
-        //complete the notification
-        ExternalTask forApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forApplicant,
-            PROCESS_CASE_EVENT,
-            APPLICANT_SOLICITOR_1,
-            APPLICANT_ACTIVITY,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
 
@@ -76,6 +63,24 @@ class ClaimantResponseTest extends BpmnBaseTest {
             GENERATE_DIRECTIONS_QUESTIONNAIRE,
             GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
             variables
+        );
+
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
+            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
+        );
+
+        //complete the CC notification to applicant
+        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicant,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
+            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
         );
 
         //complete the Robotics notification
@@ -117,24 +122,32 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification
-        ExternalTask forRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the take offline event
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forRespondent,
+            takeOffline,
             PROCESS_CASE_EVENT,
-            RESPONDENT_SOLICITOR_1,
-            RESPONDENT_ACTIVITY,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
 
-        //complete the notification
-        ExternalTask forApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forApplicant,
+            notifyRespondent,
             PROCESS_CASE_EVENT,
-            APPLICANT_SOLICITOR_1,
-            APPLICANT_ACTIVITY,
-            variables
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
+            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1"
+        );
+
+        //complete the CC notification to applicant
+        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicant,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC",
+            "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC"
         );
 
         //complete the Robotics notification

@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,6 +42,14 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
         assertCompleteExternalTask(notification, PROCESS_CASE_EVENT, NOTIFY_APPLICANT_SOLICITOR_1,
                                    NOTIFICATION_ACTIVITY_ID);
 
+        //complete the CC notification to respondent
+        notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notification,
+                                   PROCESS_CASE_EVENT,
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_ACKNOWLEDGEMENT_CC",
+                                   "AcknowledgeClaimNotifyRespondentSolicitor1CC"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -58,8 +64,6 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
 
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

@@ -1,25 +1,18 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifyClaimTest extends BpmnBaseTest {
+class InformAgreedExtensionDateTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "NOTIFY_DEFENDANT_OF_CLAIM";
-    public static final String PROCESS_ID = "NOTIFY_CLAIM";
+    public static final String MESSAGE_NAME = "INFORM_AGREED_EXTENSION_DATE";
+    public static final String PROCESS_ID = "INFORM_AGREED_EXTENSION_DATE_PROCESS_ID";
 
-    public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
-        = "NotifyDefendantSolicitor1";
-
-    public NotifyClaimTest() {
-        super("notify_claim.bpmn", "NOTIFY_CLAIM");
+    public InformAgreedExtensionDateTest() {
+        super("inform_agreed_extension_date.bpmn", PROCESS_ID);
     }
 
     @Test
@@ -30,31 +23,29 @@ class NotifyClaimTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.AWAITING_CASE_NOTIFICATION");
-
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
 
-        //complete the notification
+        //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE",
+                                   "AgreedExtensionDateNotifyApplicantSolicitor1"
         );
 
-        //complete the CC notification
+        //complete the CC notification to respondent
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE_CC",
-                                   "NotifyApplicantSolicitor1CC"
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
+                                   "AgreedExtensionDateNotifyRespondentSolicitor1CC"
         );
 
         //end business process
