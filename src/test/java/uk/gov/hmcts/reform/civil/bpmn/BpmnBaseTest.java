@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
+import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -14,10 +15,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class BpmnBaseTest {
 
@@ -250,6 +255,14 @@ public abstract class BpmnBaseTest {
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
+    }
+
+    public void assertCronTriggerFiresAtExpectedTime(CronExpression expression,
+                                                     LocalDateTime now,
+                                                     LocalDateTime nextDate) {
+        Date startTime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        Date next = expression.getTimeAfter(startTime);
+        assertEquals(next, Date.from(nextDate.atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     private void assertExternalTask(
