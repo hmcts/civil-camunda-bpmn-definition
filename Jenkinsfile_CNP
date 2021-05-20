@@ -141,7 +141,8 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
 
-  after('prod:promotion') {
+  before('prod:promotion') {
+    loadVaultSecrets(secrets)
     uploadBpmnDiagrams('prod')
   }
 }
