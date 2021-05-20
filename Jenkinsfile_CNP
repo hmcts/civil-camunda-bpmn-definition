@@ -33,12 +33,6 @@ def secrets = [
   ]
 ]
 
-def prod_secrets = [
-  'civil-${env}': [
-    secret('microservicekey-civil-service', 'S2S_SECRET')
-  ]
-]
-
 def createGithubRelease() {
   sh """
     ./bin/create-github-release.sh
@@ -64,11 +58,7 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
   onMaster {
-    if(env == 'prod'){
-      loadVaultSecrets(prod_secrets)
-    } else {
-      loadVaultSecrets(secrets)
-    }
+    loadVaultSecrets(secrets)
   }
   onDemo {
     loadVaultSecrets(secrets)
@@ -150,7 +140,8 @@ withPipeline(type, product, component) {
     uploadBpmnDiagrams('aat')
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
-  after('deploy:prod') {
+
+  before('prod:promotion') {
     uploadBpmnDiagrams('prod')
   }
 }
