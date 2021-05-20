@@ -3,8 +3,14 @@
 set -eu
 workspace=${1}
 
+s2sSecret=${S2S_SECRET:-AABBCCDDEEFFGGHH}
+
+if [[ "${2}" == 'prod' ]]; then
+  s2sSecret=${S2S_SECRET_PROD}
+fi
+
 serviceToken=$($(realpath $workspace)/bin/utils/idam-lease-service-token.sh civil_service \
-  $(docker run --rm toolbelt/oathtool --totp -b ${S2S_SECRET:-AABBCCDDEEFFGGHH}))
+  $(docker run --rm toolbelt/oathtool --totp -b ${s2sSecret}))
 filepath="$(realpath $workspace)/src/main/resources/camunda"
 
 for file in $(find ${filepath} -name '*.bpmn')
@@ -15,7 +21,6 @@ do
     -H "ServiceAuthorization: Bearer ${serviceToken}" \
     -F "deployment-name=$(basename ${file})" \
     -F "deploy-changed-only=true" \
-    -F "tenant-id=civil" \
     -F "file=@${filepath}/$(basename ${file})")
 
 upload_http_code=$(echo "$uploadResponse" | tail -n1)

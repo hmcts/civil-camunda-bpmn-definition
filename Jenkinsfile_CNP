@@ -30,12 +30,9 @@ def secrets = [
     secret('microservicekey-civil-service', 'S2S_SECRET'),
     secret('ccd-importer-username', 'CCD_CONFIGURER_IMPORTER_USERNAME'),
     secret('ccd-importer-password', 'CCD_CONFIGURER_IMPORTER_PASSWORD')
-  ]
-]
-
-def prod_secrets = [
-  'civil-${env}': [
-    secret('microservicekey-civil-service', 'S2S_SECRET')
+  ],
+  'civil-prod': [
+    secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
   ]
 ]
 
@@ -49,7 +46,7 @@ def uploadBpmnDiagrams(String env) {
   dir("${WORKSPACE}/bin") {
     sh """
       eval \$(./variables/load-${env}-environment-variables.sh)
-      ./import-bpmn-diagram.sh ${WORKSPACE}
+      ./import-bpmn-diagram.sh ${WORKSPACE} ${env}
     """
   }
 }
@@ -64,11 +61,7 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
   onMaster {
-    if(env == 'prod'){
-      loadVaultSecrets(prod_secrets)
-    } else {
-      loadVaultSecrets(secrets)
-    }
+    loadVaultSecrets(secrets)
   }
   onDemo {
     loadVaultSecrets(secrets)
@@ -148,9 +141,7 @@ withPipeline(type, product, component) {
   after('functionalTest:aat') {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
-  }
-  after('deploy:prod') {
     uploadBpmnDiagrams('prod')
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
 }
