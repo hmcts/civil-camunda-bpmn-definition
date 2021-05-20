@@ -138,7 +138,10 @@ withPipeline(type, product, component) {
   after('functionalTest:aat') {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
-    uploadBpmnDiagrams('prod')
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+  }
+
+  after('prod:promotion') {
+    uploadBpmnDiagrams('prod')
   }
 }
