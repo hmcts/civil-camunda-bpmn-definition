@@ -33,6 +33,12 @@ def secrets = [
   ]
 ]
 
+def prod_secrets = [
+  'civil-prod': [
+    secret('microservicekey-civil-service', 'S2S_SECRET')
+  ]
+]
+
 def createGithubRelease() {
   sh """
     ./bin/create-github-release.sh
@@ -138,11 +144,8 @@ withPipeline(type, product, component) {
   after('functionalTest:aat') {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
-  }
-
-  before('prod:promotion') {
-    loadVaultSecrets(secrets)
+    loadVaultSecrets(prod_secrets)
     uploadBpmnDiagrams('prod')
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
   }
 }
