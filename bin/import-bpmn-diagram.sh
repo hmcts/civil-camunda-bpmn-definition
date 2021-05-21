@@ -24,7 +24,6 @@ do
     -F "file=@${filepath}/$(basename ${file})")
 
 upload_http_code=$(echo "$uploadResponse" | tail -n1)
-}
 upload_response_content=$(echo "$uploadResponse" | sed '$d')
 
 if [[ "${upload_http_code}" == '200' ]]; then
