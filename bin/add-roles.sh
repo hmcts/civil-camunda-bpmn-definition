@@ -6,7 +6,7 @@
 ./bin/utils/ccd-add-role.sh "caseworker-approver"
 ./bin/utils/ccd-add-role.sh "prd-admin"
 
-roles=("solicitor" "systemupdate" "admin", "staff")
+roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
 do
   ./bin/utils/ccd-add-role.sh "caseworker-civil-${role}"
