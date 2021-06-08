@@ -2,10 +2,11 @@
 
 set -eu
 workspace=${1}
+env=${2}
 
 s2sSecret=${S2S_SECRET:-AABBCCDDEEFFGGHH}
 
-if [[ "${2}" == 'prod' ]]; then
+if [[ "${env}" == 'prod' ]]; then
   s2sSecret=${S2S_SECRET_PROD}
 fi
 
