@@ -7,7 +7,10 @@ for retries in {1..5}
 do
   echo "Try ${retries}"
 
-  latestAssetId=$(curl https://api.github.com/repos/hmcts/${repoName}/releases/latest \
+  latestAsset=$(curl https://api.github.com/repos/hmcts/${repoName}/releases/latest)
+  echo $latestAsset
+
+  latestAssetId=$(echo $latestAsset \
    | docker run --rm --interactive stedolan/jq ".assets[] | select(.name==\"${assetName}\") | .id")
 
   curl -L \
