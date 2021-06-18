@@ -3,9 +3,10 @@
 repoName=$1
 assetName=$2
 
-retries=0
-until [ -f "$assetName" ]
+for retries in {1..5}
 do
+  echo "Try ${retries}"
+
   latestAssetId=$(curl https://api.github.com/repos/hmcts/${repoName}/releases/latest \
    | docker run --rm --interactive stedolan/jq ".assets[] | select(.name==\"${assetName}\") | .id")
 
@@ -14,15 +15,15 @@ do
     --output $assetName \
     https://api.github.com/repos/hmcts/${repoName}/releases/assets/${latestAssetId}
 
-  retries=$((retries+1))
-  echo "Try ${retries}"
+  unzip -o $assetName
+  unzipExitStatus=$?
+  rm $assetName
 
-  if [ "$retries" -eq 5 ]
+  if [ "$unzipExitStatus" -eq 0 ]
   then
-      echo "Unable to get latest release from GitHub API"
-      exit 1
+    exit 0
   fi
 done
 
-unzip $assetName
-rm $assetName
+echo "Unable to get latest release from GitHub API"
+exit 1
