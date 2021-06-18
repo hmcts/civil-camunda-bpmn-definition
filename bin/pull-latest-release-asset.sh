@@ -1,32 +1,22 @@
 #!/usr/bin/env bash
 
+getToken() {
+  az keyvault secret show --vault-name infra-vault-nonprod --name hmcts-github-apikey --query value -o tsv
+}
+
 repoName=$1
 assetName=$2
+token=$(getToken)
 
-for retries in {1..5}
-do
-  echo "Try ${retries}"
+latestAssetId=$(curl -H "Authorization: token ${token}" \
+  https://api.github.com/repos/hmcts/${repoName}/releases/latest \
+  | docker run --rm --interactive stedolan/jq ".assets[] | select(.name==\"${assetName}\") | .id")
 
-  latestAsset=$(curl https://api.github.com/repos/hmcts/${repoName}/releases/latest)
-  echo $latestAsset
+curl -L \
+  -H "Accept: application/octet-stream" \
+  -H "Authorization: token ${token}" \
+  --output $assetName \
+  https://api.github.com/repos/hmcts/${repoName}/releases/assets/${latestAssetId} \
 
-  latestAssetId=$(echo $latestAsset \
-   | docker run --rm --interactive stedolan/jq ".assets[] | select(.name==\"${assetName}\") | .id")
-
-  curl -L \
-    -H "Accept: application/octet-stream" \
-    --output $assetName \
-    https://api.github.com/repos/hmcts/${repoName}/releases/assets/${latestAssetId}
-
-  unzip -o $assetName
-  unzipExitStatus=$?
-  rm $assetName
-
-  if [ "$unzipExitStatus" -eq 0 ]
-  then
-    exit 0
-  fi
-done
-
-echo "Unable to get latest release from GitHub API"
-exit 1
+unzip $assetName
+rm $assetName
