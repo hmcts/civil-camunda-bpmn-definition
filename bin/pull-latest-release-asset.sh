@@ -6,6 +6,8 @@ getToken() {
 
 repoName=$1
 assetName=$2
+
+az login --identity
 token=$(getToken)
 
 latestAssetId=$(curl -H "Authorization: token ${token}" \
