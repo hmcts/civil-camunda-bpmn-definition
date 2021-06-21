@@ -21,8 +21,6 @@ class CreateClaimTest extends BpmnBaseTest {
         = "ProceedOfflineForUnRepresentedSolicitor";
     public static final String PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
         = "ProceedOfflineForUnregisteredFirm";
-    public static final String NOTIFY_ROBOTICS_ON_CASE_HANDED_OFFLINE_FOR_UNREGISTERED_FIRM
-        = "NotifyRoboticsOnCaseHandedOfflineForUnregisteredFirm";
     public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
     private static final String MESSAGE_NAME = "CREATE_CLAIM";
@@ -135,6 +133,15 @@ class CreateClaimTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE",
                 "CreateClaimContinuingOnlineNotifyApplicantSolicitor1"
+            );
+
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
@@ -363,7 +370,7 @@ class CreateClaimTest extends BpmnBaseTest {
                 forRobotics,
                 PROCESS_CASE_EVENT,
                 NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_ROBOTICS_ON_CASE_HANDED_OFFLINE_FOR_UNREGISTERED_FIRM
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
@@ -457,6 +464,15 @@ class CreateClaimTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE",
                 "CreateClaimContinuingOnlineNotifyApplicantSolicitor1"
+            );
+
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
@@ -684,7 +700,7 @@ class CreateClaimTest extends BpmnBaseTest {
                 forRobotics,
                 PROCESS_CASE_EVENT,
                 NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_ROBOTICS_ON_CASE_HANDED_OFFLINE_FOR_UNREGISTERED_FIRM
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
