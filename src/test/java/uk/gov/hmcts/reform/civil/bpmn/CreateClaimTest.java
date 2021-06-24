@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -25,6 +27,7 @@ class CreateClaimTest extends BpmnBaseTest {
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
     private static final String MESSAGE_NAME = "CREATE_CLAIM";
     private static final String FLOW_STATE = "flowState";
+    private static final String FLOW_FLAGS = "flowFlags";
     private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_FAILED_PAYMENT";
@@ -467,12 +470,14 @@ class CreateClaimTest extends BpmnBaseTest {
             );
 
             //complete the Robotics notification
+            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 forRobotics,
                 PROCESS_CASE_EVENT,
                 NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                variables
             );
 
             //end business process
