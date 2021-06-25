@@ -83,7 +83,7 @@ class CreateClaimTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, rpaContinuousFeed ? Map.of("RPA_CONTINUOUS_FEED", true) : Map.of());
+            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
