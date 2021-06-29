@@ -34,6 +34,9 @@ public abstract class BpmnBaseTest {
     public static final String PROCESS_CASE_EVENT = "processCaseEvent";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
+    public static final String FLOW_FLAGS = "flowFlags";
+    public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
+    public static final String FLOW_STATE = "flowState";
 
     public final String bpmnFileName;
     public final String processId;
