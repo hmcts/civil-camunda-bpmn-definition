@@ -21,8 +21,8 @@ class NotifyClaimTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
         = "NotifyDefendantSolicitor1";
-    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public NotifyClaimTest() {
         super("notify_claim.bpmn", "NOTIFY_CLAIM");
@@ -70,8 +70,8 @@ class NotifyClaimTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 forRobotics,
                 PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
                 variables
             );
         }
