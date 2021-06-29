@@ -148,8 +148,8 @@ class CreateClaimTest extends BpmnBaseTest {
                 assertCompleteExternalTask(
                     forRobotics,
                     PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                    "NOTIFY_RPA_ON_CONTINUOUS_FEED",
+                    "NotifyRoboticsOnContinuousFeed",
                     variables
                 );
             }
