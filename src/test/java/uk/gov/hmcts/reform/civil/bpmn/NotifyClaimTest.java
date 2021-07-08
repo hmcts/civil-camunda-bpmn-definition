@@ -4,6 +4,10 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,13 +21,16 @@ class NotifyClaimTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
         = "NotifyDefendantSolicitor1";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public NotifyClaimTest() {
         super("notify_claim.bpmn", "NOTIFY_CLAIM");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -31,8 +38,8 @@ class NotifyClaimTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.AWAITING_CASE_NOTIFICATION");
-
+        variables.putValue(FLOW_STATE, "MAIN.AWAITING_CASE_NOTIFICATION");
+        variables.put(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
@@ -46,7 +53,7 @@ class NotifyClaimTest extends BpmnBaseTest {
         //complete the notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID, variables
         );
 
         //complete the CC notification
@@ -54,8 +61,20 @@ class NotifyClaimTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE_CC",
-                                   "NotifyApplicantSolicitor1CC"
+                                   "NotifyApplicantSolicitor1CC", variables
         );
+
+        if (rpaContinuousFeed) {
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
