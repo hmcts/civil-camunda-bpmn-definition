@@ -177,18 +177,13 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_Notify_RPA_Unregistered_Solicitor" sourceRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirmForSpec" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
-    <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
+    <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" />
     <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" name="RPA Continuous Feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_RPA_NO_CONTINUOUS_FEED" name="No Continuous feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="Activity_19rrcw0">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; !flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
-      <bpmn:incoming>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
-      <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:endEvent id="Event_1irqmkk">
       <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
     </bpmn:endEvent>
@@ -212,6 +207,8 @@
       <bpmn:incoming>Flow_Notify_RPA_Unregistered_Solicitor</bpmn:incoming>
       <bpmn:outgoing>Flow_RPA_Case_Handed_Offline_Completed</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_12m4mo5" sourceRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -221,7 +218,20 @@
       <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
       <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
+    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
+      <bpmn:incoming>Flow_12m4mo5</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:incoming>
+      <bpmn:outgoing>Flow_12m4mo5</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -229,28 +239,28 @@
         <dc:Bounds x="160" y="80" width="1908" height="540" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0tm6p28_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
-        <di:waypoint x="1840" y="330" />
+        <di:waypoint x="1860" y="330" />
         <di:waypoint x="1890" y="330" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lkhlo2_di" bpmnElement="Flow_RPA_NO_CONTINUOUS_FEED">
-        <di:waypoint x="1725" y="430" />
+        <di:waypoint x="1755" y="430" />
         <di:waypoint x="1910" y="430" />
         <di:waypoint x="1910" y="370" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1798" y="436" width="73" height="27" />
+          <dc:Bounds x="1810" y="436" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07vookw_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
-        <di:waypoint x="1700" y="405" />
-        <di:waypoint x="1700" y="320" />
-        <di:waypoint x="1740" y="320" />
+        <di:waypoint x="1730" y="405" />
+        <di:waypoint x="1730" y="320" />
+        <di:waypoint x="1760" y="320" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1709" y="376" width="81" height="27" />
+          <dc:Bounds x="1739" y="376" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_077eexn_di" bpmnElement="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor">
         <di:waypoint x="1550" y="430" />
-        <di:waypoint x="1675" y="430" />
+        <di:waypoint x="1580" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
         <di:waypoint x="1990" y="330" />
@@ -358,6 +368,10 @@
         <di:waypoint x="540" y="400" />
         <di:waypoint x="590" y="400" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12m4mo5_di" bpmnElement="Flow_12m4mo5">
+        <di:waypoint x="1680" y="430" />
+        <di:waypoint x="1705" y="430" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0yfoky6_di" bpmnElement="Event_0yfoky6">
         <dc:Bounds x="202" y="382" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -412,9 +426,6 @@
       <bpmndi:BPMNShape id="Activity_0f5fw3t_di" bpmnElement="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec">
         <dc:Bounds x="1450" y="390" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0x42aul_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
-        <dc:Bounds x="1675" y="405" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
         <dc:Bounds x="2012" y="312" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -425,7 +436,13 @@
         <dc:Bounds x="1630" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
-        <dc:Bounds x="1740" y="290" width="100" height="80" />
+        <dc:Bounds x="1760" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0x42aul_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
+        <dc:Bounds x="1705" y="405" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09dh094_di" bpmnElement="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec">
+        <dc:Bounds x="1580" y="390" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="322" y="342" width="36" height="36" />
