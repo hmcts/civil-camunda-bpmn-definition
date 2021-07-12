@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <bpmn:process id="INFORM_AGREED_EXTENSION_DATE" name="INFORM_AGREED_EXTENSION_DATE" isExecutable="true">
+    <bpmn:endEvent id="Event_End">
+      <bpmn:incoming>Flow_1yiy8ib</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1yiy8ib" sourceRef="Activity_EndBusinessProcess" targetRef="Event_End" />
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1j2nlbf</bpmn:incoming>
+      <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yiy8ib</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bnqopm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mtgch3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0nyii4z">
+      <bpmn:incoming>Flow_0c3a0jx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0qo02p4" name="Abort" attachedToRef="Activity_StartBusinessProcess">
+      <bpmn:outgoing>Flow_0c3a0jx</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0mbx1eq" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0c3a0jx" sourceRef="Event_0qo02p4" targetRef="Event_0nyii4z" />
+    <bpmn:sequenceFlow id="Flow_1bnqopm" sourceRef="StartEvent_INFORM_AGREED_EXTENSION_DATE" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:startEvent id="StartEvent_INFORM_AGREED_EXTENSION_DATE" name="start">
+      <bpmn:outgoing>Flow_1bnqopm</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0hvzew0" messageRef="Message_1m9uzfu" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
+      <bpmn:incoming>Flow_1mtgch3</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1mtgch3" sourceRef="Activity_StartBusinessProcess" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
+    <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j2nlbf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" name="RPA Continuous Feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1j2nlbf" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_RPA_NO_CONTINUOUS_FEED" name="No Continuous feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="Activity_EndBusinessProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; !flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_1m9uzfu" name="INFORM_AGREED_EXTENSION_DATE" />
+  <bpmn:error id="Error_00df5rf" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_11hbh7a" name="Message_0n35utn" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="INFORM_AGREED_EXTENSION_DATE">
+      <bpmndi:BPMNEdge id="Flow_1bnqopm_di" bpmnElement="Flow_1bnqopm">
+        <di:waypoint x="208" y="207" />
+        <di:waypoint x="310" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c3a0jx_di" bpmnElement="Flow_0c3a0jx">
+        <di:waypoint x="360" y="149" />
+        <di:waypoint x="360" y="98" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yiy8ib_di" bpmnElement="Flow_1yiy8ib">
+        <di:waypoint x="760" y="204" />
+        <di:waypoint x="802" y="204" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mtgch3_di" bpmnElement="Flow_1mtgch3">
+        <di:waypoint x="410" y="207" />
+        <di:waypoint x="465" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03qqddm_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
+        <di:waypoint x="490" y="232" />
+        <di:waypoint x="490" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="494" y="256" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j2nlbf_di" bpmnElement="Flow_1j2nlbf">
+        <di:waypoint x="540" y="360" />
+        <di:waypoint x="710" y="360" />
+        <di:waypoint x="710" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s57h0k_di" bpmnElement="Flow_RPA_NO_CONTINUOUS_FEED">
+        <di:waypoint x="515" y="207" />
+        <di:waypoint x="660" y="207" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="551" y="176" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0kz6paj_di" bpmnElement="Activity_StartBusinessProcess">
+        <dc:Bounds x="310" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nyii4z_di" bpmnElement="Event_0nyii4z">
+        <dc:Bounds x="342" y="62" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_INFORM_AGREED_EXTENSION_DATE">
+        <dc:Bounds x="172" y="189" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="179" y="232" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wzv3o1_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
+        <dc:Bounds x="465" y="182" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1a7dw2f_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
+        <dc:Bounds x="440" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oqt68l_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="660" y="164" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0a4ru5o_di" bpmnElement="Event_End">
+        <dc:Bounds x="802" y="186" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qo02p4_di" bpmnElement="Event_0qo02p4">
+        <dc:Bounds x="342" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="376" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
