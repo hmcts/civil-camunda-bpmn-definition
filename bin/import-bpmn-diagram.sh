@@ -24,10 +24,10 @@ do
     -F "deploy-changed-only=true" \
     -F "file=@${filepath}/$(basename ${file})")
 
-  uploadHttpCode=$(echo "$uploadResponse" | tail -n1)
-  echo "${filename} upload, http code: ${uploadHttpCode}"
+  upload_http_code=$(echo "$uploadResponse" | tail -n1)
+  echo "${file} upload, http code: ${upload_http_code}"
 
-  if [[ ${uploadHttpCode} != '200' ]]; then
+  if [[ ${upload_http_code} != '200' ]]; then
     echo $uploadResponse
     continue;
   fi
