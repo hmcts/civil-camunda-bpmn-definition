@@ -3,7 +3,7 @@
 repoName=$1
 assetName=$2
 
-az login --identity
+az login --identity > /dev/null
 token=$(az keyvault secret show --vault-name infra-vault-nonprod --name hmcts-github-apikey \
  --query value -o tsv)
 

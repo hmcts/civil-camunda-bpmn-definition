@@ -24,16 +24,13 @@ do
     -F "deploy-changed-only=true" \
     -F "file=@${filepath}/$(basename ${file})")
 
-upload_http_code=$(echo "$uploadResponse" | tail -n1)
-upload_response_content=$(echo "$uploadResponse" | sed '$d')
+  uploadHttpCode=$(echo "$uploadResponse" | tail -n1)
+  echo "${filename} upload, http code: ${uploadHttpCode}"
 
-if [[ "${upload_http_code}" == '200' ]]; then
-  echo "$(basename ${file}) diagram uploaded successfully (${upload_response_content})"
-  continue;
-fi
-
-echo "$(basename ${file}) upload failed with http code ${upload_http_code} and response (${upload_response_content})"
-continue;
+  if [[ ${uploadHttpCode} != '200' ]]; then
+    echo $uploadResponse
+    continue;
+  fi
 
 done
 exit 0;

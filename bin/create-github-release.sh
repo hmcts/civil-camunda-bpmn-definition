@@ -49,7 +49,7 @@ cp -r src/main/resources/camunda camunda
 zip -r civil-camunda-bpmn-definition.zip camunda
 rm -r camunda
 
-az login --identity
+az login --identity > /dev/null
 releaseId=$(createNewRelease civil-camunda-bpmn-definition)
 
 uploadReleaseAsset civil-camunda-bpmn-definition $releaseId civil-camunda-bpmn-definition.zip
