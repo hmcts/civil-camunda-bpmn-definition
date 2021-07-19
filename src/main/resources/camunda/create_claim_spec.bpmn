@@ -28,7 +28,7 @@
     <bpmn:sequenceFlow id="Flow_1ct7l4z" name="Respondent 1 not registered in myhmcts" sourceRef="Gateway_1i24lv3" targetRef="ProceedOfflineForUnregisteredFirm">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ulibzm" sourceRef="ProceedOfflineForUnregisteredFirm" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirmForSpec" />
+    <bpmn:sequenceFlow id="Flow_0ulibzm" sourceRef="ProceedOfflineForUnregisteredFirm" targetRef="TakeCaseOfflineForSpecNotifyApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_154avkv" sourceRef="ProceedOfflineForUnRepresentedSolicitor" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorForSpec" />
     <bpmn:sequenceFlow id="Flow_1jt9mf9" sourceRef="PaymentFailed" targetRef="CreateClaimPaymentFailedForSpecNotifyApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaimForSpec" targetRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" />
@@ -71,10 +71,10 @@
       <bpmn:incoming>Flow_154avkv</bpmn:incoming>
       <bpmn:outgoing>Flow_03t3ygq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirmForSpec" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="TakeCaseOfflineForSpecNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_SPEC</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ulibzm</bpmn:incoming>
@@ -172,7 +172,7 @@
       <bpmn:incoming>Flow_0mdk6wm</bpmn:incoming>
       <bpmn:outgoing>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_Notify_RPA_Unregistered_Solicitor" sourceRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirmForSpec" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_Notify_RPA_Unregistered_Solicitor" sourceRef="TakeCaseOfflineForSpecNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" />
     <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" name="RPA Continuous Feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
@@ -390,7 +390,7 @@
       <bpmndi:BPMNShape id="Activity_186jnr9_di" bpmnElement="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorForSpec">
         <dc:Bounds x="1450" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1r34fph_di" bpmnElement="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirmForSpec">
+      <bpmndi:BPMNShape id="Activity_1r34fph_di" bpmnElement="TakeCaseOfflineForSpecNotifyApplicantSolicitor1">
         <dc:Bounds x="1450" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0swtrb3_di" bpmnElement="ProceedOfflineForUnRepresentedSolicitor">
