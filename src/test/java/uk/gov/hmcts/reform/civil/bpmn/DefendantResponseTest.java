@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -37,6 +39,8 @@ class DefendantResponseTest extends BpmnBaseTest {
         = "DefendantResponseFullDefenceGenerateDirectionsQuestionnaire";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public DefendantResponseTest() {
         super("defendant_response.bpmn", "DEFENDANT_RESPONSE_PROCESS_ID");
@@ -106,8 +110,9 @@ class DefendantResponseTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldSuccessfullyCompleteOnline_whenRespondentFullDefenceResponse() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteOnline_whenRespondentFullDefenceResponse(Boolean rpaContinuousFeed) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -119,6 +124,7 @@ class DefendantResponseTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE");
+        variables.put(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
 
         assertCompleteExternalTask(
             startBusiness,
@@ -134,7 +140,8 @@ class DefendantResponseTest extends BpmnBaseTest {
             fullDefenceResponse,
             PROCESS_CASE_EVENT,
             FULL_DEFENCE_RESPONSE_EVENT,
-            FULL_DEFENCE_RESPONSE_ACTIVITY_ID
+            FULL_DEFENCE_RESPONSE_ACTIVITY_ID,
+            variables
         );
 
         //complete the notification to applicant
@@ -143,7 +150,8 @@ class DefendantResponseTest extends BpmnBaseTest {
             notifyApplicant,
             PROCESS_CASE_EVENT,
             FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1,
-            FULL_DEFENCE_NOTIFICATION_ACTIVITY_ID
+            FULL_DEFENCE_NOTIFICATION_ACTIVITY_ID,
+            variables
         );
 
         //complete the CC notification to respondent
@@ -152,7 +160,8 @@ class DefendantResponseTest extends BpmnBaseTest {
             notifyRespondent,
             PROCESS_CASE_EVENT,
             "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC",
-            "DefendantResponseFullDefenceNotifyRespondentSolicitor1CC"
+            "DefendantResponseFullDefenceNotifyRespondentSolicitor1CC",
+            variables
         );
 
         //complete the document generation
@@ -161,8 +170,21 @@ class DefendantResponseTest extends BpmnBaseTest {
             documentGeneration,
             PROCESS_CASE_EVENT,
             FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
-            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
+            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
+            variables
         );
+
+        if (rpaContinuousFeed) {
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
