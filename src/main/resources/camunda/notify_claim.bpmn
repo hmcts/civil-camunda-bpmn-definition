@@ -35,7 +35,7 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
     <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="Event_0t2zome" targetRef="Activity_0y089q8" />
-    <bpmn:serviceTask id="NotifyFirstDefendantSolicitor" name="Notify First Respondent Solicitor&#10;" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyDefendantSolicitor1" name="Notify First Respondent Solicitor&#10;" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE</camunda:inputParameter>
@@ -44,7 +44,7 @@
       <bpmn:incoming>Flow_1qffyiy</bpmn:incoming>
       <bpmn:outgoing>Flow_1mfwr5q</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="NotifyFirstDefendantSolicitor" />
+    <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="NotifyDefendantSolicitor1" />
     <bpmn:serviceTask id="NotifyApplicantSolicitorCC" name="Notify Applicant Solicitor (CC)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -69,8 +69,8 @@
       <bpmn:outgoing>Flow_1cml9oy</bpmn:outgoing>
       <bpmn:outgoing>Flow_0e5qh7y</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1mfwr5q" sourceRef="NotifyFirstDefendantSolicitor" targetRef="NotifyApplicantSolicitorCC" />
-    <bpmn:serviceTask id="NotifySecondDefendantSolicitor" name="Notify Second Defendant Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1mfwr5q" sourceRef="NotifyDefendantSolicitor1" targetRef="NotifyApplicantSolicitorCC" />
+    <bpmn:serviceTask id="NotifyDefendantSolicitor2" name="Notify Second Defendant Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_ISSUE</camunda:inputParameter>
@@ -103,10 +103,10 @@
     <bpmn:sequenceFlow id="Flow_0j4kkyh" sourceRef="Gateway_0nkj7bx" targetRef="Gateway_0thhpzf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.CLAIM_NOTIFIED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1cml9oy" name="1 v 2&#10;(Different Representatives)" sourceRef="Gateway_0thhpzf" targetRef="NotifySecondDefendantSolicitor">
+    <bpmn:sequenceFlow id="Flow_1cml9oy" name="1 v 2&#10;(Different Representatives)" sourceRef="Gateway_0thhpzf" targetRef="NotifyDefendantSolicitor2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_06g40ut" sourceRef="NotifySecondDefendantSolicitor" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
+    <bpmn:sequenceFlow id="Flow_06g40ut" sourceRef="NotifyDefendantSolicitor2" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:sequenceFlow id="Flow_0e5qh7y" sourceRef="Gateway_0thhpzf" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:serviceTask id="ProceedOffline" name="Proceed Offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -225,7 +225,7 @@
       <bpmndi:BPMNShape id="Event_1mtqud7_di" bpmnElement="Event_1mtqud7">
         <dc:Bounds x="262" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1co096w_di" bpmnElement="NotifyFirstDefendantSolicitor">
+      <bpmndi:BPMNShape id="Activity_1co096w_di" bpmnElement="NotifyDefendantSolicitor1">
         <dc:Bounds x="390" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1yfkaai_di" bpmnElement="NotifyApplicantSolicitorCC">
@@ -237,7 +237,7 @@
       <bpmndi:BPMNShape id="Gateway_0thhpzf_di" bpmnElement="Gateway_0thhpzf" isMarkerVisible="true">
         <dc:Bounds x="825" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0mi70sp_di" bpmnElement="NotifySecondDefendantSolicitor">
+      <bpmndi:BPMNShape id="Activity_0mi70sp_di" bpmnElement="NotifyDefendantSolicitor2">
         <dc:Bounds x="940" y="90" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_068pbdb_di" bpmnElement="NotifyRoboticsOnContinuousFeed">

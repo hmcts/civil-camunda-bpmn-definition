@@ -29,11 +29,11 @@ class NotifyClaimTest extends BpmnBaseTest {
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
-        = "NotifyFirstDefendantSolicitor";
+        = "NotifyDefendantSolicitor1";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_CC_ACTIVITY_ID
         = "NotifyApplicantSolicitorCC";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_ISSUE_ACTIVITY_ID
-        = "NotifySecondDefendantSolicitor";
+        = "NotifyDefendantSolicitor2";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
 
