@@ -19,10 +19,13 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
 
     public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
-        = "NotifyClaimDetailsRespondentSolicitor1";
+
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+
+    private static final String ACTIVITY_ID_EMAIL_FIRST_SOL = "NotifyClaimDetailsRespondentSolicitor1";
+    private static final String ACTIVITY_ID_EMAIL_APP_SOL_CC = "NotifyClaimDetailsApplicantSolicitor1CC";
+    private static final String ACTIVITY_ID_EMAIL_SECOND_SOL = "NotifyClaimDetailsRespondentSolicitor2";
 
     public NotifyClaimDetailsTest() {
         super("notify_claim_details.bpmn", PROCESS_ID);
@@ -38,8 +41,11 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.AWAITING_CASE_NOTIFICATION");
+        variables.putValue(FLOW_STATE, "MAIN.CLAIM_DETAILS_NOTIFIED");
         variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
+        variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, false,
+                                              RPA_CONTINUOUS_FEED, rpaContinuousFeed
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -53,8 +59,10 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
 
         //complete the notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID, variables
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
+                                   ACTIVITY_ID_EMAIL_FIRST_SOL, variables
         );
 
         //complete the CC notification
@@ -76,6 +84,138 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteNotifyClaimDetails_AndNotifyAppropriateSolicitors_whenCalled(
+        Boolean twoRespondentRepresentatives) {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_STATE, "MAIN.CLAIM_DETAILS_NOTIFIED");
+        variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
+                                              RPA_CONTINUOUS_FEED, true
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS",
+            ACTIVITY_ID_EMAIL_FIRST_SOL,
+            variables
+        );
+
+        //complete the CC notification
+        ExternalTask notificationCcTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationCcTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS_CC",
+            ACTIVITY_ID_EMAIL_APP_SOL_CC,
+            variables
+        );
+
+        if (twoRespondentRepresentatives) {
+            //complete the additional defendant solicitor notification
+            ExternalTask secondSolicitorNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                secondSolicitorNotificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DETAILS",
+                ACTIVITY_ID_EMAIL_SECOND_SOL,
+                variables
+            );
+        }
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteNotifyClaim_TakenOffline() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_STATE, "MAIN.TAKEN_OFFLINE_AFTER_CLAIM_DETAILS_NOTIFIED");
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS",
+            ACTIVITY_ID_EMAIL_FIRST_SOL,
+            variables
+        );
+
+        //complete the CC notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS_CC",
+            ACTIVITY_ID_EMAIL_APP_SOL_CC,
+            variables
+        );
+
+        //Proceed Offline
+        ExternalTask proceedOfflineTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedOfflineTask,
+            PROCESS_CASE_EVENT,
+            "PROCEEDS_IN_HERITAGE_SYSTEM",
+            "ProceedOffline"
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
