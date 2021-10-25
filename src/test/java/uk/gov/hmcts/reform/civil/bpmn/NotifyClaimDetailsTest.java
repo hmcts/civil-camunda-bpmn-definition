@@ -116,6 +116,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, "MAIN.CLAIM_DETAILS_NOTIFIED");
         variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
+                                              ONE_RESPONDENT_REPRESENTATIVE, !twoRespondentRepresentatives,
                                               RPA_CONTINUOUS_FEED, true
         ));
 
