@@ -10,6 +10,8 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "CASE_PROCEEDS_IN_CASEMAN";
     public static final String PROCESS_ID = "CASE_PROCEEDS_IN_CASEMAN";
+    public static final String PROCEEDS_IN_HERITAGE_SYSTEM_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
 
     public CaseProceedsInCasemanTest() {
         super("case_proceeds_in_caseman.bpmn", PROCESS_ID);
@@ -30,6 +32,15 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
+        );
+
+        //Take offline
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            takeOffline,
+            PROCESS_CASE_EVENT,
+            PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
+            PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
         //complete the RPA notification
