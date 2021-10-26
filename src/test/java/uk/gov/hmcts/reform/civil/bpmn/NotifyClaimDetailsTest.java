@@ -42,7 +42,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    void shouldSuccessfullyCompleteNotifyClaim_For1v1_OnRpa_whenCalled(Boolean rpaContinuousFeed) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -51,8 +51,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, "MAIN.CLAIM_DETAILS_NOTIFIED");
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
-        variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, false,
+        variables.putValue(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true,
                                               RPA_CONTINUOUS_FEED, rpaContinuousFeed
         ));
 
@@ -105,7 +104,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaimDetails_AndNotifyAppropriateSolicitors_whenCalled(
+    void shouldSuccessfullyCompleteNotifyClaimDetails_AndNotifyAppropriateSolicitors_For1v2_whenCalled(
         Boolean twoRespondentRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
