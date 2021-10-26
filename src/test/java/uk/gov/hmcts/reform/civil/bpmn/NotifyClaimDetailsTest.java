@@ -71,8 +71,8 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
-                                   ,variables
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
+                                   variables
         );
 
         //complete the CC notification
