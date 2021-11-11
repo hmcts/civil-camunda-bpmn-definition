@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <bpmn:process id="ACKNOWLEDGE_CLAIM_PROCESS_ID_SPEC" isExecutable="true">
+    <bpmn:serviceTask id="AcknowledgeClaimNotifyForSpecApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_SPEC_CLAIM_ACKNOWLEDGEMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0dikpym</bpmn:incoming>
+      <bpmn:outgoing>Flow_06qap0k</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="Event_0vk0w99" name="Start">
+      <bpmn:outgoing>Flow_116h4jn</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1dvrj2w" messageRef="Message_07sm7e9" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_06qap0k" sourceRef="AcknowledgeClaimNotifyForSpecApplicantSolicitor1" targetRef="AcknowledgeClaimNotifyForSpecRespondentSolicitor1CC" />
+    <bpmn:endEvent id="Event_1h61h5s">
+      <bpmn:incoming>Flow_1chw0p5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0dikpym" sourceRef="AcknowledgeClaimGenerateAcknowledgementOfClaimForSpec" targetRef="AcknowledgeClaimNotifyForSpecApplicantSolicitor1" />
+    <bpmn:serviceTask id="AcknowledgeClaimGenerateAcknowledgementOfClaimForSpec" name="Generate Acknowledgement of Claim" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_ACKNOWLEDGEMENT_OF_CLAIM_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1a5jscb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dikpym</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_15x2r24" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_116h4jn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a5jscb</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1n2x861">
+      <bpmn:incoming>Flow_1y0ic2q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0kza4it" name="Abort" attachedToRef="Activity_15x2r24">
+      <bpmn:outgoing>Flow_1y0ic2q</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_09jmy6o" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1y0ic2q" sourceRef="Event_0kza4it" targetRef="Event_1n2x861" />
+    <bpmn:sequenceFlow id="Flow_116h4jn" sourceRef="Event_0vk0w99" targetRef="Activity_15x2r24" />
+    <bpmn:sequenceFlow id="Flow_1a5jscb" sourceRef="Activity_15x2r24" targetRef="AcknowledgeClaimGenerateAcknowledgementOfClaimForSpec" />
+    <bpmn:serviceTask id="AcknowledgeClaimNotifyForSpecRespondentSolicitor1CC" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_SPEC_CLAIM_ACKNOWLEDGEMENT_CC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06qap0k</bpmn:incoming>
+      <bpmn:outgoing>Flow_0as63xn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0as63xn" sourceRef="AcknowledgeClaimNotifyForSpecRespondentSolicitor1CC" targetRef="Gateway_1enta8y" />
+    <bpmn:exclusiveGateway id="Gateway_1enta8y">
+      <bpmn:incoming>Flow_0as63xn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0iy8yca</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0fbqvht</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:callActivity id="Activity_1l3nsoi" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="variables" value="all" />
+        </camunda:properties>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0iy8yca</bpmn:incoming>
+      <bpmn:incoming>Flow_04uf98p</bpmn:incoming>
+      <bpmn:outgoing>Flow_1chw0p5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Activity_1hjuvp5" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fbqvht</bpmn:incoming>
+      <bpmn:outgoing>Flow_04uf98p</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0iy8yca" name="No RPA Continuous feed" sourceRef="Gateway_1enta8y" targetRef="Activity_1l3nsoi">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; !flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0fbqvht" name="RPA Continuous Feed" sourceRef="Gateway_1enta8y" targetRef="Activity_1hjuvp5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_04uf98p" sourceRef="Activity_1hjuvp5" targetRef="Activity_1l3nsoi" />
+    <bpmn:sequenceFlow id="Flow_1chw0p5" sourceRef="Activity_1l3nsoi" targetRef="Event_1h61h5s" />
+  </bpmn:process>
+  <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_07sm7e9" name="ACKNOWLEDGEMENT_OF_SERVICE" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ACKNOWLEDGE_CLAIM_PROCESS_ID_SPEC">
+      <bpmndi:BPMNEdge id="Flow_0as63xn_di" bpmnElement="Flow_0as63xn">
+        <di:waypoint x="750" y="207" />
+        <di:waypoint x="845" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_1a5jscb">
+        <di:waypoint x="330" y="207" />
+        <di:waypoint x="380" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_116h4jn">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
+        <di:waypoint x="280" y="149" />
+        <di:waypoint x="280" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dikpym_di" bpmnElement="Flow_0dikpym">
+        <di:waypoint x="480" y="207" />
+        <di:waypoint x="510" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06qap0k_di" bpmnElement="Flow_06qap0k">
+        <di:waypoint x="610" y="207" />
+        <di:waypoint x="650" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0iy8yca_di" bpmnElement="Flow_0iy8yca">
+        <di:waypoint x="895" y="207" />
+        <di:waypoint x="1090" y="207" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="929" y="176" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fbqvht_di" bpmnElement="Flow_0fbqvht">
+        <di:waypoint x="870" y="232" />
+        <di:waypoint x="870" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="789" y="286" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04uf98p_di" bpmnElement="Flow_04uf98p">
+        <di:waypoint x="920" y="380" />
+        <di:waypoint x="1140" y="380" />
+        <di:waypoint x="1140" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1chw0p5_di" bpmnElement="Flow_1chw0p5">
+        <di:waypoint x="1190" y="217" />
+        <di:waypoint x="1232" y="217" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="AcknowledgeClaimNotifyForSpecApplicantSolicitor1">
+        <dc:Bounds x="510" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="Event_0vk0w99">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="235" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0phbsqq_di" bpmnElement="AcknowledgeClaimGenerateAcknowledgementOfClaimForSpec">
+        <dc:Bounds x="380" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_15x2r24">
+        <dc:Bounds x="230" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_1n2x861">
+        <dc:Bounds x="262" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xyweyi_di" bpmnElement="AcknowledgeClaimNotifyForSpecRespondentSolicitor1CC">
+        <dc:Bounds x="650" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1enta8y_di" bpmnElement="Gateway_1enta8y" isMarkerVisible="true">
+        <dc:Bounds x="845" y="182" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hjuvp5_di" bpmnElement="Activity_1hjuvp5">
+        <dc:Bounds x="820" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l3nsoi_di" bpmnElement="Activity_1l3nsoi">
+        <dc:Bounds x="1090" y="177" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_1h61h5s">
+        <dc:Bounds x="1232" y="199" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
+        <dc:Bounds x="262" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
