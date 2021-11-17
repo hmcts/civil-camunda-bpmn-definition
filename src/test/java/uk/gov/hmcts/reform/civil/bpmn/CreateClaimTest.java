@@ -15,42 +15,51 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class CreateClaimTest extends BpmnBaseTest {
 
-    public static final String ISSUE_CLAIM_EVENT = "PROCESS_CLAIM_ISSUE";
-    public static final String PAYMENT_FAILED_EVENT = "PROCESS_PAYMENT_FAILED";
-    private static final String PAYMENT_FAILED_ACTIVITY_ID = "PaymentFailed";
-    private static final String ISSUE_CLAIM_ACTIVITY_ID = "IssueClaim";
+    //BPMN Settings
+    private static final String MESSAGE_NAME = "CREATE_CLAIM";
+    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID";
+    private static final String FLOW_STATE = "flowState";
+    private static final String FLOW_FLAGS = "flowFlags";
+    //assign case access
+    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
+    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1";
+    //validate fee
+    private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE";
+    private static final String VALIDATE_FEE_ACTIVITY_ID = "ValidateClaimFee";
+    //payment
     public static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT";
+    private static final String MAKE_PAYMENT_ACTIVITY_ID = "CreateClaimMakePayment";
+    private static final String PROCESS_PAYMENT_TOPIC = "processPayment";
+    //generate claim form
+    private static final String GENERATE_CLAIM_FORM_EVENT = "GENERATE_CLAIM_FORM";
+    private static final String GENERATE_CLAIM_FORM_ACTIVITY_ID = "GenerateClaimForm";
+    //proceed offline
     public static final String PROCEEDS_IN_HERITAGE_SYSTEM_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     public static final String PROCEED_OFFLINE_FOR_UNREPRESENTED_SOLICITOR_ACTIVITY_ID
         = "ProceedOfflineForUnRepresentedSolicitor";
     public static final String PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
         = "ProceedOfflineForUnregisteredFirm";
-    public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
+    //notification - handed offline
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT =
+        "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
+    private static final String NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_UNREPRESENTED_ACTIVITY_ID
+        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitor";
+    public static final String NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_NOT_REGISTERED_ACTIVITY_ID
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
-    private static final String MESSAGE_NAME = "CREATE_CLAIM";
-    private static final String FLOW_STATE = "flowState";
-    private static final String FLOW_FLAGS = "flowFlags";
-    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT
+    //claim issued
+    public static final String ISSUE_CLAIM_EVENT = "PROCESS_CLAIM_ISSUE";
+    private static final String ISSUE_CLAIM_ACTIVITY_ID = "IssueClaim";
+    //failed payment
+    public static final String PAYMENT_FAILED_EVENT = "PROCESS_PAYMENT_FAILED";
+    private static final String PAYMENT_FAILED_ACTIVITY_ID = "PaymentFailed";
+    //notification - failed payment
+    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_EVENT
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_FAILED_PAYMENT";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_ACTIVITY_ID
         = "CreateClaimPaymentFailedNotifyApplicantSolicitor1";
-    private static final String MAKE_PAYMENT_ACTIVITY_ID = "CreateClaimMakePayment";
-    private static final String PROCESS_PAYMENT_TOPIC = "processPayment";
-    private static final String GENERATE_CLAIM_FORM = "GENERATE_CLAIM_FORM";
-    private static final String CLAIM_FORM_ACTIVITY_ID = "GenerateClaimForm";
-//    private static final String NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE
-//        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT =
-        "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
-    private static final String NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_ACTIVITY_ID
-        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitor";
+    //rpa
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
-    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
-    private static final String CASE_ASSIGNMENT_ACTIVITY = "CaseAssignmentToApplicantSolicitor1";
-    private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE";
-    private static final String VALIDATE_FEE_ACTIVITY_ID = "ValidateClaimFee";
 
     enum FlowState {
         CLAIM_ISSUED_PAYMENT_FAILED,
@@ -120,8 +129,8 @@ class CreateClaimTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 documentGeneration,
                 PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM,
-                CLAIM_FORM_ACTIVITY_ID,
+                GENERATE_CLAIM_FORM_EVENT,
+                GENERATE_CLAIM_FORM_ACTIVITY_ID,
                 variables
             );
 
@@ -217,7 +226,7 @@ class CreateClaimTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT,
+                NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_EVENT,
                 NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_ACTIVITY_ID
             );
 
@@ -271,8 +280,8 @@ class CreateClaimTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 documentGeneration,
                 PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM,
-                CLAIM_FORM_ACTIVITY_ID,
+                GENERATE_CLAIM_FORM_EVENT,
+                GENERATE_CLAIM_FORM_ACTIVITY_ID,
                 variables
             );
 
@@ -291,7 +300,7 @@ class CreateClaimTest extends BpmnBaseTest {
                 notificationTask,
                 PROCESS_CASE_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT,
-                NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_ACTIVITY_ID
+                NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_UNREPRESENTED_ACTIVITY_ID
             );
 
             //complete the Robotics notification
@@ -353,8 +362,8 @@ class CreateClaimTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 documentGeneration,
                 PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM,
-                CLAIM_FORM_ACTIVITY_ID,
+                GENERATE_CLAIM_FORM_EVENT,
+                GENERATE_CLAIM_FORM_ACTIVITY_ID,
                 variables
             );
 
@@ -373,7 +382,7 @@ class CreateClaimTest extends BpmnBaseTest {
                 notificationTask,
                 PROCESS_CASE_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT,
-                CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
+                NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_NOT_REGISTERED_ACTIVITY_ID
             );
 
             //complete the Robotics notification
@@ -425,7 +434,7 @@ class CreateClaimTest extends BpmnBaseTest {
             caseAssignment,
             PROCESS_CASE_EVENT,
             CASE_ASSIGNMENT_EVENT,
-            CASE_ASSIGNMENT_ACTIVITY,
+            CASE_ASSIGNMENT_ACTIVITY_ID,
             variables
         );
     }
