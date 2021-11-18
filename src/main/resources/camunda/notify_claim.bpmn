@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0">
   <bpmn:process id="NOTIFY_CLAIM" isExecutable="true">
     <bpmn:startEvent id="Event_0t2zome" name="Start">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
@@ -15,7 +15,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
       <bpmn:incoming>Flow_0cclzbs</bpmn:incoming>
-      <bpmn:incoming>Flow_1bb5l8x</bpmn:incoming>
+      <bpmn:incoming>Flow_0bcqpeb</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -117,13 +117,37 @@
       <bpmn:incoming>Flow_0fvh4ot</bpmn:incoming>
       <bpmn:outgoing>Flow_1bb5l8x</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1bb5l8x" sourceRef="ProceedOffline" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_1bb5l8x" sourceRef="ProceedOffline" targetRef="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1" />
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on Case Handed Offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1j8nofl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bcqpeb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0bcqpeb" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_0wretog" />
+    <bpmn:serviceTask id="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bb5l8x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j8nofl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1j8nofl" sourceRef="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="NOTIFY_DEFENDANT_OF_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NOTIFY_CLAIM">
+      <bpmndi:BPMNEdge id="Flow_1bb5l8x_di" bpmnElement="Flow_1bb5l8x">
+        <di:waypoint x="900" y="370" />
+        <di:waypoint x="940" y="370" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0e5qh7y_di" bpmnElement="Flow_0e5qh7y">
         <di:waypoint x="875" y="250" />
         <di:waypoint x="1105" y="250" />
@@ -153,7 +177,7 @@
         <di:waypoint x="690" y="370" />
         <di:waypoint x="800" y="370" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="619" y="333" width="61" height="14" />
+          <dc:Bounds x="619" y="333" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cclzbs_di" bpmnElement="Flow_0cclzbs">
@@ -202,10 +226,13 @@
         <di:waypoint x="1300" y="250" />
         <di:waypoint x="1342" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bb5l8x_di" bpmnElement="Flow_1bb5l8x">
-        <di:waypoint x="900" y="370" />
-        <di:waypoint x="1250" y="370" />
+      <bpmndi:BPMNEdge id="Flow_0bcqpeb_di" bpmnElement="Flow_0bcqpeb">
+        <di:waypoint x="1250" y="330" />
         <di:waypoint x="1250" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j8nofl_di" bpmnElement="Flow_1j8nofl">
+        <di:waypoint x="1040" y="370" />
+        <di:waypoint x="1200" y="370" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
         <dc:Bounds x="152" y="232" width="36" height="36" />
@@ -246,8 +273,14 @@
       <bpmndi:BPMNShape id="Gateway_0nkj7bx_di" bpmnElement="Gateway_0nkj7bx" isMarkerVisible="true">
         <dc:Bounds x="665" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1knns6n_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1200" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_179xe1i_di" bpmnElement="ProceedOffline">
         <dc:Bounds x="800" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ar3tpe_di" bpmnElement="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1">
+        <dc:Bounds x="940" y="330" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="262" y="192" width="36" height="36" />
