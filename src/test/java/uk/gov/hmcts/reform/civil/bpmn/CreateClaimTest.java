@@ -41,7 +41,8 @@ class CreateClaimTest extends BpmnBaseTest {
         = "ProceedOfflineForUnregisteredFirm";
     public static final String PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
         = "ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm";
-    public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_FOR_UNREPRESENTED_SOLICITOR_UNREGISTERED_FIRM
+    public static final String
+        CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_FOR_UNREPRESENTED_SOLICITOR_UNREGISTERED_FIRM
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm";
     public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
@@ -408,9 +409,8 @@ class CreateClaimTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendantAndUnRegisteredDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefAndUnregisteredDef() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -447,7 +447,8 @@ class CreateClaimTest extends BpmnBaseTest {
             );
 
             //complete the document generation
-            variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
+            variables.putValue(FLOW_STATE,
+                               FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 documentGeneration,
@@ -490,6 +491,7 @@ class CreateClaimTest extends BpmnBaseTest {
 
             assertNoExternalTasksLeft();
         }
+
         @Test
         void shouldAbort_whenStartBusinessProcessThrowsAnError() {
             //assert process has started
