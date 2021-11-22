@@ -246,7 +246,7 @@ class CreateClaimTest extends BpmnBaseTest {
         }
 
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnRepresentedDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendant() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -328,7 +328,7 @@ class CreateClaimTest extends BpmnBaseTest {
         }
 
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnRegisteredDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnregisteredDefendant() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
