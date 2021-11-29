@@ -15,7 +15,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
       <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
-      <bpmn:incoming>Flow_0a38b25</bpmn:incoming>
+      <bpmn:incoming>Flow_15g3fbj</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -98,7 +98,7 @@
     <bpmn:sequenceFlow id="Flow_HandOffline" name="Hand Offline" sourceRef="Gateway_HandOffline" targetRef="ProceedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.TAKEN_OFFLINE_AFTER_CLAIM_DETAILS_NOTIFIED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0a38b25" sourceRef="ProceedOffline" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_0a38b25" sourceRef="ProceedOffline" targetRef="NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC" />
     <bpmn:exclusiveGateway id="Gateway_Two_Representative">
       <bpmn:incoming>Flow_ClaimDetailsNotified</bpmn:incoming>
       <bpmn:outgoing>Flow_SameRepresentative</bpmn:outgoing>
@@ -120,6 +120,26 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0o5hhit" sourceRef="NotifyClaimDetailsRespondentSolicitor2" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
+    <bpmn:serviceTask id="NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC" name="Notify Applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a38b25</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nfz0md</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0nfz0md" sourceRef="NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on Case Handed Offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0nfz0md</bpmn:incoming>
+      <bpmn:outgoing>Flow_15g3fbj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_15g3fbj" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_0wretog" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="NOTIFY_DEFENDANT_OF_CLAIM_DETAILS" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -147,8 +167,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0a38b25_di" bpmnElement="Flow_0a38b25">
         <di:waypoint x="790" y="460" />
-        <di:waypoint x="1400" y="460" />
-        <di:waypoint x="1400" y="290" />
+        <di:waypoint x="950" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sm7j0y_di" bpmnElement="Flow_HandOffline">
         <di:waypoint x="740" y="275" />
@@ -208,6 +227,15 @@
         <di:waypoint x="1420" y="250" />
         <di:waypoint x="1492" y="250" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nfz0md_di" bpmnElement="Flow_0nfz0md">
+        <di:waypoint x="1050" y="460" />
+        <di:waypoint x="1160" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15g3fbj_di" bpmnElement="Flow_15g3fbj">
+        <di:waypoint x="1260" y="460" />
+        <di:waypoint x="1400" y="460" />
+        <di:waypoint x="1400" y="290" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
         <dc:Bounds x="152" y="232" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -249,6 +277,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_02n8zdo_di" bpmnElement="NotifyClaimDetailsRespondentSolicitor2">
         <dc:Bounds x="880" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pn5mjp_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1160" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1t9kwhp_di" bpmnElement="NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC">
+        <dc:Bounds x="950" y="420" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="262" y="192" width="36" height="36" />
