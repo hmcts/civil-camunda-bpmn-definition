@@ -47,7 +47,7 @@ class DefendantResponseTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION", "MAIN.COUNTER_CLAIM"})
+    @ValueSource(strings = {"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION", "MAIN.COUNTER_CLAIM", "MAIN.DIVERGENT_RESPOND"})
     void shouldSuccessfullyCompleteOfflineDefendantResponse(String flowState) {
         //assert process has started
         assertFalse(processInstance.isEnded());
