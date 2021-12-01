@@ -25,6 +25,12 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
     public static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DETAILS";
 
+    private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
+
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE =
+        "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
         = "NotifyClaimDetailsRespondentSolicitor1";
@@ -33,6 +39,10 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
     private static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID
         = "NotifyClaimDetailsRespondentSolicitor2";
 
+    private static final String NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID =
+        "NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC";
+
+    private static final String NOTIFY_RPA_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
@@ -225,6 +235,24 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "PROCEEDS_IN_HERITAGE_SYSTEM",
             "ProceedOffline"
+        );
+
+        //Notify Applicant Solicitor
+        ExternalTask proceedOfflineTask1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedOfflineTask1,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE,
+            NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID
+        );
+
+        //Notify RPA
+        ExternalTask proceedOfflineTask2 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedOfflineTask2,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_OFFLINE_ACTIVITY_ID
         );
 
         //end business process
