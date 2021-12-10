@@ -19,6 +19,7 @@ postgresql:
       CREATE DATABASE "definition-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "user-profile" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+      CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
   postgresqlUsername: hmcts
   postgresqlPassword: hmcts
   persistence:
@@ -122,6 +123,8 @@ ccd:
       enabled: false
     postgresql:
       enabled: false
+    ras:
+      enabled: true
 
   global:
     ccdApiGatewayIngress: http://civil-camunda-gateway-staging-aat.service.core-compute-aat.internal
@@ -162,6 +165,12 @@ ccd:
         IDAM_DATA_STORE_SYSTEM_USER_PASSWORD: ${IDAM_DATA_STORE_SYSTEM_USER_PASSWORD}
       keyVaults: []
       ingressHost: civil-camunda-data-store-staging-aat.service.core-compute-aat.internal
+  am-role-assignment-service:
+    java:
+      keyVaults:
+        am:
+          secrets:
+            - role-assignment-service-LD-SDK-KEY
   ccd-definition-store-api:
     java:
       imagePullPolicy: Always
