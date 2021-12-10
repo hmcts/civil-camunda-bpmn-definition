@@ -19,6 +19,7 @@ postgresql:
       CREATE DATABASE "definition-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "user-profile" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
       CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+      CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
   postgresqlUsername: hmcts
   postgresqlPassword: hmcts
   persistence:
@@ -118,6 +119,8 @@ ccd:
       enabled: false
     postgresql:
       enabled: false
+    ras:
+      enabled: true
 
   global:
     ccdApiGatewayIngress: http://${SERVICE_NAME}-ccd-api-gw
@@ -140,14 +143,6 @@ ccd:
       ingressHost: gateway-${SERVICE_FQDN}
       ingressIP: ${INGRESS_IP}
       keyVaults: []
-      
-  am-role-assignment-service:
-    java:
-      keyVaults: 
-        am:
-          secrets:
-            - role-assignment-service-LD-SDK-KEY
-    
   ccd-data-store-api:
     java:
       imagePullPolicy: Always
@@ -166,6 +161,12 @@ ccd:
         IDAM_DATA_STORE_SYSTEM_USER_PASSWORD: ${IDAM_DATA_STORE_SYSTEM_USER_PASSWORD}
       keyVaults: []
       ingressHost: ccd-data-store-api-${SERVICE_FQDN}
+  am-role-assignment-service:
+    java:
+      keyVaults:
+        am:
+          secrets:
+            - role-assignment-service-LD-SDK-KEY
   ccd-definition-store-api:
     java:
       imagePullPolicy: Always
