@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <bpmn:process id="DEFENDANT_RESPONSE_PROCESS_ID" isExecutable="true">
     <bpmn:serviceTask id="DefendantResponseFullDefenceNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -61,7 +61,7 @@
       <bpmn:incoming>Flow_1a2n9ax</bpmn:incoming>
       <bpmn:incoming>Flow_172zuwo</bpmn:incoming>
       <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
-      <bpmn:incoming>Flow_0i5cvjs</bpmn:incoming>
+      <bpmn:incoming>Flow_13npss8</bpmn:incoming>
       <bpmn:outgoing>Flow_0jauxrx</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1tgi30k" sourceRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1" targetRef="DefendantResponseFullDefenceNotifyRespondentSolicitor1CC" />
@@ -164,7 +164,7 @@
     <bpmn:sequenceFlow id="Flow_Awaiting_responses" sourceRef="Gateway_Awaiting_rep" targetRef="Activity_1c4o3wo">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.AWAITING_RESPONSES_RECEIVED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0i5cvjs" sourceRef="Activity_1c4o3wo" targetRef="Activity_1m5szz9" />
+    <bpmn:sequenceFlow id="Flow_0i5cvjs" sourceRef="Activity_1c4o3wo" targetRef="Activity_0n0bci3" />
     <bpmn:serviceTask id="FullDefenceResponse" name="Full defence response" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -175,6 +175,16 @@
       <bpmn:outgoing>Flow_0d9085k</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0d9085k" sourceRef="FullDefenceResponse" targetRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1" />
+    <bpmn:serviceTask id="Activity_0n0bci3" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_DIRECTIONS_QUESTIONNAIRE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0i5cvjs</bpmn:incoming>
+      <bpmn:outgoing>Flow_13npss8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13npss8" sourceRef="Activity_0n0bci3" targetRef="Activity_1m5szz9" />
     <bpmn:textAnnotation id="TextAnnotation_18hpho5">
       <bpmn:text>Case Handed Offline</bpmn:text>
     </bpmn:textAnnotation>
@@ -194,9 +204,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0i5cvjs_di" bpmnElement="Flow_0i5cvjs">
         <di:waypoint x="870" y="490" />
-        <di:waypoint x="1195" y="490" />
-        <di:waypoint x="1195" y="240" />
-        <di:waypoint x="1520" y="240" />
+        <di:waypoint x="940" y="490" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jp8nui_di" bpmnElement="Flow_Awaiting_responses">
         <di:waypoint x="440" y="322" />
@@ -287,6 +295,12 @@
         <di:waypoint x="930" y="180" />
         <di:waypoint x="990" y="180" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13npss8_di" bpmnElement="Flow_13npss8">
+        <di:waypoint x="1040" y="490" />
+        <di:waypoint x="1480" y="490" />
+        <di:waypoint x="1480" y="240" />
+        <di:waypoint x="1520" y="240" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="DefendantResponseFullDefenceNotifyApplicantSolicitor1">
         <dc:Bounds x="830" y="257" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -349,6 +363,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yaoqdd_di" bpmnElement="TextAnnotation_0yaoqdd">
         <dc:Bounds x="620" y="340" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n0bci3_di" bpmnElement="Activity_0n0bci3">
+        <dc:Bounds x="940" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="239" width="36" height="36" />
