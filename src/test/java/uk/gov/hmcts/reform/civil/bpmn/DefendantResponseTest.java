@@ -17,29 +17,34 @@ class DefendantResponseTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "DEFENDANT_RESPONSE";
     public static final String PROCESS_ID = "DEFENDANT_RESPONSE_PROCESS_ID";
 
+    //CCD EVENTS
     public static final String OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE";
     private static final String OFFLINE_NOTIFY_RESPONDENT_SOLICITOR_1
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE";
     private static final String TAKE_CASE_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
-    private static final String TAKE_CASE_OFFLINE_ACTIVITY_ID = "ProceedOfflineForNonDefenceResponse";
-    private static final String OFFLINE_NOTIFICATION_RESPONDENT_ACTIVITY_ID
-        = "DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1";
-    private static final String OFFLINE_NOTIFICATION_APPLICANT_ACTIVITY_ID
-        = "DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1";
-
+    public static final String FULL_DEFENCE_RESPONSE_EVENT = "PROCESS_FULL_DEFENCE";
     public static final String FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE";
-    public static final String FULL_DEFENCE_RESPONSE_EVENT = "PROCESS_FULL_DEFENCE";
     public static final String FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+
+    //ACTIVITY IDs
+    private static final String OFFLINE_NOTIFICATION_APPLICANT_ACTIVITY_ID
+        = "DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1";
+    private static final String OFFLINE_NOTIFICATION_RESPONDENT_ACTIVITY_ID
+        = "DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1";
+    private static final String TAKE_CASE_OFFLINE_ACTIVITY_ID = "ProceedOfflineForNonDefenceResponse";
+    private static final String FULL_DEFENCE_RESPONSE_ACTIVITY_ID = "FullDefenceResponse";
     private static final String FULL_DEFENCE_NOTIFICATION_ACTIVITY_ID
         = "DefendantResponseFullDefenceNotifyApplicantSolicitor1";
-    private static final String FULL_DEFENCE_RESPONSE_ACTIVITY_ID = "FullDefenceResponse";
+    //to be removed when new DQ is created for respondent solicitor 2
+    public static final String ONE_RESPONSE_RECEIVED_TEMP_EMAIL_ACTIVITY_ID
+        = "DefendantResponseOneResponseReceivedNotifyApplicantSolicitor1";
     private static final String FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "DefendantResponseFullDefenceGenerateDirectionsQuestionnaire";
-    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
-    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public DefendantResponseTest() {
@@ -185,6 +190,59 @@ class DefendantResponseTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteOneTask_whenOnlyOneResponseReceivedIn1v2Case() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_RECEIVED");
+
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        // TODO: this will be refactored to be a DQ rather than an applicant notification. Covered in CMC-1653
+        // notifyApplicant is a placeholder until we can generate a DQ for respondent 2 solicitor
+        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicant,
+            PROCESS_CASE_EVENT,
+            FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1,
+            ONE_RESPONSE_RECEIVED_TEMP_EMAIL_ACTIVITY_ID,
+            variables
+        );
+
+        //TODO: Remove the above and uncomment this when CMC-1653 is completed
+        //complete the DQ document generation
+        /*
+        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            PROCESS_CASE_EVENT,
+            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
+            ONE_RESPONSE_RECEIVED_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
+            variables
+        );
+         */
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
