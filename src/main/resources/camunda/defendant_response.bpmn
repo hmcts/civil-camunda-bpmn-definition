@@ -152,19 +152,9 @@
     <bpmn:sequenceFlow id="Flow_All_Responses_received" name="All responses received" sourceRef="Gateway_Awaiting_rep" targetRef="Gateway_1q9qem9">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.ALL_RESPONSES_RECEIVED" || flowState == "MAIN.FULL_ADMISSION" || flowState == "MAIN.PART_ADMISSION" || flowState == "MAIN.COUNTER_CLAIM" || flowState == "MAIN.FULL_DEFENCE"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1c4o3wo" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0no3vel</bpmn:incoming>
-      <bpmn:outgoing>Flow_0i5cvjs</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_Awaiting_responses" sourceRef="Gateway_Awaiting_rep" targetRef="Activity_1xnux49">
+    <bpmn:sequenceFlow id="Flow_Awaiting_responses" sourceRef="Gateway_Awaiting_rep" targetRef="Activity_0n0bci3">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.AWAITING_RESPONSES_RECEIVED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0i5cvjs" sourceRef="Activity_1c4o3wo" targetRef="Activity_0998gf4" />
     <bpmn:serviceTask id="FullDefenceResponse" name="Full defence response" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -181,30 +171,10 @@
           <camunda:inputParameter name="caseEvent">GENERATE_DIRECTIONS_QUESTIONNAIRE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0gnd13b</bpmn:incoming>
+      <bpmn:incoming>Flow_Awaiting_responses</bpmn:incoming>
       <bpmn:outgoing>Flow_13npss8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_13npss8" sourceRef="Activity_0n0bci3" targetRef="Activity_1m5szz9" />
-    <bpmn:serviceTask id="Activity_0998gf4" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0i5cvjs</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gnd13b</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0gnd13b" sourceRef="Activity_0998gf4" targetRef="Activity_0n0bci3" />
-    <bpmn:serviceTask id="Activity_1xnux49" name="Full defence response" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">PROCESS_FULL_DEFENCE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_Awaiting_responses</bpmn:incoming>
-      <bpmn:outgoing>Flow_0no3vel</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0no3vel" sourceRef="Activity_1xnux49" targetRef="Activity_1c4o3wo" />
     <bpmn:textAnnotation id="TextAnnotation_18hpho5">
       <bpmn:text>Case Handed Offline</bpmn:text>
     </bpmn:textAnnotation>
@@ -219,7 +189,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DEFENDANT_RESPONSE_PROCESS_ID">
       <bpmndi:BPMNEdge id="Flow_13npss8_di" bpmnElement="Flow_13npss8">
-        <di:waypoint x="1240" y="490" />
+        <di:waypoint x="960" y="490" />
         <di:waypoint x="1480" y="490" />
         <di:waypoint x="1480" y="240" />
         <di:waypoint x="1520" y="240" />
@@ -228,14 +198,10 @@
         <di:waypoint x="760" y="297" />
         <di:waypoint x="830" y="297" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0i5cvjs_di" bpmnElement="Flow_0i5cvjs">
-        <di:waypoint x="930" y="490" />
-        <di:waypoint x="990" y="490" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jp8nui_di" bpmnElement="Flow_Awaiting_responses">
         <di:waypoint x="440" y="322" />
         <di:waypoint x="440" y="490" />
-        <di:waypoint x="670" y="490" />
+        <di:waypoint x="860" y="490" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="289" y="403" width="34" height="14" />
         </bpmndi:BPMNLabel>
@@ -321,14 +287,6 @@
         <di:waypoint x="930" y="180" />
         <di:waypoint x="990" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gnd13b_di" bpmnElement="Flow_0gnd13b">
-        <di:waypoint x="1090" y="490" />
-        <di:waypoint x="1140" y="490" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0no3vel_di" bpmnElement="Flow_0no3vel">
-        <di:waypoint x="770" y="490" />
-        <di:waypoint x="830" y="490" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="DefendantResponseFullDefenceNotifyApplicantSolicitor1">
         <dc:Bounds x="830" y="257" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -390,16 +348,7 @@
         <dc:Bounds x="620" y="340" width="100" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0n0bci3_di" bpmnElement="Activity_0n0bci3">
-        <dc:Bounds x="1140" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0998gf4_di" bpmnElement="Activity_0998gf4">
-        <dc:Bounds x="990" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1c4o3wo_di" bpmnElement="Activity_1c4o3wo">
-        <dc:Bounds x="830" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xnux49_di" bpmnElement="Activity_1xnux49">
-        <dc:Bounds x="670" y="450" width="100" height="80" />
+        <dc:Bounds x="860" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="239" width="36" height="36" />
