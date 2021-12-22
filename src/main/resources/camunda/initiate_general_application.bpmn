@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
+  <bpmn:collaboration id="InitiateGeneralApplication">
+    <bpmn:participant id="Participant_11shrki" name="Initiate General Application" processRef="INITIATE_GENERAL_APPLICATION_PROCESS_ID" />
+  </bpmn:collaboration>
+  <bpmn:process id="INITIATE_GENERAL_APPLICATION_PROCESS_ID" isExecutable="true">
+    <bpmn:startEvent id="Event_19ttrus" name="Start">
+      <bpmn:outgoing>Flow_1lowlui</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_024hrqa" messageRef="Message_0yl8iuc" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_099a8bs" name="Start Business Process" calledElement="StartBusinessProcessGAspec">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lowlui</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nufgia</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wc0u17</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0pltq59">
+      <bpmn:incoming>Flow_0nufgia</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="CreateGeneralApplicationCase" name="Create General Application Case" camunda:type="external" camunda:topic="processCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_GENERAL_APPLICATION_CASE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wc0u17</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i7iyh8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rhjgal</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0ii7uzg">
+      <bpmn:incoming>Flow_1rhjgal</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="LinkGeneralApplicationCaseToParentCase" name="Link General Application Case to Parent Case" camunda:type="external" camunda:topic="processCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">LINK_GENERAL_APPLICATION_CASE_TO_PARENT_CASE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i7iyh8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zyvudm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
+    <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
+    <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
+    <bpmn:sequenceFlow id="Flow_1i7iyh8" sourceRef="CreateGeneralApplicationCase" targetRef="LinkGeneralApplicationCaseToParentCase" />
+    <bpmn:sequenceFlow id="Flow_0zyvudm" sourceRef="LinkGeneralApplicationCaseToParentCase" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_1rhjgal" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
+      <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
+        <dc:Bounds x="130" y="62" width="890" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
+        <di:waypoint x="218" y="230" />
+        <di:waypoint x="260" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
+        <di:waypoint x="310" y="190" />
+        <di:waypoint x="310" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
+        <di:waypoint x="360" y="230" />
+        <di:waypoint x="430" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
+        <di:waypoint x="530" y="230" />
+        <di:waypoint x="610" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zyvudm_di" bpmnElement="Flow_0zyvudm">
+        <di:waypoint x="710" y="230" />
+        <di:waypoint x="790" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rhjgal_di" bpmnElement="Flow_1rhjgal">
+        <di:waypoint x="890" y="230" />
+        <di:waypoint x="962" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
+        <dc:Bounds x="182" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="188" y="255" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_099a8bs_di" bpmnElement="Activity_099a8bs">
+        <dc:Bounds x="260" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
+        <dc:Bounds x="292" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00cyec9_di" bpmnElement="CreateGeneralApplicationCase">
+        <dc:Bounds x="430" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="790" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
+        <dc:Bounds x="962" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hrqn0z_di" bpmnElement="LinkGeneralApplicationCaseToParentCase">
+        <dc:Bounds x="610" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
+        <dc:Bounds x="292" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="317" y="142" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
