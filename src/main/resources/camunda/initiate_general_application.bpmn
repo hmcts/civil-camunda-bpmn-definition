@@ -30,16 +30,6 @@
       <bpmn:incoming>Flow_0wc0u17</bpmn:incoming>
       <bpmn:outgoing>Flow_1i7iyh8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
-      <bpmn:outgoing>Flow_1rhjgal</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_0ii7uzg">
-      <bpmn:incoming>Flow_1rhjgal</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:serviceTask id="LinkGeneralApplicationCaseToParentCase" name="Link General Application Case to Parent Case" camunda:type="external" camunda:topic="processCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -49,73 +39,134 @@
       <bpmn:incoming>Flow_1i7iyh8</bpmn:incoming>
       <bpmn:outgoing>Flow_0zyvudm</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14injep</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rhjgal</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0ii7uzg">
+      <bpmn:incoming>Flow_1rhjgal</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of roles" camunda:type="external" camunda:topic="processCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">ASSIGN_GA</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cw5dnh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GeneralApplicationMakePayment" name="Make PBA Payment" camunda:expression="processPaymentGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">MAKE_PBA_PAYMENT_GASPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cw5dnh</bpmn:incoming>
+      <bpmn:outgoing>Flow_10lsf9e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:expression="processCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10lsf9e</bpmn:incoming>
+      <bpmn:outgoing>Flow_14injep</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
-    <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
-    <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
-    <bpmn:sequenceFlow id="Flow_1i7iyh8" sourceRef="CreateGeneralApplicationCase" targetRef="LinkGeneralApplicationCaseToParentCase" />
-    <bpmn:sequenceFlow id="Flow_0zyvudm" sourceRef="LinkGeneralApplicationCaseToParentCase" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_1rhjgal" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
+    <bpmn:sequenceFlow id="Flow_0zyvudm" sourceRef="LinkGeneralApplicationCaseToParentCase" targetRef="AssigningOfRoles" />
+    <bpmn:sequenceFlow id="Flow_1i7iyh8" sourceRef="CreateGeneralApplicationCase" targetRef="LinkGeneralApplicationCaseToParentCase" />
+    <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
+    <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
+    <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
+    <bpmn:sequenceFlow id="Flow_0cw5dnh" sourceRef="AssigningOfRoles" targetRef="GeneralApplicationMakePayment" />
+    <bpmn:sequenceFlow id="Flow_10lsf9e" sourceRef="GeneralApplicationMakePayment" targetRef="GeneralApplicationNotifying" />
+    <bpmn:sequenceFlow id="Flow_14injep" sourceRef="GeneralApplicationNotifying" targetRef="Activity_0eo8p2p" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
       <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
-        <dc:Bounds x="130" y="62" width="890" height="250" />
+        <dc:Bounds x="160" y="80" width="1500" height="380" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
-        <di:waypoint x="218" y="230" />
-        <di:waypoint x="260" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
-        <di:waypoint x="310" y="190" />
-        <di:waypoint x="310" y="118" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
-        <di:waypoint x="360" y="230" />
-        <di:waypoint x="430" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
-        <di:waypoint x="530" y="230" />
-        <di:waypoint x="610" y="230" />
+      <bpmndi:BPMNEdge id="Flow_1rhjgal_di" bpmnElement="Flow_1rhjgal">
+        <di:waypoint x="1530" y="248" />
+        <di:waypoint x="1592" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zyvudm_di" bpmnElement="Flow_0zyvudm">
-        <di:waypoint x="710" y="230" />
-        <di:waypoint x="790" y="230" />
+        <di:waypoint x="740" y="248" />
+        <di:waypoint x="830" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1rhjgal_di" bpmnElement="Flow_1rhjgal">
-        <di:waypoint x="890" y="230" />
-        <di:waypoint x="962" y="230" />
+      <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
+        <di:waypoint x="560" y="248" />
+        <di:waypoint x="640" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
+        <di:waypoint x="390" y="248" />
+        <di:waypoint x="460" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
+        <di:waypoint x="340" y="208" />
+        <di:waypoint x="340" y="136" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
+        <di:waypoint x="248" y="248" />
+        <di:waypoint x="290" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cw5dnh_di" bpmnElement="Flow_0cw5dnh">
+        <di:waypoint x="930" y="248" />
+        <di:waypoint x="1020" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10lsf9e_di" bpmnElement="Flow_10lsf9e">
+        <di:waypoint x="1120" y="248" />
+        <di:waypoint x="1210" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14injep_di" bpmnElement="Flow_14injep">
+        <di:waypoint x="1310" y="250" />
+        <di:waypoint x="1430" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
-        <dc:Bounds x="182" y="212" width="36" height="36" />
+        <dc:Bounds x="212" y="230" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="188" y="255" width="24" height="14" />
+          <dc:Bounds x="218" y="273" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_099a8bs_di" bpmnElement="Activity_099a8bs">
-        <dc:Bounds x="260" y="190" width="100" height="80" />
+        <dc:Bounds x="290" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
-        <dc:Bounds x="292" y="82" width="36" height="36" />
+        <dc:Bounds x="322" y="100" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00cyec9_di" bpmnElement="CreateGeneralApplicationCase">
-        <dc:Bounds x="430" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="790" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
-        <dc:Bounds x="962" y="212" width="36" height="36" />
+        <dc:Bounds x="460" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hrqn0z_di" bpmnElement="LinkGeneralApplicationCaseToParentCase">
-        <dc:Bounds x="610" y="190" width="100" height="80" />
+        <dc:Bounds x="640" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="1430" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
+        <dc:Bounds x="1592" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n2dfke_di" bpmnElement="AssigningOfRoles">
+        <dc:Bounds x="830" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yc9n40_di" bpmnElement="GeneralApplicationMakePayment">
+        <dc:Bounds x="1020" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
+        <dc:Bounds x="1210" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
-        <dc:Bounds x="292" y="172" width="36" height="36" />
+        <dc:Bounds x="322" y="190" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="317" y="142" width="26" height="14" />
+          <dc:Bounds x="347" y="160" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

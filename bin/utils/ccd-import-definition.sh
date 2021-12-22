@@ -34,7 +34,7 @@ if [[ "${upload_http_code}" == '504' ]]; then
     if [[ ${audit_response} == *"${uploadFilename}"* ]]; then
       echo "${filename} (${uploadFilename}) uploaded"
       exit 0
-    fi
+
   done
 else
   if [[ "${upload_response_content}" == 'Case Definition data successfully imported' ]]; then
