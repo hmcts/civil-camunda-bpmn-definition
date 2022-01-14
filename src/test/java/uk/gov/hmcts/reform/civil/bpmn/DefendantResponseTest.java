@@ -52,9 +52,8 @@ class DefendantResponseTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION", "MAIN.COUNTER_CLAIM",
-        "MAIN.DIVERGENT_RESPOND"})
-    void shouldSuccessfullyCompleteOfflineDefendantResponse(String flowState) {
+    @ValueSource(strings = {"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION", "MAIN.COUNTER_CLAIM"})
+    void shouldSuccessfullyCompleteOfflineDefendantResponse_In1v1Scenario(String flowState) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -65,6 +64,7 @@ class DefendantResponseTest extends BpmnBaseTest {
         ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", flowState);
+        variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true));
         assertCompleteExternalTask(
             startBusinessTask,
             START_BUSINESS_TOPIC,
@@ -80,6 +80,75 @@ class DefendantResponseTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             TAKE_CASE_OFFLINE_EVENT,
             TAKE_CASE_OFFLINE_ACTIVITY_ID
+        );
+
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            OFFLINE_NOTIFY_RESPONDENT_SOLICITOR_1,
+            OFFLINE_NOTIFICATION_RESPONDENT_ACTIVITY_ID
+        );
+
+        //complete the notification to applicant
+        ExternalTask forApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forApplicant,
+            PROCESS_CASE_EVENT,
+            OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1,
+            OFFLINE_NOTIFICATION_APPLICANT_ACTIVITY_ID
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteOfflineDefendantResponse_In1v2_DivergentResponseScenario() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+
+        //Setup Case as 1v2 All Responses Received > Divergent Response
+        variables.putValue("flowState", "MAIN.DIVERGENT_RESPOND");
+        variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false));
+        variables.put(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, true));
+
+        assertCompleteExternalTask(
+            startBusinessTask,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the proceedOffline event
+        ExternalTask proceedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedOffline,
+            PROCESS_CASE_EVENT,
+            TAKE_CASE_OFFLINE_EVENT,
+            TAKE_CASE_OFFLINE_ACTIVITY_ID,
+            variables
         );
 
         //complete the notification to respondent
