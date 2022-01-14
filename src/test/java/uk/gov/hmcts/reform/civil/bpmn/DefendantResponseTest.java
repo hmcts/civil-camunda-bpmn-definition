@@ -60,11 +60,12 @@ class DefendantResponseTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        //complete the start business process
-        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", flowState);
         variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true));
+
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusinessTask,
             START_BUSINESS_TOPIC,
@@ -124,15 +125,14 @@ class DefendantResponseTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        //complete the start business process
-        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
-        VariableMap variables = Variables.createVariables();
-
         //Setup Case as 1v2 All Responses Received > Divergent Response
+        VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.DIVERGENT_RESPOND");
         variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false));
         variables.put(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, true));
 
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusinessTask,
             START_BUSINESS_TOPIC,
