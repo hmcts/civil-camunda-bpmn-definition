@@ -26,6 +26,9 @@ class NotifyClaimTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_ISSUE";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID
@@ -36,6 +39,9 @@ class NotifyClaimTest extends BpmnBaseTest {
         = "NotifyDefendantSolicitor2";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
+    private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
+        = "NotifyClaimProceedsOfflineNotifyApplicantSolicitor1";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     enum FlowState {
         CLAIM_NOTIFIED,
@@ -226,6 +232,22 @@ class NotifyClaimTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    PROCEEDS_IN_HERITAGE_SYSTEM,
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //Notify Claimant Solicitor - Handed Offline
+        ExternalTask notifyApplicantSolicitorHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyApplicantSolicitorHandedOffline,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE,
+                                   NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
+        );
+
+        //Notify RPA - Handed Offline
+        ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyRpaHandedOffline,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
         //end business process
