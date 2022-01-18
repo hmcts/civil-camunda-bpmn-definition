@@ -39,6 +39,13 @@ class CreateClaimTest extends BpmnBaseTest {
         = "ProceedOfflineForUnRepresentedSolicitor";
     public static final String PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
         = "ProceedOfflineForUnregisteredFirm";
+    public static final String PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
+        = "ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm";
+    public static final String
+        CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_FOR_UNREPRESENTED_SOLICITOR_UNREGISTERED_FIRM
+        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm";
+    public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
+        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
     //notification - handed offline
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT =
         "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
@@ -70,6 +77,7 @@ class CreateClaimTest extends BpmnBaseTest {
         AWAITING_CASE_NOTIFICATION,
         PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT,
         PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT,
+        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT,
         PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT;
 
         public String fullName() {
@@ -238,7 +246,7 @@ class CreateClaimTest extends BpmnBaseTest {
         }
 
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnRepresentedDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendant() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -320,7 +328,7 @@ class CreateClaimTest extends BpmnBaseTest {
         }
 
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnRegisteredDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnregisteredDefendant() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -383,6 +391,89 @@ class CreateClaimTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_NOT_REGISTERED_ACTIVITY_ID
+            );
+
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+            );
+
+            //end business process
+            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+            completeBusinessProcess(endBusinessProcess);
+
+            assertNoExternalTasksLeft();
+        }
+
+        @Test
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefAndUnregisteredDef() {
+            //assert process has started
+            assertFalse(processInstance.isEnded());
+
+            //assert message start event
+            assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+            VariableMap variables = Variables.createVariables();
+
+            //complete the start business process
+            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+            assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+            );
+
+            //complete the case assignment process
+            completeCaseAssignment(variables);
+
+            //validate the fee
+            validateFee(variables);
+
+            //complete the payment
+            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
+            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
+            assertCompleteExternalTask(
+                paymentTask,
+                PROCESS_PAYMENT_TOPIC,
+                MAKE_PBA_PAYMENT_EVENT,
+                MAKE_PAYMENT_ACTIVITY_ID,
+                variables
+            );
+
+            //complete the document generation
+            variables.putValue(FLOW_STATE,
+                               FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
+            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                documentGeneration,
+                PROCESS_CASE_EVENT,
+                GENERATE_CLAIM_FORM_EVENT,
+                GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                variables
+            );
+
+            //Take offline
+            ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                takeOffline,
+                PROCESS_CASE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
+                PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
+            );
+
+            //complete the notification
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT,
+                CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_FOR_UNREPRESENTED_SOLICITOR_UNREGISTERED_FIRM
             );
 
             //complete the Robotics notification
