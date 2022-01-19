@@ -387,7 +387,7 @@ class DefendantResponseTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteOneTask_whenOnlyOneResponseReceivedWithoutFullDefenceIn1v2Case() {
+    void shouldSuccessfullyCompleteProcess_whenOnlyOneResponseReceivedWithoutFullDefenceIn1v2Case() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
