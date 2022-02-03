@@ -62,20 +62,20 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         );
 
         //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask documentGeneration = assertNextExternalTask(CREATE_APPLICATION_CASE_EVENT);
         assertCompleteExternalTask(
             documentGeneration,
-            PROCESS_CASE_EVENT,
+            CREATE_APPLICATION_CASE_EVENT,
             CREATE_GENERAL_APPLICATION_EVENT,
             CREATE_GENERAL_APPLICATION_ID,
             variables
         );
 
         //link general application case to parent case
-        ExternalTask linkCases = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask linkCases = assertNextExternalTask(LINK_APPLICATION_CASE_EVENT);
         assertCompleteExternalTask(
             linkCases,
-            PROCESS_CASE_EVENT,
+            LINK_APPLICATION_CASE_EVENT,
             LINK_GENERAL_APPLICATIONC_CASE_TO_PARENT_CASE_EVENT,
             LINK_GENERAL_APPLICATIONC_CASE_TO_PARENT_CASE_ID,
             variables
