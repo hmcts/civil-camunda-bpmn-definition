@@ -26,13 +26,13 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String LINK_GENERAL_APPLICATIONC_CASE_TO_PARENT_CASE_ID
         = "LinkGeneralApplicationCaseToParentCase";
     //Assigning of roles
-    private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA";
+    private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
     private static final String MAKE_PBA_PAYMENT_ID = "GeneralApplicationMakePayment";
     //Notifying respondents
-    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_RESPONDENT";
+    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GA_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     public InitiateGeneralApplicationTest() {
