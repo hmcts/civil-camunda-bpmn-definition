@@ -24,7 +24,7 @@
     <bpmn:serviceTask id="CreateGeneralApplicationCase" name="Create General Application Case" camunda:type="external" camunda:topic="createApplicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_GENERAL_APPLICATION_CASE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">ASSIGN_GA_ROLES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wc0u17</bpmn:incoming>
@@ -49,15 +49,6 @@
     <bpmn:endEvent id="Event_0ii7uzg">
       <bpmn:incoming>Flow_1rhjgal</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of roles" camunda:type="external" camunda:topic="processCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">ASSIGN_GA</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
-      <bpmn:outgoing>Flow_0cw5dnh</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="GeneralApplicationMakePayment" name="Make PBA Payment" camunda:type="external" camunda:topic="processPaymentGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -88,6 +79,15 @@
     <bpmn:sequenceFlow id="Flow_0cw5dnh" sourceRef="AssigningOfRoles" targetRef="GeneralApplicationMakePayment" />
     <bpmn:sequenceFlow id="Flow_10lsf9e" sourceRef="GeneralApplicationMakePayment" targetRef="GeneralApplicationNotifying" />
     <bpmn:sequenceFlow id="Flow_14injep" sourceRef="GeneralApplicationNotifying" targetRef="Activity_0eo8p2p" />
+    <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of GA roles" camunda:type="external" camunda:topic="processCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">ASSIGN_GA_ROLES_2</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cw5dnh</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
