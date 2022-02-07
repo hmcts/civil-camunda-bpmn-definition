@@ -35,6 +35,7 @@ public abstract class BpmnBaseGASpecTest {
     public static final String CREATE_APPLICATION_CASE_EVENT = "createApplicationEventGASpec";
     public static final String LINK_APPLICATION_CASE_EVENT = "linkApplicationEventGASpec";
     public static final String PROCESS_PAYMENT_TOPIC = "processPaymentGASpec";
+    public static final String NOTIFY_GENERAL_APPLICATION_RESPONDENT_TOPIC = "notifyGeneralApplicationRespondentGAspec";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";

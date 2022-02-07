@@ -31,9 +31,9 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
     private static final String MAKE_PBA_PAYMENT_ID = "GeneralApplicationMakePayment";
-    //Notifying respondents
-    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GA_RESPONDENT";
-    private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
+    //notify general app respondent
+    private static final String NOTIFY_GENERAL_APPLICATION_RESPONDENT_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
+    private static final String NOTIFY_GENERAL_APPLICATION_RESPONDENT_ACTIVITY = "notifyGeneralApplicationRespondent";
 
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
@@ -101,13 +101,13 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             variables
         );
 
-        //notify respondents
-        ExternalTask notifyRespondents = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //notify general app respondent
+        ExternalTask notifyGeneralAppResp = assertNextExternalTask(NOTIFY_GENERAL_APPLICATION_RESPONDENT_TOPIC);
         assertCompleteExternalTask(
-            notifyRespondents,
-            PROCESS_CASE_EVENT,
-            NOTYFYING_RESPONDENTS_EVENT,
-            GENERAL_APPLICATION_NOTIYFYING_ID,
+            notifyGeneralAppResp,
+            NOTIFY_GENERAL_APPLICATION_RESPONDENT_TOPIC,
+            NOTIFY_GENERAL_APPLICATION_RESPONDENT_EVENT,
+            NOTIFY_GENERAL_APPLICATION_RESPONDENT_ACTIVITY,
             variables
         );
 
