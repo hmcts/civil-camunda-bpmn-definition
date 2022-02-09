@@ -49,7 +49,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
+        //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -59,7 +59,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the CC notification to applicant
+        //complete the CC notification to respondent solicitor 1
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -70,7 +70,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         );
 
         if(twoRespondents) {
-            //complete the CC notification to applicant
+            //complete the CC notification to respondent solicitor 2
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 notificationTask,
