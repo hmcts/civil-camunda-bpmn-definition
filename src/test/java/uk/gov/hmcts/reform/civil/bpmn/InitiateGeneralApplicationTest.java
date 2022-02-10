@@ -32,7 +32,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
     private static final String MAKE_PBA_PAYMENT_ID = "GeneralApplicationMakePayment";
     //Notifying respondents
-    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GA_RESPONDENT";
+    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     public InitiateGeneralApplicationTest() {
@@ -72,40 +72,40 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         );
 
         //link general application case to parent case
-        ExternalTask linkCases = assertNextExternalTask(LINK_APPLICATION_CASE_EVENT);
+        ExternalTask linkCases = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             linkCases,
-            LINK_APPLICATION_CASE_EVENT,
+            APPLICATION_EVENT_GASPEC,
             LINK_GENERAL_APPLICATIONC_CASE_TO_PARENT_CASE_EVENT,
             LINK_GENERAL_APPLICATIONC_CASE_TO_PARENT_CASE_ID,
             variables
         );
 
         //assigne of roles
-        ExternalTask assigneRoles = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask assigneRoles = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             assigneRoles,
-            PROCESS_CASE_EVENT,
+            APPLICATION_EVENT_GASPEC,
             ASSIGNIN_OF_ROLES_EVENT,
             ASSIGNIN_OF_ROLES_ID,
             variables
         );
 
         //make pba payment
-        ExternalTask makePbaPayment = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
+        ExternalTask makePbaPayment = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             makePbaPayment,
-            PROCESS_PAYMENT_TOPIC,
+            APPLICATION_EVENT_GASPEC,
             MAKE_PBA_PAYMENT_EVENT,
             MAKE_PBA_PAYMENT_ID,
             variables
         );
 
         //notify respondents
-        ExternalTask notifyRespondents = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyRespondents = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             notifyRespondents,
-            PROCESS_CASE_EVENT,
+            APPLICATION_EVENT_GASPEC,
             NOTYFYING_RESPONDENTS_EVENT,
             GENERAL_APPLICATION_NOTIYFYING_ID,
             variables
