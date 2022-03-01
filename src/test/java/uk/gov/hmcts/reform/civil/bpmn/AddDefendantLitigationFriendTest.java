@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -24,8 +24,8 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({"true, true", "true, false", "false, false", "false, true"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRespondents) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,7 +33,10 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
+        variables.put("flowFlags", Map.of(
+            "RPA_CONTINUOUS_FEED", rpaContinuousFeed,
+            "TWO_RESPONDENT_REPRESENTATIVES", twoRespondents)
+        );
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -45,7 +48,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
+        //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -55,7 +58,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the CC notification to applicant
+        //complete the CC notification to respondent solicitor 1
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -64,6 +67,18 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             "LitigationFriendAddedNotifyRespondentSolicitor1",
             variables
         );
+
+        if (twoRespondents) {
+            //complete the CC notification to respondent solicitor 2
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_LITIGATION_FRIEND_ADDED",
+                "LitigationFriendAddedNotifyRespondentSolicitor2",
+                variables
+            );
+        }
 
         if (rpaContinuousFeed) {
             //complete the Robotics notification
