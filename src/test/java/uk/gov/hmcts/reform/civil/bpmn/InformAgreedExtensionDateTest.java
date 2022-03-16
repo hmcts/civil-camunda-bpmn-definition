@@ -63,7 +63,7 @@ class InformAgreedExtensionDateTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
+            "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
             "AgreedExtensionDateNotifyRespondentSolicitor1CC",
             variables
         );
