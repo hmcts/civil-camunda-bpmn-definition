@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
@@ -24,15 +25,18 @@ class InformAgreedExtensionDateTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({"true, true", "true, false", "false, false", "false, true"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
+        variables.put(FLOW_FLAGS, Map.of(
+            RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives)
+        );
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -54,15 +58,27 @@ class InformAgreedExtensionDateTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the CC notification to respondent
+        //complete the CC notification to respondent solicitor 1
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_CC",
             "AgreedExtensionDateNotifyRespondentSolicitor1CC",
             variables
         );
+
+        if (twoRepresentatives) {
+            //complete the CC notification to respondent solicitor 2
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_AGREED_EXTENSION_DATE_CC",
+                "AgreedExtensionDateNotifyRespondentSolicitor2CC",
+                variables
+            );
+        }
 
         if (rpaContinuousFeed) {
             //complete the Robotics notification
