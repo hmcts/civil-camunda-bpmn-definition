@@ -121,8 +121,8 @@ task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:smoke'
 }
 
-task runFunctionalTests(type: Exec, description: 'Runs functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:functional'
+task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
 }
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
@@ -145,7 +145,7 @@ task smoke(description: 'Runs the smoke tests.') {
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runFunctionalTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
@@ -194,6 +194,8 @@ ext.libraries = [
 dependencies {
   implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.16.0'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.6'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
+  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2', ext: 'pom'
 
   testImplementation libraries.junit5
   testImplementation group: 'org.camunda.bpm.extension.springboot', name: 'camunda-bpm-spring-boot-starter-test', version: '2.2.0'
