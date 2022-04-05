@@ -499,7 +499,7 @@ class DefendantResponseTest extends BpmnBaseTest {
     class OneVsTwoAndFirstResponseReceived {
 
         @Test
-        void shouldSuccessfullyCompleteOneTask_whenOnlyOneResponseReceivedWithFullDefenceIn1v2Case() {
+        void shouldSuccessfullyCompleteTasks_whenOnlyOneResponseReceivedWithFullDefenceIn1v2Case() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -511,6 +511,10 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_FULL_DEFENCE_RECEIVED");
+            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
+                                             TWO_RESPONDENT_REPRESENTATIVES, true,
+                                             RPA_CONTINUOUS_FEED, true
+            ));
 
             assertCompleteExternalTask(
                 startBusiness,
@@ -527,6 +531,16 @@ class DefendantResponseTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
                 FIRST_RESPONSE_FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
+                variables
+            );
+
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
                 variables
             );
 
@@ -550,12 +564,26 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_NOT_FULL_DEFENCE_RECEIVED");
+            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
+                                             TWO_RESPONDENT_REPRESENTATIVES, true,
+                                             RPA_CONTINUOUS_FEED, true
+            ));
 
             assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY,
+                variables
+            );
+
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
                 variables
             );
 
