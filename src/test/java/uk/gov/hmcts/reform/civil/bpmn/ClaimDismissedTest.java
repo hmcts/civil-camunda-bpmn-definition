@@ -138,7 +138,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
             "ClaimDismissedNotifyRespondentSolicitor1"
         );
 
-        if(has2RespondentSolicitors){
+        if (has2RespondentSolicitors) {
             //complete the notification to respondent 2
             ExternalTask respondentTwoNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
