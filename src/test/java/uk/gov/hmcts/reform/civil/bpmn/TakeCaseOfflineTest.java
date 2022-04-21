@@ -65,7 +65,7 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
                                    "TakeCaseOfflineNotifyRespondentSolicitor1"
         );
 
-        if(twoRepresentatives) {
+        if (twoRepresentatives) {
             //complete the notification to respondent 2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(respondent2Notification,
