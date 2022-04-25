@@ -65,6 +65,7 @@ withPipeline(type, product, component) {
   enableSlackNotifications('#civil_notifications')
 
   onPR {
+    env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
     enableCleanupOfHelmReleaseOnSuccess()
   }
@@ -109,7 +110,7 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-nonprod.json,*LRspec.json,*GAspec.json,*DJspec.json,*DJ.json"
+      ./bin/import-ccd-definition.sh "-e *-nonprod.json,*GAspec.json,*DJspec.json,*DJ.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
