@@ -36,12 +36,12 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0/10 * * * ?";
+        String cronString = "0 15 17 ? * * *";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
                 new CronExpression(cronString),
-                LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-                LocalDateTime.of(2020, 1, 1, 0, 10, 0)
+                LocalDateTime.of(2020, 1, 1, 17, 15, 0),
+                LocalDateTime.of(2020, 1, 2, 17, 15, 0)
         );
 
         //get external tasks
