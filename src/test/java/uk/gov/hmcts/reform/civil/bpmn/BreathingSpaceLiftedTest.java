@@ -43,7 +43,7 @@ public class BreathingSpaceLiftedTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
+        variables.putValue(FLOW_FLAGS, Map.of(SPEC_RPA_CONTINUOUS_FEED, rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
