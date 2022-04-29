@@ -20,35 +20,26 @@
     <bpmn:endEvent id="Event_0miwx8k">
       <bpmn:incoming>Flow_0w9edp6</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="CreateSDONotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:boundaryEvent id="Event_11hktcj" name="Abort" attachedToRef="Activity_StartBusinessProcess">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1npe7kd" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0f1dt36" sourceRef="Event_Create_SDO" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_1l2gbrf" sourceRef="Activity_StartBusinessProcess" targetRef="CreateSDONotifyApplicantsSolicitor" />
+    <bpmn:sequenceFlow id="Flow_1d6r2uf" sourceRef="CreateSDONotifyApplicantsSolicitor" targetRef="CreateSDONotifyRespondentSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
+    <bpmn:sequenceFlow id="Flow_0adcxbu" sourceRef="CreateSDONotifyRespondentSolicitor1" targetRef="CreateSDONotifyRespondentSolicitor2" />
+    <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndCreateSDO" />
+    <bpmn:serviceTask id="CreateSDONotifyApplicantsSolicitor" name="Notify applicants solicitor" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_SDO_TRIGGERED</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l2gbrf</bpmn:incoming>
       <bpmn:outgoing>Flow_1d6r2uf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="Event_11hktcj" name="Abort" attachedToRef="Activity_StartBusinessProcess">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1npe7kd" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0f1dt36" sourceRef="Event_Create_SDO" targetRef="Activity_StartBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_1l2gbrf" sourceRef="Activity_StartBusinessProcess" targetRef="CreateSDONotifyApplicantSolicitor1" />
-    <bpmn:sequenceFlow id="Flow_1d6r2uf" sourceRef="CreateSDONotifyApplicantSolicitor1" targetRef="CreateSDONotifyRespodentSolicitor1" />
-    <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
-    <bpmn:sequenceFlow id="Flow_0adcxbu" sourceRef="CreateSDONotifyRespodentSolicitor1" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0adcxbu</bpmn:incoming>
-      <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_EndCreateSDO">
-      <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndCreateSDO" />
-    <bpmn:serviceTask id="CreateSDONotifyRespodentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1wyb20z" sourceRef="CreateSDONotifyRespondentSolicitor2" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:serviceTask id="CreateSDONotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED</camunda:inputParameter>
@@ -57,6 +48,25 @@
       <bpmn:incoming>Flow_1d6r2uf</bpmn:incoming>
       <bpmn:outgoing>Flow_0adcxbu</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="CreateSDONotifyRespondentSolicitor2" name="Notify respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0adcxbu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wyb20z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wyb20z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_EndCreateSDO">
+      <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_0f9tsfp" name="CREATE_SDO" />
   <bpmn:message id="Message_0xkueqz" name="Message_23b65ne" />
@@ -64,27 +74,31 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0oe9xk7">
       <bpmndi:BPMNShape id="Participant_1st11o5_di" bpmnElement="Participant_1st11o5" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="918" height="380" />
+        <dc:Bounds x="160" y="80" width="1050" height="350" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1wyb20z_di" bpmnElement="Flow_1wyb20z">
+        <di:waypoint x="900" y="250" />
+        <di:waypoint x="960" y="250" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1huwtcs_di" bpmnElement="Flow_1huwtcs">
-        <di:waypoint x="870" y="250" />
-        <di:waypoint x="932" y="250" />
+        <di:waypoint x="1060" y="250" />
+        <di:waypoint x="1112" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0adcxbu_di" bpmnElement="Flow_0adcxbu">
-        <di:waypoint x="710" y="250" />
-        <di:waypoint x="770" y="250" />
+        <di:waypoint x="730" y="250" />
+        <di:waypoint x="800" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0w9edp6_di" bpmnElement="Flow_0w9edp6">
         <di:waypoint x="341" y="210" />
         <di:waypoint x="341" y="148" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d6r2uf_di" bpmnElement="Flow_1d6r2uf">
-        <di:waypoint x="550" y="250" />
-        <di:waypoint x="610" y="250" />
+        <di:waypoint x="560" y="250" />
+        <di:waypoint x="630" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1l2gbrf_di" bpmnElement="Flow_1l2gbrf">
         <di:waypoint x="391" y="250" />
-        <di:waypoint x="450" y="250" />
+        <di:waypoint x="460" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f1dt36_di" bpmnElement="Flow_0f1dt36">
         <di:waypoint x="239" y="250" />
@@ -102,17 +116,20 @@
       <bpmndi:BPMNShape id="Event_0miwx8k_di" bpmnElement="Event_0miwx8k">
         <dc:Bounds x="323" y="112" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0rynuuk_di" bpmnElement="CreateSDONotifyApplicantSolicitor1">
-        <dc:Bounds x="450" y="210" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0rynuuk_di" bpmnElement="CreateSDONotifyApplicantsSolicitor">
+        <dc:Bounds x="460" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05dumwf_di" bpmnElement="CreateSDONotifyRespondentSolicitor1">
+        <dc:Bounds x="630" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t0o4pm_di" bpmnElement="CreateSDONotifyRespondentSolicitor2">
+        <dc:Bounds x="800" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vef0vg_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="770" y="210" width="100" height="80" />
+        <dc:Bounds x="960" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndCreateSDO">
-        <dc:Bounds x="932" y="232" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05dumwf_di" bpmnElement="CreateSDONotifyRespodentSolicitor1">
-        <dc:Bounds x="610" y="210" width="100" height="80" />
+        <dc:Bounds x="1112" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_178o507_di" bpmnElement="Event_11hktcj">
         <dc:Bounds x="322" y="192" width="36" height="36" />
