@@ -27,22 +27,31 @@ class CreateSDOTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to applicant(s) solicitor
+        ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            applicantNotification,
+            applicantsNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_SDO_TRIGGERED",
-            "CreateSDONotifyApplicantSolicitor1"
+            "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
+            "CreateSDONotifyApplicantsSolicitor"
         );
 
-        //complete the notification to respondent
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to respondent 1 solicitor
+        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
+            respondent1Notification,
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-            "CreateSDONotifyRespodentSolicitor1"
+            "CreateSDONotifyRespondentSolicitor1"
+        );
+
+        //complete the notification to respondent 2 solicitor
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
+            "CreateSDONotifyRespondentSolicitor2"
         );
 
         //end business process

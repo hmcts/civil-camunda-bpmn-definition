@@ -4,6 +4,10 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -91,8 +95,9 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldNotifyBothParties_whenPastClaimDismissedDeadline() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldNotifyAllParties_whenPastClaimDismissedDeadline(boolean has2RespondentSolicitors) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -101,6 +106,9 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE");
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, !has2RespondentSolicitors,
+            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -129,6 +137,17 @@ class ClaimDismissedTest extends BpmnBaseTest {
             "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DISMISSED",
             "ClaimDismissedNotifyRespondentSolicitor1"
         );
+
+        if (has2RespondentSolicitors) {
+            //complete the notification to respondent 2
+            ExternalTask respondentTwoNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondentTwoNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DISMISSED",
+                "ClaimDismissedNotifyRespondentSolicitor2"
+            );
+        }
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
