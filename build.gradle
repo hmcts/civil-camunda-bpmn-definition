@@ -68,7 +68,7 @@ allprojects {
       dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.6.0'
     }
     imports {
-      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.2'
     }
   }
 
@@ -121,6 +121,13 @@ task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:smoke'
 }
 
+task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-spec'
+}
+
 task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
 }
@@ -145,7 +152,7 @@ task smoke(description: 'Runs the smoke tests.') {
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runApiTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport

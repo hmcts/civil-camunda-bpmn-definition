@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,17 +24,29 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         super("take_case_offline.bpmn", "TAKE_CASE_OFFLINE");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteTakeCaseOffline() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteTakeCaseOffline(boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives));
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -39,13 +57,23 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
-        //complete the notification to respondent
+        //complete the notification to respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
                                    "TakeCaseOfflineNotifyRespondentSolicitor1"
         );
+
+        if (twoRepresentatives) {
+            //complete the notification to respondent 2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(respondent2Notification,
+                                       PROCESS_CASE_EVENT,
+                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_TAKEN_OFFLINE",
+                                       "TakeCaseOfflineNotifyRespondentSolicitor2"
+            );
+        }
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
