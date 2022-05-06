@@ -596,8 +596,6 @@ class CreateClaimTest extends BpmnBaseTest {
         }
     }
 
-
-
     private void validateFee(VariableMap variables) {
         ExternalTask feeTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
