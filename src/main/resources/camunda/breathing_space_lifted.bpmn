@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iivus5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="BREATHING_SPACE_LIFTED" isExecutable="true">
+    <bpmn:startEvent id="Event_0y09tpb" name="Start">
+      <bpmn:outgoing>Flow_07qelqa</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cnoq24" messageRef="Message_1sxevdt" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_1d3ska5" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07qelqa</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nq6ydh</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1o998qy">
+      <bpmn:incoming>Flow_0uk4gkm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0371z1y" name="Abort" attachedToRef="Activity_1d3ska5">
+      <bpmn:outgoing>Flow_0uk4gkm</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1f3pwfg" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_07qelqa" sourceRef="Event_0y09tpb" targetRef="Activity_1d3ska5" />
+    <bpmn:sequenceFlow id="Flow_0uk4gkm" sourceRef="Event_0371z1y" targetRef="Event_1o998qy" />
+    <bpmn:sequenceFlow id="Flow_1nq6ydh" sourceRef="Activity_1d3ska5" targetRef="NotifyApplicantSolicitorBSLifted" />
+    <bpmn:serviceTask id="NotifyApplicantSolicitorBSLifted" name="Notify Applicant Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_BREATHING_SPACE_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nq6ydh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lzk3lu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyRespondentSolicitorBSLifted" name="Notify Respondent Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_BREATHING_SPACE_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0lzk3lu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nx22hv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0lzk3lu" sourceRef="NotifyApplicantSolicitorBSLifted" targetRef="NotifyRespondentSolicitorBSLifted" />
+    <bpmn:exclusiveGateway id="RPA_Continuous_Feed_Gate">
+      <bpmn:incoming>Flow_1nx22hv</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1c2ryxi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="NotifyRpaBsLifted" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kass09</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" sourceRef="RPA_Continuous_Feed_Gate" targetRef="NotifyRpaBsLifted">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.SPEC_RPA_CONTINUOUS_FEED&amp;&amp; flowFlags.SPEC_RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1nx22hv" sourceRef="NotifyRespondentSolicitorBSLifted" targetRef="RPA_Continuous_Feed_Gate" />
+    <bpmn:endEvent id="Event_1g0kcde">
+      <bpmn:incoming>Flow_1kj896s</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0g68wbz" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1c2ryxi</bpmn:incoming>
+      <bpmn:incoming>Flow_1kass09</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kj896s</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
+    <bpmn:sequenceFlow id="Flow_1c2ryxi" sourceRef="RPA_Continuous_Feed_Gate" targetRef="Activity_0g68wbz" />
+    <bpmn:sequenceFlow id="Flow_1kass09" sourceRef="NotifyRpaBsLifted" targetRef="Activity_0g68wbz" />
+  </bpmn:process>
+  <bpmn:message id="Message_1bt9nfa" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmn:message id="Message_1sxevdt" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BREATHING_SPACE_LIFTED">
+      <bpmndi:BPMNEdge id="Flow_1kass09_di" bpmnElement="Flow_1kass09">
+        <di:waypoint x="850" y="160" />
+        <di:waypoint x="850" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c2ryxi_di" bpmnElement="Flow_1c2ryxi">
+        <di:waypoint x="745" y="230" />
+        <di:waypoint x="800" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
+        <di:waypoint x="900" y="230" />
+        <di:waypoint x="942" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nx22hv_di" bpmnElement="Flow_1nx22hv">
+        <di:waypoint x="640" y="230" />
+        <di:waypoint x="695" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l0m5y9_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
+        <di:waypoint x="720" y="205" />
+        <di:waypoint x="720" y="120" />
+        <di:waypoint x="800" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lzk3lu_di" bpmnElement="Flow_0lzk3lu">
+        <di:waypoint x="500" y="230" />
+        <di:waypoint x="540" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nq6ydh_di" bpmnElement="Flow_1nq6ydh">
+        <di:waypoint x="350" y="230" />
+        <di:waypoint x="400" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uk4gkm_di" bpmnElement="Flow_0uk4gkm">
+        <di:waypoint x="300" y="172" />
+        <di:waypoint x="300" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07qelqa_di" bpmnElement="Flow_07qelqa">
+        <di:waypoint x="208" y="230" />
+        <di:waypoint x="250" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0y09tpb_di" bpmnElement="Event_0y09tpb">
+        <dc:Bounds x="172" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="255" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d3ska5_di" bpmnElement="Activity_1d3ska5">
+        <dc:Bounds x="250" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o998qy_di" bpmnElement="Event_1o998qy">
+        <dc:Bounds x="282" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g2c2ji_di" bpmnElement="NotifyApplicantSolicitorBSLifted">
+        <dc:Bounds x="400" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eg1mu3_di" bpmnElement="NotifyRespondentSolicitorBSLifted">
+        <dc:Bounds x="540" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_038j3lc_di" bpmnElement="RPA_Continuous_Feed_Gate" isMarkerVisible="true">
+        <dc:Bounds x="695" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yug86e_di" bpmnElement="NotifyRpaBsLifted">
+        <dc:Bounds x="800" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
+        <dc:Bounds x="942" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
+        <dc:Bounds x="800" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
+        <dc:Bounds x="282" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="337" y="153" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
