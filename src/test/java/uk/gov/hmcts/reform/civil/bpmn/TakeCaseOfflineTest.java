@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -25,8 +25,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteTakeCaseOffline(boolean twoRepresentatives) {
+    @CsvSource({"true,true", "true,false", "false,true", "false,false"})
+    void shouldSuccessfullyCompleteTakeCaseOffline(boolean twoRepresentatives, boolean noticeOfChange) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,7 +36,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives));
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            NOTICE_OF_CHANGE, noticeOfChange));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -58,12 +59,14 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         );
 
         //complete the notification to respondent 1
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyRespondentSolicitor1"
-        );
+        if (!noticeOfChange) {
+            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(respondentNotification,
+                                       PROCESS_CASE_EVENT,
+                                       "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
+                                       "TakeCaseOfflineNotifyRespondentSolicitor1"
+            );
+        }
 
         if (twoRepresentatives) {
             //complete the notification to respondent 2

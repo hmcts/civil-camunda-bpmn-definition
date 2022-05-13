@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.13.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <bpmn:process id="TAKE_CASE_OFFLINE" isExecutable="true">
     <bpmn:startEvent id="Event_StartClaimTakenOffline" name="Start">
       <bpmn:outgoing>Flow_NextStartBusinessProcess</bpmn:outgoing>
@@ -43,14 +43,14 @@
       <bpmn:incoming>Flow_NextNotifyRpa</bpmn:incoming>
       <bpmn:outgoing>Flow_NextEndBusinessProcess</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_NextEndBusinessProcess" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="TakeCaseOfflineNotifyRespondentSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_NextEndBusinessProcess" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Gateway_1lbbnri" />
     <bpmn:serviceTask id="TakeCaseOfflineNotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_NextEndBusinessProcess</bpmn:incoming>
+      <bpmn:incoming>Flow_1fmlvli</bpmn:incoming>
       <bpmn:outgoing>Flow_1n9mb8u</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="TakeCaseOfflineNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -66,6 +66,7 @@
     <bpmn:sequenceFlow id="Flow_0uljtsx" sourceRef="TakeCaseOfflineNotifyApplicantSolicitor1" targetRef="Activity_EndBusinessProcess" />
     <bpmn:exclusiveGateway id="Gateway_Two_Representetives">
       <bpmn:incoming>Flow_1n9mb8u</bpmn:incoming>
+      <bpmn:incoming>Flow_15v9se7</bpmn:incoming>
       <bpmn:outgoing>Flow_0wuhpfb</bpmn:outgoing>
       <bpmn:outgoing>Flow_0lq9pff</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -86,55 +87,98 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0hs292h" sourceRef="TakeCaseOfflineNotifyRespondentSolicitor2" targetRef="TakeCaseOfflineNotifyApplicantSolicitor1" />
+    <bpmn:exclusiveGateway id="Gateway_1lbbnri">
+      <bpmn:incoming>Flow_NextEndBusinessProcess</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fmlvli</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15v9se7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1fmlvli" name="No Notice of change" sourceRef="Gateway_1lbbnri" targetRef="TakeCaseOfflineNotifyRespondentSolicitor1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; !flowFlags.NOTICE_OF_CHANGE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15v9se7" name="Notice of change" sourceRef="Gateway_1lbbnri" targetRef="Gateway_Two_Representetives">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; flowFlags.NOTICE_OF_CHANGE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="TAKE_CASE_OFFLINE" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TAKE_CASE_OFFLINE">
+      <bpmndi:BPMNEdge id="Flow_0hs292h_di" bpmnElement="Flow_0hs292h">
+        <di:waypoint x="870" y="140" />
+        <di:waypoint x="870" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lq9pff_di" bpmnElement="Flow_0lq9pff">
+        <di:waypoint x="770" y="185" />
+        <di:waypoint x="770" y="100" />
+        <di:waypoint x="820" y="100" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="728" y="66" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wuhpfb_di" bpmnElement="Flow_0wuhpfb">
+        <di:waypoint x="795" y="210" />
+        <di:waypoint x="820" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n9mb8u_di" bpmnElement="Flow_1n9mb8u">
+        <di:waypoint x="700" y="140" />
+        <di:waypoint x="723" y="140" />
+        <di:waypoint x="723" y="210" />
+        <di:waypoint x="745" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uljtsx_di" bpmnElement="Flow_0uljtsx">
+        <di:waypoint x="920" y="210" />
+        <di:waypoint x="960" y="210" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09loe5v_di" bpmnElement="Flow_NextEndBusinessProcess">
-        <di:waypoint x="470" y="210" />
-        <di:waypoint x="500" y="210" />
+        <di:waypoint x="450" y="210" />
+        <di:waypoint x="505" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14aod2o_di" bpmnElement="Flow_NextNotifyRpa">
-        <di:waypoint x="330" y="210" />
-        <di:waypoint x="370" y="210" />
+        <di:waypoint x="320" y="210" />
+        <di:waypoint x="350" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_NextStartBusinessProcess">
         <di:waypoint x="188" y="210" />
-        <di:waypoint x="230" y="210" />
+        <di:waypoint x="220" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_StartBusinessProcessAbort">
-        <di:waypoint x="280" y="152" />
-        <di:waypoint x="280" y="118" />
+        <di:waypoint x="270" y="152" />
+        <di:waypoint x="270" y="108" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_NextEndEvent">
-        <di:waypoint x="940" y="210" />
-        <di:waypoint x="972" y="210" />
+        <di:waypoint x="1060" y="210" />
+        <di:waypoint x="1092" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0uljtsx_di" bpmnElement="Flow_0uljtsx">
-        <di:waypoint x="800" y="210" />
-        <di:waypoint x="840" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1n9mb8u_di" bpmnElement="Flow_1n9mb8u">
-        <di:waypoint x="600" y="210" />
-        <di:waypoint x="625" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wuhpfb_di" bpmnElement="Flow_0wuhpfb">
-        <di:waypoint x="675" y="210" />
-        <di:waypoint x="700" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0lq9pff_di" bpmnElement="Flow_0lq9pff">
-        <di:waypoint x="650" y="185" />
-        <di:waypoint x="650" y="100" />
-        <di:waypoint x="700" y="100" />
+      <bpmndi:BPMNEdge id="Flow_1fmlvli_di" bpmnElement="Flow_1fmlvli">
+        <di:waypoint x="530" y="185" />
+        <di:waypoint x="530" y="140" />
+        <di:waypoint x="600" y="140" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="558" y="126" width="84" height="27" />
+          <dc:Bounds x="516" y="106" width="62" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hs292h_di" bpmnElement="Flow_0hs292h">
-        <di:waypoint x="750" y="140" />
-        <di:waypoint x="750" y="170" />
+      <bpmndi:BPMNEdge id="Flow_15v9se7_di" bpmnElement="Flow_15v9se7">
+        <di:waypoint x="555" y="210" />
+        <di:waypoint x="745" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="609" y="192" width="84" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
+        <dc:Bounds x="1092" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="960" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1huplho_di" bpmnElement="TakeCaseOfflineNotifyApplicantSolicitor1">
+        <dc:Bounds x="820" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0o6ykyq_di" bpmnElement="Gateway_Two_Representetives" isMarkerVisible="true">
+        <dc:Bounds x="745" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00j2ajh_di" bpmnElement="TakeCaseOfflineNotifyRespondentSolicitor2">
+        <dc:Bounds x="820" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_StartClaimTakenOffline">
         <dc:Bounds x="152" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -142,36 +186,24 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_StartBusinessProcess">
-        <dc:Bounds x="230" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
-        <dc:Bounds x="262" y="82" width="36" height="36" />
+        <dc:Bounds x="220" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_08ndbvb_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="370" y="170" width="100" height="80" />
+        <dc:Bounds x="350" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
+        <dc:Bounds x="252" y="72" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1lbbnri_di" bpmnElement="Gateway_1lbbnri" isMarkerVisible="true">
+        <dc:Bounds x="505" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0lrzkzm_di" bpmnElement="TakeCaseOfflineNotifyRespondentSolicitor1">
-        <dc:Bounds x="500" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0o6ykyq_di" bpmnElement="Gateway_Two_Representetives" isMarkerVisible="true">
-        <dc:Bounds x="625" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
-        <dc:Bounds x="972" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="840" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1huplho_di" bpmnElement="TakeCaseOfflineNotifyApplicantSolicitor1">
-        <dc:Bounds x="700" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00j2ajh_di" bpmnElement="TakeCaseOfflineNotifyRespondentSolicitor2">
-        <dc:Bounds x="700" y="60" width="100" height="80" />
+        <dc:Bounds x="600" y="100" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
-        <dc:Bounds x="262" y="152" width="36" height="36" />
+        <dc:Bounds x="252" y="152" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="296" y="133" width="27" height="14" />
+          <dc:Bounds x="287" y="133" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
