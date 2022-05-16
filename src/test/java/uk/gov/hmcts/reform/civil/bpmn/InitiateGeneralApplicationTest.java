@@ -28,6 +28,9 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Assigning of roles
     private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
+    //Fee Validation
+    private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE_GASPEC";
+    private static final String VALIDATE_FEE_ID = "GeneralApplicationValidateFee";
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
     private static final String MAKE_PBA_PAYMENT_ID = "GeneralApplicationMakePayment";
@@ -89,6 +92,16 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             ASSIGNIN_OF_ROLES_EVENT,
             ASSIGNIN_OF_ROLES_ID,
             variables
+        );
+
+        //validate fee
+        ExternalTask validateFee = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+                validateFee,
+                APPLICATION_EVENT_GASPEC,
+                VALIDATE_FEE_EVENT,
+                VALIDATE_FEE_ID,
+                variables
         );
 
         //make pba payment
