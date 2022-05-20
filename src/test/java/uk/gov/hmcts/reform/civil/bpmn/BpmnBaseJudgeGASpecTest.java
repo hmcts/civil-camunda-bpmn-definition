@@ -32,6 +32,9 @@ public abstract class BpmnBaseJudgeGASpecTest {
     public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_MAKE_DECISION";
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
     public static final String MAKE_DECISION_CASE_EVENT = "makeDecisionEventGASpec";
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
+    public static final String START_NOTIFICATION_PROCESS_MAKE_DECISION = "START_NOTIFICATION_PROCESS_MAKE_DECISION";
+    public static final String START_NOTIFICATION_PROCESS_ID = "StartNotificationProcessMakeDecision";
     public static final String END_BUSINESS_PROCESS = "END_JUDGE_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
