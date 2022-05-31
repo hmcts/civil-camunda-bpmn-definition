@@ -15,10 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "GA_RESPONSE_DEADLINE_PROCESSOR";
+    public static final String GA_RESPONSE_DEADLINE_TOPIC = "GAResponseDeadlineProcessor";
+    public static final String GA_JUDGE_REVISIT_TOPIC = "GAJudgeRevisitProcessor";
 
     public GAResponseDeadlineProcessorTest() {
-        super("general_application_response_deadline_processor.bpmn", "GAResponseDeadlineProcessor");
+        super("general_application_response_deadline_processor.bpmn", "GA_RESPONSE_DEADLINE_PROCESSOR");
     }
 
     @Test
@@ -26,8 +27,9 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
-        //assert topic names
-        assertThat(getTopics()).containsOnly(TOPIC_NAME);
+        //assert first topic names
+        assertThat(getTopics()).hasSize(1);
+        assertThat(getTopics()).containsOnly(GA_RESPONSE_DEADLINE_TOPIC);
 
         //get jobs
         List<JobDefinition> jobDefinitions = getJobs();
@@ -48,10 +50,19 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
         List<ExternalTask> externalTasks = getExternalTasks();
         assertThat(externalTasks).hasSize(1);
 
-        //fetch and complete task
-        List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
-        assertThat(lockedExternalTasks).hasSize(1);
-        completeTask(lockedExternalTasks.get(0).getId());
+        //fetch and complete first task
+        List<LockedExternalTask> lockedExternalGaRessponseTasks = fetchAndLockTask(GA_RESPONSE_DEADLINE_TOPIC);
+        assertThat(lockedExternalGaRessponseTasks).hasSize(1);
+        completeTask(lockedExternalGaRessponseTasks.get(0).getId());
+
+        //assert second topic names
+        assertThat(getTopics()).hasSize(1);
+        assertThat(getTopics()).containsOnly(GA_JUDGE_REVISIT_TOPIC);
+
+        //fetch and complete second task
+        List<LockedExternalTask> lockedExternalGaJudgeTasks = fetchAndLockTask(GA_JUDGE_REVISIT_TOPIC);
+        assertThat(lockedExternalGaJudgeTasks).hasSize(1);
+        completeTask(lockedExternalGaJudgeTasks.get(0).getId());
 
         //assert no external tasks left
         List<ExternalTask> externalTasksAfter = getExternalTasks();
