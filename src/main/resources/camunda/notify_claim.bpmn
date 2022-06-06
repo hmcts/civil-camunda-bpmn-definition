@@ -48,16 +48,19 @@
     <bpmn:serviceTask id="NotifyApplicantSolicitorCC" name="Notify Applicant Solicitor (CC)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
+          <camunda:inputParameter name="Input_1a8be24" />
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_ISSUE_CC</camunda:inputParameter>
+          <camunda:outputParameter name="Output_2f303c2" />
+          <camunda:outputParameter name="Output_00isqng" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1mfwr5q</bpmn:incoming>
       <bpmn:outgoing>Flow_1j6s22p</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1j6s22p" sourceRef="NotifyApplicantSolicitorCC" targetRef="NotifyClaimCAARespondent1Org" />
+    <bpmn:sequenceFlow id="Flow_1j6s22p" sourceRef="NotifyApplicantSolicitorCC" targetRef="Gateway_0nkj7bx" />
     <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
       <bpmn:incoming>Flow_0e5qh7y</bpmn:incoming>
-      <bpmn:incoming>Flow_1e7z3un</bpmn:incoming>
+      <bpmn:incoming>Flow_06g40ut</bpmn:incoming>
       <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
       <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -93,7 +96,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0cclzbs" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_0wretog" />
     <bpmn:exclusiveGateway id="Gateway_0nkj7bx">
-      <bpmn:incoming>Flow_1oehzi7</bpmn:incoming>
+      <bpmn:incoming>Flow_1j6s22p</bpmn:incoming>
       <bpmn:outgoing>Flow_0fvh4ot</bpmn:outgoing>
       <bpmn:outgoing>Flow_0j4kkyh</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -106,7 +109,7 @@
     <bpmn:sequenceFlow id="Flow_1cml9oy" name="1 v 2&#10;(Different Representatives)" sourceRef="Gateway_Two_Representative" targetRef="NotifyDefendantSolicitor2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_06g40ut" sourceRef="NotifyDefendantSolicitor2" targetRef="NotifyClaimCAARespondent2Org" />
+    <bpmn:sequenceFlow id="Flow_06g40ut" sourceRef="NotifyDefendantSolicitor2" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:sequenceFlow id="Flow_0e5qh7y" sourceRef="Gateway_Two_Representative" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:serviceTask id="ProceedOffline" name="Proceed Offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -138,27 +141,6 @@
       <bpmn:outgoing>Flow_1j8nofl</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1j8nofl" sourceRef="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
-    <bpmn:serviceTask id="NotifyClaimCAARespondent1Org" name="Notify CAA (Respondent One Org)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_CAA_RESPONDENT_1_ORG</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1j6s22p</bpmn:incoming>
-      <bpmn:outgoing>Flow_1oehzi7</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyClaimCAARespondent2Org" name="Notify CAA (Respondent Two Org)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Input_063sbdo" />
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_CAA_RESPONDENT_2_ORG</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_06g40ut</bpmn:incoming>
-      <bpmn:outgoing>Flow_1e7z3un</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1e7z3un" sourceRef="NotifyClaimCAARespondent2Org" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
-    <bpmn:sequenceFlow id="Flow_1oehzi7" sourceRef="NotifyClaimCAARespondent1Org" targetRef="Gateway_0nkj7bx" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="NOTIFY_DEFENDANT_OF_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -171,7 +153,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1j6s22p_di" bpmnElement="Flow_1j6s22p">
         <di:waypoint x="620" y="250" />
-        <di:waypoint x="670" y="250" />
+        <di:waypoint x="825" y="250" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1005" y="-86" width="61" height="14" />
         </bpmndi:BPMNLabel>
@@ -211,11 +193,6 @@
         <di:waypoint x="1035" y="250" />
         <di:waypoint x="1515" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1e7z3un_di" bpmnElement="Flow_1e7z3un">
-        <di:waypoint x="1340" y="170" />
-        <di:waypoint x="1340" y="250" />
-        <di:waypoint x="1515" y="250" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rkogor_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
         <di:waypoint x="1540" y="225" />
         <di:waypoint x="1540" y="130" />
@@ -241,7 +218,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06g40ut_di" bpmnElement="Flow_06g40ut">
         <di:waypoint x="1200" y="130" />
-        <di:waypoint x="1290" y="130" />
+        <di:waypoint x="1340" y="130" />
+        <di:waypoint x="1340" y="250" />
+        <di:waypoint x="1515" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fvh4ot_di" bpmnElement="Flow_0fvh4ot">
         <di:waypoint x="850" y="275" />
@@ -258,10 +237,6 @@
       <bpmndi:BPMNEdge id="Flow_1j8nofl_di" bpmnElement="Flow_1j8nofl">
         <di:waypoint x="1200" y="370" />
         <di:waypoint x="1610" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1oehzi7_di" bpmnElement="Flow_1oehzi7">
-        <di:waypoint x="770" y="250" />
-        <di:waypoint x="825" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
         <dc:Bounds x="152" y="232" width="36" height="36" />
@@ -310,12 +285,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ar3tpe_di" bpmnElement="NotifyClaimProceedsOfflineNotifyApplicantSolicitor1">
         <dc:Bounds x="1100" y="330" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="NotifyClaimDetailsRespondent2OrgCAA_di" bpmnElement="NotifyClaimCAARespondent2Org">
-        <dc:Bounds x="1290" y="90" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="NotifyClaimDetailsRespondent1OrgCAA_di" bpmnElement="NotifyClaimCAARespondent1Org">
-        <dc:Bounds x="670" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="262" y="192" width="36" height="36" />
