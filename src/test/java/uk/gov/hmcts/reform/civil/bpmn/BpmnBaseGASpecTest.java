@@ -33,6 +33,7 @@ public abstract class BpmnBaseGASpecTest {
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessGAspecTaskId";
     public static final String CREATE_APPLICATION_CASE_EVENT = "createApplicationEventGASpec";
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    public static final String PROCESS_CASE_EVENT = "processCaseEvent";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";

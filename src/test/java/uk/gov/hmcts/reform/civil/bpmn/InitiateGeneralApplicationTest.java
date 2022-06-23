@@ -39,7 +39,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     private static final String NOTIFY_RPA_GENERAL_APPLICATION_EVENTS = "NOTIFY_RPA_GENERAL_APPLICATION";
-    private static final String NOTIFY_RPA_GENERAL_APPLICATION_ID = "GeneralApplicationNotifying";
+    private static final String NOTIFY_RPA_GENERAL_APPLICATION_ID = "NotifyRoboticsGeneralApplication";
 
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
@@ -128,10 +128,10 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         );
 
         //RPA General Application
-        ExternalTask generalApplicationRPA = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        ExternalTask generalApplicationRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generalApplicationRPA,
-            APPLICATION_EVENT_GASPEC,
+            PROCESS_CASE_EVENT,
             NOTIFY_RPA_GENERAL_APPLICATION_EVENTS,
             NOTIFY_RPA_GENERAL_APPLICATION_ID,
             variables
