@@ -24,23 +24,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class BpmnBaseTest {
+public abstract class BpmnBaseJudgeGASpecTest {
 
     private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
-    public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS";
-    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS";
-    public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessTaskId";
-    public static final String PROCESS_CASE_EVENT = "processCaseEvent";
-    public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_MAKE_DECISION";
+    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_MAKE_DECISION";
+    public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
+    public static final String MAKE_DECISION_CASE_EVENT = "makeDecisionEventGASpec";
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
+    public static final String START_NOTIFICATION_PROCESS_MAKE_DECISION = "START_NOTIFICATION_PROCESS_MAKE_DECISION";
+    public static final String START_NOTIFICATION_PROCESS_ID = "StartNotificationProcessMakeDecision";
+    public static final String END_BUSINESS_PROCESS = "END_JUDGE_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
-    public static final String FLOW_FLAGS = "flowFlags";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
-    public static final String SPEC_RPA_CONTINUOUS_FEED = "SPEC_RPA_CONTINUOUS_FEED";
-    public static final String NOTICE_OF_CHANGE = "NOTICE_OF_CHANGE";
-    public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
-    public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
-    public static final String FLOW_STATE = "flowState";
 
     public final String bpmnFileName;
     public final String processId;
@@ -51,7 +48,7 @@ public abstract class BpmnBaseTest {
 
     public ProcessInstance processInstance;
 
-    public BpmnBaseTest(String bpmnFileName, String processId) {
+    public BpmnBaseJudgeGASpecTest(String bpmnFileName, String processId) {
         this.bpmnFileName = bpmnFileName;
         this.processId = processId;
     }
@@ -68,11 +65,12 @@ public abstract class BpmnBaseTest {
         //deploy process
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "start_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH,
+                                                "start_general_application_make_decision_business_process.bpmn"))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_judges_makes_decision_business_process.bpmn"))
             .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
@@ -256,9 +254,9 @@ public abstract class BpmnBaseTest {
      * @param externalTask the id of the external task to complete.
      */
     public void completeBusinessProcess(ExternalTask externalTask) {
-        assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS");
+        assertThat(externalTask.getTopicName()).isEqualTo("END_JUDGE_BUSINESS_PROCESS_GASPEC");
 
-        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS");
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_JUDGE_BUSINESS_PROCESS_GASPEC");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
