@@ -91,7 +91,7 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true, true", "true, false", "false, true"})
+    @CsvSource({"true, true", "true, false", "false, true", "true, null"})
     void shouldSuccessfullyCompleteTakeCaseOfflineUnrepresentedDefendant(boolean unrepresentedDefendant1,
                                                                          boolean unrepresentedDefendant2) {
         //assert process has started
