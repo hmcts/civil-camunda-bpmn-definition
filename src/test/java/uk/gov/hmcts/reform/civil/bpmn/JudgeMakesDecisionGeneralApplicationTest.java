@@ -47,6 +47,16 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
+        //complete judicial notification process
+        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            judicialNotificationProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            START_NOTIFICATION_PROCESS_MAKE_DECISION,
+            START_NOTIFICATION_PROCESS_ID,
+            variables
+        );
+
         //complete the document generation
         ExternalTask documentGeneration = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
         assertCompleteExternalTask(
