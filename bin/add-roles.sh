@@ -6,6 +6,7 @@
 ./bin/utils/ccd-add-role.sh "caseworker-approver"
 ./bin/utils/ccd-add-role.sh "prd-admin"
 ./bin/utils/ccd-add-role.sh "judge-profile"
+./bin/utils/ccd-add-role.sh "basic-access" #to be removed after implementation of GS_profile
 ./bin/utils/ccd-add-role.sh "GS_profile"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
