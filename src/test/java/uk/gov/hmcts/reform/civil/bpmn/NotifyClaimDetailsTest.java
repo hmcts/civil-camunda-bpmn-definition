@@ -24,7 +24,10 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS_CC";
     public static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DETAILS";
-
+    private static final String NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG
+        = "NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG";
+    private static final String NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_2_ORG
+        = "NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_2_ORG";
     private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
 
@@ -38,6 +41,10 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         = "NotifyClaimDetailsApplicantSolicitor1CC";
     private static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID
         = "NotifyClaimDetailsRespondentSolicitor2";
+    private static final String NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG_ACTIVITY_ID
+        = "NotifyClaimDetailsRespondent1OrgCAA";
+    private static final String NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_2_ORG_ACTIVITY_ID
+        = "NotifyClaimDetailsRespondent2OrgCAA";
 
     private static final String NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID =
         "NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC";
@@ -81,6 +88,15 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
                                    NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the respondent 1 caa notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG_ACTIVITY_ID,
                                    variables
         );
 
@@ -149,6 +165,15 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the respondent 1 caa notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG_ACTIVITY_ID,
+                                   variables
+        );
+
         //complete the CC notification
         ExternalTask notificationCcTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -166,6 +191,15 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
                                        PROCESS_CASE_EVENT,
                                        NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS,
                                        NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID,
+                                       variables
+            );
+
+            //complete the respondent 2 caa notification
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask,
+                                       PROCESS_CASE_EVENT,
+                                       NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_2_ORG,
+                                       NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_2_ORG_ACTIVITY_ID,
                                        variables
             );
         }
@@ -216,6 +250,15 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
             NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
             variables
+        );
+
+        //complete the respondent 1 caa notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG,
+                                   NOTIFY_CLAIM_DETAILS_CAA_RESPONDENT_1_ORG_ACTIVITY_ID,
+                                   variables
         );
 
         //complete the CC notification
