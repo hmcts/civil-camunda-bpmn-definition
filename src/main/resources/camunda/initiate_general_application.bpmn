@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
   <bpmn:collaboration id="InitiateGeneralApplication">
     <bpmn:participant id="Participant_11shrki" name="Initiate General Application" processRef="INITIATE_GENERAL_APPLICATION_PROCESS_ID" />
@@ -55,7 +55,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_10lsf9e</bpmn:incoming>
+      <bpmn:incoming>Flow_0g386g4</bpmn:incoming>
       <bpmn:outgoing>Flow_14injep</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
@@ -68,17 +68,8 @@
     <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
     <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
     <bpmn:sequenceFlow id="Flow_0cw5dnh" sourceRef="AssigningOfRoles" targetRef="GeneralApplicationValidateFee" />
-    <bpmn:sequenceFlow id="Flow_10lsf9e" sourceRef="GeneralApplicationMakePayment" targetRef="GeneralApplicationNotifying" />
+    <bpmn:sequenceFlow id="Flow_10lsf9e" sourceRef="GeneralApplicationMakePayment" targetRef="GeneralAppServiceReqPbaPayment" />
     <bpmn:sequenceFlow id="Flow_14injep" sourceRef="GeneralApplicationNotifying" targetRef="Activity_0eo8p2p" />
-    <bpmn:serviceTask id="GeneralApplicationMakePayment" name="Make PBA Payment" camunda:type="external" camunda:topic="applicationEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">MAKE_PBA_PAYMENT_GASPEC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1s97v1o</bpmn:incoming>
-      <bpmn:outgoing>Flow_10lsf9e</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of GA roles" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -88,6 +79,17 @@
       <bpmn:incoming>Flow_0zyvudm</bpmn:incoming>
       <bpmn:outgoing>Flow_0cw5dnh</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1s97v1o" sourceRef="GeneralApplicationValidateFee" targetRef="GeneralApplicationMakePayment" />
+    <bpmn:serviceTask id="GeneralAppServiceReqPbaPayment" name="Make Service Req PBA Payment" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">MAKE_PBA_PAYMENT_GASPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10lsf9e</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g386g4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0g386g4" sourceRef="GeneralAppServiceReqPbaPayment" targetRef="GeneralApplicationNotifying" />
     <bpmn:serviceTask id="GeneralApplicationValidateFee" name="Validate Fee" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -97,24 +99,42 @@
       <bpmn:incoming>Flow_0cw5dnh</bpmn:incoming>
       <bpmn:outgoing>Flow_1s97v1o</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1s97v1o" sourceRef="GeneralApplicationValidateFee" targetRef="GeneralApplicationMakePayment" />
+    <bpmn:serviceTask id="GeneralApplicationMakePayment" name="Make Payment Service Request" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">MAKE_PAYMENT_SERVICE_REQ_GASPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1s97v1o</bpmn:incoming>
+      <bpmn:outgoing>Flow_10lsf9e</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
       <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="1500" height="380" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0g386g4_di" bpmnElement="Flow_0g386g4">
+        <di:waypoint x="1157" y="380" />
+        <di:waypoint x="1180" y="380" />
+        <di:waypoint x="1180" y="278" />
+        <di:waypoint x="1210" y="278" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s97v1o_di" bpmnElement="Flow_1s97v1o">
+        <di:waypoint x="1010" y="248" />
+        <di:waypoint x="1057" y="248" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14injep_di" bpmnElement="Flow_14injep">
         <di:waypoint x="1310" y="250" />
         <di:waypoint x="1430" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10lsf9e_di" bpmnElement="Flow_10lsf9e">
-        <di:waypoint x="1157" y="248" />
-        <di:waypoint x="1210" y="248" />
+        <di:waypoint x="1106" y="288" />
+        <di:waypoint x="1107" y="340" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cw5dnh_di" bpmnElement="Flow_0cw5dnh">
         <di:waypoint x="880" y="248" />
-        <di:waypoint x="919" y="248" />
+        <di:waypoint x="910" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
         <di:waypoint x="248" y="248" />
@@ -139,10 +159,6 @@
       <bpmndi:BPMNEdge id="Flow_1rhjgal_di" bpmnElement="Flow_1rhjgal">
         <di:waypoint x="1530" y="248" />
         <di:waypoint x="1592" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1s97v1o_di" bpmnElement="Flow_1s97v1o">
-        <di:waypoint x="1019" y="248" />
-        <di:waypoint x="1057" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
         <dc:Bounds x="212" y="230" width="36" height="36" />
@@ -171,14 +187,19 @@
       <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
         <dc:Bounds x="1210" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0yc9n40_di" bpmnElement="GeneralApplicationMakePayment">
-        <dc:Bounds x="1057" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0n2dfke_di" bpmnElement="AssigningOfRoles">
         <dc:Bounds x="780" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0f4ty9j" bpmnElement="GeneralAppServiceReqPbaPayment">
+        <dc:Bounds x="1057" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1a77jmr_di" bpmnElement="GeneralApplicationValidateFee">
-        <dc:Bounds x="919" y="208" width="100" height="80" />
+        <dc:Bounds x="910" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yc9n40_di" bpmnElement="GeneralApplicationMakePayment">
+        <dc:Bounds x="1057" y="208" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
