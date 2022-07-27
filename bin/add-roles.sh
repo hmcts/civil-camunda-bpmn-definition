@@ -8,6 +8,12 @@
 ./bin/utils/ccd-add-role.sh "judge-profile"
 ./bin/utils/ccd-add-role.sh "basic-access" #to be removed after implementation of GS_profile
 ./bin/utils/ccd-add-role.sh "GS_profile"
+./bin/utils/ccd-add-role.sh "APP-SOL-UNSPEC-PROFILE"
+./bin/utils/ccd-add-role.sh "APP-SOL-SPEC-PROFILE"
+./bin/utils/ccd-add-role.sh "RES-SOL-ONE-UNSPEC-PROFILE"
+./bin/utils/ccd-add-role.sh "RES-SOL-ONE-SPEC-PROFILE"
+./bin/utils/ccd-add-role.sh "RES-SOL-TWO-UNSPEC-PROFILE"
+./bin/utils/ccd-add-role.sh "RES-SOL-TWO-SPEC-PROFILE"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
