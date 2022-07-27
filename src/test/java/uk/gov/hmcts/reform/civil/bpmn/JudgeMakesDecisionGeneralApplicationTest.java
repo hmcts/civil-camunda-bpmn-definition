@@ -20,6 +20,9 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     //Create PDF
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
+    //Add PDF document to main case
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AssPDFDocumentToMainCase";
 
     public JudgeMakesDecisionGeneralApplicationTest() {
         super("judge_makes_decision_general_application.bpmn", "JUDGE_MAKES_DECISION_PROCESS_ID");
@@ -64,6 +67,16 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             MAKE_DECISION_CASE_EVENT,
             CREATE_PDF_EVENT,
             CREATE_PDF_ID,
+            variables
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID,
             variables
         );
 
