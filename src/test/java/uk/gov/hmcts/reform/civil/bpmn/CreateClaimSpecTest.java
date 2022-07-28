@@ -36,16 +36,21 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
     //issue claim
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpec";
-    private static final String PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID = "IssueClaimForSpecUnrepresentedSolicitor";
+    private static final String PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID
+        = "IssueClaimForSpecUnrepresentedSolicitor";
     //notify applicant solicitor 1 continuing online
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpecUnrepresented";
     //proceed offline
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
-    private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID = "ProceedOfflineForUnRepresentedSolicitor";
-    private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREGISTERED_ACTIVITY_ID = "ProceedOfflineForUnregisteredFirm";
+    private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID
+        = "ProceedOfflineForUnRepresentedSolicitor";
+    private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREGISTERED_ACTIVITY_ID
+        = "ProceedOfflineForUnregisteredFirm";
     //notify RPA
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
