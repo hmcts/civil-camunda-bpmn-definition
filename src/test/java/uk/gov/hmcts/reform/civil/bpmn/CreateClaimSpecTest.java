@@ -109,9 +109,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
     @Nested
     class PostFlowStateRename {
 
-        @ParameterizedTest
-        @ValueSource(strings = {"true", "false"})
-
         @Test
         void shouldSuccessfullyCompleteCreateClaim_whenClaimRemainOnlineForUnrepresentedDefendant() {
             //assert process has started
