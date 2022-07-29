@@ -21,6 +21,13 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
 
+    //Obtain Additional fee value
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_EVENT = "OBTAIN_ADDITIONAL_FEE_VALUE";
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_ID = "ObtainAdditionalFeeValue";
+    //Create PDF
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT = "OBTAIN_ADDITIONAL_PAYMENT_REF";
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_ID = "ObtainAdditionalPaymentReference";
+
     public JudgeMakesDecisionGeneralApplicationTest() {
         super("judge_makes_decision_general_application.bpmn", "JUDGE_MAKES_DECISION_PROCESS_ID");
     }
@@ -44,6 +51,25 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
+            variables
+        );
+        //complete the start business process
+        ExternalTask additionalFeeValueProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            additionalFeeValueProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            OBTAIN_ADDITIONAL_FEE_VALUE_EVENT,
+            OBTAIN_ADDITIONAL_FEE_VALUE_ID,
+            variables
+        );
+
+        //complete the start business process
+        ExternalTask additionalPaymentRefProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            additionalPaymentRefProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_ID,
             variables
         );
 
