@@ -34,7 +34,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
 
     //Make Service Request
     private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
-    private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationMakePayment";
+    private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
 
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
