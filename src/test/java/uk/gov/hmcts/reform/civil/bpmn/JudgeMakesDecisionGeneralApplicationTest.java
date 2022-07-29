@@ -56,7 +56,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        //complete the start business process
+        //Obtain Additional Fee Value
         ExternalTask additionalFeeValueProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             additionalFeeValueProcess,
@@ -66,7 +66,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
-        //complete the start business process
+        //Obtain Additional Payment Reference
         ExternalTask additionalPaymentRefProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             additionalPaymentRefProcess,
@@ -76,7 +76,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
-        //complete judicial notification process
+        //Obtain Additional Payment Reference
         ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             judicialNotificationProcess,
