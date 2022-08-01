@@ -22,7 +22,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
     //Add PDF document to main case
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
-    private static final String ADD_PDF_ID = "AssPDFDocumentToMainCase";
+    private static final String ADD_PDF_ID = "AddPDFDocumentToMainCase";
 
     //Obtain Additional fee value
     private static final String OBTAIN_ADDITIONAL_FEE_VALUE_EVENT = "OBTAIN_ADDITIONAL_FEE_VALUE";
