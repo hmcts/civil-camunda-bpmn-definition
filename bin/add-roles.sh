@@ -11,6 +11,7 @@
 ./bin/utils/ccd-add-role.sh "legal-adviser"
 ./bin/utils/ccd-add-role.sh "civil-administrator-standard"
 ./bin/utils/ccd-add-role.sh "civil-administrator-basic"
+./bin/utils/ccd-add-role.sh "caseworker-ras-validation"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
