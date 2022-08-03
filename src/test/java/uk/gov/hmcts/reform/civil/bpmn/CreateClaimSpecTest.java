@@ -80,6 +80,11 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
     private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec";
+    //notify respondent 1
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyRespondent1ForSpec";
     //payment failed
     private static final String PROCESS_PAYMENT_FAILED_EVENT = "PROCESS_PAYMENT_FAILED";
     private static final String PROCESS_PAYMENT_FAILED_ACTIVITY_ID = "PaymentFailed";
@@ -116,7 +121,9 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
+            variables.put(FLOW_FLAGS, Map.of(
+                "RPA_CONTINUOUS_FEED", true,
+                "PIP_ENABLED", true));
 
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -176,6 +183,15 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT,
                 NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
+            );
+
+            //complete the respondent notification
+            ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationRespondentTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
             );
 
             //complete the Robotics notification
