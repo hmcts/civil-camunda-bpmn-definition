@@ -120,7 +120,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
                 "RPA_CONTINUOUS_FEED", true,
                 "PIP_ENABLED", true));
 
-
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
             assertCompleteExternalTask(
