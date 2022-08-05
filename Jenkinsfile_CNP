@@ -110,14 +110,14 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-nonprod.json,*GAspec.json,*DJspec.json,*DJ.json"
+     ./bin/import-ccd-definition.sh "-e *DJspec.json,*DJ.json,*-prod.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json,*GAspec.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
   after('smoketest:preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
   before('functionalTest:preview') {
@@ -135,7 +135,7 @@ withPipeline(type, product, component) {
   }
 
   after('functionalTest:preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
   before('smoketest:aat') {
@@ -144,14 +144,14 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-nonprod.json,*LRspec.json,*GAspec.json,*DJspec.json,*DJ.json"
+      ./bin/import-ccd-definition.sh "-e *GAspec.json,*DJspec.json,*-nonprod.json,*DJ.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
   }
 
   after('smoketest:aat') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
   before('functionalTest:aat') {
@@ -168,6 +168,6 @@ withPipeline(type, product, component) {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
     uploadBpmnDiagrams('prod')
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 }

@@ -28,9 +28,17 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Assigning of roles
     private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
+    //Fee Validation
+    private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE_GASPEC";
+    private static final String VALIDATE_FEE_ID = "GeneralApplicationValidateFee";
+
+    //Make Service Request
+    private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
+    private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
+
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
-    private static final String MAKE_PBA_PAYMENT_ID = "GeneralApplicationMakePayment";
+    private static final String MAKE_PBA_PAYMENT_ID = "GeneralAppServiceReqPbaPayment";
     //Notifying respondents
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
@@ -88,6 +96,25 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             APPLICATION_EVENT_GASPEC,
             ASSIGNIN_OF_ROLES_EVENT,
             ASSIGNIN_OF_ROLES_ID,
+            variables
+        );
+
+        //validate fee
+        ExternalTask validateFee = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+                validateFee,
+                APPLICATION_EVENT_GASPEC,
+                VALIDATE_FEE_EVENT,
+                VALIDATE_FEE_ID,
+                variables
+        );
+        //make service request
+        ExternalTask makeServiceRequest = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            makeServiceRequest,
+            APPLICATION_EVENT_GASPEC,
+            MAKE_SERVICE_REQ_EVENT,
+            MAKE_SERVICE_REQ_ID,
             variables
         );
 
