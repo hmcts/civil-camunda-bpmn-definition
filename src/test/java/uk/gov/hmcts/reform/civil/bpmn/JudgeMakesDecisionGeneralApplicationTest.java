@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "JUDGE_MAKES_DECISION";
-    private static final String PROCESS_ID = "JUDGE_MAKES_DECISION_PROCESS_ID";
+    private static final String MESSAGE_NAME = "MAKE_DECISION";
+    private static final String PROCESS_ID = "MAKE_DECISION_PROCESS_ID";
     //Create PDF
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
@@ -25,7 +25,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String ADD_PDF_ID = "AddPDFDocumentToMainCase";
 
     public JudgeMakesDecisionGeneralApplicationTest() {
-        super("judge_makes_decision_general_application.bpmn", "JUDGE_MAKES_DECISION_PROCESS_ID");
+        super("judge_makes_decision_general_application.bpmn", "MAKE_DECISION_PROCESS_ID");
     }
 
     @ParameterizedTest
