@@ -9,6 +9,8 @@
 ./bin/utils/ccd-add-role.sh "basic-access" #to be removed after implementation of GS_profile
 ./bin/utils/ccd-add-role.sh "GS_profile"
 ./bin/utils/ccd-add-role.sh "legal-adviser"
+./bin/utils/ccd-add-role.sh "civil-administrator-standard"
+./bin/utils/ccd-add-role.sh "civil-administrator-basic"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
