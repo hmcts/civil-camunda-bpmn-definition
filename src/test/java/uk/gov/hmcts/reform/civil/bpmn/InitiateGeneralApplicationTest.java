@@ -39,8 +39,8 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Make PBA Payments
     private static final String MAKE_PBA_PAYMENT_EVENT = "MAKE_PBA_PAYMENT_GASPEC";
     private static final String MAKE_PBA_PAYMENT_ID = "GeneralAppServiceReqPbaPayment";
-    private static final String PAYMENT_FAILED_EVENT ="PBA_PAYMENT_FAILED";
-    private static final String PAYMENT_FAILED_ACTIVITY_ID ="PaymentFailed";
+    private static final String PAYMENT_FAILED_EVENT = "PBA_PAYMENT_FAILED";
+    private static final String PAYMENT_FAILED_ACTIVITY_ID = "PaymentFailed";
     private static final String FLOW_STATE = "flowState";
     //Notifying respondents
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
@@ -58,6 +58,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             return "MAIN" + "." + name();
         }
     }
+
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(Boolean rpaContinuousFeed) {
@@ -238,7 +239,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             variables
         );
 
-
+        //complete the payment failed
         ExternalTask paymentFailed = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             paymentFailed,
@@ -254,7 +255,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
 
         assertNoExternalTasksLeft();
     }
-
 
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
