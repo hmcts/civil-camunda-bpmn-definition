@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <bpmn:message id="Message_0slk3de" />
+  <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_1mi8rsy" name="MAIN_CASE_CLOSED" />
+  <bpmn:process id="MAIN_CASE_CLOSED" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_GA1hce35l" sourceRef="EndGABusinessProcess" targetRef="MainCaseClosedEnd" />
+    <bpmn:sequenceFlow id="Flow_GA1gsn98m" sourceRef="ApplicationClosedUpdateParentClaim" targetRef="EndGABusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_GA0yvpi10" sourceRef="Event_GA1fn0bf1" targetRef="Event_GA1nsmt51" />
+    <bpmn:sequenceFlow id="Flow_GA08myj65" sourceRef="MainCaseClosedStart" targetRef="Start_Application_Closed_Business_Process" />
+    <bpmn:sequenceFlow id="Flow_GA1ver5zr" sourceRef="Start_Application_Closed_Business_Process" targetRef="ApplicationClosedUpdateParentClaim" />
+    <bpmn:boundaryEvent id="Event_GA1fn0bf1" name="Abort" attachedToRef="Start_Application_Closed_Business_Process">
+      <bpmn:outgoing>Flow_GA0yvpi10</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1ilh7qa" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_GA1nsmt51">
+      <bpmn:incoming>Flow_GA0yvpi10</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Start_Application_Closed_Business_Process" name="Start General App Business Process" calledElement="StartGeneralAppBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_GA08myj65</bpmn:incoming>
+      <bpmn:outgoing>Flow_GA1ver5zr</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="ApplicationClosedUpdateParentClaim" name="Update Parent Claim with GA status" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">APPLICATION_CLOSED_UPDATE_PARENT_CLAIM</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_GA1ver5zr</bpmn:incoming>
+      <bpmn:outgoing>Flow_GA1gsn98m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="EndGABusinessProcess" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_GA1gsn98m</bpmn:incoming>
+      <bpmn:outgoing>Flow_GA1hce35l</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="MainCaseClosedEnd" name="End">
+      <bpmn:incoming>Flow_GA1hce35l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="MainCaseClosedStart" name="Start">
+      <bpmn:outgoing>Flow_GA08myj65</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_1mi8rsy" />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MAIN_CASE_CLOSED">
+      <bpmndi:BPMNEdge id="Flow_1ver5zr_di" bpmnElement="Flow_GA1ver5zr">
+        <di:waypoint x="330" y="210" />
+        <di:waypoint x="377" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_GA08myj65">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_GA0yvpi10">
+        <di:waypoint x="280" y="152" />
+        <di:waypoint x="280" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_GA1gsn98m">
+        <di:waypoint x="477" y="210" />
+        <di:waypoint x="546" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_GA1hce35l">
+        <di:waypoint x="646" y="210" />
+        <di:waypoint x="684" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="MainCaseClosedStart">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="235" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="MainCaseClosedEnd">
+        <dc:Bounds x="684" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="235" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="EndGABusinessProcess">
+        <dc:Bounds x="546" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="ApplicationClosedUpdateParentClaim">
+        <dc:Bounds x="377" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Start_Application_Closed_Business_Process">
+        <dc:Bounds x="230" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_GA1nsmt51">
+        <dc:Bounds x="262" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_GA1fn0bf1">
+        <dc:Bounds x="262" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="297" y="133" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
