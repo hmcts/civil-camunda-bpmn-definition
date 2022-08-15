@@ -31,10 +31,10 @@ public abstract class GeneralAppBpmnBaseTest {
     public static final String START_GENERAL_APP_BUSINESS_TOPIC = "START_GENERAL_APP_BUSINESS_PROCESS";
     public static final String START_GENERAL_APP_BUSINESS_EVENT = "START_GENERAL_APP_BUSINESS_PROCESS";
     public static final String START_GENERAL_APP_BUSINESS_ACTIVITY = "StartGeneralAppBusinessProcessTaskId";
-    public static final String PROCESS_GA_CASE_EVENT = "applicationEventGASpec";
-    public static final String END_GENERAL_APP_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
+    public static final String PROCESS_GA_CASE_EVENT = "processCaseEventGASpec";
+    public static final String END_GENERAL_APP_BUSINESS_PROCESS = "END_GENERAL_APP_BUSINESS_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
-    public static final String APPLICATION_EVENT = "applicationEventGASpec";
+    public static final String APPLICATION_EVENT = "processCaseEventGASpec";
 
     public final String bpmnFileName;
     public final String processId;
@@ -66,7 +66,7 @@ public abstract class GeneralAppBpmnBaseTest {
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_app_business_process.bpmn"))
             .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
@@ -250,9 +250,9 @@ public abstract class GeneralAppBpmnBaseTest {
      * @param externalTask the id of the external task to complete.
      */
     public void completeBusinessProcess(ExternalTask externalTask) {
-        assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS_GASPEC");
+        assertThat(externalTask.getTopicName()).isEqualTo("END_GENERAL_APP_BUSINESS_PROCESS");
 
-        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS_GASPEC");
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_GENERAL_APP_BUSINESS_PROCESS");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
