@@ -125,15 +125,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
                 "RPA_CONTINUOUS_FEED", true,
                 "PIP_ENABLED", true));
 
-            //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
+            startBusinessProcess(variables);
 
             //complete the case assignment process
             completeCaseAssignment(variables);
@@ -143,28 +135,14 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             //complete the payment
             variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                MAKE_PBA_PAYMENT_EVENT,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
+            completePayment(variables);
 
             //complete the document generation
             variables.putValue(
                 FLOW_STATE,
                 FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC.fullName()
             );
-            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
-            );
+            documentGeneration(variables);
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -223,14 +201,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
+            startBusinessProcess(variables);
 
             //complete the case assignment process
             completeCaseAssignment(variables);
@@ -240,28 +211,14 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             //complete the payment
             variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                MAKE_PBA_PAYMENT_EVENT,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
+            completePayment(variables);
 
             //complete the document generation
             variables.putValue(
                 FLOW_STATE,
                 FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName()
             );
-            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
-            );
+            documentGeneration(variables);
 
             //proceed offline
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -311,14 +268,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
+            startBusinessProcess(variables);
 
             //complete the case assignment process
             completeCaseAssignment(variables);
@@ -328,28 +278,14 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             //complete the payment
             variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                MAKE_PBA_PAYMENT_EVENT,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
+            completePayment(variables);
 
             //complete the document generation
             variables.putValue(
                 FLOW_STATE,
                 FlowState.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT.fullName()
             );
-            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
-            );
+            documentGeneration(variables);
 
             //proceed offline
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -399,14 +335,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
+            startBusinessProcess(variables);
 
             //complete the case assignment process
             completeCaseAssignment(variables);
@@ -416,14 +345,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             //complete the payment
             variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_FAILED.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                MAKE_PBA_PAYMENT_EVENT,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
+            completePayment(variables);
 
             //payment failed
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -464,14 +386,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
+            startBusinessProcess(variables);
 
             //complete the case assignment process
             completeCaseAssignment(variables);
@@ -481,28 +396,14 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             //complete the payment
             variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                MAKE_PBA_PAYMENT_EVENT,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
+            completePayment(variables);
 
             //complete the document generation
             variables.putValue(
                 FLOW_STATE,
                 FlowState.PENDING_CLAIM_ISSUED.fullName()
             );
-            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
-            );
+            documentGeneration(variables);
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -579,6 +480,39 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             CASE_ASSIGNMENT_EVENT,
             CASE_ASSIGNMENT_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    public void startBusinessProcess(VariableMap variables) {
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+    }
+
+    public void completePayment(VariableMap variables) {
+        ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
+        assertCompleteExternalTask(
+            paymentTask,
+            PROCESS_PAYMENT_TOPIC,
+            MAKE_PBA_PAYMENT_EVENT,
+            MAKE_PAYMENT_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    public void documentGeneration(VariableMap variables) {
+        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            PROCESS_CASE_EVENT,
+            GENERATE_CLAIM_FORM_EVENT,
+            GENERATE_CLAIM_FORM_ACTIVITY_ID,
             variables
         );
     }
