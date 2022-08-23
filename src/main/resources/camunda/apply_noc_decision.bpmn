@@ -37,9 +37,9 @@
     <bpmn:sequenceFlow id="Flow_00ec3ti" sourceRef="Activity_0czttms" targetRef="UpdateCaseDetailsAfterNoC" />
     <bpmn:sequenceFlow id="Flow_1x9k7i6" sourceRef="Activity_EndBusinessProcess" targetRef="Event_1ryj0ug" />
     <bpmn:sequenceFlow id="Flow_01bt3ig" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="NotifyFormerSolicitor" />
-    <bpmn:sequenceFlow id="Flow_1258hs1" sourceRef="NotifyFormerSolicitor" targetRef="Activity_0765oq1" />
-    <bpmn:sequenceFlow id="Flow_17kyip7" sourceRef="Activity_0dw3rke" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:serviceTask id="Activity_0765oq1" name="Notify Other Solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1258hs1" sourceRef="NotifyFormerSolicitor" targetRef="NotifyOtherSolicitor1" />
+    <bpmn:sequenceFlow id="Flow_17kyip7" sourceRef="NotifyOtherSolicitor2" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:serviceTask id="NotifyOtherSolicitor1" name="Notify Other Solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_OTHER_SOLICITOR_1</camunda:inputParameter>
@@ -62,14 +62,14 @@
       <bpmn:outgoing>Flow_1z0rfp8</bpmn:outgoing>
       <bpmn:outgoing>Flow_0xmxe33</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0wyvmt7" sourceRef="Activity_0765oq1" targetRef="Gateway_02x3bwe" />
-    <bpmn:sequenceFlow id="Flow_1z0rfp8" sourceRef="Gateway_02x3bwe" targetRef="Activity_0dw3rke">
+    <bpmn:sequenceFlow id="Flow_0wyvmt7" sourceRef="NotifyOtherSolicitor1" targetRef="Gateway_02x3bwe" />
+    <bpmn:sequenceFlow id="Flow_1z0rfp8" sourceRef="Gateway_02x3bwe" targetRef="NotifyOtherSolicitor2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0xmxe33" sourceRef="Gateway_02x3bwe" targetRef="Activity_EndBusinessProcess">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0dw3rke" name="Notify Other Solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyOtherSolicitor2" name="Notify Other Solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_OTHER_SOLICITOR_2</camunda:inputParameter>
@@ -152,7 +152,7 @@
       <bpmndi:BPMNShape id="Activity_18sb1hi_di" bpmnElement="UpdateCaseDetailsAfterNoC">
         <dc:Bounds x="510" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ucdsqy" bpmnElement="Activity_0765oq1">
+      <bpmndi:BPMNShape id="BPMNShape_1ucdsqy" bpmnElement="NotifyOtherSolicitor1">
         <dc:Bounds x="870" y="240" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -162,7 +162,7 @@
       <bpmndi:BPMNShape id="Gateway_02x3bwe_di" bpmnElement="Gateway_02x3bwe" isMarkerVisible="true">
         <dc:Bounds x="1045" y="255" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0qixo44" bpmnElement="Activity_0dw3rke">
+      <bpmndi:BPMNShape id="BPMNShape_0qixo44" bpmnElement="NotifyOtherSolicitor2">
         <dc:Bounds x="1020" y="110" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
