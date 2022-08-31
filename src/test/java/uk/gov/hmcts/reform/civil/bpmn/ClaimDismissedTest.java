@@ -31,6 +31,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_NOTIFICATION_DEADLINE");
+        variables.putValue("flowFlags", Map.of("GENERAL_APPLICATION_ENABLED", false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -68,6 +69,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DETAILS_NOTIFICATION_DEADLINE");
+        variables.putValue("flowFlags", Map.of("GENERAL_APPLICATION_ENABLED", false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -108,7 +110,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE");
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !has2RespondentSolicitors,
-            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors));
+            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors,
+            GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

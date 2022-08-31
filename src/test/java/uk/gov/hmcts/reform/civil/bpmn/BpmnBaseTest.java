@@ -40,6 +40,7 @@ public abstract class BpmnBaseTest {
     public static final String NOTICE_OF_CHANGE = "NOTICE_OF_CHANGE";
     public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
     public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
+    public static final String GENERAL_APPLICATION_ENABLED = "GENERAL_APPLICATION_ENABLED";
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
     public static final String FLOW_STATE = "flowState";
