@@ -40,7 +40,6 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
         variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, is1v2,
                                               ONE_RESPONDENT_REPRESENTATIVE, !is1v2));
 
-
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
