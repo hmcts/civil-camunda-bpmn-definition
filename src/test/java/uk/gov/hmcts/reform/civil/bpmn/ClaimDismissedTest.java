@@ -91,10 +91,11 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         //Notify RPA - Handed Offline
         ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notifyRpaHandedOffline,
-                                   PROCESS_CASE_EVENT,
-                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+        assertCompleteExternalTask(
+            notifyRpaHandedOffline,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
         //end business process
