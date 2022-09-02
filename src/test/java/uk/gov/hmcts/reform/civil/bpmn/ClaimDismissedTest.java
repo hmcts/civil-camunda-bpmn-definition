@@ -16,7 +16,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DISMISS_CLAIM";
     public static final String PROCESS_ID = "DISMISS_CLAIM";
-
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public ClaimDismissedTest() {
         super("claim_dismissed.bpmn", "DISMISS_CLAIM");
     }
@@ -86,6 +87,14 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
             "ClaimDismissedNotifyApplicantSolicitor1"
+        );
+
+        //Notify RPA - Handed Offline
+        ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyRpaHandedOffline,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
         //end business process
