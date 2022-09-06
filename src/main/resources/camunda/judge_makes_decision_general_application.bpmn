@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0yyqken" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="JudgeMakesDecision">
-    <bpmn:participant id="Participant_058zit7" name="Judge Makes Decision&#10;" processRef="JUDGE_MAKES_DECISION_PROCESS_ID" />
+    <bpmn:participant id="Participant_058zit7" name="Judge Makes Decision&#10;" processRef="MAKE_DECISION_PROCESS_ID" />
   </bpmn:collaboration>
-  <bpmn:process id="JUDGE_MAKES_DECISION_PROCESS_ID" isExecutable="true">
+  <bpmn:process id="MAKE_DECISION_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="Event_0ks94xn" name="Start">
       <bpmn:outgoing>Flow_1karrfz</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_117z71u" messageRef="Message_1opqhjn" />
@@ -24,7 +24,7 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_002mhpf" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_181dgsu" sourceRef="Activity_0sa4hmt" targetRef="Event_0tam17y" />
-    <bpmn:sequenceFlow id="Flow_0cowhzl" sourceRef="CreatePDFDocument" targetRef="AssPDFDocumentToMainCase" />
+    <bpmn:sequenceFlow id="Flow_0cowhzl" sourceRef="CreatePDFDocument" targetRef="AddPDFDocumentToMainCase" />
     <bpmn:sequenceFlow id="Flow_1t6anat" sourceRef="Activity_0vuxatn" targetRef="CreatePDFDocument" />
     <bpmn:sequenceFlow id="Flow_1u4hj3q" sourceRef="Activity_0vuxatn" targetRef="Event_1s3ugpj" />
     <bpmn:sequenceFlow id="Flow_1karrfz" sourceRef="Event_0ks94xn" targetRef="Activity_0vuxatn" />
@@ -47,8 +47,8 @@
       <bpmn:incoming>Flow_1t6anat</bpmn:incoming>
       <bpmn:outgoing>Flow_0cowhzl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_06mxf8z" sourceRef="AssPDFDocumentToMainCase" targetRef="Activity_0sa4hmt" />
-    <bpmn:serviceTask id="AssPDFDocumentToMainCase" name="Add PDF Document To Main Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
+    <bpmn:sequenceFlow id="Flow_06mxf8z" sourceRef="AddPDFDocumentToMainCase" targetRef="Activity_0sa4hmt" />
+    <bpmn:serviceTask id="AddPDFDocumentToMainCase" name="Add PDF Document To Main Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">ADD_PDF_TO_MAIN_CASE</camunda:inputParameter>
@@ -58,12 +58,16 @@
       <bpmn:outgoing>Flow_06mxf8z</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
-  <bpmn:message id="Message_1opqhjn" name="JUDGE_MAKES_DECISION" />
+  <bpmn:message id="Message_1opqhjn" name="MAKE_DECISION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="JudgeMakesDecision">
       <bpmndi:BPMNShape id="Participant_058zit7_di" bpmnElement="Participant_058zit7" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="1150" height="380" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_06mxf8z_di" bpmnElement="Flow_06mxf8z">
+        <di:waypoint x="780" y="247" />
+        <di:waypoint x="910" y="247" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1karrfz_di" bpmnElement="Flow_1karrfz">
         <di:waypoint x="267" y="248" />
         <di:waypoint x="309" y="248" />
@@ -83,10 +87,6 @@
       <bpmndi:BPMNEdge id="Flow_181dgsu_di" bpmnElement="Flow_181dgsu">
         <di:waypoint x="1010" y="248" />
         <di:waypoint x="1092" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06mxf8z_di" bpmnElement="Flow_06mxf8z">
-        <di:waypoint x="780" y="247" />
-        <di:waypoint x="910" y="247" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0ks94xn_di" bpmnElement="Event_0ks94xn">
         <dc:Bounds x="231" y="230" width="36" height="36" />
@@ -109,7 +109,7 @@
       <bpmndi:BPMNShape id="Activity_02izv88_di" bpmnElement="CreatePDFDocument">
         <dc:Bounds x="479" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gedw0q_di" bpmnElement="AssPDFDocumentToMainCase">
+      <bpmndi:BPMNShape id="Activity_0gedw0q_di" bpmnElement="AddPDFDocumentToMainCase">
         <dc:Bounds x="680" y="207" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qc2eoy_di" bpmnElement="Event_0qc2eoy">
