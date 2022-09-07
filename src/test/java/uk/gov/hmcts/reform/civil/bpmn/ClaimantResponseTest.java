@@ -55,7 +55,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
             takeOffline,
             PROCESS_CASE_EVENT,
             PROCEED_OFFLINE_EVENT,
-            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
+            null,
             variables
         );
 
