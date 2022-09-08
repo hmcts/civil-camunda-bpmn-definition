@@ -30,7 +30,8 @@ public class DefendantContactDetailsChangeCuiTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.CONTACT_DETAILS_CHANGE");
+        variables.put(FLOW_FLAGS, Map.of(
+            "CONTACT_DETAILS_CHANGE", true));
 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
@@ -67,7 +68,8 @@ public class DefendantContactDetailsChangeCuiTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE");
+        variables.put(FLOW_FLAGS, Map.of(
+            "CONTACT_DETAILS_CHANGE", false));
 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
