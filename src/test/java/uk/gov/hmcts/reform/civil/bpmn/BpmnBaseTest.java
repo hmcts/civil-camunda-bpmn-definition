@@ -275,6 +275,15 @@ public abstract class BpmnBaseTest {
         assertEquals(next, Date.from(nextDate.atZone(ZoneId.systemDefault()).toInstant()));
     }
 
+    /**
+     * Checks that external task matches the rest of parameters.
+     *
+     * @param externalTask      the task
+     * @param topicName         should be equal to task.topicName
+     * @param caseEvent         the only element of locked process task should have this caseEvent
+     * @param activityId        if not null, the only element of locked process task should have this id
+     * @param lockedProcessTask should have only one item
+     */
     private void assertExternalTask(
         ExternalTask externalTask,
         String topicName,
@@ -288,6 +297,8 @@ public abstract class BpmnBaseTest {
 
         assertThat(lockedProcessTask.get(0).getVariables()).containsEntry("caseEvent", caseEvent);
 
-        assertThat(lockedProcessTask.get(0).getActivityId()).isEqualTo(activityId);
+        if (activityId != null) {
+            assertThat(lockedProcessTask.get(0).getActivityId()).isEqualTo(activityId);
+        }
     }
 }
