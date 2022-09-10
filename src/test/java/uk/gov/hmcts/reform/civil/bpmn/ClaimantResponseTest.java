@@ -36,8 +36,11 @@ class ClaimantResponseTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
-        variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true));
-        variables.put(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, false));
+        variables.put(FLOW_FLAGS, Map.of(
+                ONE_RESPONDENT_REPRESENTATIVE, true,
+                TWO_RESPONDENT_REPRESENTATIVES, false,
+                GENERAL_APPLICATION_ENABLED, false
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -115,8 +118,11 @@ class ClaimantResponseTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
-        variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false));
-        variables.put(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, true));
+        variables.put(FLOW_FLAGS, Map.of(
+                GENERAL_APPLICATION_ENABLED, false,
+                ONE_RESPONDENT_REPRESENTATIVE, false,
+                TWO_RESPONDENT_REPRESENTATIVES, true
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

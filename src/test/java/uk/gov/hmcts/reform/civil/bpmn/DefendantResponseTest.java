@@ -79,7 +79,10 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", flowState);
-            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true));
+            variables.put(FLOW_FLAGS, Map.of(
+                    ONE_RESPONDENT_REPRESENTATIVE, true,
+                    GENERAL_APPLICATION_ENABLED, false
+            ));
 
             //complete the start business process
             ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -148,8 +151,10 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.FULL_DEFENCE");
-            variables.put(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed,
-                                             ONE_RESPONDENT_REPRESENTATIVE, true
+            variables.put(FLOW_FLAGS, Map.of(
+                    RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+                    ONE_RESPONDENT_REPRESENTATIVE, true,
+                    GENERAL_APPLICATION_ENABLED, false
             ));
 
             assertCompleteExternalTask(
@@ -234,9 +239,11 @@ class DefendantResponseTest extends BpmnBaseTest {
             //Setup Case as 1v2 All Responses Received > Divergent Response
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.DIVERGENT_RESPOND_GO_OFFLINE");
-            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
-                                             TWO_RESPONDENT_REPRESENTATIVES, true,
-                                             RPA_CONTINUOUS_FEED, true
+            variables.put(FLOW_FLAGS, Map.of(
+                    ONE_RESPONDENT_REPRESENTATIVE, false,
+                    TWO_RESPONDENT_REPRESENTATIVES, true,
+                    RPA_CONTINUOUS_FEED, true,
+                    GENERAL_APPLICATION_ENABLED, false
             ));
 
             //complete the start business process
@@ -313,8 +320,10 @@ class DefendantResponseTest extends BpmnBaseTest {
             //Setup Case as 1v2 All Responses Received > Divergent Response
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.DIVERGENT_RESPOND_GENERATE_DQ_GO_OFFLINE");
-            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
-                                             TWO_RESPONDENT_REPRESENTATIVES, true
+            variables.put(FLOW_FLAGS, Map.of(
+                    ONE_RESPONDENT_REPRESENTATIVE, false,
+                    TWO_RESPONDENT_REPRESENTATIVES, true,
+                    GENERAL_APPLICATION_ENABLED, false
             ));
 
             //complete the start business process
@@ -404,14 +413,18 @@ class DefendantResponseTest extends BpmnBaseTest {
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.FULL_DEFENCE");
             if (hasTwoRespondentRepresentatives) {
-                variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
-                                                 TWO_RESPONDENT_REPRESENTATIVES, true,
-                                                 RPA_CONTINUOUS_FEED, true
+                variables.put(FLOW_FLAGS, Map.of(
+                        ONE_RESPONDENT_REPRESENTATIVE, false,
+                        TWO_RESPONDENT_REPRESENTATIVES, true,
+                        RPA_CONTINUOUS_FEED, true,
+                        GENERAL_APPLICATION_ENABLED, false
                 ));
             } else {
                 //Mock 1v1 Case (Do not email a second respondent)
-                variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, true,
-                                                 RPA_CONTINUOUS_FEED, true
+                variables.put(FLOW_FLAGS, Map.of(
+                        ONE_RESPONDENT_REPRESENTATIVE, true,
+                        RPA_CONTINUOUS_FEED, true,
+                        GENERAL_APPLICATION_ENABLED, false
                 ));
             }
 
@@ -511,9 +524,11 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_FULL_DEFENCE_RECEIVED");
-            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
-                                             TWO_RESPONDENT_REPRESENTATIVES, true,
-                                             RPA_CONTINUOUS_FEED, true
+            variables.put(FLOW_FLAGS, Map.of(
+                    ONE_RESPONDENT_REPRESENTATIVE, false,
+                    TWO_RESPONDENT_REPRESENTATIVES, true,
+                    RPA_CONTINUOUS_FEED, true,
+                    GENERAL_APPLICATION_ENABLED, false
             ));
 
             assertCompleteExternalTask(
@@ -564,9 +579,11 @@ class DefendantResponseTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_NOT_FULL_DEFENCE_RECEIVED");
-            variables.put(FLOW_FLAGS, Map.of(ONE_RESPONDENT_REPRESENTATIVE, false,
-                                             TWO_RESPONDENT_REPRESENTATIVES, true,
-                                             RPA_CONTINUOUS_FEED, true
+            variables.put(FLOW_FLAGS, Map.of(
+                    ONE_RESPONDENT_REPRESENTATIVE, false,
+                    TWO_RESPONDENT_REPRESENTATIVES, true,
+                    RPA_CONTINUOUS_FEED, true,
+                    GENERAL_APPLICATION_ENABLED, false
             ));
 
             assertCompleteExternalTask(

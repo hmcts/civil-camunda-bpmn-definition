@@ -67,7 +67,9 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.CLAIM_NOTIFIED.fullName());
-        variables.putValue(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
+        variables.putValue(FLOW_FLAGS, Map.of(
+                RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+                GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -128,8 +130,10 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.CLAIM_NOTIFIED.fullName());
-        variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
-                                              RPA_CONTINUOUS_FEED, true));
+        variables.putValue(FLOW_FLAGS, Map.of(
+                TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
+                RPA_CONTINUOUS_FEED, true,
+                GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -197,6 +201,7 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.TAKEN_OFFLINE_AFTER_CLAIM_NOTIFIED.fullName());
+        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
