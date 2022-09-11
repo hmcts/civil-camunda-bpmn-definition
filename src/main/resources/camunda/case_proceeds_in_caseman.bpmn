@@ -83,7 +83,7 @@
     <bpmn:sequenceFlow id="Flow_12q4mv0" sourceRef="Gateway_1t3w36j" targetRef="NotifyRoboticsOnCaseHandedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0f6svh6" name="Update General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="UpdateGeneralApplicationStatus" name="Update General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE</camunda:inputParameter>
@@ -92,7 +92,7 @@
       <bpmn:incoming>Flow_1f54woo</bpmn:incoming>
       <bpmn:outgoing>Flow_0pl9ize</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_11e80kd" name="Update Claim with General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="UpdateClaimWithApplicationStatus" name="Update Claim with General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">APPLICATION_OFFLINE_UPDATE_CLAIM</camunda:inputParameter>
@@ -101,11 +101,11 @@
       <bpmn:incoming>Flow_0pl9ize</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2x5ki</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0pl9ize" sourceRef="Activity_0f6svh6" targetRef="Activity_11e80kd" />
-    <bpmn:sequenceFlow id="Flow_1f54woo" sourceRef="Gateway_1t3w36j" targetRef="Activity_0f6svh6">
+    <bpmn:sequenceFlow id="Flow_0pl9ize" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
+    <bpmn:sequenceFlow id="Flow_1f54woo" sourceRef="Gateway_1t3w36j" targetRef="UpdateGeneralApplicationStatus">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1v2x5ki" sourceRef="Activity_11e80kd" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_1v2x5ki" sourceRef="UpdateClaimWithApplicationStatus" targetRef="NotifyRoboticsOnCaseHandedOffline" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="CASE_PROCEEDS_IN_CASEMAN" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -195,10 +195,10 @@
       <bpmndi:BPMNShape id="Gateway_1t3w36j_di" bpmnElement="Gateway_1t3w36j" isMarkerVisible="true">
         <dc:Bounds x="522" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0f6svh6_di" bpmnElement="Activity_0f6svh6">
+      <bpmndi:BPMNShape id="Activity_0f6svh6_di" bpmnElement="UpdateGeneralApplicationStatus">
         <dc:Bounds x="589" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_11e80kd_di" bpmnElement="Activity_11e80kd">
+      <bpmndi:BPMNShape id="Activity_11e80kd_di" bpmnElement="UpdateClaimWithApplicationStatus">
         <dc:Bounds x="733" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">

@@ -104,7 +104,7 @@
       <bpmn:outgoing>Flow_0azhx32</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ttjhlz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_14h8kzh" name="Update Application Status" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="UpdateGeneralApplicationStatus" name="Update Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">TRIGGER_APPLICATION_CLOSURE</camunda:inputParameter>
@@ -113,10 +113,10 @@
       <bpmn:incoming>Flow_0azhx32</bpmn:incoming>
       <bpmn:outgoing>Flow_1im5p4o</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0azhx32" name="Case has General Application(s)" sourceRef="Gateway_14yvrwf" targetRef="Activity_14h8kzh">
+    <bpmn:sequenceFlow id="Flow_0azhx32" name="Case has General Application(s)" sourceRef="Gateway_14yvrwf" targetRef="UpdateGeneralApplicationStatus">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_10h8f4v" name="Update Claim with Application Status" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="UpdateClaimWithApplicationStatus" name="Update Claim with Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">APPLICATION_CLOSED_UPDATE_CLAIM</camunda:inputParameter>
@@ -125,11 +125,11 @@
       <bpmn:incoming>Flow_1im5p4o</bpmn:incoming>
       <bpmn:outgoing>Flow_053lw44</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1im5p4o" sourceRef="Activity_14h8kzh" targetRef="Activity_10h8f4v" />
+    <bpmn:sequenceFlow id="Flow_1im5p4o" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
     <bpmn:sequenceFlow id="Flow_1ttjhlz" name="Case does not have General Application(s)" sourceRef="Gateway_14yvrwf" targetRef="Gateway_0kj0hok">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_053lw44" sourceRef="Activity_10h8f4v" targetRef="Gateway_0kj0hok" />
+    <bpmn:sequenceFlow id="Flow_053lw44" sourceRef="UpdateClaimWithApplicationStatus" targetRef="Gateway_0kj0hok" />
     <bpmn:textAnnotation id="TextAnnotation_0i3yd0i">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -266,10 +266,10 @@
       <bpmndi:BPMNShape id="Gateway_14yvrwf_di" bpmnElement="Gateway_14yvrwf" isMarkerVisible="true">
         <dc:Bounds x="370" y="235" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14h8kzh_di" bpmnElement="Activity_14h8kzh">
+      <bpmndi:BPMNShape id="Activity_14h8kzh_di" bpmnElement="UpdateGeneralApplicationStatus">
         <dc:Bounds x="428" y="91" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_10h8f4v_di" bpmnElement="Activity_10h8f4v">
+      <bpmndi:BPMNShape id="Activity_10h8f4v_di" bpmnElement="UpdateClaimWithApplicationStatus">
         <dc:Bounds x="569" y="91" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
