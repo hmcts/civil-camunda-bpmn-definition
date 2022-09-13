@@ -16,8 +16,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DISMISS_CLAIM";
     public static final String PROCESS_ID = "DISMISS_CLAIM";
-    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
-    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     public ClaimDismissedTest() {
         super("claim_dismissed.bpmn", "DISMISS_CLAIM");
@@ -51,15 +49,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
             "ClaimDismissedNotifyApplicantSolicitor1"
-        );
-
-        //complete the RPA notification
-        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
-            "NotifyRoboticsOnCaseHandedOffline"
         );
 
         //end business process
@@ -99,15 +88,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
             "ClaimDismissedNotifyApplicantSolicitor1"
         );
 
-        //Notify RPA - Handed Offline
-        ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRpaHandedOffline,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -128,8 +108,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE");
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !has2RespondentSolicitors,
-            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors
-        ));
+            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -139,6 +118,15 @@ class ClaimDismissedTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+
+        //complete the RPA notification
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            rpaNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "NotifyRoboticsOnCaseHandedOffline"
         );
 
         //complete the notification to respondent
@@ -168,15 +156,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
             "ClaimDismissedNotifyApplicantSolicitor1"
-        );
-
-        //complete the RPA notification
-        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
-            "NotifyRoboticsOnCaseHandedOffline"
         );
 
         //end business process
