@@ -5,10 +5,7 @@ postgresql:
   enabled: true
   releaseNameOverride: ${SERVICE_NAME}-postgresql
   image:
-    registry: hmctspublic.azurecr.io
-    repository: imported/bitnami/postgresql
-    tag: '11.3.0'
-    pullPolicy: Always
+    tag: '11.6.0'
   resources:
     requests:
       cpu: 25m
@@ -83,9 +80,9 @@ java:
     CMC_DB_USERNAME: hmcts
     CMC_DB_PASSWORD: hmcts
     REFERENCE_DATABASE_MIGRATION: true
-    FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://camunda-${SERVICE_FQDN}/engine-rest/
-    FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://camunda-${SERVICE_FQDN}/engine-rest/
-    FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://camunda-${SERVICE_FQDN}/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
     STITCHING_API_ENABLED: false
 
 idam-pr:
@@ -204,6 +201,7 @@ camunda-bpm:
     disableKeyVaults: true
     releaseNameOverride: ${SERVICE_NAME}-camunda
     ingressHost: camunda-${SERVICE_FQDN}
+    imagePullPolicy: Always
     environment:
       CAMUNDA_API_AUTH_ENABLED: false
       CAMUNDA_DB_HOST: ${SERVICE_NAME}-postgresql

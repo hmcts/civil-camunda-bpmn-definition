@@ -68,6 +68,7 @@ withPipeline(type, product, component) {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
     enableCleanupOfHelmReleaseOnSuccess()
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
   onMaster {
     loadVaultSecrets(secrets)
@@ -110,10 +111,10 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-     ./bin/import-ccd-definition.sh "-e *DJspec.json,*DJ.json,*-prod.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json,*GAspec.json"
+     ./bin/import-ccd-definition.sh "-e *-prod.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
-    env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
   after('smoketest:preview') {
@@ -123,9 +124,9 @@ withPipeline(type, product, component) {
   before('functionalTest:preview') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="http://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -147,7 +148,7 @@ withPipeline(type, product, component) {
       ./bin/import-ccd-definition.sh "-e *GAspec.json,*DJspec.json,*-nonprod.json,*DJ.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
   }
 
   after('smoketest:aat') {
@@ -155,11 +156,12 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:aat') {
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "http://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
+    env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="http://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
 
     uploadBpmnDiagrams('staging')
   }

@@ -82,12 +82,13 @@ java:
     CMC_DB_PASSWORD: hmcts
     CMC_DB_CONNECTION_OPTIONS: '?sslmode=allow'
     REFERENCE_DATABASE_MIGRATION: true
-    FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://civil-camunda-camunda-staging-aat.service.core-compute-aat.internal/engine-rest/
-    FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://civil-camunda-camunda-staging-aat.service.core-compute-aat.internal/engine-rest/
-    FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://civil-camunda-camunda-staging-aat.service.core-compute-aat.internal/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+    FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
     TESTING_SUPPORT_ENABLED: true
     POLLING_EVENT_EMITTER_ENABLED: false
     LAUNCH_DARKLY_ENV: camunda-staging
+    EM_CCD_ORCHESTRATOR_URL: http://em-ccd-orchestrator-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
 idam-pr:
   releaseNameOverride: ${SERVICE_NAME}-xui-idam-pr
@@ -131,7 +132,7 @@ ccd:
       enabled: true
 
   global:
-    ccdApiGatewayIngress: http://civil-camunda-gateway-staging-aat.service.core-compute-aat.internal
+    ccdApiGatewayIngress: http://${SERVICE_NAME}-ccd-api-gw
     ccdDataStoreUrl: http://${SERVICE_NAME}-ccd-data-store-api
     ccdDefinitionStoreUrl: http://${SERVICE_NAME}-ccd-definition-store
     ccdUserProfileUrl: http://${SERVICE_NAME}-ccd-user-profile-api
@@ -206,6 +207,7 @@ camunda-bpm:
     disableKeyVaults: true
     releaseNameOverride: ${SERVICE_NAME}-camunda
     ingressHost: civil-camunda-camunda-staging-aat.service.core-compute-aat.internal
+    imagePullPolicy: Always
     environment:
       CAMUNDA_API_AUTH_ENABLED: false
       CAMUNDA_DB_HOST: ${SERVICE_NAME}-postgresql
