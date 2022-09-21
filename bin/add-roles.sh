@@ -14,6 +14,7 @@
 ./bin/utils/ccd-add-role.sh "caseworker-ras-validation"
 ./bin/utils/ccd-add-role.sh "admin-access"
 ./bin/utils/ccd-add-role.sh "full-access"
+./bin/utils/ccd-add-role.sh "hearing-schedule-access"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
