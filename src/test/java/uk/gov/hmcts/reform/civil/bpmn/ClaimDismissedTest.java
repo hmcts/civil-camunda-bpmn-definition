@@ -218,19 +218,19 @@ class ClaimDismissedTest extends BpmnBaseTest {
         //Update General Application Status
         ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                updateApplicationStatus,
-                PROCESS_CASE_EVENT,
-                TRIGGER_APPLICATION_CLOSURE,
-                APPLICATION_CLOSURE_ACTIVITY_ID
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_CLOSURE,
+            APPLICATION_CLOSURE_ACTIVITY_ID
         );
 
         //Update Claim Details with General Application Status
         ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                updateClaimWithApplicationStatus,
-                PROCESS_CASE_EVENT,
-                APPLICATION_CLOSED_UPDATE_CLAIM,
-                APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_CLOSED_UPDATE_CLAIM,
+            APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID
         );
 
         //complete the notification to applicant
@@ -240,6 +240,15 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
             "ClaimDismissedNotifyApplicantSolicitor1"
+        );
+
+        //complete the RPA notification
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            rpaNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "NotifyRoboticsOnCaseHandedOffline"
         );
 
         //end business process
@@ -298,6 +307,15 @@ class ClaimDismissedTest extends BpmnBaseTest {
             "ClaimDismissedNotifyApplicantSolicitor1"
         );
 
+        //complete the RPA notification
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            rpaNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "NotifyRoboticsOnCaseHandedOffline"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -349,15 +367,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
                 APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID
         );
 
-        //complete the RPA notification
-        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
-            "NotifyRoboticsOnCaseHandedOffline"
-        );
-
         //complete the notification to respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -388,7 +397,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         );
 
         //complete the RPA notification
-        rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             rpaNotification,
             PROCESS_CASE_EVENT,
