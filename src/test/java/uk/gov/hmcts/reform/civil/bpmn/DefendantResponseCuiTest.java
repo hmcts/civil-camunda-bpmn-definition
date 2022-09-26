@@ -22,13 +22,14 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE_ACTIVITY_ID
+    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
         = "DefendantContactDetailsChangeNotifyApplicantSolicitor1";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_ACTIVITY_ID
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         = "DefendantResponseNotifyApplicantSolicitor1ForCui";
 
     public DefendantResponseCuiTest() {
-        super("defendant_response_cui.bpmn", "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
+        super("defendant_response_cui.bpmn",
+              "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
     }
 
     @Test
@@ -59,7 +60,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             applicantNotification,
             PROCESS_CASE_EVENT,
             NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE_ACTIVITY_ID
+            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
         );
 
         //complete the notification to applicant for defendant response
@@ -68,7 +69,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             applicantNotificationForFullDefence,
             PROCESS_CASE_EVENT,
             NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_ACTIVITY_ID
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         );
 
         //end business process
@@ -106,7 +107,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             applicantNotificationForFullDefence,
             PROCESS_CASE_EVENT,
             NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_ACTIVITY_ID
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         );
 
         //end business process
