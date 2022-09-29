@@ -10,13 +10,26 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class DefendantContactDetailsChangeCuiTest extends BpmnBaseTest {
+public class DefendantResponseCuiTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "DEFENDANT_RESPONSE_CUI";
     private static final String PROCESS_ID = "DEFENDANT_RESPONSE_PROCESS_ID_CUI";
 
-    public DefendantContactDetailsChangeCuiTest() {
-        super("defendant_response_cui.bpmn", "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
+    //CCD Case Event
+    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CONTACT_DETAILS_CHANGE";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
+
+    //ACTIVITY IDs
+    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
+        = "DefendantContactDetailsChangeNotifyApplicantSolicitor1";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
+        = "DefendantResponseNotifyApplicantSolicitor1ForCui";
+
+    public DefendantResponseCuiTest() {
+        super("defendant_response_cui.bpmn",
+              "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
     }
 
     @Test
@@ -46,8 +59,17 @@ public class DefendantContactDetailsChangeCuiTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CONTACT_DETAILS_CHANGE",
-            "DefendantContactDetailsChangeNotifyApplicantSolicitor1"
+            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
+            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
+        );
+
+        //complete the notification to applicant for defendant response
+        ExternalTask applicantNotificationForFullDefence = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicantNotificationForFullDefence,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         );
 
         //end business process
@@ -77,6 +99,15 @@ public class DefendantContactDetailsChangeCuiTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+
+        //complete the notification to applicant for defendant response
+        ExternalTask applicantNotificationForFullDefence = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicantNotificationForFullDefence,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         );
 
         //end business process
