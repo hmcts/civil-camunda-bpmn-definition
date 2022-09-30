@@ -56,13 +56,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();
-
         assertNoExternalTasksLeft();
-    }
-
-    private void endBusinessProcess() {
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
     }
 
 
@@ -80,12 +74,10 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "CONTACT_DETAILS_CHANGE", false));
 
         assertBusinessProcessHasStarted(variables);
-
         verifyApplicantNotificationOfResponseSubmissionCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();
-
         assertNoExternalTasksLeft();
     }
 
@@ -109,6 +101,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
         );
     }
+
     private void verifyTaskIsComplete(String caseEvent, String actionId) {
         ExternalTask externalTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -118,6 +111,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             actionId
         );
     }
+
     private void assertBusinessProcessHasStarted(VariableMap variables) {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
@@ -128,5 +122,11 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             variables
         );
     }
+
+    private void endBusinessProcess() {
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+    }
+
 
 }
