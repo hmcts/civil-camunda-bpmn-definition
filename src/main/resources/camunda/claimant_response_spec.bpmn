@@ -156,7 +156,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17nnxrn" sourceRef="ClaimantConfirmsNotToProceedNotifyRespondentSolicitor2" targetRef="ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC" />
-    <bpmn:serviceTask id="changeToJudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="JudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">JUDICIAL_REFERRAL</camunda:inputParameter>
@@ -168,7 +168,7 @@
     <bpmn:sequenceFlow id="Full_defence_proceed_no_mediation" name="Full defence, proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="mayGoToJdgeReferral">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0hyuc69" sourceRef="changeToJudicialReferral" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
+    <bpmn:sequenceFlow id="Flow_0hyuc69" sourceRef="JudicialReferral" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
     <bpmn:serviceTask id="Activity_0zvlsut" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -198,7 +198,7 @@
     <bpmn:sequenceFlow id="Flow_1i4rwd5" name="Agred to mediation OR sdo disabled" sourceRef="mayGoToJdgeReferral" targetRef="Activity_0izac4m">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION) || !(!empty flowFlags.SDO_ENABLED &amp;&amp; flowFlags.SDO_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_09ed1dn" name="No agreed to mediation AND sdo enabled" sourceRef="mayGoToJdgeReferral" targetRef="changeToJudicialReferral">
+    <bpmn:sequenceFlow id="Flow_09ed1dn" name="No agreed to mediation AND sdo enabled" sourceRef="mayGoToJdgeReferral" targetRef="JudicialReferral">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION) &amp;&amp; (!empty flowFlags.SDO_ENABLED &amp;&amp; flowFlags.SDO_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1scpjza">
@@ -427,7 +427,7 @@
       <bpmndi:BPMNShape id="Activity_0z32kt8_di" bpmnElement="ClaimantConfirmsNotToProceedNotifyRespondentSolicitor2">
         <dc:Bounds x="900" y="570" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="changeToJudicialReferral">
+      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
         <dc:Bounds x="420" y="160" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
