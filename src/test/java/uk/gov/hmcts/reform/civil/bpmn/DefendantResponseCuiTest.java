@@ -32,8 +32,10 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "DefendantLipResponseNotifyDefendant";
 
     public DefendantResponseCuiTest() {
-        super("defendant_response_cui.bpmn",
-              "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
+        super(
+            "defendant_response_cui.bpmn",
+            "DEFENDANT_RESPONSE_PROCESS_ID_CUI"
+        );
     }
 
     @Test
@@ -81,21 +83,21 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    private void verifyApplicantNotificationOfAddressChangeCompleted(){
+    private void verifyApplicantNotificationOfAddressChangeCompleted() {
         verifyTaskIsComplete(
             NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
             NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
         );
     }
 
-    private void verifyApplicantNotificationOfResponseSubmissionCompleted(){
+    private void verifyApplicantNotificationOfResponseSubmissionCompleted() {
         verifyTaskIsComplete(
             NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
             NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         );
     }
 
-    private void verifyDefendantLipNotificationOfResponseSubmissionCompleted(){
+    private void verifyDefendantLipNotificationOfResponseSubmissionCompleted() {
         verifyTaskIsComplete(
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
@@ -127,6 +129,5 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
     }
-
 
 }
