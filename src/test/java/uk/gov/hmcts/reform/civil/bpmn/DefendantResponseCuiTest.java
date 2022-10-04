@@ -61,7 +61,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @Test
     void shouldSkipNotifyApplicantSolicitor_whenNoContactDetailsChange() {
 
