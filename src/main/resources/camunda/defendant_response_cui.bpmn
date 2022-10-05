@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0">
   <bpmn:process id="DEFENDANT_RESPONSE_PROCESS_ID_CUI" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="start">
       <bpmn:outgoing>Flow_01gz2ld</bpmn:outgoing>
@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0d3pq8q</bpmn:incoming>
+      <bpmn:incoming>Flow_1jc5dga</bpmn:incoming>
       <bpmn:outgoing>Flow_0jauxrx</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_1nraabm" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -65,12 +65,26 @@
       <bpmn:incoming>Flow_1v4915f</bpmn:incoming>
       <bpmn:outgoing>Flow_0d3pq8q</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0d3pq8q" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="Activity_1m5szz9" />
+    <bpmn:sequenceFlow id="Flow_0d3pq8q" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="DefendantLipResponseNotifyDefendant" />
+    <bpmn:serviceTask id="DefendantLipResponseNotifyDefendant" name="Notify lip defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0d3pq8q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jc5dga</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1jc5dga" sourceRef="DefendantLipResponseNotifyDefendant" targetRef="Activity_1m5szz9" />
   </bpmn:process>
   <bpmn:message id="Message_1xf7rku" name="DEFENDANT_RESPONSE_CUI" />
   <bpmn:error id="Error_0z3vvae" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DEFENDANT_RESPONSE_PROCESS_ID_CUI">
+      <bpmndi:BPMNEdge id="Flow_0d3pq8q_di" bpmnElement="Flow_0d3pq8q">
+        <di:waypoint x="700" y="204" />
+        <di:waypoint x="780" y="204" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v4915f_di" bpmnElement="Flow_1v4915f">
         <di:waypoint x="490" y="360" />
         <di:waypoint x="650" y="360" />
@@ -103,12 +117,16 @@
         <di:waypoint x="290" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jauxrx_di" bpmnElement="Flow_0jauxrx">
-        <di:waypoint x="860" y="204" />
-        <di:waypoint x="892" y="204" />
+        <di:waypoint x="1040" y="180" />
+        <di:waypoint x="1101" y="180" />
+        <di:waypoint x="1101" y="204" />
+        <di:waypoint x="1162" y="204" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0d3pq8q_di" bpmnElement="Flow_0d3pq8q">
-        <di:waypoint x="700" y="204" />
-        <di:waypoint x="760" y="204" />
+      <bpmndi:BPMNEdge id="Flow_1jc5dga_di" bpmnElement="Flow_1jc5dga">
+        <di:waypoint x="880" y="204" />
+        <di:waypoint x="910" y="204" />
+        <di:waypoint x="910" y="180" />
+        <di:waypoint x="940" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1pp6fod_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="192" width="36" height="36" />
@@ -131,14 +149,18 @@
           <dc:Bounds x="403" y="152" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
-        <dc:Bounds x="760" y="164" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_15p049m_di" bpmnElement="Event_15p049m">
-        <dc:Bounds x="892" y="186" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ypo1fg_di" bpmnElement="DefendantResponseNotifyApplicantSolicitor1ForCui">
         <dc:Bounds x="600" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15p049m_di" bpmnElement="Event_15p049m">
+        <dc:Bounds x="1162" y="186" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0epgs04" bpmnElement="DefendantLipResponseNotifyDefendant">
+        <dc:Bounds x="780" y="164" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
+        <dc:Bounds x="940" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="149" width="36" height="36" />
