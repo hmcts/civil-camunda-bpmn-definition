@@ -46,7 +46,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent 1
+        //complete the notification for respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
@@ -55,7 +55,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
         );
 
         if (twoRepresentatives) {
-            //complete the notification to respondent 2
+            //complete the notification for respondent 2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(respondent2Notification,
                                        PROCESS_CASE_EVENT,
@@ -64,7 +64,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
             );
         }
 
-        //complete the notification to applicant
+        //complete the notification for applicant solicitor
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
                                    PROCESS_CASE_EVENT,
