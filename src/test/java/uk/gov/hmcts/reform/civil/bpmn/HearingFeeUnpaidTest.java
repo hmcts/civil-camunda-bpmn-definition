@@ -46,6 +46,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the notification to respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
