@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1i2ih25" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="HEARING_PROCESS" isExecutable="true">
+    <bpmn:callActivity id="Activity_1ht8rpf" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0y1b4y2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0agok6u</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0y1b4y2" sourceRef="StartEvent_1" targetRef="Activity_1ht8rpf" />
+    <bpmn:boundaryEvent id="Event_0o3sg3o" name="Abort" attachedToRef="Activity_1ht8rpf">
+      <bpmn:outgoing>Flow_0wksds5</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0uj9pwb" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_1duzjl5">
+      <bpmn:incoming>Flow_0wksds5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0wksds5" sourceRef="Event_0o3sg3o" targetRef="Event_1duzjl5" />
+    <bpmn:sequenceFlow id="Flow_0agok6u" sourceRef="Activity_1ht8rpf" targetRef="GenerateHearingForm" />
+    <bpmn:serviceTask id="GenerateHearingForm" name="Generate Hearing Form" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_HEARING_FORM</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0agok6u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lhdo4u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0lhdo4u" sourceRef="GenerateHearingForm" targetRef="NotifyClaimantHearing" />
+    <bpmn:callActivity id="Activity_072j7li" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zriviu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ew3g5l</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1adcwon">
+      <bpmn:incoming>Flow_1ew3g5l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ew3g5l" sourceRef="Activity_072j7li" targetRef="Event_1adcwon" />
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0y1b4y2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_11i5zio" messageRef="Message_0246zio" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1rn8y84" sourceRef="NotifyClaimantHearing" targetRef="NotifyDefendantHearing" />
+    <bpmn:sequenceFlow id="Flow_0zriviu" sourceRef="NotifyDefendantHearing" targetRef="Activity_072j7li" />
+    <bpmn:serviceTask id="NotifyClaimantHearing" name="Notify Claimant Hearing" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_HEARING</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0lhdo4u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rn8y84</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyDefendantHearing" name="Notify Defendant Hearing" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_HEARING</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rn8y84</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zriviu</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_0246zio" name="HEARING_SCHEDULED" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="HEARING_PROCESS">
+      <bpmndi:BPMNShape id="Event_0z17wfu_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="219" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="262" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_050udn8_di" bpmnElement="Activity_1ht8rpf">
+        <dc:Bounds x="260" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1duzjl5_di" bpmnElement="Event_1duzjl5">
+        <dc:Bounds x="292" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lezlyk_di" bpmnElement="GenerateHearingForm">
+        <dc:Bounds x="390" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g50gsd_di" bpmnElement="Activity_072j7li">
+        <dc:Bounds x="800" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1adcwon_di" bpmnElement="Event_1adcwon">
+        <dc:Bounds x="942" y="219" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uudq6f_di" bpmnElement="NotifyClaimantHearing">
+        <dc:Bounds x="540" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zkzr8e_di" bpmnElement="NotifyDefendantHearing">
+        <dc:Bounds x="670" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
+        <dc:Bounds x="292" y="179" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="328" y="160" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0y1b4y2_di" bpmnElement="Flow_0y1b4y2">
+        <di:waypoint x="215" y="237" />
+        <di:waypoint x="260" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wksds5_di" bpmnElement="Flow_0wksds5">
+        <di:waypoint x="310" y="179" />
+        <di:waypoint x="310" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0agok6u_di" bpmnElement="Flow_0agok6u">
+        <di:waypoint x="360" y="237" />
+        <di:waypoint x="390" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lhdo4u_di" bpmnElement="Flow_0lhdo4u">
+        <di:waypoint x="490" y="237" />
+        <di:waypoint x="540" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ew3g5l_di" bpmnElement="Flow_1ew3g5l">
+        <di:waypoint x="900" y="237" />
+        <di:waypoint x="942" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rn8y84_di" bpmnElement="Flow_1rn8y84">
+        <di:waypoint x="640" y="237" />
+        <di:waypoint x="670" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zriviu_di" bpmnElement="Flow_0zriviu">
+        <di:waypoint x="770" y="237" />
+        <di:waypoint x="800" y="237" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
