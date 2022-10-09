@@ -17,17 +17,17 @@ class CreateSDOTest extends BpmnBaseTest {
 
     @Test
     void shouldSuccessfullyCompleteTakeCaseOffline() {
-        //assert process has started
+        // assert process has started
         assertFalse(processInstance.isEnded());
 
-        //assert message start event
+        // assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        //complete the start business process
+        // complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the notification to applicant(s) solicitor
+        // complete the notification to applicant(s) solicitor
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             applicantsNotification,
@@ -36,7 +36,7 @@ class CreateSDOTest extends BpmnBaseTest {
             "CreateSDONotifyApplicantsSolicitor"
         );
 
-        //complete the notification to respondent 1 solicitor
+        // complete the notification to respondent 1 solicitor
         ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             respondent1Notification,
@@ -45,7 +45,7 @@ class CreateSDOTest extends BpmnBaseTest {
             "CreateSDONotifyRespondentSolicitor1"
         );
 
-        //complete the notification to respondent 2 solicitor
+        // complete the notification to respondent 2 solicitor
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             respondent2Notification,
