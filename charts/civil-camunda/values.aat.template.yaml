@@ -89,6 +89,7 @@ java:
     POLLING_EVENT_EMITTER_ENABLED: false
     LAUNCH_DARKLY_ENV: camunda-staging
     EM_CCD_ORCHESTRATOR_URL: http://em-ccd-orchestrator-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    RELEASE_REVISION: "{{ .Release.Revision }}"
 
 idam-pr:
   releaseNameOverride: ${SERVICE_NAME}-xui-idam-pr
@@ -172,10 +173,13 @@ ccd:
         CCD_MULTIPARTY_LOG_LEVEL: DEBUG
         CCD_MULTIPARTY_CASE_TYPES: CIVIL
         CCD_MULTIPARTY_EVENTS: DEFENDANT_RESPONSE,ACKNOWLEDGE_CLAIM,CLAIMANT_RESPONSE
+        RELEASE_REVISION: "{{ .Release.Revision }}"
       keyVaults: []
       ingressHost: civil-camunda-data-store-staging-aat.service.core-compute-aat.internal
   am-role-assignment-service:
     java:
+      environment:
+        RELEASE_REVISION: "{{ .Release.Revision }}"
       keyVaults:
         am:
           secrets:
@@ -187,6 +191,7 @@ ccd:
         DEFINITION_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
         DEFINITION_STORE_IDAM_KEY: ${CCD_DEFINITION_STORE_S2S_SECRET}
         IDAM_USER_URL: https://idam-web-public.aat.platform.hmcts.net
+        RELEASE_REVISION: "{{ .Release.Revision }}"
       keyVaults: []
       ingressHost: civil-camunda-definition-store-staging-aat.service.core-compute-aat.internal
   ccd-user-profile-api:
@@ -194,6 +199,7 @@ ccd:
       imagePullPolicy: Always
       enviroment:
         USER_PROFILE_DB_HOST: ${SERVICE_NAME}-postgresql
+        RELEASE_REVISION: "{{ .Release.Revision }}"
       keyVaults: []
       ingressHost: civil-camunda-user-profile-staging-aat.service.core-compute-aat.internal
 
@@ -204,7 +210,7 @@ ccd:
 camunda-bpm:
   enabled: true
   java:
-    disableKeyVaults: true
+    disableKeyVaults: false
     releaseNameOverride: ${SERVICE_NAME}-camunda
     ingressHost: civil-camunda-camunda-staging-aat.service.core-compute-aat.internal
     imagePullPolicy: Always
@@ -217,3 +223,4 @@ camunda-bpm:
       CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE: true
       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
       CAMUNDA_DB_CONN_OPTIONS: ""
+      RELEASE_REVISION: "{{ .Release.Revision }}"
