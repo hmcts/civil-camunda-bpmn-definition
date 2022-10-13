@@ -76,16 +76,6 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
-        //Obtain Additional Payment Reference
-        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
-        assertCompleteExternalTask(
-            judicialNotificationProcess,
-            PROCESS_EXTERNAL_CASE_EVENT,
-            START_NOTIFICATION_PROCESS_MAKE_DECISION,
-            START_NOTIFICATION_PROCESS_ID,
-            variables
-        );
-
         //complete the document generation
         ExternalTask documentGeneration = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
         assertCompleteExternalTask(
@@ -103,6 +93,16 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
             ADD_PDF_ID,
+            variables
+        );
+
+        //Obtain Additional Payment Reference
+        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            judicialNotificationProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            START_NOTIFICATION_PROCESS_MAKE_DECISION,
+            START_NOTIFICATION_PROCESS_ID,
             variables
         );
 
