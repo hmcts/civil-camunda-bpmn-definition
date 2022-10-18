@@ -15,14 +15,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "JUDGE_MAKES_DECISION";
-    private static final String PROCESS_ID = "JUDGE_MAKES_DECISION_PROCESS_ID";
+    private static final String MESSAGE_NAME = "MAKE_DECISION";
+    private static final String PROCESS_ID = "MAKE_DECISION_PROCESS_ID";
     //Create PDF
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
+    //Add PDF document to main case
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AddPDFDocumentToMainCase";
+
+    //Obtain Additional fee value
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_EVENT = "OBTAIN_ADDITIONAL_FEE_VALUE";
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_ID = "ObtainAdditionalFeeValue";
+    //Create PDF
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT = "OBTAIN_ADDITIONAL_PAYMENT_REF";
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_ID = "ObtainAdditionalPaymentReference";
 
     public JudgeMakesDecisionGeneralApplicationTest() {
-        super("judge_makes_decision_general_application.bpmn", "JUDGE_MAKES_DECISION_PROCESS_ID");
+        super("judge_makes_decision_general_application.bpmn", "MAKE_DECISION_PROCESS_ID");
     }
 
     @ParameterizedTest
@@ -46,14 +56,23 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
-        //complete judicial notification process
-        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //Obtain Additional Fee Value
+        ExternalTask additionalFeeValueProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            judicialNotificationProcess,
+            additionalFeeValueProcess,
             PROCESS_EXTERNAL_CASE_EVENT,
-            START_NOTIFICATION_PROCESS_MAKE_DECISION,
-            START_NOTIFICATION_PROCESS_ID,
+            OBTAIN_ADDITIONAL_FEE_VALUE_EVENT,
+            OBTAIN_ADDITIONAL_FEE_VALUE_ID,
+            variables
+        );
+
+        //Obtain Additional Payment Reference
+        ExternalTask additionalPaymentRefProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            additionalPaymentRefProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_ID,
             variables
         );
 
@@ -64,6 +83,26 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             MAKE_DECISION_CASE_EVENT,
             CREATE_PDF_EVENT,
             CREATE_PDF_ID,
+            variables
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID,
+            variables
+        );
+
+        //Obtain Additional Payment Reference
+        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            judicialNotificationProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            START_NOTIFICATION_PROCESS_MAKE_DECISION,
+            START_NOTIFICATION_PROCESS_ID,
             variables
         );
 
