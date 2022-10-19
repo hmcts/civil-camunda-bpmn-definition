@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class DecisionOutcomeSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "DECISION_OUTCOME";
+    public static final String TOPIC_NAME = "MOVE_TO_DECISION_OUTCOME";
 
     public DecisionOutcomeSchedulerTest() {
         super("decision_outcome_scheduler.bpmn", "DECISION_OUTCOME_SCHEDULER");
