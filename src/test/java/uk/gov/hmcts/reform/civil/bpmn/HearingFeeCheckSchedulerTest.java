@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "HEARING_READINESS_CHECK";
+    public static final String TOPIC_NAME = "HEARING_FEE_CHECK";
 
     public HearingFeeCheckSchedulerTest() {
         super("hearing_fee_check_scheduler.bpmn", "HEARING_FEE_CHECK_SCHEDULER");
