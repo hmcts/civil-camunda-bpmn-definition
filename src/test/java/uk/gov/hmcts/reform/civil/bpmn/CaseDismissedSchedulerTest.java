@@ -21,7 +21,7 @@ class CaseDismissedSchedulerTest extends BpmnBaseTest {
         super("claim_dismissed_scheduler.bpmn", "CASE_DISMISSED_SCHEDULER");
     }
 
-    @Test
+
     void claimDismissedSchedulerShouldFireCaseDismissedExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
