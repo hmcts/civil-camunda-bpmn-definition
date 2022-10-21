@@ -21,7 +21,7 @@ class CaseDismissedSchedulerTest extends BpmnBaseTest {
         super("claim_dismissed_scheduler.bpmn", "CASE_DISMISSED_SCHEDULER");
     }
 
-
+    @Test
     void claimDismissedSchedulerShouldFireCaseDismissedExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -36,7 +36,7 @@ class CaseDismissedSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 5 16 * * ?";
+        String cronString = "*/5  * * * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
