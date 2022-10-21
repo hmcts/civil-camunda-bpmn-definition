@@ -41,7 +41,7 @@ class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
             LocalDateTime.of(2020, 1, 1, 0, 0, 1),
-            LocalDateTime.of(2020, 1, 1, 0, 2, 0)
+            LocalDateTime.of(2020, 1, 1, 0, 15, 0)
         );
 
         //get external tasks
