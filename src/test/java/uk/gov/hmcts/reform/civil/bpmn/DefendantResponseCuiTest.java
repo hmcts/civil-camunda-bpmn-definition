@@ -20,16 +20,22 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CONTACT_DETAILS_CHANGE";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
+    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION
+        = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
         = "DefendantContactDetailsChangeNotifyApplicantSolicitor1";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
         = "DefendantResponseNotifyApplicantSolicitor1ForCui";
+    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
+        = "DefendantLipResponseNotifyDefendant";
 
     public DefendantResponseCuiTest() {
-        super("defendant_response_cui.bpmn",
-              "DEFENDANT_RESPONSE_PROCESS_ID_CUI");
+        super(
+            "defendant_response_cui.bpmn",
+            "DEFENDANT_RESPONSE_PROCESS_ID_CUI"
+        );
     }
 
     @Test
@@ -45,37 +51,13 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", true));
 
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
+        assertBusinessProcessHasStarted(variables);
 
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
-        );
+        verifyApplicantNotificationOfAddressChangeCompleted();
+        verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
-        //complete the notification to applicant for defendant response
-        ExternalTask applicantNotificationForFullDefence = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantNotificationForFullDefence,
-            PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
+        endBusinessProcess();
         assertNoExternalTasksLeft();
     }
 
@@ -92,6 +74,46 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", false));
 
+        assertBusinessProcessHasStarted(variables);
+        verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    private void verifyApplicantNotificationOfAddressChangeCompleted() {
+        verifyTaskIsComplete(
+            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
+            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
+        );
+    }
+
+    private void verifyApplicantNotificationOfResponseSubmissionCompleted() {
+        verifyTaskIsComplete(
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
+            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
+        );
+    }
+
+    private void verifyDefendantLipNotificationOfResponseSubmissionCompleted() {
+        verifyTaskIsComplete(
+            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
+            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
+        );
+    }
+
+    private void verifyTaskIsComplete(String caseEvent, String actionId) {
+        ExternalTask externalTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            externalTask,
+            PROCESS_CASE_EVENT,
+            caseEvent,
+            actionId
+        );
+    }
+
+    private void assertBusinessProcessHasStarted(VariableMap variables) {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
@@ -100,20 +122,11 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
+    }
 
-        //complete the notification to applicant for defendant response
-        ExternalTask applicantNotificationForFullDefence = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantNotificationForFullDefence,
-            PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        );
-
-        //end business process
+    private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
     }
+
 }

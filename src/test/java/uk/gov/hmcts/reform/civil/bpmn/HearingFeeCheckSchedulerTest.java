@@ -13,16 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class TakeCaseOfflineSchedulerTest extends BpmnBaseTest {
+class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "TAKE_CASE_OFFLINE";
+    public static final String TOPIC_NAME = "HEARING_FEE_CHECK";
 
-    public TakeCaseOfflineSchedulerTest() {
-        super("take_case_offline_scheduler.bpmn", "TAKE_CASE_OFFLINE_SCHEDULER");
+    public HearingFeeCheckSchedulerTest() {
+        super("hearing_fee_check_scheduler.bpmn", "HEARING_FEE_CHECK_SCHEDULER");
     }
 
     @Test
-    void schedulerShouldRaiseTakeCaseOfflineExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseHearingFeeCheckExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,12 +36,12 @@ class TakeCaseOfflineSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 5 16 * * ?";
+        String cronString = "0 0 0 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 1, 16, 5, 0)
+            LocalDateTime.of(2020, 1, 1, 0, 0, 1),
+            LocalDateTime.of(2020, 1, 2, 0, 0, 0)
         );
 
         //get external tasks
@@ -58,7 +58,7 @@ class TakeCaseOfflineSchedulerTest extends BpmnBaseTest {
         List<ExternalTask> externalTasksAfter = getExternalTasks();
         assertThat(externalTasksAfter).isEmpty();
 
-        //assert process is still active - timer event, so always running
+        //assert process is still active - timer event so always running
         assertFalse(processInstance.isEnded());
     }
 }
