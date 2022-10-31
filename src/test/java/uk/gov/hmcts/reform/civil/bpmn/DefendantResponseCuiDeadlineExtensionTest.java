@@ -13,34 +13,28 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class DefendantResponseCuiDeadlineExtensionTest extends BpmnBaseTest {
 
 
-    public static final String MESSAGE_NAME = "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION_DEADLINE_EXTENSION";
-    public static final String PROCESS_ID = "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION_DEADLINE_EXTENSION_PROCESS_ID";
+    public static final String MESSAGE_NAME = "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION";
+    public static final String PROCESS_ID = "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION_PROCESS_ID";
 
     //CCD Case Event
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CONTACT_DETAILS_CHANGE";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION";
-    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION
-        = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
-
-    //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
-        = "DefendantContactDetailsChangeNotifyApplicantSolicitor1";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        = "DefendantResponseNotifyApplicantSolicitor1ForCui";
-    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
-        = "DefendantLipResponseNotifyDefendant";
+    private static final String NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION
+        = "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION";
+    private static final String NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION_PROCESS_ID
+        = "DefendantResponseDeadlineExtensionNotifyClaimant";
+    private static final String NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION
+        = "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION";
+    private static final String NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION_PROCESS_ID
+        = "DefendantResponseDeadlineExtensionNotifyDefendant";
 
     public DefendantResponseCuiDeadlineExtensionTest() {
         super(
-            "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION.bpmn",
-            "DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION_DEADLINE_EXTENSION_PROCESS_ID"
+            "defendant_response_cui_deadline_extension.bpmn",
+            PROCESS_ID
         );
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenContactDetailsChange() {
+    void shouldNotifyClaimantAndDefendantOnResponseDeadlineExtensionRequestSuccessfully() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -48,59 +42,26 @@ public class DefendantResponseCuiDeadlineExtensionTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", true));
+        assertBusinessProcessHasStarted();
+        verifyClaimantNotificationOnResponseDeadlineExtensionRequest();
+        verifyDefendantNotificationOnResponseDeadlineExtensionRequest();
 
-        assertBusinessProcessHasStarted(variables);
-
-        verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldSkipNotifyApplicantSolicitor_whenNoContactDetailsChange() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", false));
-
-        assertBusinessProcessHasStarted(variables);
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    private void verifyApplicantNotificationOfAddressChangeCompleted() {
+    private void verifyClaimantNotificationOnResponseDeadlineExtensionRequest() {
         verifyTaskIsComplete(
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
+            NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION,
+            NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION_PROCESS_ID
         );
     }
 
-    private void verifyApplicantNotificationOfResponseSubmissionCompleted() {
+    private void verifyDefendantNotificationOnResponseDeadlineExtensionRequest() {
         verifyTaskIsComplete(
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI_DEADLINE_EXTENSION,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        );
-    }
-
-    private void verifyDefendantLipNotificationOfResponseSubmissionCompleted() {
-        verifyTaskIsComplete(
-            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
-            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
+            NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION,
+            NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION_PROCESS_ID
         );
     }
 
@@ -114,14 +75,13 @@ public class DefendantResponseCuiDeadlineExtensionTest extends BpmnBaseTest {
         );
     }
 
-    private void assertBusinessProcessHasStarted(VariableMap variables) {
+    private void assertBusinessProcessHasStarted() {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
     }
 
