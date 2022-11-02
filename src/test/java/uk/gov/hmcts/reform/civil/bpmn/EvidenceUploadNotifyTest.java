@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class EvidenceUploadNotifyTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "EVIDENCE_UPLOAD_NOTIFY";
-    public static final String PROCESS_ID = "EVIDENCE_UPLOAD_NOTIFY";
+    public static final String MESSAGE_NAME = "EVIDENCE_UPLOAD_NOTIFICATION";
+    public static final String PROCESS_ID = "EVIDENCE_UPLOAD_NOTIFICATION";
 
     public EvidenceUploadNotifyTest() {
-        super("evidence_upload_notify.bpmn", "EVIDENCE_UPLOAD_NOTIFY");
+        super("evidence_upload_notification.bpmn", "EVIDENCE_UPLOAD_NOTIFICATION");
     }
 
     @ParameterizedTest
@@ -36,7 +36,7 @@ class EvidenceUploadNotifyTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        //complete the notification for respondent 1
+        //complete the notification for respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
