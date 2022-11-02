@@ -8,12 +8,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class EvidenceUploadNotifyTest extends BpmnBaseTest {
+class EvidenceUploadNotificationTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "EVIDENCE_UPLOAD_NOTIFICATION";
     public static final String PROCESS_ID = "EVIDENCE_UPLOAD_NOTIFICATION";
 
-    public EvidenceUploadNotifyTest() {
+    public EvidenceUploadNotificationTest() {
         super("evidence_upload_notification.bpmn", "EVIDENCE_UPLOAD_NOTIFICATION");
     }
 
