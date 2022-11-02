@@ -54,7 +54,6 @@ class GAOrderMadeSchedulerTest extends BpmnBaseTest {
         assertThat(lockedExternalGaResponseTasks).hasSize(1);
         completeTask(lockedExternalGaResponseTasks.get(0).getId());
 
-
         //assert no external tasks left
         List<ExternalTask> externalTasksAfter = getExternalTasks();
         assertThat(externalTasksAfter).isEmpty();
