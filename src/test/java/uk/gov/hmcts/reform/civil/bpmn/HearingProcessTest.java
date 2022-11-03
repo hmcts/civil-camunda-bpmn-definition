@@ -1,18 +1,12 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class hearing_processTest extends BpmnBaseTest {
+class HearingProcessTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "HEARING_SCHEDULED";
     public static final String PROCESS_ID = "HEARING_PROCESS";
@@ -29,7 +23,7 @@ class hearing_processTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
         = "NotifyDefendantHearing";
 
-    public hearing_processTest() {
+    public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
     }
 
