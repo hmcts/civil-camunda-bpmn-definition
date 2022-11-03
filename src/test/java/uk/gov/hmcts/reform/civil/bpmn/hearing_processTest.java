@@ -29,7 +29,7 @@ class hearing_processTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
         = "NotifyDefendantHearing";
 
-    public HearingProcessTest() {
+    public hearing_processTest() {
         super("hearing_process.bpmn", PROCESS_ID);
     }
 
@@ -52,7 +52,7 @@ class hearing_processTest extends BpmnBaseTest {
         );
 
         //complete the defendant notification
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT_HEARING, NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
         );
