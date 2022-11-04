@@ -41,7 +41,7 @@ class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 2),
+            LocalDateTime.of(2020, 1, 1, 0, 0, 1),
             LocalDateTime.of(2020, 1, 1, 0, 10, 0)
         );
 
