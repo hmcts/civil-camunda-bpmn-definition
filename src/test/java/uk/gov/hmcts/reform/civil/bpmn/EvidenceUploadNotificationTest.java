@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,7 +23,7 @@ class EvidenceUploadNotificationTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteEvidenceUploadNotify(boolean twoRepresentatives) {
+    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -27,22 +31,39 @@ class EvidenceUploadNotificationTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            UNREPRESENTED_DEFENDANT_ONE, false));
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
-        //complete the notification for respondent
+        //complete the notification for respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR_FOR_EVIDENCE_UPLOAD",
-                                   "EvidenceUploadNotifyRespondentSolicitors"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_EVIDENCE_UPLOAD",
+                                   "EvidenceUploadNotifyRespondentSolicitor1"
         );
+
+        if (twoRepresentatives) {
+            //complete the notification for respondent 2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(respondent2Notification,
+                                       PROCESS_CASE_EVENT,
+                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_EVIDENCE_UPLOAD",
+                                       "EvidenceUploadNotifyRespondentSolicitor2"
+            );
+        }
 
         //complete the notification for applicant solicitor
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);

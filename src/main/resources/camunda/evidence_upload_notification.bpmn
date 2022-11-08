@@ -22,7 +22,8 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR_FOR_EVIDENCE_UPLOAD</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1dra5bz</bpmn:incoming>
+      <bpmn:incoming>Flow_06dicjn</bpmn:incoming>
+      <bpmn:incoming>Flow_10x6e34</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsn98m</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="EvidenceUploadNotifyApplicantSolicitor" targetRef="Activity_0wretog" />
@@ -43,17 +44,42 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0yvpi10" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
     <bpmn:sequenceFlow id="Flow_08myj65" sourceRef="Event_0t2zome" targetRef="EvidenceUploadProcess" />
-    <bpmn:serviceTask id="EvidenceUploadNotifyRespondentSolicitors" name="Notify respondent solicitors" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="EvidenceUploadNotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR_FOR_EVIDENCE_UPLOAD</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_FOR_EVIDENCE_UPLOAD</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ffw39w</bpmn:incoming>
       <bpmn:outgoing>Flow_1dra5bz</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1ffw39w" sourceRef="EvidenceUploadProcess" targetRef="EvidenceUploadNotifyRespondentSolicitors" />
-    <bpmn:sequenceFlow id="Flow_1dra5bz" sourceRef="EvidenceUploadNotifyRespondentSolicitors" targetRef="EvidenceUploadNotifyApplicantSolicitor" />
+    <bpmn:sequenceFlow id="Flow_1dra5bz" sourceRef="EvidenceUploadNotifyRespondentSolicitor1" targetRef="Gateway_19b5dvl" />
+    <bpmn:exclusiveGateway id="Gateway_19b5dvl">
+      <bpmn:incoming>Flow_1dra5bz</bpmn:incoming>
+      <bpmn:outgoing>Flow_Two_Respondent_Representatives</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06dicjn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_Two_Respondent_Representatives" name="Yes" sourceRef="Gateway_19b5dvl" targetRef="EvidenceUploadNotifyRespondentSolicitor2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06dicjn" name="No" sourceRef="Gateway_19b5dvl" targetRef="EvidenceUploadNotifyApplicantSolicitor">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10x6e34" sourceRef="EvidenceUploadNotifyRespondentSolicitor2" targetRef="EvidenceUploadNotifyApplicantSolicitor" />
+    <bpmn:serviceTask id="EvidenceUploadNotifyRespondentSolicitor2" name="Notify respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR2_FOR_EVIDENCE_UPLOAD</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Two_Respondent_Representatives</bpmn:incoming>
+      <bpmn:outgoing>Flow_10x6e34</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ffw39w" sourceRef="EvidenceUploadProcess" targetRef="EvidenceUploadNotifyRespondentSolicitor1" />
+    <bpmn:textAnnotation id="TextAnnotation_0i3yd0i">
+      <bpmn:text>Two Respondent Representatives?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0ycet74" sourceRef="Gateway_19b5dvl" targetRef="TextAnnotation_0i3yd0i" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -61,60 +87,91 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EVIDENCE_UPLOAD_NOTIFICATION">
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
-        <dc:Bounds x="152" y="182" width="36" height="36" />
+        <dc:Bounds x="152" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="158" y="225" width="24" height="14" />
+          <dc:Bounds x="158" y="285" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
-        <dc:Bounds x="912" y="182" width="36" height="36" />
+        <dc:Bounds x="1142" y="242" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
-        <dc:Bounds x="740" y="160" width="100" height="80" />
+        <dc:Bounds x="960" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="EvidenceUploadNotifyApplicantSolicitor">
-        <dc:Bounds x="560" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="770" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="EvidenceUploadProcess">
-        <dc:Bounds x="220" y="160" width="100" height="80" />
+        <dc:Bounds x="220" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
-        <dc:Bounds x="252" y="82" width="36" height="36" />
+        <dc:Bounds x="252" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="EvidenceUploadNotifyRespondentSolicitors">
-        <dc:Bounds x="380" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="EvidenceUploadNotifyRespondentSolicitor1">
+        <dc:Bounds x="380" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
+        <dc:Bounds x="555" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dxqaq3_di" bpmnElement="EvidenceUploadNotifyRespondentSolicitor2">
+        <dc:Bounds x="650" y="90" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
+        <dc:Bounds x="532" y="310" width="120" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
-        <dc:Bounds x="252" y="142" width="36" height="36" />
+        <dc:Bounds x="252" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="287" y="123" width="26" height="14" />
+          <dc:Bounds x="287" y="183" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_1hce35l">
-        <di:waypoint x="840" y="200" />
-        <di:waypoint x="912" y="200" />
+        <di:waypoint x="1060" y="260" />
+        <di:waypoint x="1142" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
-        <di:waypoint x="660" y="200" />
-        <di:waypoint x="740" y="200" />
+        <di:waypoint x="870" y="260" />
+        <di:waypoint x="960" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_0yvpi10">
-        <di:waypoint x="270" y="142" />
-        <di:waypoint x="270" y="118" />
+        <di:waypoint x="270" y="202" />
+        <di:waypoint x="270" y="178" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_08myj65">
-        <di:waypoint x="188" y="200" />
-        <di:waypoint x="220" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ffw39w_di" bpmnElement="Flow_1ffw39w">
-        <di:waypoint x="320" y="200" />
-        <di:waypoint x="380" y="200" />
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="220" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1dra5bz_di" bpmnElement="Flow_1dra5bz">
-        <di:waypoint x="480" y="200" />
-        <di:waypoint x="560" y="200" />
+        <di:waypoint x="480" y="260" />
+        <di:waypoint x="555" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aqhz9d_di" bpmnElement="Flow_Two_Respondent_Representatives">
+        <di:waypoint x="580" y="235" />
+        <di:waypoint x="580" y="130" />
+        <di:waypoint x="650" y="130" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="551" y="183" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06dicjn_di" bpmnElement="Flow_06dicjn">
+        <di:waypoint x="605" y="260" />
+        <di:waypoint x="770" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="238" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10x6e34_di" bpmnElement="Flow_10x6e34">
+        <di:waypoint x="750" y="130" />
+        <di:waypoint x="820" y="130" />
+        <di:waypoint x="820" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ffw39w_di" bpmnElement="Flow_1ffw39w">
+        <di:waypoint x="320" y="260" />
+        <di:waypoint x="380" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0ycet74_di" bpmnElement="Association_0ycet74">
+        <di:waypoint x="580" y="285" />
+        <di:waypoint x="580" y="310" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
