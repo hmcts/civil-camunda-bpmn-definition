@@ -19,12 +19,19 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
+    enum FlowState {
+        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT;
+
+        public String fullName() {
+            return "MAIN" + "." + name();
+        }
+    }
     public InformAgreedExtensionDateSpecTest() {
         super("inform_agreed_extension_date_spec.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
+    @CsvSource({"true, null", "false, true", "false, false"})
     void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -77,6 +84,17 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        variables.putValue(FLOW_STATE,
+                           FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION",
+            "DefendantResponseDeadlineExtensionNotifyClaimant",
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
