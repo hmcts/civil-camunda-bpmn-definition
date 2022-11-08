@@ -20,7 +20,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     enum FlowState {
-        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT;
+        PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT,
+        PENDING_CLAIM_ISSUED;
 
         public String fullName() {
             return "MAIN" + "." + name();
@@ -31,7 +32,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true, null", "false, true", "false, false"})
+    @CsvSource({"false, true", "false, false"})
     void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -42,6 +43,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             RPA_CONTINUOUS_FEED, rpaContinuousFeed)
         );
+        variables.putValue(FLOW_STATE,
+                           FlowState.PENDING_CLAIM_ISSUED.fullName());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -85,14 +88,52 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             );
         }
 
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true, null"})
+    void shouldSuccessfullyCompleteNotifyClaimDeadline_whenCalled(Boolean rpaContinuousFeed) {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE,
-                           FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+                           FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName());
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification of deadline to claimant
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
             "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION",
             "DefendantResponseDeadlineExtensionNotifyClaimant",
+            variables
+        );
+
+        //complete the notification of deadline to defendant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION",
+            "DefendantResponseDeadlineExtensionNotifyDefendant",
             variables
         );
 

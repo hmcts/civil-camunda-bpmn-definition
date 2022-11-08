@@ -85,7 +85,9 @@
       <bpmn:outgoing>Flow_1iazwc3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_048ejpl" sourceRef="Activity_023yrjd" targetRef="Gateway_071odlr" />
-    <bpmn:sequenceFlow id="Flow_0c0hafe" sourceRef="Gateway_071odlr" targetRef="AgreedExtensionDateNotifyApplicantSolicitor1ForSpec" />
+    <bpmn:sequenceFlow id="Flow_0c0hafe" sourceRef="Gateway_071odlr" targetRef="AgreedExtensionDateNotifyApplicantSolicitor1ForSpec">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC" &amp;&amp; flowState != "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" &amp;&amp; flowState != "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" &amp;&amp; flowState != "MAIN.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT" }</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="DefendantResponseDeadlineExtensionNotifyClaimant" name="Notify claimant new response deadline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -105,8 +107,8 @@
       <bpmn:outgoing>Flow_1gw6mfj</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1sncddg" sourceRef="DefendantResponseDeadlineExtensionNotifyClaimant" targetRef="DefendantResponseDeadlineExtensionNotifyDefendant" />
-    <bpmn:sequenceFlow id="Flow_1iazwc3" name="A respondent not represented and a respondent not registered" sourceRef="Gateway_071odlr" targetRef="DefendantResponseDeadlineExtensionNotifyClaimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT"}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_1iazwc3" name="A respondent not represented or a respondent not registered" sourceRef="Gateway_071odlr" targetRef="DefendantResponseDeadlineExtensionNotifyClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC" || flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT" }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1gw6mfj" sourceRef="DefendantResponseDeadlineExtensionNotifyDefendant" targetRef="Activity_1i1bcz2" />
   </bpmn:process>
@@ -159,13 +161,22 @@
           <dc:Bounds x="336" y="160" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0cbpb7a_di" bpmnElement="Flow_0cbpb7a">
+        <di:waypoint x="228" y="240" />
+        <di:waypoint x="270" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_048ejpl_di" bpmnElement="Flow_048ejpl">
+        <di:waypoint x="370" y="237" />
+        <di:waypoint x="475" y="237" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0c23og9_di" bpmnElement="Flow_0c23og9">
         <di:waypoint x="320" y="179" />
         <di:waypoint x="320" y="145" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cbpb7a_di" bpmnElement="Flow_0cbpb7a">
-        <di:waypoint x="228" y="240" />
-        <di:waypoint x="270" y="240" />
+      <bpmndi:BPMNEdge id="Flow_0c0hafe_di" bpmnElement="Flow_0c0hafe">
+        <di:waypoint x="500" y="262" />
+        <di:waypoint x="500" y="400" />
+        <di:waypoint x="620" y="400" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18b51mb_di" bpmnElement="Flow_18b51mb">
         <di:waypoint x="720" y="400" />
@@ -183,6 +194,10 @@
         <di:waypoint x="1120" y="553" />
         <di:waypoint x="1120" y="437" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gw6mfj_di" bpmnElement="Flow_1gw6mfj">
+        <di:waypoint x="1120" y="180" />
+        <di:waypoint x="1120" y="357" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qyhi90_di" bpmnElement="Flow_0qyhi90">
         <di:waypoint x="1170" y="397" />
         <di:waypoint x="1352" y="397" />
@@ -198,30 +213,17 @@
           <dc:Bounds x="850" y="463" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_048ejpl_di" bpmnElement="Flow_048ejpl">
-        <di:waypoint x="370" y="237" />
-        <di:waypoint x="475" y="237" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0c0hafe_di" bpmnElement="Flow_0c0hafe">
-        <di:waypoint x="500" y="262" />
-        <di:waypoint x="500" y="400" />
-        <di:waypoint x="620" y="400" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sncddg_di" bpmnElement="Flow_1sncddg">
-        <di:waypoint x="850" y="140" />
-        <di:waypoint x="1070" y="140" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1iazwc3_di" bpmnElement="Flow_1iazwc3">
         <di:waypoint x="500" y="212" />
         <di:waypoint x="500" y="140" />
         <di:waypoint x="750" y="140" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="559" y="83" width="90" height="53" />
+          <dc:Bounds x="563" y="83" width="83" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gw6mfj_di" bpmnElement="Flow_1gw6mfj">
-        <di:waypoint x="1120" y="180" />
-        <di:waypoint x="1120" y="357" />
+      <bpmndi:BPMNEdge id="Flow_1sncddg_di" bpmnElement="Flow_1sncddg">
+        <di:waypoint x="850" y="140" />
+        <di:waypoint x="1070" y="140" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
