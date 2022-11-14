@@ -37,7 +37,7 @@ public class CreateClaimSpecBeforePaymentTest extends BpmnBaseTest {
     }
 
     public CreateClaimSpecBeforePaymentTest() {
-        super("create_claim_spec_before_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
+        super("create_service_request.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
     }
 
     @Nested
