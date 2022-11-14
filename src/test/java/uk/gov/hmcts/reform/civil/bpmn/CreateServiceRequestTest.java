@@ -11,7 +11,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class CreateClaimSpecBeforePaymentTest extends BpmnBaseTest {
+public class CreateServiceRequestTest extends BpmnBaseTest {
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "CREATE_CLAIM_SPEC";
@@ -36,7 +36,7 @@ public class CreateClaimSpecBeforePaymentTest extends BpmnBaseTest {
         }
     }
 
-    public CreateClaimSpecBeforePaymentTest() {
+    public CreateServiceRequestTest() {
         super("create_service_request.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
     }
 
