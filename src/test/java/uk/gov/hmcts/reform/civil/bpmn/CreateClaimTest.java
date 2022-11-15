@@ -20,13 +20,6 @@ class CreateClaimTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
-    //assign case access
-    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
-    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1";
-    //payment
-    public static final String CREATE_SERVICE_REQUEST_API = "CREATE_SERVICE_REQUEST_API";
-    private static final String MAKE_PAYMENT_ACTIVITY_ID = "serviceRequestAPI";
-    private static final String PROCESS_PAYMENT_TOPIC = "processCaseEvent";
     //generate claim form
     private static final String GENERATE_CLAIM_FORM_EVENT = "GENERATE_CLAIM_FORM";
     private static final String GENERATE_CLAIM_FORM_ACTIVITY_ID = "GenerateClaimForm";
@@ -41,9 +34,7 @@ class CreateClaimTest extends BpmnBaseTest {
     public static final String
         CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_FOR_UNREPRESENTED_SOLICITOR_UNREGISTERED_FIRM
         = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm";
-    public static final String CREATE_CLAIM_PROCEEDS_OFFLINE_NOTIFY_APPLICANT_SOLICITOR_1_ACTIVITY_ID_FOR_UNREG_FIRM
-        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
-    //notification - handed offline
+      //notification - handed offline
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN_EVENT =
         "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
     private static final String NOTIFY_APPLICANT_SOLICITOR_1_CLAIM_PROCEEDS_OFFLINE_UNREPRESENTED_ACTIVITY_ID
@@ -54,24 +45,15 @@ class CreateClaimTest extends BpmnBaseTest {
     public static final String ISSUE_CLAIM_EVENT = "PROCESS_CLAIM_ISSUE";
     private static final String ISSUE_CLAIM_ACTIVITY_ID = "IssueClaim";
     private static final String ISSUE_CLAIM_UNREPRESENTED_RESPONDENT_ACTIVITY_ID = "IssueClaimUnrepresentedRespondent";
-    //notification - failed payment
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_EVENT
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_FAILED_PAYMENT";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_FAILED_PAYMENT_ACTIVITY_ID
-        = "CreateClaimPaymentFailedNotifyApplicantSolicitor1";
     //rpa
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     enum FlowState {
-        CLAIM_ISSUED_PAYMENT_SUCCESSFUL,
-        PAYMENT_SUCCESSFUL,
         PENDING_CLAIM_ISSUED,
-        AWAITING_CASE_NOTIFICATION,
         PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT,
         PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT,
-        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT,
-        PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT;
+        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT;
 
         public String fullName() {
             return "MAIN" + "." + name();
@@ -109,17 +91,6 @@ class CreateClaimTest extends BpmnBaseTest {
 
             //complete the case assignment process
             completeCaseAssignment(variables);
-
-            //complete the payment
-            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                CREATE_SERVICE_REQUEST_API,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
 
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED.fullName());
@@ -194,17 +165,6 @@ class CreateClaimTest extends BpmnBaseTest {
             //complete the case assignment process
             completeCaseAssignment(variables);
 
-            //complete the payment
-            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                CREATE_SERVICE_REQUEST_API,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
-
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -273,17 +233,6 @@ class CreateClaimTest extends BpmnBaseTest {
             //complete the case assignment process
             completeCaseAssignment(variables);
 
-            //complete the payment
-            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                CREATE_SERVICE_REQUEST_API,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
-
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -351,17 +300,6 @@ class CreateClaimTest extends BpmnBaseTest {
 
             //complete the case assignment process
             completeCaseAssignment(variables);
-
-            //complete the payment
-            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                CREATE_SERVICE_REQUEST_API,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
 
             //complete the document generation
             variables.putValue(FLOW_STATE,
@@ -448,17 +386,6 @@ class CreateClaimTest extends BpmnBaseTest {
 
             //complete the case assignment process
             completeCaseAssignment(variables);
-
-            //complete the payment
-            variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
-            ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
-            assertCompleteExternalTask(
-                paymentTask,
-                PROCESS_PAYMENT_TOPIC,
-                CREATE_SERVICE_REQUEST_API,
-                MAKE_PAYMENT_ACTIVITY_ID,
-                variables
-            );
 
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName());
