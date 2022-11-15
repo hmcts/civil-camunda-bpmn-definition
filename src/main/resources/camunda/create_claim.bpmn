@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -27,7 +27,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
     <bpmn:sequenceFlow id="Flow_1ct7l4z" name="A Respondent not represented " sourceRef="Gateway_1i24lv2" targetRef="Gateway_Notice_Of_Change">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" }</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_COF"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_10cvk8g" sourceRef="ValidateClaimFee" targetRef="CreateClaimMakePayment" />
     <bpmn:sequenceFlow id="Flow_1op0oad" name="A respondent not represented and a respondent not registered" sourceRef="Gateway_1i24lv2" targetRef="ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm">
@@ -286,9 +286,33 @@
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
         <dc:Bounds x="160" y="60" width="2038" height="660" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0n5m7bn_di" bpmnElement="Flow_Notice_Of_Change">
+        <di:waypoint x="1250" y="355" />
+        <di:waypoint x="1250" y="420" />
+        <di:waypoint x="1340" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1278" y="386" width="44" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fwmn22_di" bpmnElement="Flow_No_Notice_Of_Change">
+        <di:waypoint x="1275" y="330" />
+        <di:waypoint x="1340" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1269" y="296" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vb4n9r_di" bpmnElement="Flow_1vb4n9r">
         <di:waypoint x="1440" y="330" />
         <di:waypoint x="1500" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hw8ldg_di" bpmnElement="Flow_1hw8ldg">
+        <di:waypoint x="1600" y="330" />
+        <di:waypoint x="1730" y="330" />
+        <di:waypoint x="1730" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_077eexn_di" bpmnElement="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor">
+        <di:waypoint x="1600" y="510" />
+        <di:waypoint x="1725" y="510" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mkb4ib_di" bpmnElement="Flow_0mkb4ib">
         <di:waypoint x="1440" y="420" />
@@ -297,11 +321,6 @@
       <bpmndi:BPMNEdge id="Flow_1ftqi60_di" bpmnElement="Flow_1ftqi60">
         <di:waypoint x="1440" y="150" />
         <di:waypoint x="1500" y="150" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hw8ldg_di" bpmnElement="Flow_1hw8ldg">
-        <di:waypoint x="1600" y="330" />
-        <di:waypoint x="1730" y="330" />
-        <di:waypoint x="1730" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x32vj4_di" bpmnElement="Flow_0x32vj4">
         <di:waypoint x="1600" y="150" />
@@ -343,10 +362,6 @@
         <di:waypoint x="1680" y="510" />
         <di:waypoint x="1725" y="510" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_077eexn_di" bpmnElement="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor">
-        <di:waypoint x="1600" y="510" />
-        <di:waypoint x="1725" y="510" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fwd5wq_di" bpmnElement="Flow_1fwd5wq">
         <di:waypoint x="1600" y="600" />
         <di:waypoint x="1990" y="600" />
@@ -368,21 +383,6 @@
         <di:waypoint x="1440" y="240" />
         <di:waypoint x="1500" y="240" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0n5m7bn_di" bpmnElement="Flow_Notice_Of_Change">
-        <di:waypoint x="1250" y="355" />
-        <di:waypoint x="1250" y="420" />
-        <di:waypoint x="1340" y="420" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1278" y="386" width="44" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fwmn22_di" bpmnElement="Flow_No_Notice_Of_Change">
-        <di:waypoint x="1275" y="330" />
-        <di:waypoint x="1340" y="330" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1269" y="296" width="61" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1op0oad_di" bpmnElement="Flow_1op0oad">
         <di:waypoint x="1140" y="305" />
         <di:waypoint x="1140" y="150" />
@@ -399,7 +399,7 @@
         <di:waypoint x="1165" y="330" />
         <di:waypoint x="1225" y="330" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1152" y="296" width="89" height="27" />
+          <dc:Bounds x="1153" y="296" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o4v7r8_di" bpmnElement="Flow_0o4v7r8">
@@ -488,9 +488,6 @@
           <dc:Bounds x="208" y="425" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1ijq5kl_di" bpmnElement="Gateway_Notice_Of_Change" isMarkerVisible="true">
-        <dc:Bounds x="1225" y="305" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_186jnr9_di" bpmnElement="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm">
         <dc:Bounds x="1500" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -530,17 +527,20 @@
       <bpmndi:BPMNShape id="Activity_1twuz1h_di" bpmnElement="CreateClaimContinuingOnlineUnrepresentedRespondent">
         <dc:Bounds x="1500" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1y29x0d_di" bpmnElement="ProceedOfflineUnrepresentedSolicitor">
-        <dc:Bounds x="1340" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15js5g3_di" bpmnElement="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitor">
-        <dc:Bounds x="1500" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1x0zlds_di" bpmnElement="PaymentFailed">
         <dc:Bounds x="1340" y="560" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13o0s7h_di" bpmnElement="CreateClaimPaymentFailedNotifyApplicantSolicitor1">
         <dc:Bounds x="1500" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15js5g3_di" bpmnElement="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitor">
+        <dc:Bounds x="1500" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1y29x0d_di" bpmnElement="ProceedOfflineUnrepresentedSolicitor">
+        <dc:Bounds x="1340" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ijq5kl_di" bpmnElement="Gateway_Notice_Of_Change" isMarkerVisible="true">
+        <dc:Bounds x="1225" y="305" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="322" y="342" width="36" height="36" />
