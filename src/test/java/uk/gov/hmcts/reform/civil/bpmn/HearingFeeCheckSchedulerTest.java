@@ -36,12 +36,13 @@ class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 0 * * ?";
+        //scheduler set to run every 10 minutes to ease testing.
+        String cronString = "0 0/10 * * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
             LocalDateTime.of(2020, 1, 1, 0, 0, 1),
-            LocalDateTime.of(2020, 1, 2, 0, 0, 0)
+            LocalDateTime.of(2020, 1, 1, 0, 10, 0)
         );
 
         //get external tasks
