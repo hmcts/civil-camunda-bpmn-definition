@@ -52,16 +52,10 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     enum FlowState {
-        CLAIM_ISSUED_PAYMENT_FAILED,
-        PAYMENT_FAILED,
-        CLAIM_ISSUED_PAYMENT_SUCCESSFUL,
-        PAYMENT_SUCCESSFUL,
         PENDING_CLAIM_ISSUED,
-        AWAITING_CASE_NOTIFICATION,
         PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT,
         PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT,
-        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT,
-        PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT;
+        PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT;
 
         public String fullName() {
             return "MAIN" + "." + name();
@@ -69,7 +63,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     }
 
     public CreateClaimAfterPaymentTest() {
-        super("create_claim.bpmn", "CREATE_CLAIM_PROCESS_ID");
+        super("create_claim_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID");
     }
 
     @Nested
@@ -138,35 +132,6 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     variables
                 );
             }
-
-            //end business process
-            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-            completeBusinessProcess(endBusinessProcess);
-
-            assertNoExternalTasksLeft();
-        }
-
-        @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenPaymentFailed() {
-            //assert process has started
-            assertFalse(processInstance.isEnded());
-
-            //assert message start event
-            assertThat(getProcessDefinitionByMessage("CREATE_CLAIM").getKey())
-                .isEqualTo("CREATE_CLAIM_PROCESS_ID");
-
-            VariableMap variables = Variables.createVariables();
-            variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED.fullName());
-
-            //complete the start business process
-            ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-            assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-            );
 
             //end business process
             ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
