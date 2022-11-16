@@ -15,7 +15,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "CREATE_CLAIM_SPEC_AFTER_PAYMENT";
-    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID_SPEC";
+    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     private static final String GENERATE_CLAIM_FORM_EVENT = "GENERATE_CLAIM_FORM_SPEC";
@@ -71,7 +71,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         = "CreateClaimContinuingOnlineNotifyRespondent1ForSpec";
 
     public CreateClaimSpecAfterPaymentTest() {
-        super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
+        super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
     }
 
     enum FlowState {

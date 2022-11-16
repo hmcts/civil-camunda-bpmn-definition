@@ -15,7 +15,7 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "CREATE_SERVICE_REQUEST";
-    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID_SPEC";
+    private static final String PROCESS_ID = "CREATE_SERVICE_REQUEST_PROCESS_ID_SPEC";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     //assign case access
@@ -37,7 +37,7 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
     }
 
     public CreateServiceRequestTest() {
-        super("create_service_request.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
+        super("create_service_request.bpmn", "CREATE_SERVICE_REQUEST_PROCESS_ID_SPEC");
     }
 
     @Nested
