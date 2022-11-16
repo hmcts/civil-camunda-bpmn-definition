@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "CREATE_CLAIM_SPEC";
+    private static final String MESSAGE_NAME = "CREATE_CLAIM_SPEC_AFTER_PAYMENT";
     private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID_SPEC";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
