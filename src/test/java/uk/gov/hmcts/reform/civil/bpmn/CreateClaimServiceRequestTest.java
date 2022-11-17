@@ -11,16 +11,16 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class CreateServiceRequestTest extends BpmnBaseTest {
+public class CreateClaimServiceRequestTest extends BpmnBaseTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "CREATE_CLAIM_SPEC";
-    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID_SPEC";
+    private static final String MESSAGE_NAME = "CREATE_SERVICE_REQUEST_CLAIM";
+    private static final String PROCESS_ID = "CREATE_SERVICE_REQUEST_CLAIM_PROCESS_ID";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     //assign case access
-    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1_SPEC";
-    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1ForSpec";
+    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
+    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1";
     //payment
     public static final String CREATE_SERVICE_REQUEST_API = "CREATE_SERVICE_REQUEST_API";
     private static final String MAKE_PAYMENT_ACTIVITY_ID = "serviceRequestAPI";
@@ -28,16 +28,20 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
 
     enum FlowState {
         CLAIM_ISSUED_PAYMENT_FAILED,
+        PAYMENT_FAILED,
         CLAIM_ISSUED_PAYMENT_SUCCESSFUL,
-        PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC;
+        PAYMENT_SUCCESSFUL,
+        PENDING_CLAIM_ISSUED,
+        AWAITING_CASE_NOTIFICATION;
 
         public String fullName() {
             return "MAIN" + "." + name();
         }
     }
 
-    public CreateServiceRequestTest() {
-        super("create_service_request.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC");
+    public CreateClaimServiceRequestTest() {
+        super("create_service_request_claim.bpmn",
+              "CREATE_SERVICE_REQUEST_CLAIM_PROCESS_ID");
     }
 
     @Nested

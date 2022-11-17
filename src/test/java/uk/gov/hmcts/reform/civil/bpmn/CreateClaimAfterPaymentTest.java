@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class CreateClaimAfterPaymentTest extends BpmnBaseTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "CREATE_CLAIM";
-    private static final String PROCESS_ID = "CREATE_CLAIM_PROCESS_ID";
+    private static final String MESSAGE_NAME = "CREATE_CLAIM_AFTER_PAYMENT";
+    private static final String PROCESS_ID = "CREATE_CLAIM_AFTER_PAYMENT_PROCESS_ID";
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     //generate claim form
@@ -63,7 +63,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     }
 
     public CreateClaimAfterPaymentTest() {
-        super("create_claim_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID");
+        super("create_claim_after_payment.bpmn", "CREATE_CLAIM_AFTER_PAYMENT_PROCESS_ID");
     }
 
     @Nested
