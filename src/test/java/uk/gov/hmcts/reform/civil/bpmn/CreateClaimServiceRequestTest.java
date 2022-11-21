@@ -221,5 +221,4 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
             variables
         );
     }
-
 }
