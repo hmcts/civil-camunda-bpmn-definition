@@ -330,7 +330,7 @@ class CreateClaimTest extends BpmnBaseTest {
         }
 
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_cos_whenClaimTakenOfflineForUnrepresentedDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendant_cosDisable() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
