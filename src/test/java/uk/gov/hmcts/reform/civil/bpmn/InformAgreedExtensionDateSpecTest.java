@@ -25,7 +25,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true, true", "true, false", "false, false", "false, true"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed,boolean twoRepresentatives) {
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -78,7 +78,6 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
                 variables
             );
         }
-
 
         if (rpaContinuousFeed) {
             //complete the Robotics notification
