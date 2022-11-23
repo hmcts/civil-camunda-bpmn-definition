@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
@@ -329,8 +330,10 @@ class CreateClaimTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendant_cosDisable() {
+        @ParameterizedTest
+        @CsvSource({"false, false", "null, null", "false, null", "null, false"})
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimTakenOfflineForUnrepresentedDefendant_cosDisable(
+            boolean certificateOfService, boolean noticeOfChange) {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -338,7 +341,8 @@ class CreateClaimTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of(CERTIFICATE_OF_SERVICE, false));
+            variables.put(FLOW_FLAGS, Map.of(CERTIFICATE_OF_SERVICE, certificateOfService));
+            variables.put(FLOW_FLAGS, Map.of(NOTICE_OF_CHANGE, noticeOfChange));
 
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -592,8 +596,9 @@ class CreateClaimTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenNoticeOfChangeIsTrue() {
+        @ParameterizedTest
+        @CsvSource({"true", "false", "null"})
+        void shouldSuccessfullyCompleteCreateClaim_whenNoticeOfChangeIsTrue(boolean certificateOfService) {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -602,6 +607,7 @@ class CreateClaimTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(NOTICE_OF_CHANGE, true,
+                                             CERTIFICATE_OF_SERVICE, certificateOfService,
                                              RPA_CONTINUOUS_FEED, true));
 
             //complete the start business process
@@ -678,8 +684,9 @@ class CreateClaimTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenCertificateOfServiceIsTrue() {
+        @ParameterizedTest
+        @CsvSource({"true", "false", "null"})
+        void shouldSuccessfullyCompleteCreateClaim_whenCertificateOfServiceIsTrue(boolean noticeOfChange) {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -688,6 +695,7 @@ class CreateClaimTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(CERTIFICATE_OF_SERVICE, true,
+                                             NOTICE_OF_CHANGE, noticeOfChange,
                                              RPA_CONTINUOUS_FEED, true));
 
             //complete the start business process
