@@ -20,7 +20,6 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     enum FlowState {
-        PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT,
         PENDING_CLAIM_ISSUED;
 
         public String fullName() {
@@ -104,8 +103,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_STATE,
-                           FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName());
+        variables.putValue(FLOW_FLAGS, Map.of(UNREPRESENTED_DEFENDANT_ONE, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
