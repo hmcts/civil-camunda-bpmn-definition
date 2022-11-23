@@ -55,7 +55,6 @@ class ProcessIdSanityCheckTest {
             .isTrue();
     }
 
-
     private String extractProcessId(Resource resource) throws Exception {
         Document doc = documentBuilder.parse(resource.getInputStream());
         NodeList nodes = doc.getElementsByTagName("bpmn:process");
