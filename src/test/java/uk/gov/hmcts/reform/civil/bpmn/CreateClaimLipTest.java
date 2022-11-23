@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 public class CreateClaimLipTest extends BpmnBaseTest {
+
     private static final String FILE_NAME = "create_lip_claim.bpmn";
     private static final String MESSAGE_NAME = "CREATE_LIP_CLAIM";
     private static final String PROCESS_ID = "CREATE_LIP_CLAIM_PROCESS_ID";
