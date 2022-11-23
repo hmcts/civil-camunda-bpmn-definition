@@ -17,7 +17,7 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCreateLipClaim(){
+    void shouldSuccessfullyCreateLipClaim() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);

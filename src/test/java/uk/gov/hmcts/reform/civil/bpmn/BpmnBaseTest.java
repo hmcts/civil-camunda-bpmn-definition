@@ -146,9 +146,9 @@ public abstract class BpmnBaseTest {
     }
 
     /**
-     * Asserts that the event has started and message about the event started has been created
-     * @param messageName
-     * @param processId
+     * Asserts that the event has started and message about the event started has been created.
+     * @param messageName is name of the message that should be the same as processId.
+     * @param processId is the process id of the event.
      */
     public void assertProcessStartedWithMessage(String messageName, String processId){
         assertFalse(processInstance.isEnded());
@@ -156,7 +156,7 @@ public abstract class BpmnBaseTest {
     }
 
     /**
-     * Start business process
+     * Start business process.
      * @param variables is input variable for output variable map.
      */
     public void startBusinessProcess(VariableMap variables) {
