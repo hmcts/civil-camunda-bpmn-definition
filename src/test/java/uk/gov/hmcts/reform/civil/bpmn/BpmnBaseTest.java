@@ -150,7 +150,7 @@ public abstract class BpmnBaseTest {
      * @param messageName is name of the message that should be the same as processId.
      * @param processId is the process id of the event.
      */
-    public void assertProcessStartedWithMessage(String messageName, String processId){
+    public void assertProcessStartedWithMessage(String messageName, String processId) {
         assertFalse(processInstance.isEnded());
         assertThat(getProcessDefinitionByMessage(messageName).getKey()).isEqualTo(processId);
     }
