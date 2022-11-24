@@ -27,7 +27,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
     <bpmn:sequenceFlow id="Flow_1ct7l4z" name="A Respondent not represented " sourceRef="Gateway_1i24lv2" targetRef="Gateway_Notice_Of_Change">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_COS"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT" || flowState == "MAIN.PROCEEDS_OFFLINE_UNREPRESENTED_DEFENDANT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_10cvk8g" sourceRef="ValidateClaimFee" targetRef="CreateClaimMakePayment" />
     <bpmn:sequenceFlow id="Flow_1op0oad" name="A respondent not represented and a respondent not registered" sourceRef="Gateway_1i24lv2" targetRef="ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm">
@@ -273,12 +273,12 @@
       <bpmn:outgoing>Flow_No_Notice_Of_Change</bpmn:outgoing>
       <bpmn:outgoing>Flow_Notice_Of_Change</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_No_Notice_Of_Change" name="No Notice of Change" sourceRef="Gateway_Notice_Of_Change" targetRef="ProceedOfflineUnrepresentedSolicitor">
+    <bpmn:sequenceFlow id="Flow_No_Notice_Of_Change" name="No Notice of Change - SoC" sourceRef="Gateway_Notice_Of_Change" targetRef="ProceedOfflineUnrepresentedSolicitor">
       <bpmn:documentation>${!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; !flowFlags.NOTICE_OF_CHANGE}</bpmn:documentation>
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; !flowFlags.NOTICE_OF_CHANGE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; !flowFlags.NOTICE_OF_CHANGE) || (!empty flowFlags.CERTIFICATE_OF_SERVICE &amp;&amp; !flowFlags.CERTIFICATE_OF_SERVICE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Notice_Of_Change" name="Notice of &#10;Change" sourceRef="Gateway_Notice_Of_Change" targetRef="IssueClaimUnrepresentedRespondent">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; flowFlags.NOTICE_OF_CHANGE}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_Notice_Of_Change" name="Notice of Change - SoC" sourceRef="Gateway_Notice_Of_Change" targetRef="IssueClaimUnrepresentedRespondent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; flowFlags.NOTICE_OF_CHANGE) || (!empty flowFlags.CERTIFICATE_OF_SERVICE &amp;&amp; flowFlags.CERTIFICATE_OF_SERVICE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -291,14 +291,14 @@
         <di:waypoint x="1250" y="420" />
         <di:waypoint x="1340" y="420" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1278" y="386" width="44" height="27" />
+          <dc:Bounds x="1253" y="386" width="85" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fwmn22_di" bpmnElement="Flow_No_Notice_Of_Change">
         <di:waypoint x="1275" y="330" />
         <di:waypoint x="1340" y="330" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1269" y="296" width="61" height="27" />
+          <dc:Bounds x="1265" y="296" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vb4n9r_di" bpmnElement="Flow_1vb4n9r">
