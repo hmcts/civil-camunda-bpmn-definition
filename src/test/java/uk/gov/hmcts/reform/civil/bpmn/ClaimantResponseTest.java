@@ -275,6 +275,15 @@ class ClaimantResponseTest extends BpmnBaseTest {
             "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
         );
 
+        //Judicial Referral
+        ExternalTask judicialReferral = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            judicialReferral,
+            PROCESS_CASE_EVENT,
+            "JUDICIAL_REFERRAL",
+            "JudicialReferral"
+        );
+
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
