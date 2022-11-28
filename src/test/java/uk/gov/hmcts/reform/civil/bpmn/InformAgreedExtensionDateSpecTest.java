@@ -96,7 +96,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true, null"})
-    void shouldSuccessfullyCompleteNotifyClaimDeadline_whenCalled(Boolean rpaContinuousFeed) {
+    void shouldSuccessfullyCompleteNotifyClaimDeadline_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
