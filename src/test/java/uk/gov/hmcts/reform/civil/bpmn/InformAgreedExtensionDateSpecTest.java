@@ -26,6 +26,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             return "MAIN" + "." + name();
         }
     }
+
     public InformAgreedExtensionDateSpecTest() {
         super("inform_agreed_extension_date_spec.bpmn", PROCESS_ID);
     }
