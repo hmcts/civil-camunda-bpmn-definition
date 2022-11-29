@@ -12,7 +12,7 @@
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_1ca60wt" sourceRef="Activity_032r20h" targetRef="IssueClaimForSpec" />
-    <bpmn:sequenceFlow id="Flow_14wswre" sourceRef="IssueClaimForSpec" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_14wswre" sourceRef="IssueClaimForSpec" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:callActivity id="Activity_032r20h" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -32,6 +32,36 @@
     <bpmn:endEvent id="Event_1muwoc1">
       <bpmn:incoming>Flow_0o4v7r8</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
+      <bpmn:incoming>Flow_14wswre</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aop9bk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fmrtn6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1aop9bk" name="RPA Continious feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1irqmkk">
+      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ia9sx7" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_1fmrtn6" name="No Continous feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="Activity_19rrcw0" />
+    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ia9sx7</bpmn:incoming>
+      <bpmn:incoming>Flow_1fmrtn6</bpmn:incoming>
+      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1aop9bk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ia9sx7</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:serviceTask id="IssueClaimForSpec" name="Issue Claim" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -41,16 +71,6 @@
       <bpmn:incoming>Flow_1ca60wt</bpmn:incoming>
       <bpmn:outgoing>Flow_14wswre</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_14wswre</bpmn:incoming>
-      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_1irqmkk">
-      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
-    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -59,16 +79,16 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_14wswre_di" bpmnElement="Flow_14wswre">
-        <di:waypoint x="730" y="380" />
-        <di:waypoint x="810" y="380" />
+        <di:waypoint x="670" y="380" />
+        <di:waypoint x="745" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ca60wt_di" bpmnElement="Flow_1ca60wt">
         <di:waypoint x="520" y="380" />
-        <di:waypoint x="630" y="380" />
+        <di:waypoint x="570" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="910" y="380" />
-        <di:waypoint x="972" y="380" />
+        <di:waypoint x="1020" y="380" />
+        <di:waypoint x="1112" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o4v7r8_di" bpmnElement="Flow_0o4v7r8">
         <di:waypoint x="470" y="322" />
@@ -79,6 +99,27 @@
       <bpmndi:BPMNEdge id="Flow_0znizfx_di" bpmnElement="Flow_0znizfx">
         <di:waypoint x="318" y="380" />
         <di:waypoint x="420" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aop9bk_di" bpmnElement="Flow_1aop9bk">
+        <di:waypoint x="770" y="355" />
+        <di:waypoint x="770" y="240" />
+        <di:waypoint x="830" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="749" y="295" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ia9sx7_di" bpmnElement="Flow_0ia9sx7">
+        <di:waypoint x="880" y="280" />
+        <di:waypoint x="880" y="310" />
+        <di:waypoint x="980" y="310" />
+        <di:waypoint x="980" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fmrtn6_di" bpmnElement="Flow_1fmrtn6">
+        <di:waypoint x="795" y="380" />
+        <di:waypoint x="920" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="824" y="362" width="68" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_032r20h_di" bpmnElement="Activity_032r20h">
         <dc:Bounds x="420" y="340" width="100" height="80" />
@@ -92,14 +133,20 @@
       <bpmndi:BPMNShape id="Event_1muwoc1_di" bpmnElement="Event_1muwoc1">
         <dc:Bounds x="462" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0a37k0s_di" bpmnElement="IssueClaimForSpec">
-        <dc:Bounds x="630" y="340" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="810" y="340" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_0x42aul_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
+        <dc:Bounds x="745" y="355" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="972" y="362" width="36" height="36" />
+        <dc:Bounds x="1112" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
+        <dc:Bounds x="920" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
+        <dc:Bounds x="830" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a37k0s_di" bpmnElement="IssueClaimForSpec">
+        <dc:Bounds x="570" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="452" y="322" width="36" height="36" />
