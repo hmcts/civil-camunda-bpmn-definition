@@ -65,13 +65,31 @@ allprojects {
       // CVE-2020-26945 - Mishandles deserialization of object streams.
       dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.11'
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.3'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.5'
 
       dependencySet(
         group: 'org.camunda.bpm',
-        version: '7.17.0'
+        version: '7.18.0'
       ) {
         entry 'camunda-engine'
+      }
+      dependencySet(
+        group: 'org.jetbrains.kotlin',
+        version: '1.7.0'
+      ) {
+        entry 'kotlin-stdlib-common'
+      }
+      dependencySet(
+        group: 'org.jetbrains.kotlin',
+        version: '1.7.10'
+      ) {
+        entry 'kotlin-stdlib'
+      }
+      dependencySet(
+        group: 'org.jetbrains.kotlin',
+        version: '1.7.0'
+      ) {
+        entry 'kotlin-reflect'
       }
     }
     imports {
@@ -139,12 +157,6 @@ task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
 }
 
-task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
-  onlyIf {
-    return System.env.ENVIRONMENT == 'preview'
-  }
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-dj'
-}
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:rpa'
@@ -166,7 +178,7 @@ task smoke(description: 'Runs the smoke tests.') {
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests, runDJTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
@@ -198,7 +210,7 @@ jacocoTestReport.dependsOn {
 }
 
 def versions = [
-  junit              : '5.7.2',
+  junit              : '5.9.1',
   junitPlatform      : '1.9.1'
 ]
 
@@ -213,11 +225,11 @@ ext.libraries = [
 ]
 
 dependencies {
-  implementation group: 'org.springframework', name: 'spring-core', version: '5.3.22'
+  implementation group: 'org.springframework', name: 'spring-core', version: '5.3.23'
   implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.23'
-  implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.17.0'
+  implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.18.0'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.6'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0-rc1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0-rc2'
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.14.0-rc1', ext: 'pom'
   implementation 'org.yaml:snakeyaml:1.33'
 

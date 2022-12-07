@@ -42,6 +42,10 @@ class NotifyClaimTest extends BpmnBaseTest {
     private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
         = "NotifyClaimProceedsOfflineNotifyApplicantSolicitor1";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
+    private static final String APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
+    public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
+    private static final String APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID = "UpdateClaimWithApplicationStatus";
 
     enum FlowState {
         CLAIM_NOTIFIED,
@@ -67,7 +71,9 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.CLAIM_NOTIFIED.fullName());
-        variables.putValue(FLOW_FLAGS, Map.of(RPA_CONTINUOUS_FEED, rpaContinuousFeed));
+        variables.putValue(FLOW_FLAGS, Map.of(
+                RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+                GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -128,8 +134,10 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.CLAIM_NOTIFIED.fullName());
-        variables.putValue(FLOW_FLAGS, Map.of(TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
-                                              RPA_CONTINUOUS_FEED, true));
+        variables.putValue(FLOW_FLAGS, Map.of(
+                TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
+                RPA_CONTINUOUS_FEED, true,
+                GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -188,7 +196,7 @@ class NotifyClaimTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteNotifyClaim_TakenOffline() {
+    void shouldSuccessfullyCompleteNotifyClaim_TakenOffline_GenAppDisabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -197,6 +205,7 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.TAKEN_OFFLINE_AFTER_CLAIM_NOTIFIED.fullName());
+        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -232,6 +241,95 @@ class NotifyClaimTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    PROCEEDS_IN_HERITAGE_SYSTEM,
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //Notify Claimant Solicitor - Handed Offline
+        ExternalTask notifyApplicantSolicitorHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyApplicantSolicitorHandedOffline,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE,
+                                   NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
+        );
+
+        //Notify RPA - Handed Offline
+        ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyRpaHandedOffline,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                                   NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteNotifyClaim_TakenOffline_GenAppEnabled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_STATE, FlowState.TAKEN_OFFLINE_AFTER_CLAIM_NOTIFIED.fullName());
+        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the CC notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_FOR_CLAIM_ISSUE_CC,
+                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_ISSUE_CC_ACTIVITY_ID,
+                                   variables
+        );
+
+        //Proceed Offline
+        ExternalTask proceedOfflineTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(proceedOfflineTask,
+                                   PROCESS_CASE_EVENT,
+                                   PROCEEDS_IN_HERITAGE_SYSTEM,
+                                   PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateApplicationStatus,
+                PROCESS_CASE_EVENT,
+                TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+                APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateClaimWithApplicationStatus,
+                PROCESS_CASE_EVENT,
+                APPLICATION_OFFLINE_UPDATE_CLAIM,
+                APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
         //Notify Claimant Solicitor - Handed Offline

@@ -13,21 +13,22 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
+class GAOrderMadeSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "CASE_DISMISSED";
+    public static final String GA_ORDER_MADE_SCHEDULER = "GAOrderMadeScheduler";
 
-    public NotifyClaimDeadlineSchedulerTest() {
-        super("notify_claim_deadline_scheduler.bpmn", "NOTIFY_CLAIM_DEADLINE_SCHEDULER");
+    public GAOrderMadeSchedulerTest() {
+        super("general_application_order_made_scheduler.bpmn", "GA_ORDER_MADE_SCHEDULER");
     }
 
     @Test
-    void notifyClaimDeadlineSchedulerShouldFireCaseDismissedExternalTask_whenStarted() throws ParseException {
+    void pollingEventBmpShouldFirePollingEventEmitterExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
-        //assert topic names
-        assertThat(getTopics()).containsOnly(TOPIC_NAME);
+        //assert first topic names
+        assertThat(getTopics()).hasSize(1);
+        assertThat(getTopics()).containsOnly(GA_ORDER_MADE_SCHEDULER);
 
         //get jobs
         List<JobDefinition> jobDefinitions = getJobs();
@@ -36,23 +37,22 @@ class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 3 * * ?";
+        String cronString = "0 15 16 ? * * *";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
-            new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 1, 3, 0, 0)
+                new CronExpression(cronString),
+                LocalDateTime.of(2020, 1, 1, 16, 15, 0),
+                LocalDateTime.of(2020, 1, 2, 16, 15, 0)
         );
 
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();
         assertThat(externalTasks).hasSize(1);
 
-        //fetch and complete task
-        List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
-
-        assertThat(lockedExternalTasks).hasSize(1);
-        completeTask(lockedExternalTasks.get(0).getId());
+        //fetch and complete first task
+        List<LockedExternalTask> lockedExternalGaResponseTasks = fetchAndLockTask(GA_ORDER_MADE_SCHEDULER);
+        assertThat(lockedExternalGaResponseTasks).hasSize(1);
+        completeTask(lockedExternalGaResponseTasks.get(0).getId());
 
         //assert no external tasks left
         List<ExternalTask> externalTasksAfter = getExternalTasks();

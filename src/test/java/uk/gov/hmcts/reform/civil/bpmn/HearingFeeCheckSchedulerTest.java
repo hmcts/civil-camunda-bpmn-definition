@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -13,16 +14,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
+class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "CASE_DISMISSED";
+    public static final String TOPIC_NAME = "HEARING_FEE_CHECK";
 
-    public NotifyClaimDeadlineSchedulerTest() {
-        super("notify_claim_deadline_scheduler.bpmn", "NOTIFY_CLAIM_DEADLINE_SCHEDULER");
+    public HearingFeeCheckSchedulerTest() {
+        super("hearing_fee_check_scheduler.bpmn", "HEARING_FEE_CHECK_SCHEDULER");
     }
 
     @Test
-    void notifyClaimDeadlineSchedulerShouldFireCaseDismissedExternalTask_whenStarted() throws ParseException {
+    @Disabled
+    void schedulerShouldRaiseHearingFeeCheckExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,12 +38,13 @@ class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 3 * * ?";
+        //scheduler set to run every 10 minutes to ease testing.
+        String cronString = "0 0/10 * * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 1, 3, 0, 0)
+            LocalDateTime.of(2020, 1, 1, 0, 0, 1),
+            LocalDateTime.of(2020, 1, 1, 0, 10, 0)
         );
 
         //get external tasks
