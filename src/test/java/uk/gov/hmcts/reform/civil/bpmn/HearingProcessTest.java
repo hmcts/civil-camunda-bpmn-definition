@@ -16,23 +16,23 @@ class HearingProcessTest extends BpmnBaseTest {
         = "NOTIFY_CLAIMANT_HEARING";
     public static final String NOTIFY_DEFENDANT_HEARING
         = "NOTIFY_DEFENDANT_HEARING";
-    public static final String CREATE_SERVICE_REQUEST_API
-        = "CREATE_SERVICE_REQUEST_API";
+    public static final String GENERATE_HEARING_FORM
+        = "GENERATE_HEARING_FORM";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
         = "NotifyClaimantHearing";
     private static final String NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
         = "NotifyDefendantHearing";
-    private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
-        = "ServiceRequestAPI";
+    public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
+        = "GenerateHearingForm";
 
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
     }
 
     @Test
-    void shouldSuccessfullyCompleteNotifyClaimantAndDefendantHearing() {
+    void shouldSuccessfullyCompleteHearingFormAndNotifyClaimantAndDefendantHearing() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -43,10 +43,10 @@ class HearingProcessTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //hearing fee payment
+        //complete the claimant notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
         );
 
         //complete the claimant notification
