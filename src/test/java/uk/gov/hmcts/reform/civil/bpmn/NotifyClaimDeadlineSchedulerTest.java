@@ -37,6 +37,7 @@ class NotifyClaimDeadlineSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
         String cronString = "0 5 0 * * ?";
+
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
