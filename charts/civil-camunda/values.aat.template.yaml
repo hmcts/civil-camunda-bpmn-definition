@@ -1,29 +1,6 @@
 tags:
   civil-ccd-stack: true
 
-postgresql:
-  enabled: true
-  image:
-    registry: hmctspublic.azurecr.io
-    repository: imported/bitnami/postgresql
-    tag: '11.6.0'
-    pullPolicy: Always
-    debug: true
-  resources:
-    requests:
-      cpu: 25m
-  initdbScripts:
-    init.sql: |-
-      CREATE DATABASE cmc WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-      CREATE DATABASE "data-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-      CREATE DATABASE "definition-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-      CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-      CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-  postgresqlUsername: hmcts
-  postgresqlPassword: hmcts
-  persistence:
-    enabled: false
-
 java:
   applicationPort: 4000
   aadIdentityName: civil
@@ -79,11 +56,11 @@ java:
     SPRING_CLOUD_BOOTSTRAP_ENABLED: true
     RD_PROFESSIONAL_API_URL: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CORE_CASE_DATA_API_URL: http://${SERVICE_NAME}-ccd-data-store-api
-    CMC_DB_HOST: ${SERVICE_NAME}-postgresql
     CASE_DOCUMENT_AM_URL: http://ccd-case-document-am-api-aat.service.core-compute-aat.internal
-    CMC_DB_USERNAME: hmcts
-    CMC_DB_PASSWORD: hmcts
+    CMC_DB_HOST: "{{ .Values.postgresql.releaseNameOverride}}"
     CMC_DB_CONNECTION_OPTIONS: '?sslmode=allow'
+    CMC_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
+    CMC_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     REFERENCE_DATABASE_MIGRATION: true
     FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
     FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
@@ -93,6 +70,25 @@ java:
     LAUNCH_DARKLY_ENV: camunda-staging
     EM_CCD_ORCHESTRATOR_URL: http://em-ccd-orchestrator-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     RELEASE_REVISION: "{{ .Release.Revision }}"
+  postgresql:
+    enabled: true
+    releaseNameOverride: ${SERVICE_NAME}-postgresql
+    image:
+      tag: '11.6.0'
+    primary:
+      persistence:
+        enabled: false
+      resources:
+        requests:
+          cpu: 25m
+      initdb:
+        scripts:
+          init.sql: |
+            CREATE DATABASE cmc WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE "data-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE "definition-store" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
 
 idam-pr:
   releaseNameOverride: ${SERVICE_NAME}-xui-idam-pr
