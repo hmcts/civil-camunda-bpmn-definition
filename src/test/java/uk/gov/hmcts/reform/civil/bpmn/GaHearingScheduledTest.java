@@ -12,7 +12,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-
 class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String MESSAGE_NAME = "HEARING_SCHEDULED_GA";
