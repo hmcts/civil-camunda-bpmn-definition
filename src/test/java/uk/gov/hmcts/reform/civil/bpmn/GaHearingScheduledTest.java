@@ -21,7 +21,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
     private static final String GENERATE_HEARING_NOTICE_EVENT = "GENERATE_HEARING_NOTICE_DOCUMENT";
     private static final String GENERATE_HEARING_FORM_ACTIVITY_ID = "GenerateHearingNoticeDocument";
 
-    private static final String ADD_PDF_EVENT = "ADD_DOCUMENT_TO_PARENT_CASE";
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
     private static final String NOTIFY_HEARING_NOTICE_EVENT = "NOTIFY_HEARING_NOTICE";
@@ -53,10 +53,10 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             variables
         );
         //Generate Hearing Notice Document
-        ExternalTask generateHearingNoticeDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask generateHearingNoticeDocument = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generateHearingNoticeDocument,
-            PROCESS_CASE_EVENT,
+            APPLICATION_PROCESS_CASE_EVENT,
             GENERATE_HEARING_NOTICE_EVENT,
             GENERATE_HEARING_FORM_ACTIVITY_ID,
             variables
@@ -73,10 +73,10 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
         );
 
         //Notify Hearing Notice
-        ExternalTask notifyHearingNotice = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyHearingNotice = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             notifyHearingNotice,
-            PROCESS_CASE_EVENT,
+            PROCESS_EXTERNAL_CASE_EVENT,
             NOTIFY_HEARING_NOTICE_EVENT,
             NOTIFY_HEARING_NOTICE_ACTIVITY_ID,
             variables

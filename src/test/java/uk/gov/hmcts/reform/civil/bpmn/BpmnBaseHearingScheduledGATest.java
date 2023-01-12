@@ -31,10 +31,9 @@ class BpmnBaseHearingScheduledGATest {
     public static final String START_BUSINESS_TOPIC = "START_HEARING_SCHEDULED_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_HEARING_SCHEDULED_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartHearingScheduledBusinessProcessTaskId";
+    public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
-    public static final String PROCESS_CASE_EVENT = "processCaseEvent";
-    public static final String NOTIFY_HEARING_NOTICE = "NOTIFY_HEARING_NOTICE";
-    public static final String NOTIFY_HEARING_NOTICE_PROCESS_ID = "NotifyHearingNotice";
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
     public static final String END_BUSINESS_PROCESS = "END_HEARING_SCHEDULED_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
