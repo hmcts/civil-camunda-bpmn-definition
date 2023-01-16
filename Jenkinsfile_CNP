@@ -77,7 +77,7 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
 
-  after('checkout') {
+  afterSuccess('checkout') {
     onMaster {
       withCredentials([usernamePassword(credentialsId: 'jenkins-github-hmcts-api-token', usernameVariable: 'USERNAME', passwordVariable: 'BEARER_TOKEN')]) {
         try {
@@ -111,13 +111,13 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json"
+      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
   }
 
-  after('smoketest:preview') {
+  afterSuccess('smoketest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
@@ -135,7 +135,7 @@ withPipeline(type, product, component) {
     }
   }
 
-  after('functionalTest:preview') {
+  afterSuccess('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
@@ -145,13 +145,13 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *GAspec.json,*DJspec.json,*-nonprod.json,*DJ.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json"
+      ./bin/import-ccd-definition.sh "-e *GAspec.json,*DJspec.json,*-nonprod.json,*DJ.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json,*-COS-nonprod.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
   }
 
-  after('smoketest:aat') {
+  afterSuccess('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
@@ -166,7 +166,7 @@ withPipeline(type, product, component) {
     uploadBpmnDiagrams('staging')
   }
 
-  after('functionalTest:aat') {
+  afterSuccess('functionalTest:aat') {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
     uploadBpmnDiagrams('prod')
