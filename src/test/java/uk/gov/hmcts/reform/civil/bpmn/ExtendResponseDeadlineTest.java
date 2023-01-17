@@ -63,6 +63,7 @@ public class ExtendResponseDeadlineTest extends BpmnBaseTest {
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
+
     }
 
 }
