@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ExtendResponseDeadlineTest extends BpmnBaseTest {
+
     private static final String MESSAGE_NAME = "EXTEND_RESPONSE_DEADLINE";
     private static final String PROCESS_ID = "EXTEND_RESPONSE_DEADLINE_PROCESS_ID";
     private static final String NOTIFY_CLAIMANT_EVENT = "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION";
