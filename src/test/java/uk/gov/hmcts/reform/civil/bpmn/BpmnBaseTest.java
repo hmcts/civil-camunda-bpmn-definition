@@ -23,6 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public abstract class BpmnBaseTest {
 
@@ -38,8 +39,12 @@ public abstract class BpmnBaseTest {
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
     public static final String SPEC_RPA_CONTINUOUS_FEED = "SPEC_RPA_CONTINUOUS_FEED";
     public static final String NOTICE_OF_CHANGE = "NOTICE_OF_CHANGE";
+    public static final String CERTIFICATE_OF_SERVICE = "CERTIFICATE_OF_SERVICE";
     public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
     public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
+    public static final String GENERAL_APPLICATION_ENABLED = "GENERAL_APPLICATION_ENABLED";
+    public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
+    public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
     public static final String FLOW_STATE = "flowState";
 
     public final String bpmnFileName;
@@ -139,6 +144,31 @@ public abstract class BpmnBaseTest {
             .createProcessDefinitionQuery()
             .messageEventSubscriptionName(messageName)
             .singleResult();
+    }
+
+    /**
+     * Asserts that the event has started and message about the event started has been created.
+     * @param messageName is name of the message that should be the same as processId.
+     * @param processId is the process id of the event.
+     */
+    public void assertProcessStartedWithMessage(String messageName, String processId) {
+        assertFalse(processInstance.isEnded());
+        assertThat(getProcessDefinitionByMessage(messageName).getKey()).isEqualTo(processId);
+    }
+
+    /**
+     * Start business process.
+     * @param variables is input variable for output variable map.
+     */
+    public void startBusinessProcess(VariableMap variables) {
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
     }
 
     /**
@@ -272,6 +302,15 @@ public abstract class BpmnBaseTest {
         assertEquals(next, Date.from(nextDate.atZone(ZoneId.systemDefault()).toInstant()));
     }
 
+    /**
+     * Checks that external task matches the rest of parameters.
+     *
+     * @param externalTask      the task
+     * @param topicName         should be equal to task.topicName
+     * @param caseEvent         the only element of locked process task should have this caseEvent
+     * @param activityId        if not null, the only element of locked process task should have this id
+     * @param lockedProcessTask should have only one item
+     */
     private void assertExternalTask(
         ExternalTask externalTask,
         String topicName,
@@ -285,6 +324,8 @@ public abstract class BpmnBaseTest {
 
         assertThat(lockedProcessTask.get(0).getVariables()).containsEntry("caseEvent", caseEvent);
 
-        assertThat(lockedProcessTask.get(0).getActivityId()).isEqualTo(activityId);
+        if (activityId != null) {
+            assertThat(lockedProcessTask.get(0).getActivityId()).isEqualTo(activityId);
+        }
     }
 }
