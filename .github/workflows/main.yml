@@ -1,6 +1,8 @@
 name: Check PR title and project linting
 on:
   pull_request:
+    branches-ignore:
+      - 'renovate/**'
     types:
       - opened
       - reopened
@@ -9,13 +11,8 @@ on:
 
 jobs:
   lint:
-    if: github.event.pull_request.user.login != 'renovate'
     runs-on: ubuntu-latest
     steps:
-    - name: NameCheck
-      env:
-        MATRIX_CONTEXT: ${{ toJson(github.event.pull_request) }}
-      run: echo "$MATRIX_CONTEXT"
     - uses: deepakputhraya/action-pr-title@master
       with:
         regex: '^(CIV-[0-9]{3,4} [a-zA-Z0-9._\- ]+)|(\[Snyk\].+)$' # Regex the title should match.
