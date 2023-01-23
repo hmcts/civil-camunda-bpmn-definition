@@ -13,6 +13,18 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpec";
 
+    //notify applicant 1
+    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyApplicant1ForSpec";
+
+    //notify respondent 1
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyRespondent1ForSpec";
+
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -34,6 +46,24 @@ public class CreateClaimLipTest extends BpmnBaseTest {
             PROCESS_CLAIM_ISSUE_EVENT,
             PROCESS_CLAIM_ISSUE_ACTIVITY_ID,
             variables
+        );
+
+        //complete the applicant notification
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+            NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        );
+
+        //complete the respondent notification
+        ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+            NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
         );
     }
 

@@ -484,17 +484,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
         );
     }
 
-    public void startBusinessProcess(VariableMap variables) {
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-    }
-
     public void completePayment(VariableMap variables) {
         ExternalTask paymentTask = assertNextExternalTask(PROCESS_PAYMENT_TOPIC);
         assertCompleteExternalTask(
