@@ -32,8 +32,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"false, true", "false, false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({"true, true", "true, false", "false, false", "false, true"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -41,7 +41,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            RPA_CONTINUOUS_FEED, rpaContinuousFeed)
+            RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives)
         );
         variables.putValue(FLOW_STATE,
                            FlowState.PENDING_CLAIM_ISSUED.fullName());
@@ -75,6 +76,18 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             "AgreedExtensionDateNotifyRespondentSolicitor1CCForSpec",
             variables
         );
+
+        if (twoRepresentatives) {
+            //complete the CC notification to respondent solicitor 2
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_RESPONDENT2_FOR_AGREED_EXTENSION_DATE_FOR_SPEC_CC",
+                "AgreedExtensionDateNotifyRespondentSolicitor2CCForSpec",
+                variables
+            );
+        }
 
         if (rpaContinuousFeed) {
             //complete the Robotics notification
