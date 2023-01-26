@@ -2,6 +2,7 @@
 
 @Library("Infrastructure")
 import uk.gov.hmcts.contino.AppPipelineConfig
+import uk.gov.hmcts.contino.GithubAPI
 
 def type = "java"
 def product = "civil"
@@ -58,6 +59,10 @@ def uploadBpmnDiagrams(String env) {
   }
 }
 
+def checkForEnableHelmLabel(branch_name) {
+  return new GithubAPI(this).getLabelsbyPattern(branch_name, "enableHelm").contains("enableHelm")
+}
+
 withPipeline(type, product, component) {
   pipelineConf = config
   disableLegacyDeployment()
@@ -67,7 +72,9 @@ withPipeline(type, product, component) {
   onPR {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
-    enableCleanupOfHelmReleaseOnSuccess()
+    if (!checkForEnableHelmLabel(env.BRANCH_NAME)) {
+      enableCleanupOfHelmReleaseAlways();
+    }
     env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
   onMaster {
@@ -111,7 +118,7 @@ withPipeline(type, product, component) {
       ./bin/add-roles.sh
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
       ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json"
+      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"

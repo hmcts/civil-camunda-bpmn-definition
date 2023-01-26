@@ -13,16 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
+class EvidenceUploadSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "POLLING_EVENT_EMITTER";
+    public static final String TOPIC_NAME = "EVIDENCE_UPLOAD_CHECK";
 
-    public PollingEventEmitterSchedulerTest() {
-        super("polling_event_emitter_scheduler.bpmn", "PollingEventEmitterScheduler");
+    public EvidenceUploadSchedulerTest() {
+        super("evidence_upload_scheduler.bpmn", "EVIDENCE_UPLOAD_SCHEDULER");
     }
 
     @Test
-    void pollingEventBmpnShouldFirePollingEventEmmiterExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseEvidenceUploadCheckExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,12 +36,12 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0/5 * 9/1 * ? *";
+        String cronString = "0 0 0 * 12 ? 2024";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 9, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 9, 0, 5, 0)
+            LocalDateTime.of(2024, 11, 30, 0, 0, 0),
+            LocalDateTime.of(2024, 12, 1, 0, 0, 0)
         );
 
         //get external tasks
@@ -50,6 +50,7 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
 
         //fetch and complete task
         List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
+
         assertThat(lockedExternalTasks).hasSize(1);
         completeTask(lockedExternalTasks.get(0).getId());
 
