@@ -36,12 +36,12 @@ class TrialReadyCheckSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 5 16 * * ?";
+        String cronString = "0 0 0 * * ? 2024";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
             LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 1, 16, 5, 0)
+            LocalDateTime.of(2024, 1, 1, 0, 0, 0)
         );
 
         //get external tasks
