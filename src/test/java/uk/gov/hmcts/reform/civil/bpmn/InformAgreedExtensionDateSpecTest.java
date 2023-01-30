@@ -19,13 +19,21 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
+    enum FlowState {
+        PENDING_CLAIM_ISSUED;
+
+        public String fullName() {
+            return "MAIN" + "." + name();
+        }
+    }
+
     public InformAgreedExtensionDateSpecTest() {
         super("inform_agreed_extension_date_spec.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({"true, true", "true, false", "false, false", "false, true"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,8 +41,11 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            RPA_CONTINUOUS_FEED, rpaContinuousFeed)
+            RPA_CONTINUOUS_FEED, rpaContinuousFeed,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives)
         );
+        variables.putValue(FLOW_STATE,
+                           FlowState.PENDING_CLAIM_ISSUED.fullName());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -66,6 +77,18 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             variables
         );
 
+        if (twoRepresentatives) {
+            //complete the CC notification to respondent solicitor 2
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_RESPONDENT2_FOR_AGREED_EXTENSION_DATE_FOR_SPEC_CC",
+                "AgreedExtensionDateNotifyRespondentSolicitor2CCForSpec",
+                variables
+            );
+        }
+
         if (rpaContinuousFeed) {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -77,6 +100,54 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true, null"})
+    void shouldSuccessfullyCompleteNotifyClaimDeadline_whenCalled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(UNREPRESENTED_DEFENDANT_ONE, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification of deadline to claimant
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION",
+            "DefendantResponseDeadlineExtensionNotifyClaimant",
+            variables
+        );
+
+        //complete the notification of deadline to defendant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION",
+            "DefendantResponseDeadlineExtensionNotifyDefendant",
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
