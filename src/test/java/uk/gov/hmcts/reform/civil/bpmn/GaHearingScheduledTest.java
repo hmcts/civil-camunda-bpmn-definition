@@ -62,10 +62,10 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
         );
 
         //Link Document to main case event
-        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             addDocumentToMainCase,
-            UPDATE_FROM_GA_CASE_EVENT,
+            PROCESS_EXTERNAL_CASE_EVENT,
             ADD_PDF_EVENT,
             ADD_PDF_ID,
             variables
