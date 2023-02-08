@@ -38,23 +38,23 @@
       <bpmn:incoming>Flow_1wbo8pc</bpmn:incoming>
       <bpmn:outgoing>Flow_1yg2hgc</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyHearingNotice" name="Notify Hearing Notice" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+    <bpmn:endEvent id="Event_0tam17y">
+      <bpmn:incoming>Flow_1830oky</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="NotifyHearingNoticeClaimant" name="Notify Hearing Notice Claimant" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_HEARING_NOTICE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_HEARING_NOTICE_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1yg2hgc</bpmn:incoming>
       <bpmn:outgoing>Flow_0z35dfn</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0tam17y">
-      <bpmn:incoming>Flow_1830oky</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:callActivity id="Activity_0sa4hmt" name="End Business Process" calledElement="EndHearingScheduledBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0z35dfn</bpmn:incoming>
+      <bpmn:incoming>Flow_16if7wo</bpmn:incoming>
       <bpmn:outgoing>Flow_1830oky</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:boundaryEvent id="Event_0qc2eoy" name="Abort" attachedToRef="Activity_0vuxatn">
@@ -64,81 +64,99 @@
     <bpmn:sequenceFlow id="Flow_1u4hj3q" sourceRef="Activity_0vuxatn" targetRef="Event_1s3ugpj" />
     <bpmn:sequenceFlow id="Flow_1qchrvw" sourceRef="Activity_0vuxatn" targetRef="GenerateHearingNoticeDocument" />
     <bpmn:sequenceFlow id="Flow_1wbo8pc" sourceRef="GenerateHearingNoticeDocument" targetRef="LinkDocumentToParentCase" />
-    <bpmn:sequenceFlow id="Flow_1yg2hgc" sourceRef="LinkDocumentToParentCase" targetRef="NotifyHearingNotice" />
-    <bpmn:sequenceFlow id="Flow_0z35dfn" sourceRef="NotifyHearingNotice" targetRef="Activity_0sa4hmt" />
+    <bpmn:sequenceFlow id="Flow_1yg2hgc" sourceRef="LinkDocumentToParentCase" targetRef="NotifyHearingNoticeClaimant" />
     <bpmn:sequenceFlow id="Flow_1830oky" sourceRef="Activity_0sa4hmt" targetRef="Event_0tam17y" />
+    <bpmn:sequenceFlow id="Flow_0z35dfn" sourceRef="NotifyHearingNoticeClaimant" targetRef="NotifyHearingNoticeDefendant" />
+    <bpmn:serviceTask id="NotifyHearingNoticeDefendant" name="Notify Hearing Notice Defendant(s)" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_HEARING_NOTICE_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z35dfn</bpmn:incoming>
+      <bpmn:outgoing>Flow_16if7wo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16if7wo" sourceRef="NotifyHearingNoticeDefendant" targetRef="Activity_0sa4hmt" />
   </bpmn:process>
   <bpmn:message id="Message_1opqhjn" name="MAKE_DECISION" />
   <bpmn:message id="Message_1lvd10f" name="HEARING_SCHEDULED_GA" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ro9p4t">
       <bpmndi:BPMNShape id="Participant_058zit7_di" bpmnElement="Participant_058zit7" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1140" height="340" />
+        <dc:Bounds x="160" y="100" width="1320" height="400" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ks94xn_di" bpmnElement="Event_0ks94xn">
-        <dc:Bounds x="231" y="230" width="36" height="36" />
+        <dc:Bounds x="231" y="250" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="237" y="273" width="25" height="14" />
+          <dc:Bounds x="237" y="293" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1s3ugpj_di" bpmnElement="Event_1s3ugpj">
-        <dc:Bounds x="341" y="100" width="36" height="36" />
+        <dc:Bounds x="341" y="120" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0nur7t1_di" bpmnElement="GenerateHearingNoticeDocument">
-        <dc:Bounds x="490" y="208" width="100" height="80" />
+        <dc:Bounds x="490" y="228" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0vuxatn_di" bpmnElement="Activity_0vuxatn">
-        <dc:Bounds x="309" y="208" width="100" height="80" />
+        <dc:Bounds x="309" y="228" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1iluc48_di" bpmnElement="LinkDocumentToParentCase">
-        <dc:Bounds x="670" y="208" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02izv88_di" bpmnElement="NotifyHearingNotice">
-        <dc:Bounds x="850" y="208" width="100" height="80" />
+        <dc:Bounds x="670" y="228" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0tam17y_di" bpmnElement="Event_0tam17y">
-        <dc:Bounds x="1212" y="230" width="36" height="36" />
+        <dc:Bounds x="1272" y="250" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02izv88_di" bpmnElement="NotifyHearingNoticeClaimant">
+        <dc:Bounds x="810" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sa4hmt_di" bpmnElement="Activity_0sa4hmt">
-        <dc:Bounds x="1030" y="208" width="100" height="80" />
+        <dc:Bounds x="1100" y="228" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1300hq4" bpmnElement="NotifyHearingNoticeDefendant">
+        <dc:Bounds x="955" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qc2eoy_di" bpmnElement="Event_0qc2eoy">
-        <dc:Bounds x="341" y="190" width="36" height="36" />
+        <dc:Bounds x="341" y="210" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="366" y="160" width="27" height="14" />
+          <dc:Bounds x="366" y="180" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1karrfz_di" bpmnElement="Flow_1karrfz">
-        <di:waypoint x="267" y="248" />
-        <di:waypoint x="309" y="248" />
+        <di:waypoint x="267" y="268" />
+        <di:waypoint x="309" y="268" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u4hj3q_di" bpmnElement="Flow_1u4hj3q">
-        <di:waypoint x="359" y="208" />
-        <di:waypoint x="359" y="136" />
+        <di:waypoint x="359" y="228" />
+        <di:waypoint x="359" y="156" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qchrvw_di" bpmnElement="Flow_1qchrvw">
-        <di:waypoint x="409" y="248" />
-        <di:waypoint x="490" y="248" />
+        <di:waypoint x="409" y="268" />
+        <di:waypoint x="490" y="268" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1wbo8pc_di" bpmnElement="Flow_1wbo8pc">
-        <di:waypoint x="590" y="248" />
-        <di:waypoint x="670" y="248" />
+        <di:waypoint x="590" y="268" />
+        <di:waypoint x="670" y="268" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1yg2hgc_di" bpmnElement="Flow_1yg2hgc">
-        <di:waypoint x="770" y="248" />
-        <di:waypoint x="850" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z35dfn_di" bpmnElement="Flow_0z35dfn">
-        <di:waypoint x="950" y="248" />
-        <di:waypoint x="1030" y="250" />
+        <di:waypoint x="770" y="268" />
+        <di:waypoint x="810" y="268" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1830oky_di" bpmnElement="Flow_1830oky">
-        <di:waypoint x="1130" y="248" />
-        <di:waypoint x="1212" y="248" />
+        <di:waypoint x="1200" y="268" />
+        <di:waypoint x="1272" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z35dfn_di" bpmnElement="Flow_0z35dfn">
+        <di:waypoint x="910" y="267" />
+        <di:waypoint x="955" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16if7wo_di" bpmnElement="Flow_16if7wo">
+        <di:waypoint x="1055" y="271" />
+        <di:waypoint x="1100" y="271" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
