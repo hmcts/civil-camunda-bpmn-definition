@@ -12,18 +12,18 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class HearingFeeUnpaidTest extends BpmnBaseTest {
+class TrialReadyNotificationTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "HEARING_FEE_UNPAID";
-    public static final String PROCESS_ID = "HEARING_FEE_UNPAID";
+    public static final String MESSAGE_NAME = "TRIAL_READY_NOTIFICATION";
+    public static final String PROCESS_ID = "TRIAL_READY_NOTIFICATION";
 
-    public HearingFeeUnpaidTest() {
-        super("hearing_fee_unpaid.bpmn", "HEARING_FEE_UNPAID");
+    public TrialReadyNotificationTest() {
+        super("trial_ready_notification.bpmn", "TRIAL_READY_NOTIFICATION");
     }
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteHearingFeeUnpaidMultiparty(boolean twoRepresentatives) {
+    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -47,30 +47,30 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to first respondent
+        //complete the notification for respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyRespondentSolicitor1"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_TRIAL_READY",
+                                   "TrialReadyNotifyRespondentSolicitor1"
         );
 
         if (twoRepresentatives) {
-            //complete the notification to second respondent
+            //complete the notification for respondent 2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(respondent2Notification,
                                        PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_HEARING_FEE_UNPAID",
-                                       "HearingFeeUnpaidNotifyRespondentSolicitor2"
+                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_TRIAL_READY",
+                                       "TrialReadyNotifyRespondentSolicitor2"
             );
         }
 
-        //complete the notification to applicant
+        //complete the notification for applicant solicitor
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyApplicantSolicitor1"
+                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_TRIAL_READY",
+                                   "TrialReadyNotifyApplicantSolicitor1"
         );
 
         //end business process
