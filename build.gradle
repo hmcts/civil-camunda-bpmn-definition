@@ -157,6 +157,26 @@ task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
 }
 
+task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-dj'
+}
+
+task runCosTests(type: Exec, description: 'Runs DJ Api functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-cos'
+}
+
+task runSdoApiTests(type: Exec, description: 'Runs SDO functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-sdo'
+}
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:rpa'
@@ -178,7 +198,8 @@ task smoke(description: 'Runs the smoke tests.') {
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, 
+  runCosTests, runDJTests, runSpecApiTests, runSdoApiTests, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
