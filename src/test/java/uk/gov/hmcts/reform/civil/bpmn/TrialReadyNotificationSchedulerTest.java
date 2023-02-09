@@ -4,7 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -14,17 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
+class TrialReadyNotificationSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "HEARING_FEE_CHECK";
+    public static final String TOPIC_NAME = "TRIAL_READY_NOTIFICATION_CHECK";
 
-    public HearingFeeCheckSchedulerTest() {
-        super("hearing_fee_check_scheduler.bpmn", "HEARING_FEE_CHECK_SCHEDULER");
+    public TrialReadyNotificationSchedulerTest() {
+        super("trial_ready_notification_scheduler.bpmn", "TRIAL_READY_NOTIFICATION_SCHEDULER");
     }
 
     @Test
-    @Disabled
-    void schedulerShouldRaiseHearingFeeCheckExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseTrialReadyNotificationExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
