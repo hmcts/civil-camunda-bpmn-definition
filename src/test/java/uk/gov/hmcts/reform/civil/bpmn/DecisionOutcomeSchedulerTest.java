@@ -4,7 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -14,17 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
+class DecisionOutcomeSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "HEARING_FEE_CHECK";
+    public static final String TOPIC_NAME = "MOVE_TO_DECISION_OUTCOME";
 
-    public HearingFeeCheckSchedulerTest() {
-        super("hearing_fee_check_scheduler.bpmn", "HEARING_FEE_CHECK_SCHEDULER");
+    public DecisionOutcomeSchedulerTest() {
+        super("decision_outcome_scheduler.bpmn", "DECISION_OUTCOME_SCHEDULER");
     }
 
     @Test
-    @Disabled
-    void schedulerShouldRaiseHearingFeeCheckExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseDecisionOutcomeExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -38,12 +36,11 @@ class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        //scheduler set to run every 10 minutes to ease testing.
         String cronString = "0 0 0 * * ? 2024";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 1),
+            LocalDateTime.of(2020, 1, 1, 0, 0, 0),
             LocalDateTime.of(2024, 1, 1, 0, 0, 0)
         );
 
@@ -61,7 +58,7 @@ class HearingFeeCheckSchedulerTest extends BpmnBaseTest {
         List<ExternalTask> externalTasksAfter = getExternalTasks();
         assertThat(externalTasksAfter).isEmpty();
 
-        //assert process is still active - timer event so always running
+        //assert process is still active - timer event, so always running
         assertFalse(processInstance.isEnded());
     }
 }

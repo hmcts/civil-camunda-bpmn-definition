@@ -23,8 +23,10 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
-    private static final String NOTIFY_HEARING_NOTICE_EVENT = "NOTIFY_HEARING_NOTICE";
-    private static final String NOTIFY_HEARING_NOTICE_ACTIVITY_ID = "NotifyHearingNotice";
+    private static final String NOTIFY_HEARING_NOTICE_CLAIMANT_EVENT = "NOTIFY_HEARING_NOTICE_CLAIMANT";
+    private static final String NOTIFY_HEARING_NOTICE_CLAIMANT_ACTIVITY_ID = "NotifyHearingNoticeClaimant";
+    private static final String NOTIFY_HEARING_NOTICE_DEFENDANT_EVENT = "NOTIFY_HEARING_NOTICE_DEFENDANT";
+    private static final String NOTIFY_HEARING_NOTICE_DEFENDANT_ACTIVITY_ID = "NotifyHearingNoticeDefendant";
 
     public GaHearingScheduledTest() {
         super("ga_hearing_scheduled_access.bpmn", PROCESS_ID);
@@ -71,13 +73,23 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             variables
         );
 
-        //Notify Hearing Notice
-        ExternalTask notifyHearingNotice = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //Notify Hearing Notice Claimant
+        ExternalTask notifyHearingNoticeClaimant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyHearingNotice,
+            notifyHearingNoticeClaimant,
             PROCESS_EXTERNAL_CASE_EVENT,
-            NOTIFY_HEARING_NOTICE_EVENT,
-            NOTIFY_HEARING_NOTICE_ACTIVITY_ID,
+            NOTIFY_HEARING_NOTICE_CLAIMANT_EVENT,
+            NOTIFY_HEARING_NOTICE_CLAIMANT_ACTIVITY_ID,
+            variables
+        );
+
+        //Notify Hearing Notice Defendant(s)
+        ExternalTask notifyHearingNoticeDefendant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyHearingNoticeDefendant,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            NOTIFY_HEARING_NOTICE_DEFENDANT_EVENT,
+            NOTIFY_HEARING_NOTICE_DEFENDANT_ACTIVITY_ID,
             variables
         );
 
