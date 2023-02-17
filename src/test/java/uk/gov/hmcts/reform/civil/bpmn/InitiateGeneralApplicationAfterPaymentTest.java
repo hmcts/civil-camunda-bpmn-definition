@@ -23,9 +23,9 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
-
     public InitiateGeneralApplicationAfterPaymentTest() {
-        super("initiate_general_application_after_payment.bpmn", "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
+        super("initiate_general_application_after_payment.bpmn",
+              "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
     }
 
     @ParameterizedTest

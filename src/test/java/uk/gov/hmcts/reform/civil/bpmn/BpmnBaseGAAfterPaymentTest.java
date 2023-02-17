@@ -1,39 +1,36 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
-    import org.camunda.bpm.engine.ProcessEngine;
-    import org.camunda.bpm.engine.ProcessEngineConfiguration;
-    import org.camunda.bpm.engine.externaltask.ExternalTask;
-    import org.camunda.bpm.engine.externaltask.LockedExternalTask;
-    import org.camunda.bpm.engine.impl.calendar.CronExpression;
-    import org.camunda.bpm.engine.management.JobDefinition;
-    import org.camunda.bpm.engine.repository.Deployment;
-    import org.camunda.bpm.engine.repository.ProcessDefinition;
-    import org.camunda.bpm.engine.runtime.ProcessInstance;
-    import org.camunda.bpm.engine.variable.VariableMap;
-    import org.junit.jupiter.api.AfterAll;
-    import org.junit.jupiter.api.AfterEach;
-    import org.junit.jupiter.api.BeforeAll;
-    import org.junit.jupiter.api.BeforeEach;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.externaltask.LockedExternalTask;
+import org.camunda.bpm.engine.impl.calendar.CronExpression;
+import org.camunda.bpm.engine.management.JobDefinition;
+import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
-    import java.time.LocalDateTime;
-    import java.time.ZoneId;
-    import java.util.Date;
-    import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
-    import static org.assertj.core.api.Assertions.assertThat;
-    import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
-    import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class BpmnBaseGAAfterPaymentTest {
 
     private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
-    public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_MAKE_DECISION";
-    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_MAKE_DECISION";
+    public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
-
-
-
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
@@ -247,7 +244,6 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         assertThat(externalTasksAfter).isEmpty();
     }
 
-
     /**
      * Completes the external task with topic name END_BUSINESS_PROCESS.
      *
@@ -261,7 +257,6 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
     }
-
 
     public void assertCronTriggerFiresAtExpectedTime(CronExpression expression,
                                                      LocalDateTime now,

@@ -28,8 +28,8 @@ public abstract class BpmnBaseJudgeGASpecTest {
 
     private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
-    public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_MAKE_DECISION";
-    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_MAKE_DECISION";
+    public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
     public static final String MAKE_DECISION_CASE_EVENT = "applicationProcessCaseEventGASpec";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";

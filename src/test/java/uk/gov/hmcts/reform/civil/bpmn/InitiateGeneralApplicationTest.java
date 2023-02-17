@@ -40,15 +40,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
     }
 
-    enum FlowState {
-        DRAFT,
-        PAYMENT_FAILED,
-        PAYMENT_SUCCESSFUL;
-        public String fullName() {
-            return "MAIN" + "." + name();
-        }
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(Boolean rpaContinuousFeed) {
