@@ -14,15 +14,19 @@ class HearingProcessTest extends BpmnBaseTest {
     //CCD CASE EVENT
     public static final String NOTIFY_CLAIMANT_HEARING
         = "NOTIFY_CLAIMANT_HEARING";
-    public static final String NOTIFY_DEFENDANT_HEARING
-        = "NOTIFY_DEFENDANT_HEARING";
+    public static final String NOTIFY_DEFENDANT1_HEARING
+        = "NOTIFY_DEFENDANT1_HEARING";
+    public static final String NOTIFY_DEFENDANT2_HEARING
+        = "NOTIFY_DEFENDANT2_HEARING";
     public static final String GENERATE_HEARING_FORM
         = "GENERATE_HEARING_FORM";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
         = "NotifyClaimantHearing";
-    private static final String NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
+    private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
+        = "NotifyDefendantHearing";
+    private static final String NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
         = "NotifyDefendantHearing";
     public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
         = "GenerateHearingForm";
@@ -58,7 +62,11 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the defendant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT_HEARING, NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
+        );
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
         );
 
         //end business process
