@@ -37,12 +37,12 @@ public class GAUnlessOrderSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 15 16 ? * * *";
+        String cronString = "0 0 16 ? * * *";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 16, 15, 0),
-            LocalDateTime.of(2020, 1, 2, 16, 15, 0)
+            LocalDateTime.of(2020, 1, 1, 16, 0, 0),
+            LocalDateTime.of(2020, 1, 2, 16, 0, 0)
         );
 
         //get external tasks
