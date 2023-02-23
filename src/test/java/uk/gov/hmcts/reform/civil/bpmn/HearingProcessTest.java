@@ -53,23 +53,25 @@ class HearingProcessTest extends BpmnBaseTest {
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
         );
 
+        //complete the defendant1 notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
+        );
+
+        //complete the defendant2 notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
+        );
+
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
         );
 
-        //complete the defendant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
-        );
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
-        );
-
-        //end business process
+       //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
