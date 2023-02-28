@@ -24,28 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class BpmnBaseJudgeGASpecTest {
+public abstract class BpmnBaseGAAfterPaymentTest {
 
     private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
     public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
-    public static final String MAKE_DECISION_CASE_EVENT = "applicationProcessCaseEventGASpec";
-    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
-    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
-
-    public static final String START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION
-        = "START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION";
-    public static final String START_APPLICANT_NOTIFICATION_PROCESS_ID
-        = "StartApplicantNotificationProcessMakeDecision";
-
-    public static final String START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION
-        = "START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION";
-    public static final String START_RESPONDENT_NOTIFICATION_PROCESS_ID
-        = "StartRespondentNotificationProcessMakeDecision";
-
-    public static final String END_BUSINESS_PROCESS = "END_JUDGE_BUSINESS_PROCESS_GASPEC";
+    public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
 
@@ -58,7 +44,7 @@ public abstract class BpmnBaseJudgeGASpecTest {
 
     public ProcessInstance processInstance;
 
-    public BpmnBaseJudgeGASpecTest(String bpmnFileName, String processId) {
+    public BpmnBaseGAAfterPaymentTest(String bpmnFileName, String processId) {
         this.bpmnFileName = bpmnFileName;
         this.processId = processId;
     }
@@ -80,7 +66,7 @@ public abstract class BpmnBaseJudgeGASpecTest {
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_judges_makes_decision_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
             .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
@@ -264,9 +250,9 @@ public abstract class BpmnBaseJudgeGASpecTest {
      * @param externalTask the id of the external task to complete.
      */
     public void completeBusinessProcess(ExternalTask externalTask) {
-        assertThat(externalTask.getTopicName()).isEqualTo("END_JUDGE_BUSINESS_PROCESS_GASPEC");
+        assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS_GASPEC");
 
-        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_JUDGE_BUSINESS_PROCESS_GASPEC");
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS_GASPEC");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
