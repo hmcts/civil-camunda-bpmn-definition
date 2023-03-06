@@ -30,7 +30,7 @@ public abstract class BpmnBaseGAAfterPaymentTest {
     public static final String WORKER_ID = "test-worker";
     public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
-    public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
+    public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
@@ -62,7 +62,7 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH,
-                                                "start_general_application_make_decision_business_process.bpmn"))
+                                                "start_general_application_business_process.bpmn"))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
