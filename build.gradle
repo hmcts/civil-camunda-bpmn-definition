@@ -3,7 +3,7 @@ plugins {
   id 'checkstyle'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.14.RELEASE'
-  id 'org.owasp.dependencycheck' version '7.2.1'
+  id 'org.owasp.dependencycheck' version '8.0.1'
   id 'com.github.ben-manes.versions' version '0.39.0'
   id 'org.sonarqube' version '3.4.0.2513'
 }
@@ -142,14 +142,29 @@ task awaitApplicationReadiness(type: Exec, description: 'Awaits until applicatio
   commandLine './bin/wait-for.sh', System.env.TEST_URL
 }
 
+task runCosTests(type: Exec, description: 'Runs DJ Api functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-cos'
+}
+
+task runSdoApiTests(type: Exec, description: 'Runs SDO functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-sdo'
+}
+
 task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'test:smoke'
 }
 
+task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'test:api-dj'
+}
+
 task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
-  onlyIf {
-    return System.env.ENVIRONMENT == 'preview'
-  }
   commandLine '/usr/bin/yarn', '--silent', 'test:api-spec'
 }
 
@@ -178,7 +193,7 @@ task smoke(description: 'Runs the smoke tests.') {
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runCosTests, runDJTests, runSpecApiTests, runSdoApiTests, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport

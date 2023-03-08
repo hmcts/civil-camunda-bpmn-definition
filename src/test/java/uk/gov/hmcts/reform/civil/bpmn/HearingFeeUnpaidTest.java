@@ -24,6 +24,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void shouldSuccessfullyCompleteHearingFeeUnpaidMultiparty(boolean twoRepresentatives) {
+
         //assert process has started
         assertFalse(processInstance.isEnded());
 
