@@ -87,7 +87,7 @@ class HearingProcessTest extends BpmnBaseTest {
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         );
 
-       //end business process
+        //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
