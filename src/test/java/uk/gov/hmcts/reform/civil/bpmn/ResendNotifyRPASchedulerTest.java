@@ -40,8 +40,8 @@ class ResendNotifyRPASchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2026, 5, 1, 0, 0, 0),
-            LocalDateTime.of(2026, 5, 1, 0, 0, 0)
+            LocalDateTime.of(2026, 2, 1, 0, 0, 0),
+            LocalDateTime.of(2026, 3, 1, 0, 0, 0)
         );
 
         //get external tasks
