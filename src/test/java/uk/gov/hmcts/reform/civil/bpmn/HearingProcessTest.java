@@ -18,6 +18,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "NOTIFY_DEFENDANT_HEARING";
     public static final String GENERATE_HEARING_FORM
         = "GENERATE_HEARING_FORM";
+    public static final String CREATE_SERVICE_REQUEST_API
+        = "CREATE_SERVICE_REQUEST_API";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
@@ -26,6 +28,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "NotifyDefendantHearing";
     public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
         = "GenerateHearingForm";
+    private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+        = "ServiceRequestAPI";
 
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
@@ -43,7 +47,7 @@ class HearingProcessTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the claimant notification
+        //complete the hearing form process
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
@@ -59,6 +63,12 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT_HEARING, NOTIFY_DEFENDANT_HEARING_ACTIVITY_ID
+        );
+
+        //complete the service request process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         );
 
         //end business process
