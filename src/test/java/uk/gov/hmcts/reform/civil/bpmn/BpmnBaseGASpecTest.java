@@ -63,7 +63,8 @@ public abstract class BpmnBaseGASpecTest {
         //deploy process
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "start_general_application_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH,
+                                                "start_initiate_general_application_business_process.bpmn"))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
