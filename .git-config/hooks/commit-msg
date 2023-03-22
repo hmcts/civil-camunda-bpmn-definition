@@ -1,0 +1,53 @@
+#!/bin/bash
+
+REGEX_ISSUE_ID='^CIV-[0-9]+ .*'
+REGEX_GENERIC_TASK='^CIV-TASK .*'
+REGEX_RENOVATE='^Update .*'
+REGEX_RENOVATE_BRANCH='renovate\/.*'
+REGEX_MERGE=`Merge branch .*`
+
+COMMIT_MESSAGE=$(head -n 1 "$1")
+
+
+if [[ $COMMIT_MESSAGE =~ $REGEX_ISSUE_ID ]]; then
+  # This is a CIV-nnnn commit message. All good.
+  exit 0
+fi
+
+if [[ $COMMIT_MESSAGE =~ $REGEX_GENERIC_TASK ]]; then
+  # This is a CIV-TASK commit message. All good.
+  exit 0
+fi
+
+if [[ $COMMIT_MESSAGE =~ $REGEX_RENOVATE ]]; then
+  # This is a Renovate commit message. We need to check the branch name
+  BRANCH_NAME=$(git symbolic-ref --short HEAD)
+  if [[ $BRANCH_NAME =~ $REGEX_RENOVATE_BRANCH ]]; then
+    # Renovate commit message in renovate branch. All good.
+    exit 0
+  fi
+fi
+
+if [[ $COMMIT_MESSAGE =~ $REGEX_MERGE ]]; then
+  # This is a merge done locally. All good.
+  exit 0
+fi
+
+
+# We don't recognize this commit message format, so it's invalid to us. We report an error to the user and exit.
+echo "The provided commit message is invalid. Commit messages must start with CIV-nnnn or CIV-TASK"
+echo " (mind the uppercase) and there must be a space afterwards, to separate from the commit title."
+echo "Also be advised that usage of CIV-TASK should be cleared beforehand by a Technical Lead as its use is meant"
+echo " as an exception for corner cases."
+echo ""
+echo "Examples of valid commit messages:"
+echo " CIV-1234 Fixing a bug"
+echo " CIV-TASK Fixing an urgent issue in master"
+echo " CIV-TASK DET-1234 Fix from another project's team"
+echo ""
+echo "Examples of invalid commit messages:"
+echo " Fixing a bug"
+echo " DET-1234 Fix from another project's team"
+echo " $COMMIT_MESSAGE"
+
+exit 1
