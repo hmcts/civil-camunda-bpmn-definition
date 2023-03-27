@@ -49,6 +49,22 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             "ClaimantAgreedRepaymentNotifyRespondent1"
         );
 
+        ExternalTask notifyClimantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyClimantLR,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT",
+            "ClaimantDisAgreeRepaymentPlanNotifyApplicant"
+        );
+
+        ExternalTask notifyLipDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLipDefendant,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT",
+            "ClaimantDisAgreedRepaymentPlanNotifyLip"
+        );
+
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
