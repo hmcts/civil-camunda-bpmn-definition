@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "TRIAL_READY_NOTIFICATION";
+    public static final String MESSAGE_NAME = "RESPONDENT1_TRIAL_READY_NOTIFY_OTHERS";
     public static final String PROCESS_ID = "RESPONDENT1_TRIAL_READY_NOTIFY_OTHERS";
 
     //CCD CASE EVENT
