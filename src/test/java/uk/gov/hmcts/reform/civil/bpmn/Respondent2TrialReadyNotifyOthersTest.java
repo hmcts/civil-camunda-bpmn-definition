@@ -1,13 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -59,8 +53,6 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
                                    NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
         );
 
-
-
         //complete the applicant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
@@ -74,7 +66,6 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT2,
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT2_ACTIVITY_ID
         );
-
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

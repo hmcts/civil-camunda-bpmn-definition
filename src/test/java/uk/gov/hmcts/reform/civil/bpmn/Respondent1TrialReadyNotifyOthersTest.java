@@ -68,7 +68,6 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
             );
         }
 
-
         //complete the applicant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
@@ -84,7 +83,6 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT1_ACTIVITY_ID,
                                    variables
         );
-
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
