@@ -1,4 +1,4 @@
-FROM hmctspublic.azurecr.io/base/java:openjdk-11-distroless-1.2
+FROM hmctspublic.azurecr.io/base/java:11-distroless
 
 COPY build/libs/empty.jar /opt/app/
 
