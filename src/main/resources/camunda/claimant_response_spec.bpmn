@@ -23,9 +23,10 @@
           <camunda:inputParameter name="caseEvent">GENERATE_DIRECTIONS_QUESTIONNAIRE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0hyuc69</bpmn:incoming>
       <bpmn:incoming>Flow_1gow4k6</bpmn:incoming>
       <bpmn:incoming>Flow_032tfpf</bpmn:incoming>
+      <bpmn:incoming>Flow_01c47bi</bpmn:incoming>
+      <bpmn:incoming>Flow_19i2yb2</bpmn:incoming>
       <bpmn:outgoing>Flow_1hr7okm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:callActivity id="Activity_0gt1863" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -169,12 +170,11 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09ed1dn</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hyuc69</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15yahzj</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Full_defence_proceed_no_mediation" name="Full defence, proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="mayGoToJdgeReferral">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0hyuc69" sourceRef="JudicialReferral" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
     <bpmn:serviceTask id="Activity_0zvlsut" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -326,6 +326,28 @@
     <bpmn:sequenceFlow id="Flow_ADMIT_PART_REJECT_REPAYMENT" name="Applicant reject repayment plan (full/part admit)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1pc8agd">
+      <bpmn:incoming>Flow_15yahzj</bpmn:incoming>
+      <bpmn:outgoing>Flow_01c47bi</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zq37tf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_15yahzj" sourceRef="JudicialReferral" targetRef="Gateway_1pc8agd" />
+    <bpmn:sequenceFlow id="Flow_01c47bi" name="General Application Disabled" sourceRef="Gateway_1pc8agd" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="TriggerAndUpdateGenAppLocation" name="Trigger and Update General Application Location" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">TRIGGER_UPDATE_GA_LOCATION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zq37tf</bpmn:incoming>
+      <bpmn:outgoing>Flow_19i2yb2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zq37tf" name="General Application Enabled" sourceRef="Gateway_1pc8agd" targetRef="TriggerAndUpdateGenAppLocation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_19i2yb2" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -433,6 +455,13 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1pa6xen_di" bpmnElement="ClaimantAgreedRepaymentNotifyRespondent1">
         <dc:Bounds x="560" y="990" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1pc8agd_di" bpmnElement="Gateway_1pc8agd" isMarkerVisible="true">
+        <dc:Bounds x="545" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
+        <dc:Bounds x="530" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1o3q1xa_di" bpmnElement="TextAnnotation_1o3q1xa">
         <dc:Bounds x="790" y="105" width="110" height="45" />
@@ -558,10 +587,6 @@
           <dc:Bounds x="398" y="416" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hyuc69_di" bpmnElement="Flow_0hyuc69">
-        <di:waypoint x="520" y="200" />
-        <di:waypoint x="610" y="200" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ruvuz3_di" bpmnElement="Flow_0ruvuz3">
         <di:waypoint x="710" y="470" />
         <di:waypoint x="735" y="470" />
@@ -572,11 +597,11 @@
         <di:waypoint x="645" y="770" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1i4rwd5_di" bpmnElement="Flow_1i4rwd5">
-        <di:waypoint x="500" y="370" />
+        <di:waypoint x="495" y="370" />
         <di:waypoint x="630" y="370" />
         <di:waypoint x="630" y="430" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="515" y="330" width="89" height="40" />
+          <dc:Bounds x="495" y="370" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09ed1dn_di" bpmnElement="Flow_09ed1dn">
@@ -619,14 +644,14 @@
         <di:waypoint x="1069" y="470" />
         <di:waypoint x="1090" y="470" />
         <di:waypoint x="1090" y="320" />
-        <di:waypoint x="690" y="320" />
-        <di:waypoint x="690" y="240" />
+        <di:waypoint x="700" y="320" />
+        <di:waypoint x="700" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_032tfpf_di" bpmnElement="Flow_032tfpf">
         <di:waypoint x="760" y="445" />
         <di:waypoint x="760" y="320" />
-        <di:waypoint x="690" y="320" />
-        <di:waypoint x="690" y="240" />
+        <di:waypoint x="700" y="320" />
+        <di:waypoint x="700" y="240" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="703" y="360" width="53" height="40" />
         </bpmndi:BPMNLabel>
@@ -666,6 +691,29 @@
         <di:waypoint x="660" y="1030" />
         <di:waypoint x="1220" y="1030" />
         <di:waypoint x="1220" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15yahzj_di" bpmnElement="Flow_15yahzj">
+        <di:waypoint x="520" y="200" />
+        <di:waypoint x="545" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01c47bi_di" bpmnElement="Flow_01c47bi">
+        <di:waypoint x="595" y="200" />
+        <di:waypoint x="610" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="563" y="130" width="53" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zq37tf_di" bpmnElement="Flow_0zq37tf">
+        <di:waypoint x="570" y="225" />
+        <di:waypoint x="570" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="513" y="225.0000000000001" width="53" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19i2yb2_di" bpmnElement="Flow_19i2yb2">
+        <di:waypoint x="630" y="310" />
+        <di:waypoint x="670" y="310" />
+        <di:waypoint x="670" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1574yb4_di" bpmnElement="Association_1574yb4">
         <di:waypoint x="903" y="182" />
