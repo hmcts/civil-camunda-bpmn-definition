@@ -55,7 +55,6 @@
       <bpmn:incoming>Flow_0fqn57l</bpmn:incoming>
       <bpmn:incoming>Flow_0evghcx</bpmn:incoming>
       <bpmn:incoming>Flow_0u83asq</bpmn:incoming>
-      <bpmn:incoming>Flow_0ypan55</bpmn:incoming>
       <bpmn:outgoing>Flow_17evp7q</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1hr7okm" sourceRef="ClaimantResponseGenerateDirectionsQuestionnaire" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor1" />
@@ -66,7 +65,6 @@
       <bpmn:outgoing>Flow_FULL_DEFENCE_PROCEED</bpmn:outgoing>
       <bpmn:outgoing>Full_defence_proceed_no_mediation</bpmn:outgoing>
       <bpmn:outgoing>Flow_ADMIT_PART_ACCEPT_REPAYMENT</bpmn:outgoing>
-      <bpmn:outgoing>Flow_Flow_PAY_IMMEDIATELY</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_FULL_DEFENCE_NOT_PROCEED" name="Applicant confirms not to proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_0zvlsut">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED" || flowState == "MAIN.FULL_ADMIT_NOT_PROCEED" || flowState == "MAIN.PART_ADMIT_NOT_PROCEED"}</bpmn:conditionExpression>
@@ -303,19 +301,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_AGREE_REPAYMENT" || flowState == "MAIN.PART_ADMIT_AGREE_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0u83asq" sourceRef="ClaimantAgreedRepaymentNotifyRespondent1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
-    <bpmn:serviceTask id="proceedsInHeritageSystem" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_Flow_PAY_IMMEDIATELY</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ypan55</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_Flow_PAY_IMMEDIATELY" name="Defendat confirm to pay immediately" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="proceedsInHeritageSystem">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState  == "MAIN.FULL_ADMIT_PAY_IMMEDIATELY"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ypan55" sourceRef="proceedsInHeritageSystem" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -545,18 +530,6 @@
         <di:waypoint x="1490" y="470" />
         <di:waypoint x="1512" y="470" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ndhq6o_di" bpmnElement="Flow_Flow_PAY_IMMEDIATELY">
-        <di:waypoint x="470" y="495" />
-        <di:waypoint x="470" y="1120" />
-        <di:waypoint x="1170" y="1120" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="412" y="760" width="84" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ypan55_di" bpmnElement="Flow_0ypan55">
-        <di:waypoint x="1220" y="1080" />
-        <di:waypoint x="1220" y="509" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1diii28_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="455" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -574,6 +547,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0nc34kd_di" bpmnElement="Event_0nc34kd">
         <dc:Bounds x="262" y="339" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1170" y="429" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0p15z9i_di" bpmnElement="Gateway_PROCEED_OR_NOT_PROCEED" isMarkerVisible="true">
         <dc:Bounds x="445" y="445" width="50" height="50" />
@@ -653,12 +629,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0zax79s_di" bpmnElement="TextAnnotation_0zax79s">
         <dc:Bounds x="900" y="700" width="100" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02hfpyu_di" bpmnElement="proceedsInHeritageSystem">
-        <dc:Bounds x="1170" y="1080" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="1170" y="429" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="262" y="412" width="36" height="36" />
