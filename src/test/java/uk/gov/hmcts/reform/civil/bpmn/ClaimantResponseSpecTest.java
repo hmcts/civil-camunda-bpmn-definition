@@ -171,7 +171,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation(){
+    void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation() {
 
         assertFalse(processInstance.isEnded());
         assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
