@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class BpmnBaseGASpecTest {
 
-    private static final String DIAGRAM_PATH = "camunda/%s";
+    protected static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
     public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_GASPEC";
     public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_GASPEC";
