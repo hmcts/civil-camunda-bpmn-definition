@@ -28,9 +28,8 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
         super("acknowledge_claim.bpmn", "ACKNOWLEDGE_CLAIM_PROCESS_ID");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteAcknowledgeClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteAcknowledgeClaim_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -38,7 +37,6 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -73,17 +71,15 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
                                    variables
         );
 
-        if (rpaContinuousFeed) {
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                variables
-            );
-        }
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
