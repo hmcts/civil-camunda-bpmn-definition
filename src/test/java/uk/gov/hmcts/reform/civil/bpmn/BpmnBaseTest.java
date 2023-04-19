@@ -37,7 +37,6 @@ public abstract class BpmnBaseTest {
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String FLOW_FLAGS = "flowFlags";
     public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
-    public static final String SPEC_RPA_CONTINUOUS_FEED = "SPEC_RPA_CONTINUOUS_FEED";
     public static final String NOTICE_OF_CHANGE = "NOTICE_OF_CHANGE";
     public static final String CERTIFICATE_OF_SERVICE = "CERTIFICATE_OF_SERVICE";
     public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
