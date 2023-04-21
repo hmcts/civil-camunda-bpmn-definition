@@ -355,8 +355,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of(NOTICE_OF_CHANGE, true,
-                                             RPA_CONTINUOUS_FEED, true));
+            variables.put(FLOW_FLAGS, Map.of(NOTICE_OF_CHANGE, true));
 
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

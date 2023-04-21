@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,16 +25,13 @@ class AddCaseNoteTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        VariableMap variables = Variables.createVariables();
-
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
 
         //complete the Robotics notification
@@ -45,8 +40,7 @@ class AddCaseNoteTest extends BpmnBaseTest {
             forRobotics,
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
         );
 
         //end business process

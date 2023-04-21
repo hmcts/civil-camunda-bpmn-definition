@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,39 +30,33 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        VariableMap variables = Variables.createVariables();
-
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness,
                                    START_BUSINESS_TOPIC,
                                    START_BUSINESS_EVENT,
-                                   START_BUSINESS_ACTIVITY,
-                                   variables);
+                                   START_BUSINESS_ACTIVITY);
 
         //complete the document generation
         ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(documentGeneration,
                                    PROCESS_CASE_EVENT,
                                    GENERATE_ACKNOWLEDGEMENT_OF_CLAIM,
-                                   GENERATE_CERTIFICATE_ACTIVITY_ID,
-                                   variables);
+                                   GENERATE_CERTIFICATE_ACTIVITY_ID);
 
         //complete the notification to applicant
         ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notification,
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR_1,
-                                   NOTIFICATION_ACTIVITY_ID,
-                                   variables);
+                                   NOTIFICATION_ACTIVITY_ID);
 
         //complete the CC notification to respondent
         notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notification,
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_ACKNOWLEDGEMENT_CC",
-                                   "AcknowledgeClaimNotifyRespondentSolicitor1CC",
-                                   variables
+                                   "AcknowledgeClaimNotifyRespondentSolicitor1CC"
         );
 
         //complete the Robotics notification
@@ -73,8 +65,7 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
             forRobotics,
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
         );
 
         //end business process
