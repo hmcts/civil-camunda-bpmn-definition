@@ -74,7 +74,6 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
         );
 
         if (rpaContinuousFeed) {
-            //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 forRobotics,
