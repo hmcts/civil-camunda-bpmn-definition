@@ -1,4 +1,4 @@
-# civil-camunda-bpmn-definition test
+# civil-camunda-bpmn-definition
 
 Civil Camunda BPMN Definition
 
