@@ -104,8 +104,8 @@ withPipeline(type, product, component) {
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json,*CUI.json"
     """
-    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
   }
 
   afterSuccess('smoketest:preview') {
@@ -115,9 +115,9 @@ withPipeline(type, product, component) {
   before('functionalTest:preview') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -138,7 +138,7 @@ withPipeline(type, product, component) {
       ./bin/import-ccd-definition.sh "-e *GAspec.json,*-nonprod.json,*-COS-nonprod.json,*CUI.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
   }
 
   afterSuccess('smoketest:aat') {
@@ -151,7 +151,7 @@ withPipeline(type, product, component) {
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.aat.platform.hmcts.net"
 
     uploadBpmnDiagrams('staging')
   }
