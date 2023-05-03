@@ -88,22 +88,11 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
 
-  syncBranchesWithMaster(['demo'])
-
-    onDemo {
-      def subscription = 'nonprod'
-      withSubscription(subscription) {
-        withTeamSecrets(pipelineConf, 'demo') {
-          uploadBpmnDiagrams('demo')
-        }
-      }
-      onDemo {
-        withCamundaOnlyPipeline(type, product, component, s2sServiceName, tenantId) {
+  withCamundaOnlyPipeline(type, product, component, s2sServiceName, tenantId) {
           syncBranchesWithMaster(['demo'])
         }
-      }
 
-    }
+
 
 
   before('smoketest:preview') {
