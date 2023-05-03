@@ -8,9 +8,6 @@ def type = "java"
 def product = "civil"
 def component = "camunda"
 def ccdBranch = "master"
-def tenantId = "civil"
-def s2sServiceName = "civil-service"
-
 AppPipelineConfig pipelineConf
 
 static Map<String, Object> secret(String secretName, String envVariable) {
@@ -88,11 +85,18 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
 
-  withCamundaOnlyPipeline(type, product, component, s2sServiceName, tenantId) {
-          syncBranchesWithMaster(['demo'])
+  syncBranchesWithMaster(['demo'])
+
+  afterSuccess('checkout') {
+    def subscription = 'nonprod'
+    if ( env.ENVIRONMENT == 'demo') {
+      withSubscription(subscription) {
+        withTeamSecrets(pipelineConf, 'demo') {
+          uploadBpmnDiagrams('demo')
         }
-
-
+      }
+    }
+  }
 
 
   before('smoketest:preview') {
