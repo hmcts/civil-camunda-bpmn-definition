@@ -89,14 +89,16 @@ withPipeline(type, product, component) {
 
   syncBranchesWithMaster(['demo'])
 
-    onDemo {
-      def subscription = 'nonprod'
+  afterSuccess('checkout') {
+    def subscription = 'nonprod'
+    if ( env.ENVIRONMENT == 'demo') {
       withSubscription(subscription) {
         withTeamSecrets(pipelineConf, 'demo') {
           uploadBpmnDiagrams('demo')
         }
       }
     }
+  }
 
 
   before('smoketest:preview') {
