@@ -17,9 +17,8 @@
       <bpmn:incoming>Flow_0hq1951</bpmn:incoming>
       <bpmn:incoming>Flow_1kfl2cu</bpmn:incoming>
       <bpmn:incoming>Flow_1m8na44</bpmn:incoming>
-      <bpmn:incoming>Flow_1caku62</bpmn:incoming>
-      <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
       <bpmn:incoming>Flow_ADMIT_PART_SETTLE_CLAIM</bpmn:incoming>
+      <bpmn:incoming>Flow_0eaezcg</bpmn:incoming>
       <bpmn:outgoing>Flow_0tgwl48</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="ClaimantResponseGenerateDirectionsQuestionnaire" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
@@ -381,8 +380,8 @@
     <bpmn:sequenceFlow id="Flow_ADMIT_PART_SETTLE_CLAIM" name="Applicant confirms settle claim (part admit)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_1cweuly">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMIT_AGREE_SETTLE" }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_184qjql" sourceRef="ClaimantDefendantAgreedMediationNotifyApplicant" targetRef="ClaimantDefendantAgreedMediationNotifyRespondent" />
-    <bpmn:sequenceFlow id="Flow_1caku62" sourceRef="ClaimantDefendantAgreedMediationNotifyRespondent" targetRef="Activity_1cweuly" />
+    <bpmn:sequenceFlow id="Flow_12cl508" sourceRef="ClaimantDefendantAgreedMediationNotifyApplicant" targetRef="ClaimantDefendantAgreedMediationNotifyRespondent" />
+    <bpmn:sequenceFlow id="Flow_0eaezcg" sourceRef="ClaimantDefendantAgreedMediationNotifyRespondent" targetRef="Activity_1cweuly" />
     <bpmn:serviceTask id="ClaimantDefendantAgreedMediationNotifyApplicant" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -390,7 +389,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
-      <bpmn:outgoing>Flow_184qjql</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12cl508</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="ClaimantDefendantAgreedMediationNotifyRespondent" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -398,8 +397,8 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_MEDIATION_AGREEMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_184qjql</bpmn:incoming>
-      <bpmn:outgoing>Flow_1caku62</bpmn:outgoing>
+      <bpmn:incoming>Flow_12cl508</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eaezcg</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
@@ -535,12 +534,6 @@
         <dc:Bounds x="960" y="1100" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04vp2hb_di" bpmnElement="ClaimantDefendantAgreedMediationNotifyApplicant">
-        <dc:Bounds x="680" y="1190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0091lmt_di" bpmnElement="ClaimantDefendantAgreedMediationNotifyRespondent">
-        <dc:Bounds x="960" y="1190" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1o3q1xa_di" bpmnElement="TextAnnotation_1o3q1xa">
         <dc:Bounds x="790" y="105" width="110" height="45" />
       </bpmndi:BPMNShape>
@@ -555,6 +548,13 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0qgljrk_di" bpmnElement="TextAnnotation_0qgljrk">
         <dc:Bounds x="700" y="595" width="100" height="39" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nxtt7j_di" bpmnElement="ClaimantDefendantAgreedMediationNotifyApplicant">
+        <dc:Bounds x="680" y="1190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qrewvm_di" bpmnElement="ClaimantDefendantAgreedMediationNotifyRespondent">
+        <dc:Bounds x="960" y="1190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
@@ -821,10 +821,18 @@
       <bpmndi:BPMNEdge id="Flow_15nfk8b_di" bpmnElement="IN_MEDIATION_FLOW">
         <di:waypoint x="430" y="495" />
         <di:waypoint x="430" y="1230" />
-        <di:waypoint x="1660" y="1230" />
+        <di:waypoint x="680" y="1230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="440" y="1233" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x00jc9_di" bpmnElement="Flow_ADMIT_PART_SETTLE_CLAIM">
+        <di:waypoint x="430" y="495" />
+        <di:waypoint x="430" y="1310" />
+        <di:waypoint x="1660" y="1310" />
         <di:waypoint x="1660" y="510" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1016" y="1212" width="60" height="14" />
+          <dc:Bounds x="433" y="1320" width="90" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1574yb4_di" bpmnElement="Association_1574yb4">
@@ -843,14 +851,14 @@
         <di:waypoint x="750" y="655" />
         <di:waypoint x="750" y="634" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1x00jc9_di" bpmnElement="Flow_ADMIT_PART_SETTLE_CLAIM">
-        <di:waypoint x="430" y="495" />
-        <di:waypoint x="430" y="1310" />
-        <di:waypoint x="1660" y="1310" />
+      <bpmndi:BPMNEdge id="Flow_12cl508_di" bpmnElement="Flow_12cl508">
+        <di:waypoint x="780" y="1230" />
+        <di:waypoint x="960" y="1230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eaezcg_di" bpmnElement="Flow_0eaezcg">
+        <di:waypoint x="1060" y="1230" />
+        <di:waypoint x="1660" y="1230" />
         <di:waypoint x="1660" y="510" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="433" y="1320" width="90" height="40" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
