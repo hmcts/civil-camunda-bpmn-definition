@@ -306,7 +306,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             "ClaimantDefendantAgreedMediationNotifyRespondent"
         );
 
-
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
