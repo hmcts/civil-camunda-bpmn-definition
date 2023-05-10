@@ -8,6 +8,8 @@ def type = "java"
 def product = "civil"
 def component = "camunda"
 def ccdBranch = "master"
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
 AppPipelineConfig pipelineConf
 
 static Map<String, Object> secret(String secretName, String envVariable) {
@@ -87,14 +89,16 @@ withPipeline(type, product, component) {
 
   syncBranchesWithMaster(['demo'])
 
-    onDemo {
-      def subscription = 'nonprod'
+  afterSuccess('checkout') {
+    def subscription = 'nonprod'
+    if ( env.ENVIRONMENT == 'demo') {
       withSubscription(subscription) {
         withTeamSecrets(pipelineConf, 'demo') {
           uploadBpmnDiagrams('demo')
         }
       }
     }
+  }
 
 
   before('smoketest:preview') {
@@ -106,6 +110,8 @@ withPipeline(type, product, component) {
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    yarnBuilder.yarn('yarn-update')
+    yarnBuilder.yarn('install-dependencies')
   }
 
   afterSuccess('smoketest:preview') {
@@ -139,6 +145,8 @@ withPipeline(type, product, component) {
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
+    yarnBuilder.yarn('yarn-update')
+    yarnBuilder.yarn('install-dependencies')
   }
 
   afterSuccess('smoketest:aat') {
