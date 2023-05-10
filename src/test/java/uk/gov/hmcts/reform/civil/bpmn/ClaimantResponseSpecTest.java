@@ -31,6 +31,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1Lip";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
+    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED =
+        "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
+    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
+        "ClaimantAgreedSettledPartAdmitNotifyLip";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -316,6 +320,15 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+
+        //complete the notification to LIP respondent
+        ExternalTask notifyLipRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLipRespondent,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
+            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
         );
 
         //end business process
