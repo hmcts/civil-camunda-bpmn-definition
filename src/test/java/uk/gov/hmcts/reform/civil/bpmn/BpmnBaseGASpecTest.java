@@ -35,7 +35,6 @@ public abstract class BpmnBaseGASpecTest {
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
-    public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
 
     public final String bpmnFileName;
     public final String processId;

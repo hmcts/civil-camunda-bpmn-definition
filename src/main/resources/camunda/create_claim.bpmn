@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -134,46 +134,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mdk6wm</bpmn:incoming>
-      <bpmn:outgoing>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
-      <bpmn:incoming>Flow_12khu7n</bpmn:incoming>
-      <bpmn:incoming>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
-      <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="Event_1irqmkk">
-      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
-      <bpmn:incoming>Flow_1fwd5wq</bpmn:incoming>
-      <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
-      <bpmn:incoming>Flow_0ehbml1</bpmn:incoming>
-      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on Case Handed Offline" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_03t3ygq</bpmn:incoming>
-      <bpmn:incoming>Flow_0x32vj4</bpmn:incoming>
-      <bpmn:incoming>Flow_1hw8ldg</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_Case_Handed_Offline_Completed</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ehbml1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1efq5qm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm" name="Proceed offline (Unrepresented and Unregistered Firm)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -209,23 +170,16 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mkb4ib</bpmn:incoming>
-      <bpmn:outgoing>Flow_12khu7n</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04afnts</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_154avkv" sourceRef="ProceedOfflineForUnregisteredFirm" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm" />
     <bpmn:sequenceFlow id="Flow_03t3ygq" sourceRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaim" targetRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1jt9mf9" sourceRef="PaymentFailed" targetRef="CreateClaimPaymentFailedNotifyApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1fwd5wq" sourceRef="CreateClaimPaymentFailedNotifyApplicantSolicitor1" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_12khu7n" sourceRef="CreateClaimContinuingOnlineUnrepresentedRespondent" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
-    <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" name="RPA Continuous Feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_RPA_NO_CONTINUOUS_FEED" name="No Continuous feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="Activity_19rrcw0">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; !flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_RPA_Case_Handed_Offline_Completed" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_0ehbml1" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
     <bpmn:sequenceFlow id="Flow_0x32vj4" sourceRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_1ftqi60" sourceRef="ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm" targetRef="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm" />
     <bpmn:sequenceFlow id="Flow_0mkb4ib" sourceRef="IssueClaimUnrepresentedRespondent" targetRef="CreateClaimContinuingOnlineUnrepresentedRespondent" />
@@ -247,7 +201,6 @@
       <bpmn:incoming>Flow_1jt9mf9</bpmn:incoming>
       <bpmn:outgoing>Flow_1fwd5wq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
     <bpmn:serviceTask id="CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitor" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -280,12 +233,56 @@
     <bpmn:sequenceFlow id="Flow_Notice_Of_Change" name="Notice of Change - CoS" sourceRef="Gateway_Notice_Of_Change" targetRef="IssueClaimUnrepresentedRespondent">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.NOTICE_OF_CHANGE &amp;&amp; flowFlags.NOTICE_OF_CHANGE) || (!empty flowFlags.CERTIFICATE_OF_SERVICE &amp;&amp; flowFlags.CERTIFICATE_OF_SERVICE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_04afnts" sourceRef="CreateClaimContinuingOnlineUnrepresentedRespondent" targetRef="NotifyRoboticsOnContinuousFeed" />
+    <bpmn:sequenceFlow id="Flow_1efq5qm" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1" targetRef="NotifyRoboticsOnContinuousFeed" />
+    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
+      <bpmn:incoming>Flow_1fwd5wq</bpmn:incoming>
+      <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
+      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1irqmkk">
+      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04afnts</bpmn:incoming>
+      <bpmn:incoming>Flow_1efq5qm</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on Case Handed Offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03t3ygq</bpmn:incoming>
+      <bpmn:incoming>Flow_0x32vj4</bpmn:incoming>
+      <bpmn:incoming>Flow_1hw8ldg</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_Case_Handed_Offline_Completed</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
-        <dc:Bounds x="160" y="60" width="2038" height="660" />
+        <dc:Bounds x="160" y="60" width="1870" height="660" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1efq5qm_di" bpmnElement="Flow_1efq5qm">
+        <di:waypoint x="1600" y="510" />
+        <di:waypoint x="1710" y="510" />
+        <di:waypoint x="1710" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04afnts_di" bpmnElement="Flow_04afnts">
+        <di:waypoint x="1600" y="420" />
+        <di:waypoint x="1660" y="420" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n5m7bn_di" bpmnElement="Flow_Notice_Of_Change">
         <di:waypoint x="1250" y="355" />
         <di:waypoint x="1250" y="420" />
@@ -307,12 +304,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hw8ldg_di" bpmnElement="Flow_1hw8ldg">
         <di:waypoint x="1600" y="330" />
-        <di:waypoint x="1730" y="330" />
-        <di:waypoint x="1730" y="280" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_077eexn_di" bpmnElement="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor">
-        <di:waypoint x="1600" y="510" />
-        <di:waypoint x="1725" y="510" />
+        <di:waypoint x="1710" y="330" />
+        <di:waypoint x="1710" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mkb4ib_di" bpmnElement="Flow_0mkb4ib">
         <di:waypoint x="1440" y="420" />
@@ -324,48 +317,26 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x32vj4_di" bpmnElement="Flow_0x32vj4">
         <di:waypoint x="1600" y="150" />
-        <di:waypoint x="1730" y="150" />
-        <di:waypoint x="1730" y="200" />
+        <di:waypoint x="1710" y="150" />
+        <di:waypoint x="1710" y="200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ehbml1_di" bpmnElement="Flow_0ehbml1">
-        <di:waypoint x="1910" y="420" />
-        <di:waypoint x="1940" y="420" />
+      <bpmndi:BPMNEdge id="Flow_0ehbml1_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
+        <di:waypoint x="1760" y="420" />
+        <di:waypoint x="1820" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mak1f7_di" bpmnElement="Flow_RPA_Case_Handed_Offline_Completed">
-        <di:waypoint x="1780" y="240" />
-        <di:waypoint x="1990" y="240" />
-        <di:waypoint x="1990" y="380" />
+        <di:waypoint x="1760" y="240" />
+        <di:waypoint x="1870" y="240" />
+        <di:waypoint x="1870" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="2040" y="420" />
-        <di:waypoint x="2062" y="420" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0lkhlo2_di" bpmnElement="Flow_RPA_NO_CONTINUOUS_FEED">
-        <di:waypoint x="1775" y="510" />
-        <di:waypoint x="1960" y="510" />
-        <di:waypoint x="1960" y="460" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1823" y="516" width="73" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07vookw_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
-        <di:waypoint x="1750" y="485" />
-        <di:waypoint x="1750" y="410" />
-        <di:waypoint x="1810" y="410" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1759" y="466" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12khu7n_di" bpmnElement="Flow_12khu7n">
-        <di:waypoint x="1600" y="420" />
-        <di:waypoint x="1680" y="420" />
-        <di:waypoint x="1680" y="510" />
-        <di:waypoint x="1725" y="510" />
+        <di:waypoint x="1920" y="420" />
+        <di:waypoint x="1952" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fwd5wq_di" bpmnElement="Flow_1fwd5wq">
         <di:waypoint x="1600" y="600" />
-        <di:waypoint x="1990" y="600" />
-        <di:waypoint x="1990" y="460" />
+        <di:waypoint x="1870" y="600" />
+        <di:waypoint x="1870" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jt9mf9_di" bpmnElement="Flow_1jt9mf9">
         <di:waypoint x="1440" y="600" />
@@ -377,7 +348,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03t3ygq_di" bpmnElement="Flow_03t3ygq">
         <di:waypoint x="1600" y="240" />
-        <di:waypoint x="1680" y="240" />
+        <di:waypoint x="1660" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_154avkv_di" bpmnElement="Flow_154avkv">
         <di:waypoint x="1440" y="240" />
@@ -500,21 +471,6 @@
       <bpmndi:BPMNShape id="Activity_0f5fw3t_di" bpmnElement="CreateClaimContinuingOnlineNotifyApplicantSolicitor1">
         <dc:Bounds x="1500" y="470" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0x42aul_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
-        <dc:Bounds x="1725" y="485" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="2062" y="402" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="1940" y="380" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_13q29o0_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="1680" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
-        <dc:Bounds x="1810" y="380" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1i2qkrf_di" bpmnElement="ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm">
         <dc:Bounds x="1340" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -541,6 +497,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ijq5kl_di" bpmnElement="Gateway_Notice_Of_Change" isMarkerVisible="true">
         <dc:Bounds x="1225" y="305" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
+        <dc:Bounds x="1820" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
+        <dc:Bounds x="1952" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
+        <dc:Bounds x="1660" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13q29o0_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1660" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="322" y="342" width="36" height="36" />
