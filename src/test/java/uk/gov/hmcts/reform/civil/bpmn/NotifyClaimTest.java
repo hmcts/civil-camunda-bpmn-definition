@@ -61,9 +61,8 @@ class NotifyClaimTest extends BpmnBaseTest {
         super("notify_claim.bpmn", "NOTIFY_CLAIM");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_andRpaContinuousFeed_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteNotifyClaim_andRpaContinuousFeed_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -73,7 +72,6 @@ class NotifyClaimTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.CLAIM_NOTIFIED.fullName());
         variables.putValue(FLOW_FLAGS, Map.of(
-                RPA_CONTINUOUS_FEED, rpaContinuousFeed,
                 ONE_RESPONDENT_REPRESENTATIVE, true,
                 GENERAL_APPLICATION_ENABLED, false));
 
@@ -105,17 +103,14 @@ class NotifyClaimTest extends BpmnBaseTest {
                                    variables
         );
 
-        if (rpaContinuousFeed) {
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                variables
-            );
-        }
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -140,7 +135,6 @@ class NotifyClaimTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRespondentRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRespondentRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, false,
-            RPA_CONTINUOUS_FEED, true,
             GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
@@ -374,7 +368,6 @@ class NotifyClaimTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
             UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-            RPA_CONTINUOUS_FEED, true,
             GENERAL_APPLICATION_ENABLED, false
         ));
 
