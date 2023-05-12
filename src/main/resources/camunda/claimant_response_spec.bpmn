@@ -18,7 +18,7 @@
       <bpmn:incoming>Flow_1kfl2cu</bpmn:incoming>
       <bpmn:incoming>Flow_1m8na44</bpmn:incoming>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
-      <bpmn:incoming>Flow_ADMIT_PART_SETTLE_CLAIM</bpmn:incoming>
+      <bpmn:incoming>Flow_0353kta</bpmn:incoming>
       <bpmn:outgoing>Flow_0tgwl48</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="ClaimantResponseGenerateDirectionsQuestionnaire" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
@@ -377,9 +377,19 @@
     <bpmn:sequenceFlow id="IN_MEDIATION_FLOW" name="In Mediation" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_1cweuly">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; (!empty flowFlags.LR_V_LIP_ENABLED &amp;&amp; flowFlags.LR_V_LIP_ENABLED)) || flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_ADMIT_PART_SETTLE_CLAIM" name="Applicant confirms settle claim (part admit)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_1cweuly">
+    <bpmn:sequenceFlow id="Flow_ADMIT_PART_SETTLE_CLAIM" name="Applicant confirms settle claim (part admit)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ClaimantAgreedSettledPartAdmitNotifyLip">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMIT_AGREE_SETTLE" }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="ClaimantAgreedSettledPartAdmitNotifyLip" name="Notify LIP defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ADMIT_PART_SETTLE_CLAIM</bpmn:incoming>
+      <bpmn:outgoing>Flow_0353kta</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0353kta" sourceRef="ClaimantAgreedSettledPartAdmitNotifyLip" targetRef="Activity_1cweuly" />
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -528,6 +538,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0qgljrk_di" bpmnElement="TextAnnotation_0qgljrk">
         <dc:Bounds x="700" y="595" width="100" height="39" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0oip6xh" bpmnElement="ClaimantAgreedSettledPartAdmitNotifyLip">
+        <dc:Bounds x="680" y="1270" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
@@ -803,10 +817,9 @@
       <bpmndi:BPMNEdge id="Flow_1x00jc9_di" bpmnElement="Flow_ADMIT_PART_SETTLE_CLAIM">
         <di:waypoint x="430" y="495" />
         <di:waypoint x="430" y="1310" />
-        <di:waypoint x="1660" y="1310" />
-        <di:waypoint x="1660" y="510" />
+        <di:waypoint x="680" y="1310" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="433" y="1320" width="90" height="40" />
+          <dc:Bounds x="425" y="1320" width="90" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1574yb4_di" bpmnElement="Association_1574yb4">
@@ -824,6 +837,11 @@
       <bpmndi:BPMNEdge id="Association_1oen8zm_di" bpmnElement="Association_1oen8zm">
         <di:waypoint x="750" y="655" />
         <di:waypoint x="750" y="634" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0353kta_di" bpmnElement="Flow_0353kta">
+        <di:waypoint x="780" y="1310" />
+        <di:waypoint x="1660" y="1310" />
+        <di:waypoint x="1660" y="510" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

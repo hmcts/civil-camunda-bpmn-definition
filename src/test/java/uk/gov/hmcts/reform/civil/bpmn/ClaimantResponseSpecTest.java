@@ -323,6 +323,15 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the notification to LIP respondent
+        ExternalTask notifyLipRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLipRespondent,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
+            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -353,15 +362,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
-        );
-
-        //complete the notification to LIP respondent
-        ExternalTask notifyLipRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyLipRespondent,
-            PROCESS_CASE_EVENT,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
         );
 
         //end business process
