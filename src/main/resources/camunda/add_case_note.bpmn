@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
   <bpmn:process id="ADD_CASE_NOTE" isExecutable="true">
     <bpmn:startEvent id="Event_ADD_CASE_NOTE" name="Start" camunda:initiator="ADD_CASE_NOTE">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
@@ -13,7 +13,6 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:incoming>
       <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
@@ -23,7 +22,7 @@
         <camunda:out variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1if0h68</bpmn:incoming>
-      <bpmn:outgoing>Flow_1qffyiy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04rigbl</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1mtqud7">
       <bpmn:incoming>Flow_0h072ea</bpmn:incoming>
@@ -34,28 +33,17 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
     <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="Event_ADD_CASE_NOTE" targetRef="Activity_StartBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_StartBusinessProcess" targetRef="Gateway_RPA_CONTINUOUS_FEED" />
-    <bpmn:exclusiveGateway id="Gateway_RPA_CONTINUOUS_FEED">
-      <bpmn:incoming>Flow_1qffyiy</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_NO_CONTINUOUS_FEED</bpmn:outgoing>
-      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
+      <bpmn:incoming>Flow_04rigbl</bpmn:incoming>
       <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_RPA_NO_CONTINUOUS_FEED" name="No RPA Continuous feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="Activity_EndBusinessProcess">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; !flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" name="RPA Continuous Feed" sourceRef="Gateway_RPA_CONTINUOUS_FEED" targetRef="NotifyRoboticsOnContinuousFeed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RPA_CONTINUOUS_FEED &amp;&amp; flowFlags.RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_04rigbl" sourceRef="Activity_StartBusinessProcess" targetRef="NotifyRoboticsOnContinuousFeed" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="NOTIFY_DEFENDANT_OF_CLAIM_DETAILS" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -64,68 +52,50 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ADD_CASE_NOTE">
       <bpmndi:BPMNEdge id="Flow_0bi5uzr_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
-        <di:waypoint x="670" y="400" />
-        <di:waypoint x="876" y="400" />
-        <di:waypoint x="876" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gq46pv_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
-        <di:waypoint x="620" y="275" />
-        <di:waypoint x="620" y="360" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="629" y="275" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1foheuc_di" bpmnElement="Flow_RPA_NO_CONTINUOUS_FEED">
-        <di:waypoint x="645" y="250" />
-        <di:waypoint x="826" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="695" y="224" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qffyiy_di" bpmnElement="Flow_1qffyiy">
-        <di:waypoint x="460" y="250" />
-        <di:waypoint x="595" y="250" />
+        <di:waypoint x="520" y="250" />
+        <di:waypoint x="590" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1if0h68_di" bpmnElement="Flow_1if0h68">
-        <di:waypoint x="208" y="250" />
-        <di:waypoint x="360" y="250" />
+        <di:waypoint x="188" y="250" />
+        <di:waypoint x="250" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0h072ea_di" bpmnElement="Flow_0h072ea">
-        <di:waypoint x="410" y="192" />
-        <di:waypoint x="410" y="128" />
+        <di:waypoint x="300" y="192" />
+        <di:waypoint x="300" y="128" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_1hce35l">
-        <di:waypoint x="926" y="250" />
-        <di:waypoint x="992" y="250" />
+        <di:waypoint x="690" y="250" />
+        <di:waypoint x="742" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
-        <dc:Bounds x="992" y="232" width="36" height="36" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_04rigbl_di" bpmnElement="Flow_04rigbl">
+        <di:waypoint x="350" y="250" />
+        <di:waypoint x="420" y="250" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_StartBusinessProcess">
-        <dc:Bounds x="360" y="210" width="100" height="80" />
+        <dc:Bounds x="250" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1mtqud7_di" bpmnElement="Event_1mtqud7">
-        <dc:Bounds x="392" y="92" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_ADD_CASE_NOTE">
-        <dc:Bounds x="172" y="232" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="178" y="275" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="826" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1r4xtm8_di" bpmnElement="Gateway_RPA_CONTINUOUS_FEED" isMarkerVisible="true">
-        <dc:Bounds x="595" y="225" width="50" height="50" />
+        <dc:Bounds x="282" y="92" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_03n7uky_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
-        <dc:Bounds x="570" y="360" width="100" height="80" />
+        <dc:Bounds x="420" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="590" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
+        <dc:Bounds x="742" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_ADD_CASE_NOTE">
+        <dc:Bounds x="152" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="275" width="24" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
-        <dc:Bounds x="392" y="192" width="36" height="36" />
+        <dc:Bounds x="282" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="426" y="173" width="27" height="14" />
+          <dc:Bounds x="316" y="173" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
