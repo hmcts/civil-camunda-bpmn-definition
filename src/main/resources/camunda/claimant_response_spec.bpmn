@@ -177,8 +177,8 @@
       <bpmn:incoming>Flow_09ed1dn</bpmn:incoming>
       <bpmn:outgoing>Flow_15yahzj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Full_defence_proceed_no_mediation" name="Full defence, proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="mayGoToJdgeReferral">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED"}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Full_defence_proceed_no_mediation" name="Full defence, proceed or part admit not settled (No mediation)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="mayGoToJdgeReferral">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; (empty flowFlags.LR_V_LIP_ENABLED || !flowFlags.LR_V_LIP_ENABLED)) || flowState == "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ProceedOfflineForResponseToDefence" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -375,7 +375,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1m8na44" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="IN_MEDIATION_FLOW" name="In Mediation" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_1cweuly">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; (!empty flowFlags.LR_V_LIP_ENABLED &amp;&amp; flowFlags.LR_V_LIP_ENABLED)) || flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_ADMIT_PART_SETTLE_CLAIM" name="Applicant confirms settle claim (part admit)" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_1cweuly">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMIT_AGREE_SETTLE" }</bpmn:conditionExpression>
@@ -631,7 +631,7 @@
         <di:waypoint x="430" y="445" />
         <di:waypoint x="430" y="395" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="358" y="416" width="63" height="27" />
+          <dc:Bounds x="339" y="403" width="81" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ruvuz3_di" bpmnElement="Flow_0ruvuz3">
