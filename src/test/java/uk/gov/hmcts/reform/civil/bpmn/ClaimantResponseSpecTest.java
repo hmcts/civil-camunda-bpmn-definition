@@ -301,6 +301,22 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantLR,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyApplicant"
+        );
+
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyRespondent"
+        );
+
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
@@ -359,6 +375,22 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+
+        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantLR,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyApplicant"
+        );
+
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyRespondent"
         );
 
         //end business process
