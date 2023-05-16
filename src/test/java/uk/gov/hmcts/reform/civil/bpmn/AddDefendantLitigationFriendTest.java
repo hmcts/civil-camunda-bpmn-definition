@@ -24,8 +24,8 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true, true", "true, false", "false, false", "false, true"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed, boolean twoRespondents) {
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(boolean twoRespondents) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -34,7 +34,6 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            "RPA_CONTINUOUS_FEED", rpaContinuousFeed,
             "TWO_RESPONDENT_REPRESENTATIVES", twoRespondents)
         );
 
@@ -80,17 +79,15 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
             );
         }
 
-        if (rpaContinuousFeed) {
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                variables
-            );
-        }
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

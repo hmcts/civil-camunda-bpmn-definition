@@ -65,7 +65,7 @@ allprojects {
       // CVE-2020-26945 - Mishandles deserialization of object streams.
       dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.13'
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.5'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.8'
 
       dependencySet(
         group: 'org.camunda.bpm',
@@ -129,14 +129,6 @@ test {
   failFast = true
 }
 
-task installDependencies(type: Exec, description: 'Installs Yarn dependencies.') {
-  commandLine '/usr/bin/yarn', '--mutex', 'network', '--immutable', '--silent', 'install'
-}
-
-task checkDependenciesIntegrity(type: Exec, description: 'Checks integrity of Yarn dependencies.') {
-  commandLine '/usr/bin/yarn', '--mutex', 'network', '--immutable', '--silent', 'check', '--integrity'
-}
-
 task awaitApplicationReadiness(type: Exec, description: 'Awaits until application is ready.') {
   commandLine './bin/wait-for.sh', System.env.URL
   commandLine './bin/wait-for.sh', System.env.TEST_URL
@@ -146,39 +138,39 @@ task runCosTests(type: Exec, description: 'Runs DJ Api functional tests.') {
   onlyIf {
     return System.env.ENVIRONMENT == 'preview'
   }
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-cos'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-cos'
 }
 
 task runSdoApiTests(type: Exec, description: 'Runs SDO functional tests.') {
   onlyIf {
     return System.env.ENVIRONMENT == 'preview'
   }
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-sdo'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-sdo'
 }
 
 task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:smoke'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:smoke'
 }
 
 task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-dj'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-dj'
 }
 
 task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-spec'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-spec'
 }
 
 task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-unspec'
 }
 
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:rpa'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:rpa'
 }
 
 task runNightlyMultipartyTests(type: Exec, description: 'Runs additional multiparty nightly tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:nightly-multiparty'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:nightly-multiparty'
 }
 
 def inStrictOrder(Task... tasks) {
@@ -189,11 +181,11 @@ def inStrictOrder(Task... tasks) {
 }
 
 task smoke(description: 'Runs the smoke tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSmokeTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, runSmokeTests))
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity,
+  dependsOn(inStrictOrder(awaitApplicationReadiness,
     runCosTests, runDJTests, runSpecApiTests, runSdoApiTests, runApiTests))
 }
 
