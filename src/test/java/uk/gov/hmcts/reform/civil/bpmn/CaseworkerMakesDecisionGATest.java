@@ -23,9 +23,11 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddDocumentToParentCase";
 
-    private static final String NOTIFY_CONSENT_ORDER_CLAIMANT_EVENT = "START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION";
+    private static final String NOTIFY_CONSENT_ORDER_CLAIMANT_EVENT =
+        "START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION";
     private static final String NOTIFY_CONSENT_ORDER_CLAIMANT_ACTIVITY_ID = "NotifyConsentOrderClaimant";
-    private static final String NOTIFY_CONSENT_ORDER_DEFENDANT_EVENT = "START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION";
+    private static final String NOTIFY_CONSENT_ORDER_DEFENDANT_EVENT =
+        "START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION";
     private static final String NOTIFY_CONSENT_ORDER_DEFENDANT_ACTIVITY_ID = "NotifyConsentOrderDefendant";
 
     public CaseworkerMakesDecisionGATest() {
@@ -53,7 +55,7 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        //Generate Hearing Notice Document
+        //Generate Consent Order Document
         ExternalTask generateHearingNoticeDocument = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
         assertCompleteExternalTask(
             generateHearingNoticeDocument,
@@ -73,7 +75,7 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
-        //Notify Hearing Notice Claimant
+        //Notify Consent Order Claimant
         ExternalTask notifyHearingNoticeClaimant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             notifyHearingNoticeClaimant,
@@ -83,7 +85,7 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
-        //Notify Hearing Notice Defendant(s)
+        //Notify Consent Order Defendant(s)
         ExternalTask notifyHearingNoticeDefendant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             notifyHearingNoticeDefendant,
