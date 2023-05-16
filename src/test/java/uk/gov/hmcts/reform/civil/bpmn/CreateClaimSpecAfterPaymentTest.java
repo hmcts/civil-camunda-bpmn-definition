@@ -98,7 +98,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                "RPA_CONTINUOUS_FEED", true,
                 "PIP_ENABLED", true));
 
             startBusinessProcess(variables);
