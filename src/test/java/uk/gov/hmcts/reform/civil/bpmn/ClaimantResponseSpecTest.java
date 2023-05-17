@@ -31,7 +31,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1Lip";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
-    private static final String LR_V_LIP_ENABLED = "LR_V_LIP_ENABLED";
     private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED =
         "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
     private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
