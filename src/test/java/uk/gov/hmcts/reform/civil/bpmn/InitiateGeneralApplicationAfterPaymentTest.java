@@ -1,13 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,17 +22,13 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
               "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -46,8 +36,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
 
         //notify respondents
@@ -56,8 +45,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             notifyRespondents,
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTYFYING_RESPONDENTS_EVENT,
-            GENERAL_APPLICATION_NOTIYFYING_ID,
-            variables
+            GENERAL_APPLICATION_NOTIYFYING_ID
         );
 
         //end business process
