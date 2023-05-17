@@ -1,13 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,17 +26,13 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
         super("ga_hearing_scheduled_access.bpmn", PROCESS_ID);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -50,8 +40,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
         //Generate Hearing Notice Document
         ExternalTask generateHearingNoticeDocument = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
@@ -59,8 +48,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             generateHearingNoticeDocument,
             APPLICATION_PROCESS_CASE_EVENT,
             GENERATE_HEARING_NOTICE_EVENT,
-            GENERATE_HEARING_FORM_ACTIVITY_ID,
-            variables
+            GENERATE_HEARING_FORM_ACTIVITY_ID
         );
 
         //Link Document to main case event
@@ -69,8 +57,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             addDocumentToMainCase,
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
-            ADD_PDF_ID,
-            variables
+            ADD_PDF_ID
         );
 
         //Notify Hearing Notice Claimant
@@ -79,8 +66,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             notifyHearingNoticeClaimant,
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTIFY_HEARING_NOTICE_CLAIMANT_EVENT,
-            NOTIFY_HEARING_NOTICE_CLAIMANT_ACTIVITY_ID,
-            variables
+            NOTIFY_HEARING_NOTICE_CLAIMANT_ACTIVITY_ID
         );
 
         //Notify Hearing Notice Defendant(s)
@@ -89,8 +75,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             notifyHearingNoticeDefendant,
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTIFY_HEARING_NOTICE_DEFENDANT_EVENT,
-            NOTIFY_HEARING_NOTICE_DEFENDANT_ACTIVITY_ID,
-            variables
+            NOTIFY_HEARING_NOTICE_DEFENDANT_ACTIVITY_ID
         );
 
         //end business process
