@@ -32,15 +32,17 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
     private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID = "ServiceRequestAPI";
     private static final String TASK_ID_NOTIFY_CLAIMANT_UNPAID_FEE = "HearingFeeDueNotifyApplicantSolicitorAfterNoc";
 
-    public ApplyNocDecisionTest() {
-        super("apply_noc_decision.bpmn", PROCESS_ID);
-    }
-
     enum FlowState {
         IN_HEARING_READINESS,
         CLAIM_NOTIFIED;
-        public String fullName() {return "MAIN" + "." + name();
+
+        public String fullName() {
+            return "MAIN" + "." + name();
         }
+    }
+
+    public ApplyNocDecisionTest() {
+        super("apply_noc_decision.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
