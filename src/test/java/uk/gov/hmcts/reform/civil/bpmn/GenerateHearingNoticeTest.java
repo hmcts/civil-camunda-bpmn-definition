@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GenerateHearingNoticeTest extends BpmnBaseTest {
+
     public static final String MESSAGE_NAME = "NOTIFY_HEARING_PARTIES";
     public static final String PROCESS_ID = "NOTIFY_HEARING_PARTIES";
 
