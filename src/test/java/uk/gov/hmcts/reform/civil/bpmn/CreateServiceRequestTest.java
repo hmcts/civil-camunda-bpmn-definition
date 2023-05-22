@@ -53,7 +53,6 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                "RPA_CONTINUOUS_FEED", true,
                 "PIP_ENABLED", true));
 
             startBusinessProcess(variables);
@@ -81,7 +80,6 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -109,7 +107,6 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -137,7 +134,6 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -165,7 +161,6 @@ public class CreateServiceRequestTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
