@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_14qf5vi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.1">
-  <bpmn:process id="SpecAutomatedHearingNoticeScheduler" name="Spec Automated Hearing Notice Scheduler" isExecutable="true">
+  <bpmn:process id="SPEC_AUTOMATED_HEARING_NOTICE" name="Spec Automated Hearing Notice Scheduler" isExecutable="true">
     <bpmn:serviceTask id="SpecHearingNoticeSchedulerId" name="Spec Automate Hearing Notice Scheduler SPEC" camunda:type="external" camunda:topic="AUTOMATED_HEARING_NOTICE">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -28,10 +28,10 @@
       <bpmn:outgoing>Flow_1pimcbh</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_06gwrwj" sourceRef="Gateway_0tc9hnf" targetRef="Event_0dr3fkw">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${totalNumberOfUnnotifiedHearings &lt;= 1000}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">!execution.getVariable('totalNumberOfUnnotifiedHearings') || execution.getVariable('totalNumberOfUnnotifiedHearings') &lt;= 1000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1pimcbh" sourceRef="Gateway_0tc9hnf" targetRef="Event_0myktic">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${totalNumberOfUnnotifiedHearings &gt; 1000}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">execution.getVariable('totalNumberOfUnnotifiedHearings') &amp;&amp; execution.getVariable('totalNumberOfUnnotifiedHearings') &gt; 1000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_18vgulo" sourceRef="Event_0myktic" targetRef="SpecHearingNoticeSchedulerId" />
     <bpmn:intermediateCatchEvent id="Event_0myktic">
@@ -52,13 +52,9 @@
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="TRIGGER_HEARING_NOTICES" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SpecAutomatedHearingNoticeScheduler">
-      <bpmndi:BPMNShape id="TextAnnotation_1yrp7h9_di" bpmnElement="TextAnnotation_1yrp7h9">
-        <dc:Bounds x="540" y="90" width="273" height="30" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0gnjn5o_di" bpmnElement="TextAnnotation_0gnjn5o">
-        <dc:Bounds x="550" y="280" width="270" height="30" />
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SPEC_AUTOMATED_HEARING_NOTICE">
+      <bpmndi:BPMNShape id="Activity_1ydkywr_di" bpmnElement="SpecHearingNoticeSchedulerId">
+        <dc:Bounds x="280" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0dr3fkw_di" bpmnElement="Event_0dr3fkw">
@@ -76,22 +72,14 @@
       <bpmndi:BPMNShape id="Event_0hejd40_di" bpmnElement="Event_0myktic">
         <dc:Bounds x="472" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ydkywr_di" bpmnElement="SpecHearingNoticeSchedulerId">
-        <dc:Bounds x="280" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_1yrp7h9_di" bpmnElement="TextAnnotation_1yrp7h9">
+        <dc:Bounds x="540" y="90" width="273" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1804e5f_di" bpmnElement="Association_1804e5f">
-        <di:waypoint x="490" y="156.5" />
-        <di:waypoint x="540" y="103" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_08dr0wu_di" bpmnElement="Association_08dr0wu">
-        <di:waypoint x="553.5" y="220" />
-        <di:waypoint x="552" y="280" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06gwrwj_di" bpmnElement="Flow_06gwrwj">
-        <di:waypoint x="515" y="220" />
-        <di:waypoint x="592" y="220" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0gnjn5o_di" bpmnElement="TextAnnotation_0gnjn5o">
+        <dc:Bounds x="550" y="280" width="270" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0srigb3_di" bpmnElement="Flow_0srigb3">
         <di:waypoint x="188" y="220" />
         <di:waypoint x="280" y="220" />
@@ -99,6 +87,10 @@
       <bpmndi:BPMNEdge id="Flow_0tjw87e_di" bpmnElement="Flow_0tjw87e">
         <di:waypoint x="380" y="220" />
         <di:waypoint x="465" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06gwrwj_di" bpmnElement="Flow_06gwrwj">
+        <di:waypoint x="515" y="220" />
+        <di:waypoint x="592" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pimcbh_di" bpmnElement="Flow_1pimcbh">
         <di:waypoint x="490" y="195" />
@@ -108,6 +100,14 @@
         <di:waypoint x="472" y="100" />
         <di:waypoint x="330" y="100" />
         <di:waypoint x="330" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1804e5f_di" bpmnElement="Association_1804e5f">
+        <di:waypoint x="490" y="156.5" />
+        <di:waypoint x="540" y="103" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_08dr0wu_di" bpmnElement="Association_08dr0wu">
+        <di:waypoint x="553.5" y="220" />
+        <di:waypoint x="552" y="280" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
