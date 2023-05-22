@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class NotifyTranslatedDocumentUploadedTest extends  BpmnBaseTest{
+public class NotifyTranslatedDocumentUploadedTest extends  BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT";
     private static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_ID";
