@@ -26,7 +26,7 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSubmitUnsuccessfulMediation() {git add .
+    void shouldSubmitUnsuccessfulMediation() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
