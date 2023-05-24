@@ -22,7 +22,8 @@ class SpecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
     }
 
     @Test
-    void automatedHearingNoticeSchedulerSchedulerShouldFireAutomatedHearingNoticeExternalTask_whenStarted() throws ParseException {
+    void automatedHearingNoticeSchedulerSchedulerShouldFireAutomatedHearingNoticeExternalTask_whenStarted()
+        throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -48,7 +49,6 @@ class SpecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
             LocalDateTime.of(2020, 1, 1, 0, 0, 0),
             LocalDateTime.of(2020, 1, 1, 12, 0, 0)
         );
-
 
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();

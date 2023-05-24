@@ -2,14 +2,10 @@ package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
-import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +20,8 @@ class UnspecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
     }
 
     @Test
-    void automatedHearingNoticeSchedulerSchedulerShouldFireAutomatedHearingNoticeExternalTask_whenStarted() throws ParseException {
+    void automatedHearingNoticeSchedulerSchedulerShouldFireAutomatedHearingNoticeExternalTask_whenStarted()
+        throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
