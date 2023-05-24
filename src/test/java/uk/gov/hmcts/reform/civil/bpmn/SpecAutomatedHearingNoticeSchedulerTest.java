@@ -18,7 +18,7 @@ class SpecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
     public static final String TOPIC_NAME = "AUTOMATED_HEARING_NOTICE";
 
     public SpecAutomatedHearingNoticeSchedulerTest() {
-        super("unspec-automated-hearing-notice-scheduler.bpmn", "SpecAutomatedHearingNoticeScheduler");
+        super("spec-automated-hearing-notice-scheduler.bpmn", "SpecAutomatedHearingNoticeScheduler");
     }
 
     @Test
@@ -33,13 +33,15 @@ class SpecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
         List<JobDefinition> jobDefinitions = getJobs();
 
         //assert that job is as expected
-        assertThat(jobDefinitions).hasSize(2);
+        assertThat(jobDefinitions).hasSize(3);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
         assertThat(jobDefinitions.get(1).getJobType()).isEqualTo("timer-intermediate-transition");
+        assertThat(jobDefinitions.get(2).getJobType()).isEqualTo("timer-transition");
 
         String cronString = "0 0 0,12 ? * * *";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertThat(jobDefinitions.get(1).getJobConfiguration()).isEqualTo("DURATION: PT30S");
+        assertThat(jobDefinitions.get(2).getJobConfiguration()).isEqualTo("DURATION: PT30M");
 
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),

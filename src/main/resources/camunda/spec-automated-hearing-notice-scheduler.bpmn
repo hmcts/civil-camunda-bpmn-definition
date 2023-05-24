@@ -1,113 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_14qf5vi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.1">
-  <bpmn:process id="SPEC_AUTOMATED_HEARING_NOTICE" name="Spec Automated Hearing Notice Scheduler" isExecutable="true">
-    <bpmn:serviceTask id="SpecHearingNoticeSchedulerId" name="Spec Automate Hearing Notice Scheduler SPEC" camunda:type="external" camunda:topic="AUTOMATED_HEARING_NOTICE">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="serviceId">AAA6</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0srigb3</bpmn:incoming>
-      <bpmn:incoming>Flow_18vgulo</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tjw87e</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0dr3fkw">
-      <bpmn:incoming>Flow_06gwrwj</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0srigb3" sourceRef="Event_HearingNoticeScheduler" targetRef="SpecHearingNoticeSchedulerId" />
-    <bpmn:sequenceFlow id="Flow_0tjw87e" sourceRef="SpecHearingNoticeSchedulerId" targetRef="Gateway_0tc9hnf" />
-    <bpmn:startEvent id="Event_HearingNoticeScheduler" name="Start">
-      <bpmn:outgoing>Flow_0srigb3</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0s4r7zv">
+  <bpmn:process id="SpecAutomatedHearingNoticeScheduler" name="Spec Automated Hearing Notice Scheduler" isExecutable="true">
+    <bpmn:subProcess id="SchedulerSubProcess" name="Scheduler Sub Process">
+      <bpmn:incoming>Flow_090bysl</bpmn:incoming>
+      <bpmn:outgoing>Flow_19zr3vr</bpmn:outgoing>
+      <bpmn:serviceTask id="SpecHearingNoticeSchedulerId" name="Spec Automate Hearing Notice Scheduler" camunda:type="external" camunda:topic="AUTOMATED_HEARING_NOTICE">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="serviceId">AAA6</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0srigb3</bpmn:incoming>
+        <bpmn:incoming>Flow_18vgulo</bpmn:incoming>
+        <bpmn:outgoing>Flow_0tjw87e</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="Event_0dr3fkw">
+        <bpmn:incoming>Flow_06gwrwj</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:exclusiveGateway id="Gateway_0tc9hnf">
+        <bpmn:incoming>Flow_0tjw87e</bpmn:incoming>
+        <bpmn:outgoing>Flow_06gwrwj</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1pimcbh</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:intermediateCatchEvent id="Event_0myktic">
+        <bpmn:incoming>Flow_1pimcbh</bpmn:incoming>
+        <bpmn:outgoing>Flow_18vgulo</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_1ja9zkg">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:sequenceFlow id="Flow_0srigb3" sourceRef="Event_HearingNoticeScheduler" targetRef="SpecHearingNoticeSchedulerId" />
+      <bpmn:sequenceFlow id="Flow_18vgulo" sourceRef="Event_0myktic" targetRef="SpecHearingNoticeSchedulerId" />
+      <bpmn:sequenceFlow id="Flow_0tjw87e" sourceRef="SpecHearingNoticeSchedulerId" targetRef="Gateway_0tc9hnf" />
+      <bpmn:sequenceFlow id="Flow_06gwrwj" sourceRef="Gateway_0tc9hnf" targetRef="Event_0dr3fkw">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">!execution.getVariable('totalNumberOfUnnotifiedHearings') || execution.getVariable('totalNumberOfUnnotifiedHearings') &lt;= 1000</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_1pimcbh" sourceRef="Gateway_0tc9hnf" targetRef="Event_0myktic">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">execution.getVariable('totalNumberOfUnnotifiedHearings') &amp;&amp; execution.getVariable('totalNumberOfUnnotifiedHearings') &gt; 1000</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:startEvent id="Event_HearingNoticeScheduler">
+        <bpmn:outgoing>Flow_0srigb3</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:textAnnotation id="TextAnnotation_1yrp7h9">
+        <bpmn:text>totalNumberOfUnnotifiedHearings &gt; 10000</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_1804e5f" sourceRef="Flow_1pimcbh" targetRef="TextAnnotation_1yrp7h9" />
+      <bpmn:textAnnotation id="TextAnnotation_0gnjn5o">
+        <bpmn:text>totalNumberOfUnnotifiedHearings &lt;= 1000</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_08dr0wu" sourceRef="Flow_06gwrwj" targetRef="TextAnnotation_0gnjn5o" />
+    </bpmn:subProcess>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_090bysl</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0rfty1c">
         <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 0,12 ? * * *</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_0tc9hnf">
-      <bpmn:incoming>Flow_0tjw87e</bpmn:incoming>
-      <bpmn:outgoing>Flow_06gwrwj</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1pimcbh</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_06gwrwj" sourceRef="Gateway_0tc9hnf" targetRef="Event_0dr3fkw">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">!execution.getVariable('totalNumberOfUnnotifiedHearings') || execution.getVariable('totalNumberOfUnnotifiedHearings') &lt;= 1000</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1pimcbh" sourceRef="Gateway_0tc9hnf" targetRef="Event_0myktic">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">execution.getVariable('totalNumberOfUnnotifiedHearings') &amp;&amp; execution.getVariable('totalNumberOfUnnotifiedHearings') &gt; 1000</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_18vgulo" sourceRef="Event_0myktic" targetRef="SpecHearingNoticeSchedulerId" />
-    <bpmn:intermediateCatchEvent id="Event_0myktic">
-      <bpmn:incoming>Flow_1pimcbh</bpmn:incoming>
-      <bpmn:outgoing>Flow_18vgulo</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_1ja9zkg">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
+    <bpmn:endEvent id="Event_1j24hl7">
+      <bpmn:incoming>Flow_19zr3vr</bpmn:incoming>
+      <bpmn:incoming>Flow_0382rll</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_090bysl" sourceRef="StartEvent_1" targetRef="SchedulerSubProcess" />
+    <bpmn:sequenceFlow id="Flow_19zr3vr" sourceRef="SchedulerSubProcess" targetRef="Event_1j24hl7" />
+    <bpmn:boundaryEvent id="Timeout" attachedToRef="SchedulerSubProcess">
+      <bpmn:outgoing>Flow_0382rll</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_08yaj1i">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
-    <bpmn:textAnnotation id="TextAnnotation_1yrp7h9">
-      <bpmn:text>totalNumberOfUnnotifiedHearings &gt; 10000</bpmn:text>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0382rll" sourceRef="Timeout" targetRef="Event_1j24hl7" />
+    <bpmn:textAnnotation id="TextAnnotation_0qxf4ar">
+      <bpmn:text>30 Minute Timeout</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1804e5f" sourceRef="Flow_1pimcbh" targetRef="TextAnnotation_1yrp7h9" />
-    <bpmn:textAnnotation id="TextAnnotation_0gnjn5o">
-      <bpmn:text>totalNumberOfUnnotifiedHearings &lt;= 1000</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_08dr0wu" sourceRef="Flow_06gwrwj" targetRef="TextAnnotation_0gnjn5o" />
+    <bpmn:association id="Association_0v4ocai" sourceRef="Timeout" targetRef="TextAnnotation_0qxf4ar" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="TRIGGER_HEARING_NOTICES" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SPEC_AUTOMATED_HEARING_NOTICE">
-      <bpmndi:BPMNShape id="Activity_1ydkywr_di" bpmnElement="SpecHearingNoticeSchedulerId">
-        <dc:Bounds x="280" y="180" width="100" height="80" />
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SpecAutomatedHearingNoticeScheduler">
+      <bpmndi:BPMNShape id="TextAnnotation_0qxf4ar_di" bpmnElement="TextAnnotation_0qxf4ar">
+        <dc:Bounds x="840" y="500" width="170" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0dr3fkw_di" bpmnElement="Event_0dr3fkw">
-        <dc:Bounds x="592" y="202" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0pywdf3_di" bpmnElement="Event_HearingNoticeScheduler">
-        <dc:Bounds x="152" y="202" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_0fr2xet" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="158" y="245" width="25" height="14" />
+          <dc:Bounds x="139" y="285" width="64" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0tc9hnf_di" bpmnElement="Gateway_0tc9hnf" isMarkerVisible="true">
-        <dc:Bounds x="465" y="195" width="50" height="50" />
+      <bpmndi:BPMNShape id="Event_1j24hl7_di" bpmnElement="Event_1j24hl7">
+        <dc:Bounds x="1142" y="242" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0hejd40_di" bpmnElement="Event_0myktic">
-        <dc:Bounds x="472" y="82" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_15foiay_di" bpmnElement="SchedulerSubProcess" isExpanded="true">
+        <dc:Bounds x="280" y="80" width="760" height="360" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1yrp7h9_di" bpmnElement="TextAnnotation_1yrp7h9">
-        <dc:Bounds x="540" y="90" width="273" height="30" />
+        <dc:Bounds x="710" y="150" width="273" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0gnjn5o_di" bpmnElement="TextAnnotation_0gnjn5o">
-        <dc:Bounds x="550" y="280" width="270" height="30" />
+        <dc:Bounds x="720" y="340" width="270" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0srigb3_di" bpmnElement="Flow_0srigb3">
-        <di:waypoint x="188" y="220" />
-        <di:waypoint x="280" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tjw87e_di" bpmnElement="Flow_0tjw87e">
-        <di:waypoint x="380" y="220" />
-        <di:waypoint x="465" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06gwrwj_di" bpmnElement="Flow_06gwrwj">
-        <di:waypoint x="515" y="220" />
-        <di:waypoint x="592" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1pimcbh_di" bpmnElement="Flow_1pimcbh">
-        <di:waypoint x="490" y="195" />
-        <di:waypoint x="490" y="118" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18vgulo_di" bpmnElement="Flow_18vgulo">
-        <di:waypoint x="472" y="100" />
-        <di:waypoint x="330" y="100" />
-        <di:waypoint x="330" y="180" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1ydkywr_di" bpmnElement="SpecHearingNoticeSchedulerId">
+        <dc:Bounds x="450" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dr3fkw_di" bpmnElement="Event_0dr3fkw">
+        <dc:Bounds x="762" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0tc9hnf_di" bpmnElement="Gateway_0tc9hnf" isMarkerVisible="true">
+        <dc:Bounds x="635" y="255" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hejd40_di" bpmnElement="Event_0myktic">
+        <dc:Bounds x="642" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gl7lj1_di" bpmnElement="Event_HearingNoticeScheduler">
+        <dc:Bounds x="322" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="575" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1804e5f_di" bpmnElement="Association_1804e5f">
-        <di:waypoint x="490" y="156.5" />
-        <di:waypoint x="540" y="103" />
+        <di:waypoint x="660" y="216.5" />
+        <di:waypoint x="708" y="165" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_08dr0wu_di" bpmnElement="Association_08dr0wu">
-        <di:waypoint x="553.5" y="220" />
-        <di:waypoint x="552" y="280" />
+        <di:waypoint x="723.5" y="280" />
+        <di:waypoint x="720" y="358" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0srigb3_di" bpmnElement="Flow_0srigb3">
+        <di:waypoint x="358" y="280" />
+        <di:waypoint x="450" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18vgulo_di" bpmnElement="Flow_18vgulo">
+        <di:waypoint x="642" y="160" />
+        <di:waypoint x="500" y="160" />
+        <di:waypoint x="500" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tjw87e_di" bpmnElement="Flow_0tjw87e">
+        <di:waypoint x="550" y="280" />
+        <di:waypoint x="635" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06gwrwj_di" bpmnElement="Flow_06gwrwj">
+        <di:waypoint x="685" y="280" />
+        <di:waypoint x="762" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pimcbh_di" bpmnElement="Flow_1pimcbh">
+        <di:waypoint x="660" y="255" />
+        <di:waypoint x="660" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0v4ocai_di" bpmnElement="Association_0v4ocai">
+        <di:waypoint x="948" y="453" />
+        <di:waypoint x="904" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1m9y78j_di" bpmnElement="Timeout">
+        <dc:Bounds x="942" y="422" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="940" y="465" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_090bysl_di" bpmnElement="Flow_090bysl">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="280" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19zr3vr_di" bpmnElement="Flow_19zr3vr">
+        <di:waypoint x="1040" y="260" />
+        <di:waypoint x="1142" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0382rll_di" bpmnElement="Flow_0382rll">
+        <di:waypoint x="960" y="458" />
+        <di:waypoint x="960" y="478" />
+        <di:waypoint x="1160" y="478" />
+        <di:waypoint x="1160" y="278" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
