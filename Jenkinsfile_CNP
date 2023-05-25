@@ -48,6 +48,12 @@ def secrets = [
   ]
 ]
 
+def secretsOtherenv = [
+  'civil-${env}': [
+    secret('microservicekey-civil-service', 'S2S_SECRET'),
+  ]
+]
+
 def createGithubRelease() {
   sh """
     ./bin/create-github-release.sh
@@ -86,17 +92,17 @@ withPipeline(type, product, component) {
   }
   onDemo {
     env.ENVIRONMENT = "demo"
-    loadVaultSecrets(secrets)
+    loadVaultSecrets(secretsOtherenv)
   }
 
   onPerftest {
     env.ENVIRONMENT = "perftest"
-    loadVaultSecrets(secrets)
+    loadVaultSecrets(secretsOtherenv)
   }
 
   onIthc {
     env.ENVIRONMENT = "ithc"
-    loadVaultSecrets(secrets)
+    loadVaultSecrets(secretsOtherenv)
   }
 
   syncBranchesWithMaster(branchesToSync)
