@@ -21,7 +21,6 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
     private static final String NOTIFY_FORMER_SOLICITOR = "NOTIFY_FORMER_SOLICITOR";
     private static final String NOTIFY_OTHER_SOLICITOR_1 = "NOTIFY_OTHER_SOLICITOR_1";
     private static final String NOTIFY_OTHER_SOLICITOR_2 = "NOTIFY_OTHER_SOLICITOR_2";
-    public static final String CREATE_SERVICE_REQUEST_API = "CREATE_SERVICE_REQUEST_API";
     public static final String NOTIFY_APPLICANT_SOLICITOR_FOR_HEARING_FEE_AFTER_NOC
         = "NOTIFY_APPLICANT_SOLICITOR_FOR_HEARING_FEE_AFTER_NOC";
 
@@ -29,7 +28,6 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
     private static final String TASK_ID_NOTIFY_FORMER_SOLICITOR = "NotifyFormerSolicitor";
     private static final String TASK_ID_NOTIFY_OTHER_SOLICITOR_1 = "NotifyOtherSolicitor1";
     private static final String TASK_ID_NOTIFY_OTHER_SOLICITOR_2 = "NotifyOtherSolicitor2";
-    private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID = "ServiceRequestAPI";
     private static final String TASK_ID_NOTIFY_CLAIMANT_UNPAID_FEE = "HearingFeeDueNotifyApplicantSolicitorAfterNoc";
 
     enum FlowState {
@@ -149,14 +147,6 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
                                        TASK_ID_NOTIFY_OTHER_SOLICITOR_2,
                                        variables);
         }
-
-        //complete the service request process
-        ExternalTask serviceRequest = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(serviceRequest,
-                                   PROCESS_CASE_EVENT,
-                                   CREATE_SERVICE_REQUEST_API,
-                                   CREATE_SERVICE_REQUEST_API_ACTIVITY_ID,
-                                   variables);
 
         //complete  notify claimant fee unpaid process
         ExternalTask notifyUnpaid = assertNextExternalTask(PROCESS_CASE_EVENT);
