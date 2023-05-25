@@ -8,6 +8,7 @@ def type = "java"
 def product = "civil"
 def component = "camunda"
 def ccdBranch = "master"
+def branchesToSync = ['demo', 'perftest','ithc']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 AppPipelineConfig pipelineConf
@@ -36,11 +37,7 @@ def secrets = [
     secret('microservicekey-ccd-gw', 'CCD_API_GATEWAY_S2S_KEY')
   ],
   'civil-${env}': [
-    secret('microservicekey-civil-service', 'S2S_SECRET'),
-    secret('ccd-importer-username', 'CCD_CONFIGURER_IMPORTER_USERNAME'),
-    secret('ccd-importer-password', 'CCD_CONFIGURER_IMPORTER_PASSWORD'),
-    secret('ccd-importer-username', 'DEFINITION_IMPORTER_USERNAME'),
-    secret('ccd-importer-password', 'DEFINITION_IMPORTER_PASSWORD'),
+    secret('microservicekey-civil-service', 'S2S_SECRET')
   ],
   'civil-prod': [
     secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
@@ -98,14 +95,14 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
 
-  syncBranchesWithMaster(['demo'])
+  syncBranchesWithMaster(branchesToSync)
 
   afterSuccess('checkout') {
     def subscription = 'nonprod'
-    if ( env.ENVIRONMENT == 'demo') {
+    if ( env.ENVIRONMENT == 'ithc' || env.ENVIRONMENT == 'demo' || env.ENVIRONMENT == 'perftest') {
       withSubscription(subscription) {
-        withTeamSecrets(pipelineConf, 'demo') {
-          uploadBpmnDiagrams('demo')
+        withTeamSecrets(pipelineConf, env.ENVIRONMENT) {
+          uploadBpmnDiagrams(env.ENVIRONMENT)
         }
       }
     }
