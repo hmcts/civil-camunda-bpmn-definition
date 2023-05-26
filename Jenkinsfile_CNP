@@ -8,6 +8,7 @@ def type = "java"
 def product = "civil"
 def component = "camunda"
 def ccdBranch = "master"
+def branchesToSync = ['demo', 'perftest','ithc']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 AppPipelineConfig pipelineConf
@@ -44,6 +45,12 @@ def secrets = [
   ],
   'civil-prod': [
     secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
+  ]
+]
+
+def secretsOtherenv = [
+  'civil-${env}': [
+    secret('microservicekey-civil-service', 'S2S_SECRET'),
   ]
 ]
 
@@ -84,17 +91,28 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
   }
   onDemo {
-    loadVaultSecrets(secrets)
+    env.ENVIRONMENT = "demo"
+    loadVaultSecrets(secretsOtherenv)
   }
 
-  syncBranchesWithMaster(['demo'])
+  onPerftest {
+    env.ENVIRONMENT = "perftest"
+    loadVaultSecrets(secretsOtherenv)
+  }
+
+  onIthc {
+    env.ENVIRONMENT = "ithc"
+    loadVaultSecrets(secretsOtherenv)
+  }
+
+  syncBranchesWithMaster(branchesToSync)
 
   afterSuccess('checkout') {
     def subscription = 'nonprod'
-    if ( env.ENVIRONMENT == 'demo') {
+    if ( env.ENVIRONMENT == 'ithc' || env.ENVIRONMENT == 'demo' || env.ENVIRONMENT == 'perftest') {
       withSubscription(subscription) {
-        withTeamSecrets(pipelineConf, 'demo') {
-          uploadBpmnDiagrams('demo')
+        withTeamSecrets(pipelineConf, env.ENVIRONMENT) {
+          uploadBpmnDiagrams(env.ENVIRONMENT)
         }
       }
     }
@@ -106,7 +124,7 @@ withPipeline(type, product, component) {
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json,*CUI.json,AuthorisationCaseType-shuttered.json"
+      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json,*CUI.json,*-shuttered.json"
     """
     env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
@@ -141,7 +159,7 @@ withPipeline(type, product, component) {
       eval \$(./bin/variables/load-staging-environment-variables.sh)
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-      ./bin/import-ccd-definition.sh "-e *GAspec.json,*-nonprod.json,*-COS-nonprod.json,*CUI.json,AuthorisationCaseType-shuttered.json"
+      ./bin/import-ccd-definition.sh "-e *GAspec.json,*-nonprod.json,*-COS-nonprod.json,*CUI.json,*-shuttered.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
     env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
