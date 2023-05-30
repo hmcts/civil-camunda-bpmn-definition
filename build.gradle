@@ -3,7 +3,7 @@ plugins {
   id 'checkstyle'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.14.RELEASE'
-  id 'org.owasp.dependencycheck' version '8.0.1'
+  id 'org.owasp.dependencycheck' version '8.2.1'
   id 'com.github.ben-manes.versions' version '0.39.0'
   id 'org.sonarqube' version '3.4.0.2513'
 }
@@ -63,9 +63,9 @@ allprojects {
       // CVE-2018-10237 - Unbounded memory allocation
       dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.69'
       // CVE-2020-26945 - Mishandles deserialization of object streams.
-      dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.11'
+      dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.13'
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.5'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.8'
 
       dependencySet(
         group: 'org.camunda.bpm',
@@ -75,25 +75,25 @@ allprojects {
       }
       dependencySet(
         group: 'org.jetbrains.kotlin',
-        version: '1.7.0'
+        version: '1.8.20'
       ) {
         entry 'kotlin-stdlib-common'
       }
       dependencySet(
         group: 'org.jetbrains.kotlin',
-        version: '1.7.10'
+        version: '1.8.20'
       ) {
         entry 'kotlin-stdlib'
       }
       dependencySet(
         group: 'org.jetbrains.kotlin',
-        version: '1.7.0'
+        version: '1.8.20'
       ) {
         entry 'kotlin-reflect'
       }
     }
     imports {
-      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.4'
+      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.6'
     }
   }
 
@@ -129,41 +129,48 @@ test {
   failFast = true
 }
 
-task installDependencies(type: Exec, description: 'Installs Yarn dependencies.') {
-  commandLine '/usr/bin/yarn', '--mutex', 'network', '--frozen-lockfile', '--silent', 'install'
-}
-
-task checkDependenciesIntegrity(type: Exec, description: 'Checks integrity of Yarn dependencies.') {
-  commandLine '/usr/bin/yarn', '--mutex', 'network', '--frozen-lockfile', '--silent', 'check', '--integrity'
-}
-
 task awaitApplicationReadiness(type: Exec, description: 'Awaits until application is ready.') {
   commandLine './bin/wait-for.sh', System.env.URL
   commandLine './bin/wait-for.sh', System.env.TEST_URL
 }
 
-task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:smoke'
-}
-
-task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
+task runCosTests(type: Exec, description: 'Runs DJ Api functional tests.') {
   onlyIf {
     return System.env.ENVIRONMENT == 'preview'
   }
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-spec'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-cos'
+}
+
+task runSdoApiTests(type: Exec, description: 'Runs SDO functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-sdo'
+}
+
+task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:smoke'
+}
+
+task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-dj'
+}
+
+task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-spec'
 }
 
 task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:api-unspec'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-unspec'
 }
 
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:rpa'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:rpa'
 }
 
 task runNightlyMultipartyTests(type: Exec, description: 'Runs additional multiparty nightly tests.') {
-  commandLine '/usr/bin/yarn', '--silent', 'test:nightly-multiparty'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:nightly-multiparty'
 }
 
 def inStrictOrder(Task... tasks) {
@@ -174,11 +181,12 @@ def inStrictOrder(Task... tasks) {
 }
 
 task smoke(description: 'Runs the smoke tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSmokeTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness, runSmokeTests))
 }
 
 task functional(description: 'Runs the functional tests.') {
-  dependsOn(inStrictOrder(awaitApplicationReadiness, installDependencies, checkDependenciesIntegrity, runSpecApiTests, runApiTests))
+  dependsOn(inStrictOrder(awaitApplicationReadiness,
+    runCosTests, runDJTests, runSpecApiTests, runSdoApiTests, runApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
@@ -210,8 +218,8 @@ jacocoTestReport.dependsOn {
 }
 
 def versions = [
-  junit              : '5.9.1',
-  junitPlatform      : '1.9.1'
+  junit              : '5.9.2',
+  junitPlatform      : '1.9.2'
 ]
 
 ext.libraries = [
@@ -225,13 +233,13 @@ ext.libraries = [
 ]
 
 dependencies {
-  implementation group: 'org.springframework', name: 'spring-core', version: '5.3.23'
-  implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.23'
+  implementation group: 'org.springframework', name: 'spring-core', version: '5.3.27'
+  implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.27'
   implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.18.0'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.6'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0-rc2'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.14.0-rc1', ext: 'pom'
-  implementation 'org.yaml:snakeyaml:1.33'
+  implementation 'org.yaml:snakeyaml:2.0'
 
   testImplementation libraries.junit5
   testImplementation group: 'org.camunda.bpm.extension.springboot', name: 'camunda-bpm-spring-boot-starter-test', version: '2.2.0'

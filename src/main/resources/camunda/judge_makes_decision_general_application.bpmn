@@ -22,7 +22,7 @@
       <bpmn:incoming>Flow_1qchrvw</bpmn:incoming>
       <bpmn:outgoing>Flow_1wbo8pc</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_0vuxatn" name="Start Business Process" calledElement="StartBusinessProcessJudgeMakesDecisionGAspec">
+    <bpmn:callActivity id="Activity_0vuxatn" name="Start Business Process" calledElement="StartGeneralApplicationBusinessProcessGAspec">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
         <camunda:out variables="all" />
@@ -62,10 +62,10 @@
       <bpmn:incoming>Flow_0z35dfn</bpmn:incoming>
       <bpmn:outgoing>Flow_1dvy97c</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="StartNotificationProcessMakeDecision" name="Start Notification Process Make Decision" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+    <bpmn:serviceTask id="StartApplicantNotificationProcessMakeDecision" name="Start Applicant Notification Process Make Decision" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">START_NOTIFICATION_PROCESS_MAKE_DECISION</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1dvy97c</bpmn:incoming>
@@ -74,25 +74,35 @@
     <bpmn:sequenceFlow id="Flow_1wbo8pc" sourceRef="ObtainAdditionalFeeValue" targetRef="ObtainAdditionalPaymentReference" />
     <bpmn:sequenceFlow id="Flow_1yg2hgc" sourceRef="ObtainAdditionalPaymentReference" targetRef="CreatePDFDocument" />
     <bpmn:sequenceFlow id="Flow_0z35dfn" sourceRef="CreatePDFDocument" targetRef="AddPDFDocumentToMainCase" />
-    <bpmn:sequenceFlow id="Flow_1dvy97c" sourceRef="AddPDFDocumentToMainCase" targetRef="StartNotificationProcessMakeDecision" />
-    <bpmn:sequenceFlow id="Flow_1qwcdun" sourceRef="StartNotificationProcessMakeDecision" targetRef="Activity_0sa4hmt" />
-    <bpmn:callActivity id="Activity_0sa4hmt" name="End Business Process" calledElement="EndJudgeMakesDecisionBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qwcdun</bpmn:incoming>
-      <bpmn:outgoing>Flow_1830oky</bpmn:outgoing>
-    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1dvy97c" sourceRef="AddPDFDocumentToMainCase" targetRef="StartApplicantNotificationProcessMakeDecision" />
+    <bpmn:sequenceFlow id="Flow_1qwcdun" sourceRef="StartApplicantNotificationProcessMakeDecision" targetRef="StartRespondentNotificationProcessMakeDecision" />
     <bpmn:sequenceFlow id="Flow_1830oky" sourceRef="Activity_0sa4hmt" targetRef="Event_0tam17y" />
     <bpmn:endEvent id="Event_0tam17y">
       <bpmn:incoming>Flow_1830oky</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0sa4hmt" name="End Business Process" calledElement="EndJudgeMakesDecisionBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zmisen</bpmn:incoming>
+      <bpmn:outgoing>Flow_1830oky</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="StartRespondentNotificationProcessMakeDecision" name="Start Respondent Notification Process Make Decision" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qwcdun</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zmisen</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zmisen" sourceRef="StartRespondentNotificationProcessMakeDecision" targetRef="Activity_0sa4hmt" />
   </bpmn:process>
   <bpmn:message id="Message_1opqhjn" name="MAKE_DECISION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="JudgeMakesDecision">
       <bpmndi:BPMNShape id="Participant_058zit7_di" bpmnElement="Participant_058zit7" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1450" height="380" />
+        <dc:Bounds x="160" y="80" width="1770" height="380" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ks94xn_di" bpmnElement="Event_0ks94xn">
         <dc:Bounds x="231" y="230" width="36" height="36" />
@@ -118,14 +128,19 @@
       <bpmndi:BPMNShape id="Activity_0gedw0q_di" bpmnElement="AddPDFDocumentToMainCase">
         <dc:Bounds x="1020" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0d7dqyf_di" bpmnElement="StartNotificationProcessMakeDecision">
+      <bpmndi:BPMNShape id="Activity_0d7dqyf_di" bpmnElement="StartApplicantNotificationProcessMakeDecision">
         <dc:Bounds x="1190" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0sa4hmt_di" bpmnElement="Activity_0sa4hmt">
-        <dc:Bounds x="1390" y="206" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0tam17y_di" bpmnElement="Event_0tam17y">
-        <dc:Bounds x="1542" y="228" width="36" height="36" />
+        <dc:Bounds x="1822" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sa4hmt_di" bpmnElement="Activity_0sa4hmt">
+        <dc:Bounds x="1600" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1iw3i8y" bpmnElement="StartRespondentNotificationProcessMakeDecision">
+        <dc:Bounds x="1395" y="208" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qc2eoy_di" bpmnElement="Event_0qc2eoy">
         <dc:Bounds x="341" y="190" width="36" height="36" />
@@ -163,11 +178,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qwcdun_di" bpmnElement="Flow_1qwcdun">
         <di:waypoint x="1290" y="248" />
-        <di:waypoint x="1390" y="248" />
+        <di:waypoint x="1395" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1830oky_di" bpmnElement="Flow_1830oky">
-        <di:waypoint x="1490" y="246" />
-        <di:waypoint x="1542" y="246" />
+        <di:waypoint x="1700" y="248" />
+        <di:waypoint x="1822" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zmisen_di" bpmnElement="Flow_0zmisen">
+        <di:waypoint x="1495" y="250" />
+        <di:waypoint x="1600" y="250" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

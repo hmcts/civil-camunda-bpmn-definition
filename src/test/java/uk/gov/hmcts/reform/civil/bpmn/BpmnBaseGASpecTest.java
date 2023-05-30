@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class BpmnBaseGASpecTest {
 
-    private static final String DIAGRAM_PATH = "camunda/%s";
+    protected static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
     public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_GASPEC";
     public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_GASPEC";
@@ -35,7 +35,6 @@ public abstract class BpmnBaseGASpecTest {
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
-    public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
 
     public final String bpmnFileName;
     public final String processId;
@@ -63,7 +62,8 @@ public abstract class BpmnBaseGASpecTest {
         //deploy process
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "start_general_application_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH,
+                                                "start_initiate_general_application_business_process.bpmn"))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
