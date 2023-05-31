@@ -34,6 +34,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Notifying respondents
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
+
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
     }
