@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iivus5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="REQUEST_JUDGEMENT_ADMISSION_SPEC_ID" isExecutable="true">
+    <bpmn:startEvent id="Event_0y09tpb" name="Start">
+      <bpmn:outgoing>Flow_07qelqa</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cnoq24" messageRef="Message_1osgsc5" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_1d3ska5" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07qelqa</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nq6ydh</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1o998qy">
+      <bpmn:incoming>Flow_0uk4gkm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0371z1y" name="Abort" attachedToRef="Activity_1d3ska5">
+      <bpmn:outgoing>Flow_0uk4gkm</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1f3pwfg" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_07qelqa" sourceRef="Event_0y09tpb" targetRef="Activity_1d3ska5" />
+    <bpmn:sequenceFlow id="Flow_0uk4gkm" sourceRef="Event_0371z1y" targetRef="Event_1o998qy" />
+    <bpmn:sequenceFlow id="Flow_1nq6ydh" sourceRef="Activity_1d3ska5" targetRef="Activity_00q4tpk" />
+    <bpmn:endEvent id="Event_1g0kcde">
+      <bpmn:incoming>Flow_1kj896s</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0g68wbz" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rs25i9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kj896s</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0udr06v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rs25i9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1rs25i9" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_0g68wbz" />
+    <bpmn:serviceTask id="Activity_00q4tpk" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nq6ydh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bj7kgb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1bj7kgb" sourceRef="Activity_00q4tpk" targetRef="Activity_0qeecp4" />
+    <bpmn:serviceTask id="Activity_0qeecp4" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bj7kgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0udr06v</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0udr06v" sourceRef="Activity_0qeecp4" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+  </bpmn:process>
+  <bpmn:message id="Message_1bt9nfa" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmn:message id="Message_1sxevdt" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmn:message id="Message_1osgsc5" name="REQUEST_JUDGEMENT_ADMISSION_SPEC" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="REQUEST_JUDGEMENT_ADMISSION_SPEC_ID">
+      <bpmndi:BPMNShape id="Event_0y09tpb_di" bpmnElement="Event_0y09tpb">
+        <dc:Bounds x="172" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="255" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d3ska5_di" bpmnElement="Activity_1d3ska5">
+        <dc:Bounds x="250" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o998qy_di" bpmnElement="Event_1o998qy">
+        <dc:Bounds x="282" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
+        <dc:Bounds x="1042" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
+        <dc:Bounds x="910" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="740" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1w5vmzl" bpmnElement="Activity_0qeecp4">
+        <dc:Bounds x="570" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0x19wet" bpmnElement="Activity_00q4tpk">
+        <dc:Bounds x="410" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
+        <dc:Bounds x="282" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="337" y="153" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_07qelqa_di" bpmnElement="Flow_07qelqa">
+        <di:waypoint x="208" y="230" />
+        <di:waypoint x="250" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uk4gkm_di" bpmnElement="Flow_0uk4gkm">
+        <di:waypoint x="300" y="172" />
+        <di:waypoint x="300" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nq6ydh_di" bpmnElement="Flow_1nq6ydh">
+        <di:waypoint x="350" y="230" />
+        <di:waypoint x="410" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
+        <di:waypoint x="1010" y="230" />
+        <di:waypoint x="1042" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rs25i9_di" bpmnElement="Flow_1rs25i9">
+        <di:waypoint x="840" y="230" />
+        <di:waypoint x="910" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bj7kgb_di" bpmnElement="Flow_1bj7kgb">
+        <di:waypoint x="510" y="230" />
+        <di:waypoint x="570" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0udr06v_di" bpmnElement="Flow_0udr06v">
+        <di:waypoint x="670" y="230" />
+        <di:waypoint x="740" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
