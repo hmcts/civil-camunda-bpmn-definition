@@ -22,7 +22,7 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_07qelqa" sourceRef="Event_0y09tpb" targetRef="Activity_1d3ska5" />
     <bpmn:sequenceFlow id="Flow_0uk4gkm" sourceRef="Event_0371z1y" targetRef="Event_1o998qy" />
-    <bpmn:sequenceFlow id="Flow_1nq6ydh" sourceRef="Activity_1d3ska5" targetRef="Activity_00q4tpk" />
+    <bpmn:sequenceFlow id="Flow_1nq6ydh" sourceRef="Activity_1d3ska5" targetRef="proceedsInHeritageSystem" />
     <bpmn:endEvent id="Event_1g0kcde">
       <bpmn:incoming>Flow_1kj896s</bpmn:incoming>
     </bpmn:endEvent>
@@ -44,7 +44,7 @@
       <bpmn:outgoing>Flow_1rs25i9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1rs25i9" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_0g68wbz" />
-    <bpmn:serviceTask id="Activity_00q4tpk" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="proceedsInHeritageSystem" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
@@ -53,8 +53,8 @@
       <bpmn:incoming>Flow_1nq6ydh</bpmn:incoming>
       <bpmn:outgoing>Flow_1bj7kgb</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1bj7kgb" sourceRef="Activity_00q4tpk" targetRef="Activity_0qeecp4" />
-    <bpmn:serviceTask id="Activity_0qeecp4" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1bj7kgb" sourceRef="proceedsInHeritageSystem" targetRef="RequestJudgementByAdmissionNotifyRespondent1" />
+    <bpmn:serviceTask id="RequestJudgementByAdmissionNotifyRespondent1" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION</camunda:inputParameter>
@@ -63,10 +63,8 @@
       <bpmn:incoming>Flow_1bj7kgb</bpmn:incoming>
       <bpmn:outgoing>Flow_0udr06v</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0udr06v" sourceRef="Activity_0qeecp4" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_0udr06v" sourceRef="RequestJudgementByAdmissionNotifyRespondent1" targetRef="NotifyRoboticsOnCaseHandedOffline" />
   </bpmn:process>
-  <bpmn:message id="Message_1bt9nfa" name="LIFT_BREATHING_SPACE_SPEC" />
-  <bpmn:message id="Message_1sxevdt" name="LIFT_BREATHING_SPACE_SPEC" />
   <bpmn:message id="Message_1osgsc5" name="REQUEST_JUDGEMENT_ADMISSION_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="REQUEST_JUDGEMENT_ADMISSION_SPEC_ID">
@@ -91,11 +89,11 @@
       <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
         <dc:Bounds x="740" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1w5vmzl" bpmnElement="Activity_0qeecp4">
-        <dc:Bounds x="570" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0x19wet" bpmnElement="Activity_00q4tpk">
+      <bpmndi:BPMNShape id="BPMNShape_0x19wet" bpmnElement="proceedsInHeritageSystem">
         <dc:Bounds x="410" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1w5vmzl" bpmnElement="RequestJudgementByAdmissionNotifyRespondent1">
+        <dc:Bounds x="570" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
         <dc:Bounds x="282" y="172" width="36" height="36" />
