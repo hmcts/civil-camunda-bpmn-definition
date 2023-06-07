@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
   <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID_SPEC" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
@@ -16,7 +16,6 @@
       <bpmn:incoming>Flow_17evp7q</bpmn:incoming>
       <bpmn:incoming>Flow_0hq1951</bpmn:incoming>
       <bpmn:incoming>Flow_1kfl2cu</bpmn:incoming>
-      <bpmn:incoming>Flow_1m8na44</bpmn:incoming>
       <bpmn:incoming>Flow_15xaidz</bpmn:incoming>
       <bpmn:incoming>Flow_12qlpg4</bpmn:incoming>
       <bpmn:outgoing>Flow_0tgwl48</bpmn:outgoing>
@@ -61,6 +60,7 @@
       <bpmn:incoming>Flow_0evghcx</bpmn:incoming>
       <bpmn:incoming>Flow_0u83asq</bpmn:incoming>
       <bpmn:incoming>Flow_00f0sau</bpmn:incoming>
+      <bpmn:incoming>Flow_1m8na44</bpmn:incoming>
       <bpmn:outgoing>Flow_17evp7q</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1hr7okm" sourceRef="ClaimantResponseGenerateDirectionsQuestionnaire" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor1" />
@@ -375,7 +375,7 @@
       <bpmn:incoming>Flow_0qtr7fz</bpmn:incoming>
       <bpmn:outgoing>Flow_1m8na44</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1m8na44" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="Activity_1cweuly" />
+    <bpmn:sequenceFlow id="Flow_1m8na44" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="IN_MEDIATION_FLOW" name="In Mediation" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ClaimantDefendantAgreedMediationNotifyApplicant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -571,9 +571,6 @@
         <dc:Bounds x="680" y="1330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mc7i0d_di" bpmnElement="proceedsInHeritageSystem">
-        <dc:Bounds x="1390" y="1050" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1o3q1xa_di" bpmnElement="TextAnnotation_1o3q1xa">
         <dc:Bounds x="790" y="105" width="110" height="45" />
       </bpmndi:BPMNShape>
@@ -589,6 +586,9 @@
       <bpmndi:BPMNShape id="TextAnnotation_0qgljrk_di" bpmnElement="TextAnnotation_0qgljrk">
         <dc:Bounds x="700" y="595" width="100" height="39" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mc7i0d_di" bpmnElement="proceedsInHeritageSystem">
+        <dc:Bounds x="1260" y="1050" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="222" y="412" width="36" height="36" />
@@ -848,8 +848,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m8na44_di" bpmnElement="Flow_1m8na44">
         <di:waypoint x="1069" y="1180" />
-        <di:waypoint x="1660" y="1180" />
-        <di:waypoint x="1660" y="510" />
+        <di:waypoint x="1440" y="1180" />
+        <di:waypoint x="1440" y="510" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15nfk8b_di" bpmnElement="IN_MEDIATION_FLOW">
         <di:waypoint x="430" y="495" />
@@ -884,13 +884,14 @@
       <bpmndi:BPMNEdge id="Flow_15h287v_di" bpmnElement="Flow_Flow_PAY_IMMEDIATELY">
         <di:waypoint x="430" y="495" />
         <di:waypoint x="430" y="1090" />
-        <di:waypoint x="1390" y="1090" />
+        <di:waypoint x="1260" y="1090" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="400" y="790" width="90" height="40" />
+          <dc:Bounds x="433" y="1100" width="90" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00f0sau_di" bpmnElement="Flow_00f0sau">
-        <di:waypoint x="1440" y="1050" />
+        <di:waypoint x="1360" y="1090" />
+        <di:waypoint x="1440" y="1090" />
         <di:waypoint x="1440" y="510" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1574yb4_di" bpmnElement="Association_1574yb4">
