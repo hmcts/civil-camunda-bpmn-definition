@@ -32,7 +32,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1Lip";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
-    private static final String LR_V_LIP_ENABLED = "LR_V_LIP_ENABLED";
     private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED =
         "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
     private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
@@ -175,6 +174,16 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT",
             "ClaimantDisAgreedRepaymentPlanNotifyLip"
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+            variables
         );
 
         //end business process
@@ -396,54 +405,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteClaimantResponse_LrVLipFlagIsOn() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
-            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
-        variables.put(FLOW_FLAGS, Map.of(
-            LR_V_LIP_ENABLED, true
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicantLR,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent"
         );
 
         //end business process
