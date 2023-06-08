@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
   <bpmn:collaboration id="InitiateGeneralApplication">
     <bpmn:extensionElements />
@@ -75,20 +75,26 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1s97v1o</bpmn:incoming>
-      <bpmn:outgoing>Flow_14l3rsx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lytc13</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_14l3rsx" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="Activity_18x7hxw" />
+    <bpmn:endEvent id="Event_05yxbay" />
     <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_14l3rsx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tfjg70</bpmn:outgoing>
+      <bpmn:incoming>Flow_0cr2m8q</bpmn:incoming>
     </bpmn:callActivity>
-    <bpmn:endEvent id="Event_05yxbay">
-      <bpmn:incoming>Flow_0tfjg70</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0tfjg70" sourceRef="Activity_18x7hxw" targetRef="Event_05yxbay" />
+    <bpmn:sequenceFlow id="Flow_0cr2m8q" sourceRef="GeneralApplicationNotifying" targetRef="Activity_18x7hxw" />
+    <bpmn:sequenceFlow id="Flow_0lytc13" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="GeneralApplicationNotifying" />
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0lytc13</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cr2m8q</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
@@ -124,11 +130,14 @@
         <dc:Bounds x="1050" y="208" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
-        <dc:Bounds x="1200" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
-        <dc:Bounds x="1352" y="230" width="36" height="36" />
+        <dc:Bounds x="1452" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
+        <dc:Bounds x="1390" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
+        <dc:Bounds x="1220" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -164,13 +173,13 @@
         <di:waypoint x="1010" y="248" />
         <di:waypoint x="1050" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14l3rsx_di" bpmnElement="Flow_14l3rsx">
-        <di:waypoint x="1150" y="248" />
-        <di:waypoint x="1200" y="248" />
+      <bpmndi:BPMNEdge id="Flow_0cr2m8q_di" bpmnElement="Flow_0cr2m8q">
+        <di:waypoint x="1320" y="248" />
+        <di:waypoint x="1390" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tfjg70_di" bpmnElement="Flow_0tfjg70">
-        <di:waypoint x="1300" y="248" />
-        <di:waypoint x="1352" y="248" />
+      <bpmndi:BPMNEdge id="Flow_0lytc13_di" bpmnElement="Flow_0lytc13">
+        <di:waypoint x="1150" y="248" />
+        <di:waypoint x="1220" y="248" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
