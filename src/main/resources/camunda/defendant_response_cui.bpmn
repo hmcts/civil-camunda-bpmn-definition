@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0">
   <bpmn:process id="DEFENDANT_RESPONSE_PROCESS_ID_CUI" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="start">
       <bpmn:outgoing>Flow_01gz2ld</bpmn:outgoing>
@@ -13,8 +13,8 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1jc5dga</bpmn:incoming>
       <bpmn:incoming>Flow_0zskc69</bpmn:incoming>
+      <bpmn:incoming>Flow_0d3pq8q</bpmn:incoming>
       <bpmn:outgoing>Flow_0jauxrx</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_1nraabm" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -41,7 +41,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0natyz5</bpmn:incoming>
-      <bpmn:outgoing>Flow_1p6bx9g</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1g45krf</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_1onhoc9" name="Contact Details Change?">
       <bpmn:incoming>Flow_0sd813g</bpmn:incoming>
@@ -52,7 +52,7 @@
     <bpmn:sequenceFlow id="Flow_0natyz5" name="Yes" sourceRef="Gateway_1onhoc9" targetRef="DefendantContactDetailsChangeNotifyApplicantSolicitor1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CONTACT_DETAILS_CHANGE &amp;&amp; flowFlags.CONTACT_DETAILS_CHANGE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1bm9em0" name="No" sourceRef="Gateway_1onhoc9" targetRef="Gateway_0ycr08v">
+    <bpmn:sequenceFlow id="Flow_1bm9em0" name="No" sourceRef="Gateway_1onhoc9" targetRef="DefendantLipResponseNotifyDefendant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CONTACT_DETAILS_CHANGE || !flowFlags.CONTACT_DETAILS_CHANGE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="DefendantResponseNotifyApplicantSolicitor1ForCui" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -64,30 +64,30 @@
       <bpmn:incoming>Flow_1q86awx</bpmn:incoming>
       <bpmn:outgoing>Flow_0d3pq8q</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0d3pq8q" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="DefendantLipResponseNotifyDefendant" />
+    <bpmn:sequenceFlow id="Flow_0d3pq8q" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="Activity_1m5szz9" />
+    <bpmn:exclusiveGateway id="Gateway_0ycr08v" name="is response language bilingual?">
+      <bpmn:incoming>Flow_02rgqek</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zskc69</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1q86awx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0zskc69" name="Yes" sourceRef="Gateway_0ycr08v" targetRef="Activity_1m5szz9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL &amp;&amp; flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1q86awx" name="No" sourceRef="Gateway_0ycr08v" targetRef="DefendantResponseNotifyApplicantSolicitor1ForCui">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL|| !flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="DefendantLipResponseNotifyDefendant" name="Notify lip defendant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0d3pq8q</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jc5dga</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1jc5dga" sourceRef="DefendantLipResponseNotifyDefendant" targetRef="Activity_1m5szz9" />
-    <bpmn:exclusiveGateway id="Gateway_0ycr08v" name="is response language bilingual?">
       <bpmn:incoming>Flow_1bm9em0</bpmn:incoming>
-      <bpmn:incoming>Flow_1p6bx9g</bpmn:incoming>
-      <bpmn:outgoing>Flow_1q86awx</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0zskc69</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1q86awx" name="No" sourceRef="Gateway_0ycr08v" targetRef="DefendantResponseNotifyApplicantSolicitor1ForCui">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL|| !flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1p6bx9g" sourceRef="DefendantContactDetailsChangeNotifyApplicantSolicitor1" targetRef="Gateway_0ycr08v" />
-    <bpmn:sequenceFlow id="Flow_0zskc69" name="Yes" sourceRef="Gateway_0ycr08v" targetRef="Activity_1m5szz9">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL &amp;&amp; flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+      <bpmn:incoming>Flow_1g45krf</bpmn:incoming>
+      <bpmn:outgoing>Flow_02rgqek</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_02rgqek" sourceRef="DefendantLipResponseNotifyDefendant" targetRef="Gateway_0ycr08v" />
+    <bpmn:sequenceFlow id="Flow_1g45krf" sourceRef="DefendantContactDetailsChangeNotifyApplicantSolicitor1" targetRef="DefendantLipResponseNotifyDefendant" />
   </bpmn:process>
   <bpmn:message id="Message_1xf7rku" name="DEFENDANT_RESPONSE_CUI" />
   <bpmn:error id="Error_0z3vvae" name="StartBusinessAbort" errorCode="ABORT" />
@@ -101,9 +101,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15p049m_di" bpmnElement="Event_15p049m">
         <dc:Bounds x="1272" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
-        <dc:Bounds x="1054" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nraabm_di" bpmnElement="Activity_1nraabm">
         <dc:Bounds x="240" y="173" width="100" height="80" />
@@ -121,17 +118,20 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ypo1fg_di" bpmnElement="DefendantResponseNotifyApplicantSolicitor1ForCui">
-        <dc:Bounds x="670" y="173" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0epgs04" bpmnElement="DefendantLipResponseNotifyDefendant">
-        <dc:Bounds x="865" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="900" y="176" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ycr08v_di" bpmnElement="Gateway_0ycr08v" isMarkerVisible="true">
-        <dc:Bounds x="549" y="188" width="50" height="50" />
+        <dc:Bounds x="765" y="191" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="550" y="146" width="57" height="40" />
+          <dc:Bounds x="766" y="149" width="57" height="40" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ac20v6" bpmnElement="DefendantLipResponseNotifyDefendant">
+        <dc:Bounds x="565" y="176" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
+        <dc:Bounds x="1070" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="155" width="36" height="36" />
@@ -140,7 +140,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0jauxrx_di" bpmnElement="Flow_0jauxrx">
-        <di:waypoint x="1154" y="210" />
+        <di:waypoint x="1170" y="210" />
         <di:waypoint x="1272" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mz7ke5_di" bpmnElement="Flow_1mz7ke5">
@@ -164,39 +164,41 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bm9em0_di" bpmnElement="Flow_1bm9em0">
         <di:waypoint x="465" y="213" />
-        <di:waypoint x="549" y="213" />
+        <di:waypoint x="565" y="213" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="497" y="193" width="15" height="14" />
+          <dc:Bounds x="467" y="196" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d3pq8q_di" bpmnElement="Flow_0d3pq8q">
-        <di:waypoint x="770" y="210" />
-        <di:waypoint x="865" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jc5dga_di" bpmnElement="Flow_1jc5dga">
-        <di:waypoint x="965" y="210" />
-        <di:waypoint x="1054" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1q86awx_di" bpmnElement="Flow_1q86awx">
-        <di:waypoint x="599" y="213" />
-        <di:waypoint x="670" y="213" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="628" y="195" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1p6bx9g_di" bpmnElement="Flow_1p6bx9g">
-        <di:waypoint x="490" y="409" />
-        <di:waypoint x="574" y="409" />
-        <di:waypoint x="574" y="238" />
+        <di:waypoint x="1000" y="213" />
+        <di:waypoint x="1027" y="213" />
+        <di:waypoint x="1027" y="210" />
+        <di:waypoint x="1070" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zskc69_di" bpmnElement="Flow_0zskc69">
-        <di:waypoint x="574" y="238" />
-        <di:waypoint x="574" y="409" />
-        <di:waypoint x="1100" y="409" />
-        <di:waypoint x="1100" y="250" />
+        <di:waypoint x="790" y="241" />
+        <di:waypoint x="790" y="409" />
+        <di:waypoint x="1116" y="409" />
+        <di:waypoint x="1116" y="250" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="829" y="391" width="18" height="14" />
+          <dc:Bounds x="945" y="391" width="18" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q86awx_di" bpmnElement="Flow_1q86awx">
+        <di:waypoint x="815" y="216" />
+        <di:waypoint x="900" y="216" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="851" y="198" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02rgqek_di" bpmnElement="Flow_02rgqek">
+        <di:waypoint x="665" y="216" />
+        <di:waypoint x="765" y="216" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g45krf_di" bpmnElement="Flow_1g45krf">
+        <di:waypoint x="490" y="409" />
+        <di:waypoint x="615" y="409" />
+        <di:waypoint x="615" y="256" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
