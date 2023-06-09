@@ -185,7 +185,7 @@ class CreateSDOTest extends BpmnBaseTest {
             sendSDOOrder,
             PROCESS_CASE_EVENT,
             "SEND_SDO_ORDER_TO_LiP_DEFENDANT",
-            "SendSDOToDefendantLip",
+            "SendSDOToDefendantLiP",
             variables
         );
 
