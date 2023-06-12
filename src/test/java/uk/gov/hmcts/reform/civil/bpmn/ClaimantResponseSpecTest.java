@@ -206,8 +206,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true,
-            SDO_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true
         ));
 
         //complete the start business process
@@ -368,6 +367,16 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
             "ClaimantDefendantAgreedMediationNotifyRespondent"
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
         );
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

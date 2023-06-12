@@ -31,6 +31,9 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Make Service Request
     private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
     private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
+    //Notifying respondents
+    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
+    private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
@@ -103,6 +106,15 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             MAKE_SERVICE_REQ_EVENT,
             MAKE_SERVICE_REQ_ID,
             variables
+        );
+        //notify respondents
+        ExternalTask notifyRespondents = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+                notifyRespondents,
+                APPLICATION_EVENT_GASPEC,
+                NOTYFYING_RESPONDENTS_EVENT,
+                GENERAL_APPLICATION_NOTIYFYING_ID,
+                variables
         );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
