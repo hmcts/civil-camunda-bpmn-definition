@@ -19,8 +19,8 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     //assign case access
-    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1_SPEC";
-    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1ForSpec";
+    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
+    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1";
     //validate fee
     private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE_SPEC";
     private static final String VALIDATE_FEE_ACTIVITY_ID = "ValidateClaimFeeForSpec";
