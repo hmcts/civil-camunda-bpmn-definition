@@ -184,8 +184,8 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             sendSDOOrder,
             PROCESS_CASE_EVENT,
-            "SEND_SDO_ORDER_TO_LiP_DEFENDANT",
-            "SendSDOToDefendantLiP",
+            "SEND_SDO_ORDER_TO_LIP_DEFENDANT",
+            "SendSDOToDefendantLIP",
             variables
         );
 
