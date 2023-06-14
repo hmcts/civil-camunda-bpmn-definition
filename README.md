@@ -8,7 +8,7 @@ Civil Camunda BPMN Definition
 - [Camunda](#camunda)
 - [Adding Git Conventions](#adding-git-conventions)
 
-## Building and deploying the application
+## Building and deploying the application 
 
 ### Dependencies
 
