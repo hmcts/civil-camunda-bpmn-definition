@@ -11,9 +11,15 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     //BPMN Settings
     private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT";
     private static final String PROCESS_ID = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID";
-    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
+    public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
+    private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
+    private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
 
     //Notifying respondents
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
@@ -37,6 +43,24 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
+        );
+
+        //complete the document generation
+        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_DRAFT_DOCUMENT,
+            GENERATE_DRAFT_DOCUMENT_ID
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID
         );
 
         //notify respondents
