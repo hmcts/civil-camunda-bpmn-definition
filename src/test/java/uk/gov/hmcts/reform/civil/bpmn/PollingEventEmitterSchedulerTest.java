@@ -47,6 +47,7 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();
         assertThat(externalTasks).hasSize(1);
+        assertThat(externalTasks).hasSize(1);
 
         //fetch and complete task
         List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
