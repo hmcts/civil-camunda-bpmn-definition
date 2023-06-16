@@ -13,13 +13,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class GeneralApplicationPollingEventEmitterSchedulerTest extends BpmnBaseTest {
+class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "GA_POLLING_EVENT_EMITTER";
+    public static final String TOPIC_NAME = "GA_FAILED_EVENT_EMITTER";
 
-    public GeneralApplicationPollingEventEmitterSchedulerTest() {
-        super("general_application_polling_event_emitter_scheduler.bpmn",
-               "GAPollingEventEmitterScheduler");
+    public GeneralApplicationFailedEventEmitterSchedulerTest() {
+        super("general_application_failed_event_emitter_scheduler.bpmn",
+               "GAFailedEventEmitterScheduler");
     }
 
     @Test
