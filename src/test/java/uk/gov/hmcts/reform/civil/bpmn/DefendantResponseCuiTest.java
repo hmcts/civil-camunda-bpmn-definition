@@ -41,7 +41,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldCompleteTheProcessWithNotificationsAndPdfGeneration_whenNotBilingualAndNoContactsChanged() {
+    void shouldCompleteTheProcessWithNotificationsAndPdfGeneration_whenNotBilingualAndContactsChanged() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -88,7 +88,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSkipNotifyApplicantSolicitorDefendantResponse_whenDefendantResponseBilingual() {
+    void shouldNotNotifyOrGeneratePdf_whenDefendantResponseBilingual() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
