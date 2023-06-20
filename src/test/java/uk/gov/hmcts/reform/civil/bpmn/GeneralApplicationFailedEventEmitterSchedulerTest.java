@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "GA_FAILED_EVENT_EMITTER";
+    public static final String TOPIC_NAME = "GAFailedEventEmitterScheduler";
 
     public GeneralApplicationFailedEventEmitterSchedulerTest() {
         super("general_application_failed_event_emitter_scheduler.bpmn",
