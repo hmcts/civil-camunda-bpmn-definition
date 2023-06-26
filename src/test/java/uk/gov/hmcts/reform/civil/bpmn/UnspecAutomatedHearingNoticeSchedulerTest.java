@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.management.JobDefinition;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -50,7 +52,10 @@ class UnspecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
         List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
 
         assertThat(lockedExternalTasks).hasSize(1);
-        completeTask(lockedExternalTasks.get(0).getId());
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("totalNumberOfUnnotifiedHearings", 1);
+        completeTask(lockedExternalTasks.get(0).getId(), variables);
 
         //assert no external tasks left
         List<ExternalTask> externalTasksAfter = getExternalTasks();
