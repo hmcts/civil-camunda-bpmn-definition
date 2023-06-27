@@ -1,0 +1,82 @@
+package uk.gov.hmcts.reform.civil.bpmn;
+
+import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTest {
+
+    //BPMN Settings
+    private static final String MESSAGE_NAME = "RESPOND_TO_APPLICATION";
+    private static final String PROCESS_ID = "RESPONDENT_RESPONSE_GA_PROCESS_ID";
+    public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
+    private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
+    private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
+
+    public RespondentResponseGeneralApplicationTest() {
+        super("respondent_response_general_application.bpmn",
+              "RESPONDENT_RESPONSE_GA_PROCESS_ID");
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteRespondToApplication_whenCalled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY
+        );
+
+        //complete the document generation
+        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_DRAFT_DOCUMENT,
+            GENERATE_DRAFT_DOCUMENT_ID
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldAbort_whenStartBusinessProcessThrowsAnError() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //fail the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertFailExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        assertNoExternalTasksLeft();
+    }
+}
