@@ -369,6 +369,14 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             "ClaimantDefendantAgreedMediationNotifyRespondent"
         );
 
+        ExternalTask sendMediationCVS = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendMediationCVS,
+            PROCESS_CASE_EVENT,
+            "SENDING_CSV_WHEN_AGREED_MEDIATION_SPEC",
+            "SendingCsvWhenAgreedMediationSpec"
+        );
+
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
