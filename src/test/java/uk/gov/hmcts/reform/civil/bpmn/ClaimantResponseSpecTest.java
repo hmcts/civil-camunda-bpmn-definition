@@ -63,6 +63,16 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the Robotics notification
+        ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proccedOffline,
+            PROCESS_CASE_EVENT,
+            PROCEED_OFFLINE_EVENT,
+            "Activity_00lleen",
+            variables
+        );
+
         //complete the notification to respondent
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
