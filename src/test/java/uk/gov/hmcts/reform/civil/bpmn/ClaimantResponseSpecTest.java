@@ -383,7 +383,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             sendMediationCVS,
             PROCESS_CASE_EVENT,
-            "SEND_CSV_FOR_AGREED_MEDIATION",
+            "NOTIFY_CYA_ON_AGREED_MEDIATION",
             "SendingCsvWhenAgreedMediationSpec"
         );
 
