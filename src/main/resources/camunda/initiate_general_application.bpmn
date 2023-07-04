@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
   <bpmn:collaboration id="InitiateGeneralApplication">
     <bpmn:extensionElements />
@@ -34,14 +34,12 @@
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1rhjgal" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
     <bpmn:sequenceFlow id="Flow_0zyvudm" sourceRef="LinkGeneralApplicationCaseToParentCase" targetRef="AssigningOfRoles" />
     <bpmn:sequenceFlow id="Flow_1i7iyh8" sourceRef="CreateGeneralApplicationCase" targetRef="LinkGeneralApplicationCaseToParentCase" />
     <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
     <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
     <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
     <bpmn:sequenceFlow id="Flow_0cw5dnh" sourceRef="AssigningOfRoles" targetRef="GeneralApplicationValidateFee" />
-    <bpmn:sequenceFlow id="Flow_14injep" sourceRef="GeneralApplicationNotifying" targetRef="Activity_0eo8p2p" />
     <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of GA roles" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -77,130 +75,33 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1s97v1o</bpmn:incoming>
-      <bpmn:outgoing>Flow_1m8jdhd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lytc13</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0iaim94" name="Payment Successful" sourceRef="Gateway_1jlvkh3" targetRef="GeneralApplicationNotifying">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PAYMENT_SUCCESSFUL"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ypunwx" sourceRef="GeneralAppServiceReqPbaPayment" targetRef="Gateway_1jlvkh3" />
-    <bpmn:sequenceFlow id="Flow_0cw3v14" name="Payment failure" sourceRef="Gateway_1jlvkh3" targetRef="PaymentFailed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PAYMENT_FAILED"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:endEvent id="Event_0ii7uzg">
-      <bpmn:incoming>Flow_1rhjgal</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
+    <bpmn:endEvent id="Event_05yxbay" />
+    <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_14injep</bpmn:incoming>
-      <bpmn:incoming>Flow_1392akh</bpmn:incoming>
-      <bpmn:outgoing>Flow_1rhjgal</bpmn:outgoing>
+      <bpmn:incoming>Flow_0cr2m8q</bpmn:incoming>
     </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0cr2m8q" sourceRef="GeneralApplicationNotifying" targetRef="Activity_18x7hxw" />
+    <bpmn:sequenceFlow id="Flow_0lytc13" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="GeneralApplicationNotifying" />
     <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0iaim94</bpmn:incoming>
-      <bpmn:outgoing>Flow_14injep</bpmn:outgoing>
+      <bpmn:incoming>Flow_0lytc13</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cr2m8q</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_1jlvkh3">
-      <bpmn:incoming>Flow_0ypunwx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0iaim94</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0cw3v14</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="PaymentFailed" name="Payment failure Notification" camunda:type="external" camunda:topic="applicationEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">PBA_PAYMENT_FAILED</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0cw3v14</bpmn:incoming>
-      <bpmn:outgoing>Flow_1392akh</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="GeneralAppServiceReqPbaPayment" name="Make Service Req PBA Payment" camunda:type="external" camunda:topic="applicationEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">MAKE_PBA_PAYMENT_GASPEC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m8jdhd</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ypunwx</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1m8jdhd" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="GeneralAppServiceReqPbaPayment" />
-    <bpmn:sequenceFlow id="Flow_1392akh" sourceRef="PaymentFailed" targetRef="Activity_0eo8p2p" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
       <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="1830" height="630" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1392akh_di" bpmnElement="Flow_1392akh">
-        <di:waypoint x="1630" y="370" />
-        <di:waypoint x="1760" y="370" />
-        <di:waypoint x="1760" y="288" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m8jdhd_di" bpmnElement="Flow_1m8jdhd">
-        <di:waypoint x="1150" y="248" />
-        <di:waypoint x="1220" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cw3v14_di" bpmnElement="Flow_0cw3v14">
-        <di:waypoint x="1400" y="273" />
-        <di:waypoint x="1400" y="370" />
-        <di:waypoint x="1530" y="370" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1422" y="343" width="77" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ypunwx_di" bpmnElement="Flow_0ypunwx">
-        <di:waypoint x="1320" y="248" />
-        <di:waypoint x="1375" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0iaim94_di" bpmnElement="Flow_0iaim94">
-        <di:waypoint x="1425" y="248" />
-        <di:waypoint x="1530" y="248" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1443" y="206" width="54" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1s97v1o_di" bpmnElement="Flow_1s97v1o">
-        <di:waypoint x="1010" y="248" />
-        <di:waypoint x="1050" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14injep_di" bpmnElement="Flow_14injep">
-        <di:waypoint x="1630" y="250" />
-        <di:waypoint x="1690" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cw5dnh_di" bpmnElement="Flow_0cw5dnh">
-        <di:waypoint x="880" y="248" />
-        <di:waypoint x="910" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
-        <di:waypoint x="248" y="248" />
-        <di:waypoint x="290" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
-        <di:waypoint x="340" y="208" />
-        <di:waypoint x="340" y="136" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
-        <di:waypoint x="390" y="248" />
-        <di:waypoint x="460" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
-        <di:waypoint x="560" y="248" />
-        <di:waypoint x="620" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zyvudm_di" bpmnElement="Flow_0zyvudm">
-        <di:waypoint x="720" y="248" />
-        <di:waypoint x="780" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1rhjgal_di" bpmnElement="Flow_1rhjgal">
-        <di:waypoint x="1790" y="248" />
-        <di:waypoint x="1872" y="248" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
         <dc:Bounds x="212" y="230" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -229,25 +130,14 @@
         <dc:Bounds x="1050" y="208" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
-        <dc:Bounds x="1872" y="230" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
+        <dc:Bounds x="1452" y="230" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1690" y="208" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
+        <dc:Bounds x="1390" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
-        <dc:Bounds x="1530" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1jlvkh3_di" bpmnElement="Gateway_1jlvkh3" isMarkerVisible="true">
-        <dc:Bounds x="1375" y="223" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_169oc7v_di" bpmnElement="PaymentFailed">
-        <dc:Bounds x="1530" y="330" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0f4ty9j" bpmnElement="GeneralAppServiceReqPbaPayment">
         <dc:Bounds x="1220" y="208" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -255,6 +145,42 @@
           <dc:Bounds x="347" y="160" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0zyvudm_di" bpmnElement="Flow_0zyvudm">
+        <di:waypoint x="720" y="248" />
+        <di:waypoint x="780" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
+        <di:waypoint x="560" y="248" />
+        <di:waypoint x="620" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
+        <di:waypoint x="390" y="248" />
+        <di:waypoint x="460" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
+        <di:waypoint x="340" y="208" />
+        <di:waypoint x="340" y="136" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
+        <di:waypoint x="248" y="248" />
+        <di:waypoint x="290" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cw5dnh_di" bpmnElement="Flow_0cw5dnh">
+        <di:waypoint x="880" y="248" />
+        <di:waypoint x="910" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s97v1o_di" bpmnElement="Flow_1s97v1o">
+        <di:waypoint x="1010" y="248" />
+        <di:waypoint x="1050" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cr2m8q_di" bpmnElement="Flow_0cr2m8q">
+        <di:waypoint x="1320" y="248" />
+        <di:waypoint x="1390" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lytc13_di" bpmnElement="Flow_0lytc13">
+        <di:waypoint x="1150" y="248" />
+        <di:waypoint x="1220" y="248" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

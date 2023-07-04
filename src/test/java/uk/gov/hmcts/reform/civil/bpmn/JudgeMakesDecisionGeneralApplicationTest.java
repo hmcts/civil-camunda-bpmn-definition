@@ -1,13 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,17 +29,13 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
         super("judge_makes_decision_general_application.bpmn", "MAKE_DECISION_PROCESS_ID");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -53,8 +43,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
         //Obtain Additional Fee Value
         ExternalTask additionalFeeValueProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
@@ -62,8 +51,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             additionalFeeValueProcess,
             PROCESS_EXTERNAL_CASE_EVENT,
             OBTAIN_ADDITIONAL_FEE_VALUE_EVENT,
-            OBTAIN_ADDITIONAL_FEE_VALUE_ID,
-            variables
+            OBTAIN_ADDITIONAL_FEE_VALUE_ID
         );
 
         //Obtain Additional Payment Reference
@@ -72,8 +60,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             additionalPaymentRefProcess,
             PROCESS_EXTERNAL_CASE_EVENT,
             OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT,
-            OBTAIN_ADDIIONAL_FEE_REFERENCE_ID,
-            variables
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_ID
         );
 
         //complete the document generation
@@ -82,8 +69,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             documentGeneration,
             MAKE_DECISION_CASE_EVENT,
             CREATE_PDF_EVENT,
-            CREATE_PDF_ID,
-            variables
+            CREATE_PDF_ID
         );
 
         //Complete add pdf to main case event
@@ -92,18 +78,25 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             addDocumentToMainCase,
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
-            ADD_PDF_ID,
-            variables
+            ADD_PDF_ID
         );
 
-        //Obtain Additional Payment Reference
-        ExternalTask judicialNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //Complete Applicant Notification event
+        ExternalTask judicialApplicantNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            judicialNotificationProcess,
+            judicialApplicantNotificationProcess,
             PROCESS_EXTERNAL_CASE_EVENT,
-            START_NOTIFICATION_PROCESS_MAKE_DECISION,
-            START_NOTIFICATION_PROCESS_ID,
-            variables
+            START_APPLICANT_NOTIFICATION_PROCESS_MAKE_DECISION,
+            START_APPLICANT_NOTIFICATION_PROCESS_ID
+        );
+
+        //Complete Respondent Notification event
+        ExternalTask judicialRespondentNotificationProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            judicialRespondentNotificationProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION,
+            START_RESPONDENT_NOTIFICATION_PROCESS_ID
         );
 
         //end business process

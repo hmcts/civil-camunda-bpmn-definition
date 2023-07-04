@@ -32,8 +32,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"false, true", "false, false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -41,7 +41,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            RPA_CONTINUOUS_FEED, rpaContinuousFeed)
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives)
         );
         variables.putValue(FLOW_STATE,
                            FlowState.PENDING_CLAIM_ISSUED.fullName());
@@ -76,17 +76,27 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             variables
         );
 
-        if (rpaContinuousFeed) {
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        if (twoRepresentatives) {
+            //complete the CC notification to respondent solicitor 2
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                forRobotics,
+                notificationTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                "NOTIFY_APPLICANT_RESPONDENT2_FOR_AGREED_EXTENSION_DATE_FOR_SPEC_CC",
+                "AgreedExtensionDateNotifyRespondentSolicitor2CCForSpec",
                 variables
             );
         }
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

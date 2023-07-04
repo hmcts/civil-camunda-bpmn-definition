@@ -49,13 +49,14 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", true));
+            "CONTACT_DETAILS_CHANGE", true,
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false));
 
         assertBusinessProcessHasStarted(variables);
 
         verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifyApplicantNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -75,7 +76,27 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "CONTACT_DETAILS_CHANGE", false));
 
         assertBusinessProcessHasStarted(variables);
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSkipNotifyApplicantSolicitorDefendantResponse_whenDefendantResponseBilingual() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
+
+        assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();

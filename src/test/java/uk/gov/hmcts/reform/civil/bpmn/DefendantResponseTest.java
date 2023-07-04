@@ -141,9 +141,8 @@ class DefendantResponseTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @ParameterizedTest
-        @ValueSource(strings = {"true", "false"})
-        void shouldSuccessfullyCompleteOnline_whenRespondentFullDefenceResponse(Boolean rpaContinuousFeed) {
+        @Test
+        void shouldSuccessfullyCompleteOnline_whenRespondentFullDefenceResponse() {
             //assert process has started
             assertFalse(processInstance.isEnded());
 
@@ -156,7 +155,6 @@ class DefendantResponseTest extends BpmnBaseTest {
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.FULL_DEFENCE");
             variables.put(FLOW_FLAGS, Map.of(
-                    RPA_CONTINUOUS_FEED, rpaContinuousFeed,
                     ONE_RESPONDENT_REPRESENTATIVE, true,
                     GENERAL_APPLICATION_ENABLED, false
             ));
@@ -209,17 +207,15 @@ class DefendantResponseTest extends BpmnBaseTest {
                 variables
             );
 
-            if (rpaContinuousFeed) {
-                //complete the Robotics notification
-                ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                    variables
-                );
-            }
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
 
             //end business process
             ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -246,7 +242,6 @@ class DefendantResponseTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of(
                     ONE_RESPONDENT_REPRESENTATIVE, false,
                     TWO_RESPONDENT_REPRESENTATIVES, true,
-                    RPA_CONTINUOUS_FEED, true,
                     GENERAL_APPLICATION_ENABLED, false
             ));
 
@@ -420,14 +415,12 @@ class DefendantResponseTest extends BpmnBaseTest {
                 variables.put(FLOW_FLAGS, Map.of(
                         ONE_RESPONDENT_REPRESENTATIVE, false,
                         TWO_RESPONDENT_REPRESENTATIVES, true,
-                        RPA_CONTINUOUS_FEED, true,
                         GENERAL_APPLICATION_ENABLED, false
                 ));
             } else {
                 //Mock 1v1 Case (Do not email a second respondent)
                 variables.put(FLOW_FLAGS, Map.of(
                         ONE_RESPONDENT_REPRESENTATIVE, true,
-                        RPA_CONTINUOUS_FEED, true,
                         GENERAL_APPLICATION_ENABLED, false
                 ));
             }
@@ -531,7 +524,6 @@ class DefendantResponseTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of(
                     ONE_RESPONDENT_REPRESENTATIVE, false,
                     TWO_RESPONDENT_REPRESENTATIVES, true,
-                    RPA_CONTINUOUS_FEED, true,
                     GENERAL_APPLICATION_ENABLED, false
             ));
 
@@ -586,7 +578,6 @@ class DefendantResponseTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of(
                     ONE_RESPONDENT_REPRESENTATIVE, false,
                     TWO_RESPONDENT_REPRESENTATIVES, true,
-                    RPA_CONTINUOUS_FEED, true,
                     GENERAL_APPLICATION_ENABLED, false
             ));
 
@@ -719,7 +710,6 @@ class DefendantResponseTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of(
                     ONE_RESPONDENT_REPRESENTATIVE, false,
                     TWO_RESPONDENT_REPRESENTATIVES, true,
-                    RPA_CONTINUOUS_FEED, true,
                     GENERAL_APPLICATION_ENABLED, true
             ));
 
