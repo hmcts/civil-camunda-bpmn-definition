@@ -384,7 +384,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             sendMediationCVS,
             PROCESS_CASE_EVENT,
             "NOTIFY_CYA_ON_AGREED_MEDIATION",
-            "SendingCsvWhenAgreedMediationSpec"
+            "CyaAgreedMediationNotification"
         );
 
         //complete the Robotics notification
