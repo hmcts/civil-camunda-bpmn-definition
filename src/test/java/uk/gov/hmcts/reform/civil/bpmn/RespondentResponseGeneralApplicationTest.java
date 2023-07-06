@@ -17,6 +17,9 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
+    private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
+    private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
+    private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
 
     public RespondentResponseGeneralApplicationTest() {
         super("respondent_response_general_application.bpmn",
@@ -56,6 +59,15 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
             ADD_PDF_ID
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask waitMainCaseDocUpdated = assertNextExternalTask(WAIT_PDF_UPDATE_TOPIC);
+        assertCompleteExternalTask(
+                waitMainCaseDocUpdated,
+                WAIT_PDF_UPDATE_TOPIC,
+                WAIT_PDF_UPDATE_EVENT,
+                WAIT_PDF_UPDATE_ID
         );
 
         //end business process
