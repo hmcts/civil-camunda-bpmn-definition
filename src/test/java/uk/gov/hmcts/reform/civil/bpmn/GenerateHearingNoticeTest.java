@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -14,10 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GenerateHearingNoticeTest extends BpmnBaseTest {
 
+    private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String MESSAGE_NAME = "NOTIFY_HEARING_PARTIES";
     public static final String PROCESS_ID = "NOTIFY_HEARING_PARTIES";
 
     //CCD CASE EVENT
+    public static final String START_BUSINESS_TOPIC
+        = "START_HEARING_NOTICE_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_EVENT
+        = "START_BUSINESS_PROCESS";
     public static final String GENERATE_HEARING_NOTICE_HMC
         = "GENERATE_HEARING_NOTICE_HMC";
     public static final String NOTIFY_CLAIMANT_HEARING_HMC
@@ -34,6 +40,9 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         = "UPDATE_CASE_PROGRESS_HMC";
 
     //ACTIVITY IDs
+
+    public static final String START_BUSINESS_ACTIVITY
+        = "StartHearingNoticeBusinessProcessTaskId";
     public static final String GENERATE_HEARING_NOTICE_HMC_ACTIVITY_ID
         = "GenerateHearingNotice";
     public static final String NOTIFY_CLAIMANT_HEARING_HMC_ACTIVITY_ID
@@ -51,6 +60,24 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
 
     public GenerateHearingNoticeTest() {
         super("generate_hearing_notice.bpmn", PROCESS_ID);
+    }
+
+    @BeforeEach
+    void setup() {
+        //deploy process
+        startBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "start_hearing_notice_business_process.bpmn"))
+            .deploy();
+        endBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_business_process.bpmn"))
+            .deploy();
+        deployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
+            .deploy();
+        processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
     @ParameterizedTest
