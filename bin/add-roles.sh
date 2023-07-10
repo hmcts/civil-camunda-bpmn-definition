@@ -27,6 +27,7 @@
 ./bin/utils/ccd-add-role.sh "caseworker-wa-task-configuration"
 ./bin/utils/ccd-add-role.sh "CITIZEN-CLAIMANT-PROFILE"
 ./bin/utils/ccd-add-role.sh "CITIZEN-DEFENDANT-PROFILE"
+./bin/utils/ccd-add-role.sh "cui-admin-profile"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
