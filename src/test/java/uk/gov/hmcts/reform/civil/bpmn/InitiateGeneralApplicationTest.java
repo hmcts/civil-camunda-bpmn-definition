@@ -31,6 +31,11 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Make Service Request
     private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
     private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
+
+    //Make Service Request
+    private static final String GENERATE_DRAFT_DOC_EVENT = "GENERATE_DRAFT_DOCUMENT";
+    private static final String GENERATE_DRAFT_DOC_ID = "DraftDocumentGenerator";
+
     //Notifying respondents
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
@@ -107,6 +112,17 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             MAKE_SERVICE_REQ_ID,
             variables
         );
+
+        //make service request
+        ExternalTask generateDraftDoc = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            generateDraftDoc,
+            APPLICATION_EVENT_GASPEC,
+            GENERATE_DRAFT_DOC_EVENT,
+            GENERATE_DRAFT_DOC_ID,
+            variables
+        );
+
         //notify respondents
         ExternalTask notifyRespondents = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
