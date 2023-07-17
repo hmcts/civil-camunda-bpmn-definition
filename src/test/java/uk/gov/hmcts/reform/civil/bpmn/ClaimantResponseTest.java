@@ -128,6 +128,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
     //  claimant response with intention to proceed and claim is Multi track
     void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaimAndProcessGA_WhenApplicantConfirmsToProceed() {
         //assert process has started
