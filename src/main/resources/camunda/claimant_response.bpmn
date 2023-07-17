@@ -56,7 +56,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_FULL_DEFENCE_PROCEED" name="Applicant confirms to proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="JudicialReferral">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; empty flowFlags.MULTI_CLAIM_YES}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ProceedOfflineForResponseToDefence" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -236,7 +236,7 @@
     <bpmn:sequenceFlow id="Flow_17evp7q" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_1cweuly" />
     <bpmn:sequenceFlow id="Flow_1kz0xra" sourceRef="ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC" targetRef="Gateway_0aseqi2" />
     <bpmn:sequenceFlow id="Flow_1d4uygd" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Gateway_1pc8agd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.MULTI_CLAIM_YES}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0aseqi2">
       <bpmn:incoming>Flow_1kz0xra</bpmn:incoming>
@@ -244,10 +244,10 @@
       <bpmn:outgoing>Flow_05wizle</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1h1gnhq" sourceRef="Gateway_0aseqi2" targetRef="NotifyRoboticsOnContinuousFeed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.MULTI_CLAIM_YES}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_05wizle" sourceRef="Gateway_0aseqi2" targetRef="NotifyRoboticsOnCaseHandedOffline">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.MULTI_CLAIM_YES}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
