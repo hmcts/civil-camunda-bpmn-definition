@@ -129,7 +129,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
     }
 
     //  claimant response with intention to proceed and claim is Multi track
-    void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaimAndProcessGALocationUpdate_WhenApplicantConfirmsToProceed() {
+    void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaimAndProcessGA_WhenApplicantConfirmsToProceed() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
