@@ -221,7 +221,6 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @Test
     void shouldSuccessfullyCompleteClaimantResponseWithQD_WhenApplicantConfirmsNotToProceed() {
         //assert process has started
