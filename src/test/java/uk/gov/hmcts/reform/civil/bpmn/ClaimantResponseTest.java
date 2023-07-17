@@ -128,8 +128,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
     //  claimant response with intention to proceed and claim is Multi track
+    @Test
     void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaimAndProcessGA_WhenApplicantConfirmsToProceed() {
         //assert process has started
         assertFalse(processInstance.isEnded());
