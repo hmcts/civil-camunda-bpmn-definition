@@ -62,9 +62,9 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1q86awx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0d3pq8q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_genereateDQLip</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0d3pq8q" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="GenerateSealedLipResponsePdf" />
+    <bpmn:sequenceFlow id="Flow_genereateDQLip" sourceRef="DefendantResponseNotifyApplicantSolicitor1ForCui" targetRef="GenerateSealedLipDQPdf" />
     <bpmn:exclusiveGateway id="Gateway_0ycr08v" name="is response language bilingual?">
       <bpmn:incoming>Flow_02rgqek</bpmn:incoming>
       <bpmn:outgoing>Flow_0zskc69</bpmn:outgoing>
@@ -94,10 +94,20 @@
           <camunda:inputParameter name="caseEvent">GENERATE_RESPONSE_CUI_SEALED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0d3pq8q</bpmn:incoming>
+      <bpmn:incoming>Flow_generateLipResponsePdf</bpmn:incoming>
       <bpmn:outgoing>Flow_0wp7bda</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0wp7bda" sourceRef="GenerateSealedLipResponsePdf" targetRef="Activity_1m5szz9" />
+    <bpmn:serviceTask id="GenerateSealedLipDQPdf" name="Generate Sealed LiP DQ PDF" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_RESPONSE_DQ_LIP_SEALED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_genereateDQLip</bpmn:incoming>
+      <bpmn:outgoing>Flow_generateLipResponsePdf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_generateLipResponsePdf" sourceRef="GenerateSealedLipDQPdf" targetRef="GenerateSealedLipResponsePdf" />
   </bpmn:process>
   <bpmn:message id="Message_1xf7rku" name="DEFENDANT_RESPONSE_CUI" />
   <bpmn:error id="Error_0z3vvae" name="StartBusinessAbort" errorCode="ABORT" />
@@ -138,14 +148,18 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15p049m_di" bpmnElement="Event_15p049m">
-        <dc:Bounds x="1312" y="198" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0mbmpfa" bpmnElement="GenerateSealedLipResponsePdf">
-        <dc:Bounds x="1030" y="176" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="1572" y="198" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_049xhbq_di" bpmnElement="Activity_1m5szz9">
-        <dc:Bounds x="1180" y="176" width="100" height="80" />
+        <dc:Bounds x="1390" y="176" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0mbmpfa" bpmnElement="GenerateSealedLipResponsePdf">
+        <dc:Bounds x="1220" y="176" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pxynue" bpmnElement="GenerateSealedLipDQPdf">
+        <dc:Bounds x="1060" y="176" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1wie3up_di" bpmnElement="Event_1wie3up">
         <dc:Bounds x="272" y="155" width="36" height="36" />
@@ -154,8 +168,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0jauxrx_di" bpmnElement="Flow_0jauxrx">
-        <di:waypoint x="1280" y="216" />
-        <di:waypoint x="1312" y="216" />
+        <di:waypoint x="1490" y="216" />
+        <di:waypoint x="1572" y="216" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mz7ke5_di" bpmnElement="Flow_1mz7ke5">
         <di:waypoint x="290" y="155" />
@@ -183,17 +197,20 @@
           <dc:Bounds x="467" y="196" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0d3pq8q_di" bpmnElement="Flow_0d3pq8q">
+      <bpmndi:BPMNEdge id="Flow_0d3pq8q_di" bpmnElement="Flow_genereateDQLip">
         <di:waypoint x="1000" y="216" />
-        <di:waypoint x="1030" y="216" />
+        <di:waypoint x="1060" y="216" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1009" y="198" width="46" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zskc69_di" bpmnElement="Flow_0zskc69">
         <di:waypoint x="790" y="241" />
         <di:waypoint x="790" y="409" />
-        <di:waypoint x="1226" y="409" />
-        <di:waypoint x="1226" y="256" />
+        <di:waypoint x="1436" y="409" />
+        <di:waypoint x="1436" y="256" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1000" y="391" width="18" height="14" />
+          <dc:Bounds x="1105" y="391" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1q86awx_di" bpmnElement="Flow_1q86awx">
@@ -213,8 +230,12 @@
         <di:waypoint x="615" y="256" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wp7bda_di" bpmnElement="Flow_0wp7bda">
-        <di:waypoint x="1130" y="216" />
-        <di:waypoint x="1180" y="216" />
+        <di:waypoint x="1320" y="216" />
+        <di:waypoint x="1390" y="216" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cdckv4_di" bpmnElement="Flow_generateLipResponsePdf">
+        <di:waypoint x="1160" y="216" />
+        <di:waypoint x="1220" y="216" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
