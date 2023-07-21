@@ -30,6 +30,8 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "GenerateOrderNotifyRespondentSolicitor2";
     private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyRespondentSolicitor1";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID_LIP
+        = "GenerateOrderNotifyRespondentSolicitor1Lip";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyApplicantSolicitor1";
 
@@ -78,6 +80,48 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         }
 
         //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
+                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteGenerateOrderNotificationsLip() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
+                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+
+        ExternalTask notificationTask;
+
+        //complete the defendant1 notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID_LIP,
+                                   variables
+        );
+
+        //complete applicant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
