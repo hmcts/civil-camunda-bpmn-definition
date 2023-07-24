@@ -106,6 +106,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
