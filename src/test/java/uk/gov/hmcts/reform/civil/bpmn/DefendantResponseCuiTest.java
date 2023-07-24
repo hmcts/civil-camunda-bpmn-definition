@@ -92,7 +92,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotNotifyOrGeneratePdf_whenDefendantResponseBilingual() {
+    void shouldNotNotifyApplicant_whenDefendantResponseBilingual() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
