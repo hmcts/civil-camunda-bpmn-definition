@@ -134,7 +134,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
