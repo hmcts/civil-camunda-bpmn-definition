@@ -30,8 +30,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "GenerateOrderNotifyRespondentSolicitor2";
     private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyRespondentSolicitor1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID_LIP
-        = "GenerateOrderNotifyRespondentSolicitor1Lip";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyApplicantSolicitor1";
 
@@ -104,7 +102,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true));
+            UNREPRESENTED_DEFENDANT_TWO, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -117,7 +115,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID_LIP,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
                                    variables
         );
 
@@ -135,6 +133,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
 
         assertNoExternalTasksLeft();
     }
+
 
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
