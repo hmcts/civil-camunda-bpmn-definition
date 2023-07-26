@@ -6,30 +6,28 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
+class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT";
-    private static final String PROCESS_ID = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID";
+    private static final String MESSAGE_NAME = "RESPOND_TO_APPLICATION";
+    private static final String PROCESS_ID = "RESPONDENT_RESPONSE_GA_PROCESS_ID";
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
+    private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
+    private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
+    private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
 
-    //Notifying respondents
-    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
-    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
-    private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
-
-    public InitiateGeneralApplicationAfterPaymentTest() {
-        super("initiate_general_application_after_payment.bpmn",
-              "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
+    public RespondentResponseGeneralApplicationTest() {
+        super("respondent_response_general_application.bpmn",
+              "RESPONDENT_RESPONSE_GA_PROCESS_ID");
     }
 
     @Test
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled() {
+    void shouldSuccessfullyCompleteRespondToApplication_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -63,13 +61,13 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             ADD_PDF_ID
         );
 
-        //notify respondents
-        ExternalTask notifyRespondents = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //Complete add pdf to main case event
+        ExternalTask waitMainCaseDocUpdated = assertNextExternalTask(WAIT_PDF_UPDATE_TOPIC);
         assertCompleteExternalTask(
-            notifyRespondents,
-            PROCESS_EXTERNAL_CASE_EVENT,
-            NOTYFYING_RESPONDENTS_EVENT,
-            GENERAL_APPLICATION_NOTIYFYING_ID
+                waitMainCaseDocUpdated,
+                WAIT_PDF_UPDATE_TOPIC,
+                WAIT_PDF_UPDATE_EVENT,
+                WAIT_PDF_UPDATE_ID
         );
 
         //end business process

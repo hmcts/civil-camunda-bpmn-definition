@@ -22,6 +22,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
     private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION
         = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
+    private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
+    private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
@@ -30,6 +32,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "DefendantResponseNotifyApplicantSolicitor1ForCui";
     private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
         = "DefendantLipResponseNotifyDefendant";
+    private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
+    private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
 
     public DefendantResponseCuiTest() {
         super(
@@ -39,7 +43,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenContactDetailsChange() {
+    void shouldCompleteTheProcessWithNotificationsAndPdfGeneration_whenNotBilingualAndContactsChanged() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -49,13 +53,16 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", true));
+            "CONTACT_DETAILS_CHANGE", true,
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false));
 
         assertBusinessProcessHasStarted(variables);
 
         verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -75,7 +82,29 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "CONTACT_DETAILS_CHANGE", false));
 
         assertBusinessProcessHasStarted(variables);
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotNotifyOrGeneratePdf_whenDefendantResponseBilingual() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
+
+        assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
 
         endBusinessProcess();
@@ -100,6 +129,20 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyTaskIsComplete(
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
+        );
+    }
+
+    private void verifySealedDQGenerationCompleted() {
+        verifyTaskIsComplete(
+            GENERATE_RESPONSE_DQ_LIP_SEALED_PDF,
+            GENERATE_LIP_DQ_PDF_ACTIVITY
+        );
+    }
+
+    private void verifySealedResponseGenerationCompleted() {
+        verifyTaskIsComplete(
+            GENERATE_LIP_RESPONSE_PDF,
+            GENERATE_LIP_RESPONSE_PDF_ACTIVITY
         );
     }
 

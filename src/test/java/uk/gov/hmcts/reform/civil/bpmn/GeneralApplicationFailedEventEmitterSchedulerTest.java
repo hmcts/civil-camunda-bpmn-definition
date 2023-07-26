@@ -13,12 +13,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
+class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "POLLING_EVENT_EMITTER";
+    public static final String TOPIC_NAME = "GAFailedEventEmitterScheduler";
 
-    public PollingEventEmitterSchedulerTest() {
-        super("polling_event_emitter_scheduler.bpmn", "PollingEventEmitterScheduler");
+    public GeneralApplicationFailedEventEmitterSchedulerTest() {
+        super("general_application_failed_event_emitter_scheduler.bpmn",
+               "GAFailedEventEmitterScheduler");
     }
 
     @Test
@@ -36,17 +37,16 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 20,40 0 1 1/1 ? 2024";
+        String cronString = "0 0/30 * * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2024, 01, 01, 0, 0, 0),
-            LocalDateTime.of(2024, 01, 01, 0, 20, 0)
+            LocalDateTime.of(2020, 1, 9, 0, 0, 0),
+            LocalDateTime.of(2020, 1, 9, 0, 30, 0)
         );
 
         //get external tasks
         List<ExternalTask> externalTasks = getExternalTasks();
-        assertThat(externalTasks).hasSize(1);
         assertThat(externalTasks).hasSize(1);
 
         //fetch and complete task

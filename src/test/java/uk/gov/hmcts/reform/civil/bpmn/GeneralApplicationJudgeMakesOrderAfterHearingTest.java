@@ -36,7 +36,7 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
         startBusinessProcessDeployment = engine.getRepositoryService()
                 .createDeployment()
                 .addClasspathResource(String.format(DIAGRAM_PATH,
-                        "start_general_application_business_process.bpmn"))
+                        "start_business_process_in_general_application.bpmn"))
                 .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
                 .createDeployment()

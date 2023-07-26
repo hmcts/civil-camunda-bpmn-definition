@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -29,18 +29,38 @@
       <bpmn:incoming>Flow_0zmuneb</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_18nnml0" sourceRef="Event_19fyqxq" targetRef="Activity_102t47i" />
+    <bpmn:sequenceFlow id="Flow_0ocywq9" sourceRef="Activity_102t47i" targetRef="MediationSuccessfulNotifyApplicant" />
+    <bpmn:sequenceFlow id="Flow_0vd4pw7" sourceRef="Activity_146wk8x" targetRef="Event_16pydp2" />
+    <bpmn:endEvent id="Event_16pydp2">
+      <bpmn:incoming>Flow_0vd4pw7</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:callActivity id="Activity_146wk8x" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ocywq9</bpmn:incoming>
+      <bpmn:incoming>Flow_1sg97e7</bpmn:incoming>
       <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_0ocywq9" sourceRef="Activity_102t47i" targetRef="Activity_146wk8x" />
-    <bpmn:endEvent id="Event_16pydp2">
-      <bpmn:incoming>Flow_0vd4pw7</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0vd4pw7" sourceRef="Activity_146wk8x" targetRef="Event_16pydp2" />
+    <bpmn:sequenceFlow id="Flow_0131png" sourceRef="MediationSuccessfulNotifyApplicant" targetRef="MediationSuccessfulNotifyRespondent" />
+    <bpmn:sequenceFlow id="Flow_1sg97e7" sourceRef="MediationSuccessfulNotifyRespondent" targetRef="Activity_146wk8x" />
+    <bpmn:serviceTask id="MediationSuccessfulNotifyApplicant" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_MEDIATION_SUCCESSFUL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ocywq9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0131png</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="MediationSuccessfulNotifyRespondent" name="Notify Respondent" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_MEDIATION_SUCCESSFUL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0131png</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sg97e7</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MediationSuccessful">
@@ -60,11 +80,19 @@
       <bpmndi:BPMNShape id="BPMNShape_1ksjohv" bpmnElement="Event_01dsvwb">
         <dc:Bounds x="482" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0yj82kf" bpmnElement="Activity_146wk8x">
-        <dc:Bounds x="670" y="340" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ys86x0" bpmnElement="Event_16pydp2">
-        <dc:Bounds x="892" y="362" width="36" height="36" />
+        <dc:Bounds x="1282" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0yj82kf" bpmnElement="Activity_146wk8x">
+        <dc:Bounds x="1100" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0c2x1tx_di" bpmnElement="MediationSuccessfulNotifyApplicant">
+        <dc:Bounds x="670" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18ldl6k_di" bpmnElement="MediationSuccessfulNotifyRespondent">
+        <dc:Bounds x="880" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1k9m1sq" bpmnElement="Event_183wgjg">
         <dc:Bounds x="482" y="322" width="36" height="36" />
@@ -85,8 +113,16 @@
         <di:waypoint x="670" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vd4pw7_di" bpmnElement="Flow_0vd4pw7">
+        <di:waypoint x="1200" y="380" />
+        <di:waypoint x="1282" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0131png_di" bpmnElement="Flow_0131png">
         <di:waypoint x="770" y="380" />
-        <di:waypoint x="892" y="380" />
+        <di:waypoint x="880" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sg97e7_di" bpmnElement="Flow_1sg97e7">
+        <di:waypoint x="980" y="380" />
+        <di:waypoint x="1100" y="380" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
