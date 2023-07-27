@@ -45,6 +45,7 @@ public abstract class BpmnBaseTest {
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
     public static final String FLOW_STATE = "flowState";
+    public static final String IS_MULTI_TRACK = "MULTI_CLAIM";
 
     public final String bpmnFileName;
     public final String processId;
