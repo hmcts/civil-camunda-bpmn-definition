@@ -34,6 +34,7 @@
       <bpmn:outgoing>Flow_0y1b4y2</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_11i5zio" messageRef="Message_0246zio" />
     </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1rn8y84" sourceRef="NotifyDefendant1Hearing" targetRef="Gateway_0z829gt" />
     <bpmn:sequenceFlow id="Flow_0zriviu" sourceRef="NotifyClaimantHearing" targetRef="ServiceRequestAPI" />
     <bpmn:serviceTask id="NotifyDefendant1Hearing" name="Notify Defendant1 Solicitor of Hearing" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -65,12 +66,12 @@
       <bpmn:outgoing>Flow_0xok8a3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0z829gt">
-      <bpmn:incoming>Flow_0is4ktb</bpmn:incoming>
+      <bpmn:incoming>Flow_1rn8y84</bpmn:incoming>
       <bpmn:outgoing>Flow_08crqey</bpmn:outgoing>
       <bpmn:outgoing>Flow_0k6mba1</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_08crqey" name="No" sourceRef="Gateway_0z829gt" targetRef="NotifyClaimantHearing">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDefendant2Hearing" name="Notify Defendant 2 Solicitor of Hearing" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
