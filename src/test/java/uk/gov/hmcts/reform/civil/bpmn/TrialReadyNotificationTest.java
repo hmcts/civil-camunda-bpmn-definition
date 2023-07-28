@@ -22,8 +22,8 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives) {
+    @CsvSource({"true, false", "false, false", "false, true"})
+    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives, boolean defendantLip) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -33,9 +33,9 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false));
+            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false ? !twoRepresentatives : false,
+            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false ? twoRepresentatives : false,
+            UNREPRESENTED_DEFENDANT_ONE, defendantLip));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
