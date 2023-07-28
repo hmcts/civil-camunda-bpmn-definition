@@ -10,8 +10,11 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String FILE_NAME = "create_lip_claim.bpmn";
     private static final String MESSAGE_NAME = "CREATE_LIP_CLAIM";
     private static final String PROCESS_ID = "CREATE_LIP_CLAIM_PROCESS_ID";
+
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpec";
+    private static final String PROCESS_CLAIM_ASSIGN_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
+    private static final String PROCESS_CLAIM_ASSIGN_ACTIVITY_ID = "IssueClaimForSpec";
 
     //notify applicant 1
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
@@ -39,6 +42,16 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     private void completeClaimIssue(final VariableMap variables) {
+        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimIssue,
+            PROCESS_CASE_EVENT,
+            PROCESS_CLAIM_ASSIGN_EVENT,
+            PROCESS_CLAIM_ASSIGN_ACTIVITY_ID,
+            variables
+        );
+
+
         ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             claimIssue,

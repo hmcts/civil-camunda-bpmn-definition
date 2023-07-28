@@ -11,7 +11,7 @@
     <bpmn:sequenceFlow id="Flow_0znizfx" sourceRef="Event_0yfoky6" targetRef="Activity_032r20h" />
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
-    <bpmn:sequenceFlow id="Flow_1ca60wt" sourceRef="Activity_032r20h" targetRef="IssueClaimForSpec" />
+    <bpmn:sequenceFlow id="Flow_1ca60wt" sourceRef="Activity_032r20h" targetRef="CaseAssignmentToApplicant1" />
     <bpmn:sequenceFlow id="Flow_14wswre" sourceRef="IssueClaimForSpec" targetRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" />
     <bpmn:callActivity id="Activity_032r20h" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -30,6 +30,10 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_0k5ediu" messageRef="Message_1cf9ce5" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0n6uidq" sourceRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" targetRef="Activity_19rrcw0" />
+    <bpmn:endEvent id="Event_1muwoc1">
+      <bpmn:incoming>Flow_0o4v7r8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12fei7g" sourceRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" />
     <bpmn:endEvent id="Event_1irqmkk">
       <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
     </bpmn:endEvent>
@@ -40,19 +44,6 @@
       <bpmn:incoming>Flow_0n6uidq</bpmn:incoming>
       <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:endEvent id="Event_1muwoc1">
-      <bpmn:incoming>Flow_0o4v7r8</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_12fei7g" sourceRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" />
-    <bpmn:serviceTask id="IssueClaimForSpec" name="Issue Claim" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">PROCESS_CLAIM_ISSUE_SPEC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1ca60wt</bpmn:incoming>
-      <bpmn:outgoing>Flow_14wswre</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -71,6 +62,25 @@
       <bpmn:incoming>Flow_12fei7g</bpmn:incoming>
       <bpmn:outgoing>Flow_0n6uidq</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1vu8zgi" sourceRef="CaseAssignmentToApplicant1" targetRef="IssueClaimForSpec" />
+    <bpmn:serviceTask id="IssueClaimForSpec" name="Issue Claim" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCESS_CLAIM_ISSUE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vu8zgi</bpmn:incoming>
+      <bpmn:outgoing>Flow_14wswre</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="CaseAssignmentToApplicant1" name="Assign case to claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">ASSIGN_CASE_TO_APPLICANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ca60wt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vu8zgi</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -87,24 +97,28 @@
           <dc:Bounds x="288" y="405" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="1182" y="362" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="1040" y="340" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1muwoc1_di" bpmnElement="Event_1muwoc1">
         <dc:Bounds x="452" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0a37k0s_di" bpmnElement="IssueClaimForSpec">
-        <dc:Bounds x="570" y="340" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
+        <dc:Bounds x="1312" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
+        <dc:Bounds x="1180" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0mjqq0c" bpmnElement="CreateClaimContinuingOnlineNotifyApplicant1ForSpec">
-        <dc:Bounds x="750" y="340" width="100" height="80" />
+        <dc:Bounds x="890" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1xb8tds_di" bpmnElement="CreateClaimContinuingOnlineNotifyRespondent1ForSpec">
-        <dc:Bounds x="900" y="340" width="100" height="80" />
+        <dc:Bounds x="1040" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a37k0s_di" bpmnElement="IssueClaimForSpec">
+        <dc:Bounds x="730" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ulhtpt" bpmnElement="CaseAssignmentToApplicant1">
+        <dc:Bounds x="580" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="452" y="322" width="36" height="36" />
@@ -121,24 +135,28 @@
         <di:waypoint x="470" y="258" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="1140" y="380" />
-        <di:waypoint x="1182" y="380" />
+        <di:waypoint x="1280" y="380" />
+        <di:waypoint x="1312" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ca60wt_di" bpmnElement="Flow_1ca60wt">
         <di:waypoint x="520" y="380" />
-        <di:waypoint x="570" y="380" />
+        <di:waypoint x="580" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14wswre_di" bpmnElement="Flow_14wswre">
-        <di:waypoint x="670" y="380" />
-        <di:waypoint x="750" y="380" />
+        <di:waypoint x="830" y="380" />
+        <di:waypoint x="890" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n6uidq_di" bpmnElement="Flow_0n6uidq">
-        <di:waypoint x="1000" y="380" />
-        <di:waypoint x="1040" y="380" />
+        <di:waypoint x="1140" y="380" />
+        <di:waypoint x="1180" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12fei7g_di" bpmnElement="Flow_12fei7g">
-        <di:waypoint x="850" y="380" />
-        <di:waypoint x="900" y="380" />
+        <di:waypoint x="990" y="380" />
+        <di:waypoint x="1040" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vu8zgi_di" bpmnElement="Flow_1vu8zgi">
+        <di:waypoint x="680" y="380" />
+        <di:waypoint x="730" y="380" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
