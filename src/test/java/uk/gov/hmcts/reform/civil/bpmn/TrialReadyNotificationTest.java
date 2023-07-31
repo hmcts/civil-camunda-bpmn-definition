@@ -23,7 +23,8 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true, false, false", "false, false, false", "false, true, false", "false, false, true"})
-    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives, boolean defendantLip, boolean defendant2Lip) {
+    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives,
+                                                        boolean defendantLip, boolean defendant2Lip) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -33,8 +34,10 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false && defendant2Lip == false ? !twoRepresentatives : false,
-            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false ? twoRepresentatives : false,
+            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false && defendant2Lip == false
+                ? !twoRepresentatives : false,
+            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false
+                ? twoRepresentatives : false,
             UNREPRESENTED_DEFENDANT_ONE, defendantLip,
             UNREPRESENTED_DEFENDANT_TWO, defendant2Lip));
 
