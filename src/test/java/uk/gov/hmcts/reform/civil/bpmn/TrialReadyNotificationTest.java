@@ -22,8 +22,8 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true, false", "false, false", "false, true"})
-    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives, boolean defendantLip) {
+    @CsvSource({"true, false, false", "false, false, false", "false, true, false", "false, false, true"})
+    void shouldSuccessfullyCompleteTrialReadyMultiparty(boolean twoRepresentatives, boolean defendantLip, boolean defendant2Lip) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -33,9 +33,10 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false ? !twoRepresentatives : false,
-            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false ? twoRepresentatives : false,
-            UNREPRESENTED_DEFENDANT_ONE, defendantLip));
+            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false && defendant2Lip == false ? !twoRepresentatives : false,
+            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false ? twoRepresentatives : false,
+            UNREPRESENTED_DEFENDANT_ONE, defendantLip,
+            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -55,7 +56,7 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
                                    "TrialReadyNotifyRespondentSolicitor1"
         );
 
-        if (twoRepresentatives) {
+        if (twoRepresentatives || defendant2Lip) {
             //complete the notification for respondent 2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(respondent2Notification,
