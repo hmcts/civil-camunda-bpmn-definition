@@ -22,6 +22,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
     private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION
         = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
+    private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
     private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
 
     //ACTIVITY IDs
@@ -31,6 +32,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "DefendantResponseNotifyApplicantSolicitor1ForCui";
     private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
         = "DefendantLipResponseNotifyDefendant";
+    private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
 
     public DefendantResponseCuiTest() {
@@ -59,6 +61,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyApplicantNotificationOfAddressChangeCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
@@ -81,6 +84,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
@@ -88,7 +92,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotNotifyOrGeneratePdf_whenDefendantResponseBilingual() {
+    void shouldNotNotifyApplicant_whenDefendantResponseBilingual() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -102,6 +106,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -125,6 +131,13 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyTaskIsComplete(
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
             NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
+        );
+    }
+
+    private void verifySealedDQGenerationCompleted() {
+        verifyTaskIsComplete(
+            GENERATE_RESPONSE_DQ_LIP_SEALED_PDF,
+            GENERATE_LIP_DQ_PDF_ACTIVITY
         );
     }
 
