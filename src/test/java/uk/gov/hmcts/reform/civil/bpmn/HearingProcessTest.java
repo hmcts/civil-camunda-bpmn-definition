@@ -32,6 +32,9 @@ class HearingProcessTest extends BpmnBaseTest {
         = "NotifyClaimantHearing";
     private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
         = "NotifyDefendant1Hearing";
+
+    private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID_LIP
+        = "NotifyDefendant1HearingLip";
     private static final String NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
         = "NotifyDefendant2Hearing";
     public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
@@ -66,7 +69,7 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -78,13 +81,13 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
         );
 
         //complete the service request process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
         );
 
         //end business process
@@ -112,12 +115,13 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT,
+                                   START_BUSINESS_ACTIVITY);
 
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -129,19 +133,69 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the defendant2 notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
+                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID, variables
         );
 
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
         );
 
         //complete the service request process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteHearingFormAndNotifyClaimantAndDefendantHearing_1v1_Lip() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //Setup Case as 1v1
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, true
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        //complete the hearing form generation
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the defendant1 notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID_LIP, variables
+        );
+
+        //complete the claimant notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+        );
+
+        //complete the service request process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
         );
 
         //end business process
