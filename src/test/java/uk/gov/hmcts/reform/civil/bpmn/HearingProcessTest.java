@@ -33,8 +33,6 @@ class HearingProcessTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
         = "NotifyDefendant1Hearing";
 
-    private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID_LIP
-        = "NotifyDefendant1HearingLip";
     private static final String NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
         = "NotifyDefendant2Hearing";
     public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
@@ -183,7 +181,7 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the defendant1 notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID_LIP, variables
+                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
         );
 
         //complete the claimant notification
