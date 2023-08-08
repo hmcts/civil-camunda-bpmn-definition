@@ -29,7 +29,6 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
     public static final String MAKE_BULK_CLAIM_PAYMENT = "MAKE_BULK_CLAIM_PAYMENT";
     private static final String MAKE_BULK_PAYMENT_ACTIVITY_ID = "makeBulkClaimPayment";
 
-
     enum FlowState {
         CLAIM_ISSUED_PAYMENT_FAILED,
         PAYMENT_FAILED,
@@ -202,7 +201,6 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-
         //complete the start business process
         startBusinessProcess(variables);
 
@@ -213,7 +211,7 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
         variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
         completePayment(variables);
 
-        // Make Bulk payment
+        //make Bulk payment
         completeBulkPayment(variables);
 
         //end business process
