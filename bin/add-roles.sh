@@ -29,6 +29,7 @@
 ./bin/utils/ccd-add-role.sh "CITIZEN-DEFENDANT-PROFILE"
 ./bin/utils/ccd-add-role.sh "cui-admin-profile"
 ./bin/utils/ccd-add-role.sh "cui-nbc-profile"
+./bin/utils/ccd-add-role.sh "citizen-profile"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
