@@ -13,8 +13,10 @@ public class CreateClaimLipTest extends BpmnBaseTest {
 
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpec";
-    private static final String PROCESS_CLAIM_ASSIGN_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
-    private static final String PROCESS_CLAIM_ASSIGN_ACTIVITY_ID = "IssueClaimForSpec";
+
+    //Assigning claim to applicant 1
+    private static final String ASSIGN_CASE_TO_APPLICANT1_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
+    private static final String ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID = "CaseAssignmentToApplicant1";
 
     //notify applicant 1
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
@@ -42,16 +44,18 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     private void completeClaimIssue(final VariableMap variables) {
-        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+
+        //complete the applicant assignment
+        ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimIssue,
+            assignTask,
             PROCESS_CASE_EVENT,
-            PROCESS_CLAIM_ASSIGN_EVENT,
-            PROCESS_CLAIM_ASSIGN_ACTIVITY_ID,
+            ASSIGN_CASE_TO_APPLICANT1_EVENT,
+            ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID,
             variables
         );
 
-
+        //complete the claim issue
         ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             claimIssue,
