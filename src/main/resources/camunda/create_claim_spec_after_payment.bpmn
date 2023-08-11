@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:message id="Message_0slk3dg" name="CREATE_CLAIM_SPEC_AFTER_PAYMENT" />
   <bpmn:error id="Error_0t2ju7f" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:collaboration id="CreateClaim">
@@ -34,9 +34,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1fr3g5j" sourceRef="GenerateClaimFormForSpec" targetRef="Gateway_1i24lv3" />
-    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
     <bpmn:sequenceFlow id="Flow_RPA_Case_Handed_Offline_Completed" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_12m4mo5" sourceRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec" />
     <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" />
     <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaimForSpec" targetRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" />
@@ -161,19 +159,8 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wzcptl</bpmn:incoming>
       <bpmn:incoming>Flow_104uutx</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1q7ovn4</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
-      <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
-      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_1irqmkk">
-      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on Case Handed Offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -221,12 +208,85 @@
       <bpmn:outgoing>Flow_104uutx</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_104uutx" sourceRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec" targetRef="NotifyRoboticsOnContinuousFeed" />
+    <bpmn:sequenceFlow id="Flow_0tknv6k" sourceRef="bulkClaimAsyncResponse" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_07jc697" name="Bulk Claim Enabled" sourceRef="Gateway_0hk669b" targetRef="bulkClaimAsyncResponse">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.BULK_CLAIM_ENABLED &amp;&amp; flowFlags.BULK_CLAIM_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
+      <bpmn:incoming>Flow_0tknv6k</bpmn:incoming>
+      <bpmn:incoming>Flow_01zcah5</bpmn:incoming>
+      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1irqmkk">
+      <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
+    <bpmn:serviceTask id="bulkClaimAsyncResponse" name="bulk" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">BULK_ASYNC_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07jc697</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tknv6k</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0hk669b">
+      <bpmn:incoming>Flow_1q7ovn4</bpmn:incoming>
+      <bpmn:outgoing>Flow_07jc697</bpmn:outgoing>
+      <bpmn:outgoing>Flow_01zcah5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_01zcah5" name="Bulk Claim Disabled" sourceRef="Gateway_0hk669b" targetRef="Activity_19rrcw0">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.BULK_CLAIM_ENABLED || !flowFlags.BULK_CLAIM_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1q7ovn4" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Gateway_0hk669b" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
-        <dc:Bounds x="160" y="120" width="2140" height="610" />
+        <dc:Bounds x="160" y="120" width="2384" height="610" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1q7ovn4_di" bpmnElement="Flow_1q7ovn4">
+        <di:waypoint x="2010" y="430" />
+        <di:waypoint x="2085" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01zcah5_di" bpmnElement="Flow_01zcah5">
+        <di:waypoint x="2135" y="430" />
+        <di:waypoint x="2350" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2193" y="436" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
+        <di:waypoint x="2450" y="430" />
+        <di:waypoint x="2478" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07jc697_di" bpmnElement="Flow_07jc697">
+        <di:waypoint x="2110" y="405" />
+        <di:waypoint x="2110" y="340" />
+        <di:waypoint x="2150" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2092" y="306" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tknv6k_di" bpmnElement="Flow_0tknv6k">
+        <di:waypoint x="2250" y="340" />
+        <di:waypoint x="2290" y="340" />
+        <di:waypoint x="2290" y="430" />
+        <di:waypoint x="2350" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_104uutx_di" bpmnElement="Flow_104uutx">
+        <di:waypoint x="1870" y="540" />
+        <di:waypoint x="1960" y="540" />
+        <di:waypoint x="1960" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wzcptl_di" bpmnElement="Flow_0wzcptl">
+        <di:waypoint x="1870" y="430" />
+        <di:waypoint x="1910" y="430" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kgddyt_di" bpmnElement="Flow_1kgddyt">
         <di:waypoint x="1140" y="455" />
         <di:waypoint x="1140" y="540" />
@@ -247,18 +307,10 @@
         <di:waypoint x="1740" y="540" />
         <di:waypoint x="1770" y="540" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="2140" y="430" />
-        <di:waypoint x="2168" y="430" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mak1f7_di" bpmnElement="Flow_RPA_Case_Handed_Offline_Completed">
         <di:waypoint x="1870" y="200" />
-        <di:waypoint x="2090" y="200" />
-        <di:waypoint x="2090" y="390" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tm6p28_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
-        <di:waypoint x="2010" y="430" />
-        <di:waypoint x="2040" y="430" />
+        <di:waypoint x="2400" y="200" />
+        <di:waypoint x="2400" y="390" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fr3g5j_di" bpmnElement="Flow_1fr3g5j">
         <di:waypoint x="1060" y="430" />
@@ -346,15 +398,6 @@
         <di:waypoint x="800" y="372" />
         <di:waypoint x="800" y="328" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wzcptl_di" bpmnElement="Flow_0wzcptl">
-        <di:waypoint x="1870" y="430" />
-        <di:waypoint x="1910" y="430" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_104uutx_di" bpmnElement="Flow_104uutx">
-        <di:waypoint x="1870" y="540" />
-        <di:waypoint x="1960" y="540" />
-        <di:waypoint x="1960" y="470" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0yfoky6_di" bpmnElement="Event_0yfoky6">
         <dc:Bounds x="582" y="412" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -409,12 +452,6 @@
       <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
         <dc:Bounds x="1910" y="390" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="2040" y="390" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="2168" y="412" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13q29o0_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
         <dc:Bounds x="1770" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -429,6 +466,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_121yi2q_di" bpmnElement="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec">
         <dc:Bounds x="1770" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
+        <dc:Bounds x="2350" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
+        <dc:Bounds x="2478" y="412" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0erdz5d_di" bpmnElement="bulkClaimAsyncResponse">
+        <dc:Bounds x="2150" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0hk669b_di" bpmnElement="Gateway_0hk669b" isMarkerVisible="true">
+        <dc:Bounds x="2085" y="405" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="782" y="372" width="36" height="36" />
