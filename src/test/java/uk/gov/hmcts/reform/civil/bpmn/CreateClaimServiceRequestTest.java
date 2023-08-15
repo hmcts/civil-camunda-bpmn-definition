@@ -25,6 +25,9 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
     public static final String CREATE_SERVICE_REQUEST_API = "CREATE_SERVICE_REQUEST_API";
     private static final String MAKE_PAYMENT_ACTIVITY_ID = "serviceRequestAPI";
     private static final String PROCESS_PAYMENT_TOPIC = "processCaseEvent";
+    // bulk payment
+    public static final String MAKE_BULK_CLAIM_PAYMENT = "MAKE_BULK_CLAIM_PAYMENT";
+    private static final String MAKE_BULK_PAYMENT_ACTIVITY_ID = "makeBulkClaimPayment";
 
     enum FlowState {
         CLAIM_ISSUED_PAYMENT_FAILED,
@@ -188,6 +191,36 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
         }
     }
 
+    @Test
+    void shouldSuccessfullyCompleteCreateClaim_whenClaimOnlineAndBulkClaim() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(BULK_CLAIM_ENABLED, true));
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //complete the start business process
+        startBusinessProcess(variables);
+
+        //complete the case assignment process
+        completeCaseAssignment(variables);
+
+        //complete the payment
+        variables.putValue(FLOW_STATE, FlowState.CLAIM_ISSUED_PAYMENT_SUCCESSFUL.fullName());
+        completePayment(variables);
+
+        //make Bulk payment
+        completeBulkPayment(variables);
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
     private void completeCaseAssignment(VariableMap variables) {
         ExternalTask caseAssignment = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -195,6 +228,17 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             CASE_ASSIGNMENT_EVENT,
             CASE_ASSIGNMENT_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void completeBulkPayment(VariableMap variables) {
+        ExternalTask bulkPayment = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPayment,
+            PROCESS_CASE_EVENT,
+            MAKE_BULK_CLAIM_PAYMENT,
+            MAKE_BULK_PAYMENT_ACTIVITY_ID,
             variables
         );
     }
