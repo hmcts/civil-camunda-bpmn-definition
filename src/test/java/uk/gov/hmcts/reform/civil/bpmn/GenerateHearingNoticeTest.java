@@ -81,10 +81,16 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"CASE_PROGRESSION, true", "CASE_PROGRESSION, false",
-                "JUDICIAL_REFERRAL, true", "JUDICIAL_REFERRAL, false"})
-    void shouldSuccessfullyCompleteGenerateHearingNotice(String caseState,
-                                                             boolean twoRepresentatives) {
+    @CsvSource({"CASE_PROGRESSION, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
+        "CASE_PROGRESSION, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
+        "JUDICIAL_REFERRAL, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
+        "JUDICIAL_REFERRAL, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
+        "CASE_PROGRESSION, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
+        "CASE_PROGRESSION, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
+        "JUDICIAL_REFERRAL, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
+        "JUDICIAL_REFERRAL, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO"})
+    void shouldSuccessfullyCompleteGenerateHearingNotice(String caseState, boolean twoRespondents,
+                                                         String respondentOne, String respondentTwo) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -93,8 +99,8 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives));
+            respondentOne, !twoRespondents,
+            respondentTwo, twoRespondents));
 
         variables.put("caseState", caseState);
 
@@ -132,7 +138,7 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    variables
         );
 
-        if (twoRepresentatives) {
+        if (twoRespondents) {
             //complete notify defendant solicitor 2 hearing
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(notificationTask,
