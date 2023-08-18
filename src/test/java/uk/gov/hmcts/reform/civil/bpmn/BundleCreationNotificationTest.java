@@ -51,8 +51,8 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT1_FOR_BUNDLE_CREATED",
-                                   "BundleCreationNotifyRespondent1"
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_BUNDLE_CREATED",
+                                   "BundleCreationNotifyRespondentSolicitor1"
         );
 
         if (twoRepresentatives) {
