@@ -19,8 +19,6 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT = "NOTIFY_APPLICANT1_CLAIM_SUBMITTED";
     private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID = "NotifyApplicant1ClaimSubmitted";
 
-
-
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
