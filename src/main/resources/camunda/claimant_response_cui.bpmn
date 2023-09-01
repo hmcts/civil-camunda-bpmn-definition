@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+  <bpmn:process id="CLAIMANT_RESPONSE_CUI_PROCESS_ID_CUI" name="CLAIMANT_RESPONSE_CUI_PROCESS_ID" isExecutable="true">
+    <bpmn:startEvent id="CLRCUI_StartEvent_1" name="start">
+      <bpmn:outgoing>Flow_0uwkh9v</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1oxj7lg" messageRef="Message_0ttrrz3" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="CLRUI_End">
+      <bpmn:incoming>Flow_1utmlsv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_PROCEED_OR_NOT_PROCEED">
+      <bpmn:incoming>Flow_1uzxrbl</bpmn:incoming>
+      <bpmn:outgoing>CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14tv10k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION" name="&#10;part admit not settled" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Gateway_NO_MEDIATION">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="JudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">JUDICIAL_REFERRAL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>CLRCUI_NO_MEDIATION_RULE</bpmn:incoming>
+      <bpmn:outgoing>Flow_1stajpv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_NO_MEDIATION">
+      <bpmn:incoming>CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION</bpmn:incoming>
+      <bpmn:outgoing>CLRCUI_NO_MEDIATION_RULE</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="CLRCUI_NO_MEDIATION_RULE" name="no mediation&#10;" sourceRef="Gateway_NO_MEDIATION" targetRef="JudicialReferral">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1iyxejm">
+      <bpmn:incoming>Flow_0r584ez</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0uwkh9v" sourceRef="CLRCUI_StartEvent_1" targetRef="Activity_1sl3er4" />
+    <bpmn:callActivity id="Activity_1sl3er4" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:out variables="all" />
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uwkh9v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uzxrbl</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1uzxrbl" sourceRef="Activity_1sl3er4" targetRef="Gateway_PROCEED_OR_NOT_PROCEED" />
+    <bpmn:boundaryEvent id="Event_0yhzfu9" attachedToRef="Activity_1sl3er4">
+      <bpmn:outgoing>Flow_0r584ez</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0g5dg3k" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0r584ez" sourceRef="Event_0yhzfu9" targetRef="Event_1iyxejm" />
+    <bpmn:callActivity id="Activity_0negovp" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1stajpv</bpmn:incoming>
+      <bpmn:incoming>Flow_14tv10k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1utmlsv</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1stajpv" sourceRef="JudicialReferral" targetRef="Activity_0negovp" />
+    <bpmn:sequenceFlow id="Flow_1utmlsv" sourceRef="Activity_0negovp" targetRef="CLRUI_End" />
+    <bpmn:sequenceFlow id="Flow_14tv10k" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_0negovp" />
+  </bpmn:process>
+  <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
+  <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLAIMANT_RESPONSE_CUI_PROCESS_ID_CUI">
+      <bpmndi:BPMNShape id="Event_1diii28_di" bpmnElement="CLRCUI_StartEvent_1">
+        <dc:Bounds x="152" y="195" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="238" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="CLRUI_End">
+        <dc:Bounds x="992" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0p15z9i_di" bpmnElement="Gateway_PROCEED_OR_NOT_PROCEED" isMarkerVisible="true">
+        <dc:Bounds x="435" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="427" y="242" width="73" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
+        <dc:Bounds x="680" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1hhtr5s_di" bpmnElement="Gateway_NO_MEDIATION" isMarkerVisible="true">
+        <dc:Bounds x="565" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="161" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1iyxejm_di" bpmnElement="Event_1iyxejm">
+        <dc:Bounds x="272" y="72" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sl3er4_di" bpmnElement="Activity_1sl3er4">
+        <dc:Bounds x="240" y="173" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0negovp_di" bpmnElement="Activity_0negovp">
+        <dc:Bounds x="850" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
+        <dc:Bounds x="272" y="155" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0fz18qx_di" bpmnElement="CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION">
+        <di:waypoint x="485" y="210" />
+        <di:waypoint x="565" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="485" y="210" width="69" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c8x2s3_di" bpmnElement="CLRCUI_NO_MEDIATION_RULE">
+        <di:waypoint x="615" y="210" />
+        <di:waypoint x="680" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="608" y="216" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uwkh9v_di" bpmnElement="Flow_0uwkh9v">
+        <di:waypoint x="188" y="213" />
+        <di:waypoint x="240" y="213" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uzxrbl_di" bpmnElement="Flow_1uzxrbl">
+        <di:waypoint x="340" y="213" />
+        <di:waypoint x="436" y="211" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r584ez_di" bpmnElement="Flow_0r584ez">
+        <di:waypoint x="290" y="155" />
+        <di:waypoint x="290" y="108" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1stajpv_di" bpmnElement="Flow_1stajpv">
+        <di:waypoint x="780" y="200" />
+        <di:waypoint x="850" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1utmlsv_di" bpmnElement="Flow_1utmlsv">
+        <di:waypoint x="950" y="200" />
+        <di:waypoint x="992" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14tv10k_di" bpmnElement="Flow_14tv10k">
+        <di:waypoint x="460" y="185" />
+        <di:waypoint x="460" y="80" />
+        <di:waypoint x="900" y="80" />
+        <di:waypoint x="900" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
