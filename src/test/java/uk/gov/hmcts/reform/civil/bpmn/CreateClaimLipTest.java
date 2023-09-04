@@ -11,9 +11,11 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "CREATE_LIP_CLAIM";
     private static final String PROCESS_ID = "CREATE_LIP_CLAIM_PROCESS_ID";
 
-    //Assigning claim to applicant 1
     private static final String ASSIGN_CASE_TO_APPLICANT1_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
     private static final String ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID = "CaseAssignmentToApplicant1";
+
+    private static final String GENERATE_PDF_FORM_EVENT = "GENERATE_DRAFT_FORM";
+    private static final String GENERATE_PDF_FORM_ACTIVITY_ID = "GenerateDraftForm";
 
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -24,19 +26,29 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
-        completeClaimIssue(variables);
+        completeApplicantAssignment(variables);
+        generateDraftForm(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
-    private void completeClaimIssue(final VariableMap variables) {
-
-        //complete the applicant assignment
+    private void completeApplicantAssignment(final VariableMap variables) {
         ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             assignTask,
             PROCESS_CASE_EVENT,
             ASSIGN_CASE_TO_APPLICANT1_EVENT,
             ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void generateDraftForm (final VariableMap variables) {
+        ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignTask,
+            PROCESS_CASE_EVENT,
+            GENERATE_PDF_FORM_EVENT,
+            GENERATE_PDF_FORM_ACTIVITY_ID,
             variables
         );
     }
