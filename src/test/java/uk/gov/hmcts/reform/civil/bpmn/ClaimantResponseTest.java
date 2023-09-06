@@ -50,7 +50,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true,
+            "SDO_ENABLED", true
         ));
 
         //complete the start business process
@@ -144,7 +145,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
-            IS_MULTI_TRACK, true
+            IS_MULTI_TRACK, true,
+            "SDO_ENABLED", true
         ));
 
         //complete the start business process
