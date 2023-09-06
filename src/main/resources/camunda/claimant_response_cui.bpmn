@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0">
   <bpmn:process id="CLAIMANT_RESPONSE_CUI_PROCESS_ID_CUI" name="CLAIMANT_RESPONSE_CUI_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="CLRCUI_StartEvent_1" name="start">
       <bpmn:outgoing>Flow_0uwkh9v</bpmn:outgoing>
@@ -28,6 +28,7 @@
     <bpmn:exclusiveGateway id="Gateway_NO_MEDIATION">
       <bpmn:incoming>CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION</bpmn:incoming>
       <bpmn:outgoing>CLRCUI_NO_MEDIATION_RULE</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08p7476</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="CLRCUI_NO_MEDIATION_RULE" name="no mediation&#10;" sourceRef="Gateway_NO_MEDIATION" targetRef="JudicialReferral">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
@@ -56,11 +57,13 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1stajpv</bpmn:incoming>
       <bpmn:incoming>Flow_14tv10k</bpmn:incoming>
+      <bpmn:incoming>Flow_08p7476</bpmn:incoming>
       <bpmn:outgoing>Flow_1utmlsv</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1stajpv" sourceRef="JudicialReferral" targetRef="Activity_0negovp" />
     <bpmn:sequenceFlow id="Flow_1utmlsv" sourceRef="Activity_0negovp" targetRef="CLRUI_End" />
     <bpmn:sequenceFlow id="Flow_14tv10k" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_0negovp" />
+    <bpmn:sequenceFlow id="Flow_08p7476" sourceRef="Gateway_NO_MEDIATION" targetRef="Activity_0negovp" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -144,6 +147,12 @@
         <di:waypoint x="460" y="80" />
         <di:waypoint x="900" y="80" />
         <di:waypoint x="900" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08p7476_di" bpmnElement="Flow_08p7476">
+        <di:waypoint x="590" y="185" />
+        <di:waypoint x="590" y="140" />
+        <di:waypoint x="870" y="140" />
+        <di:waypoint x="870" y="160" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
