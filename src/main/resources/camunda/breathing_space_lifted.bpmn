@@ -39,27 +39,18 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0lzk3lu</bpmn:incoming>
-      <bpmn:outgoing>Flow_1nx22hv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_03l3ldx</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0lzk3lu" sourceRef="NotifyApplicantSolicitorBSLifted" targetRef="NotifyRespondentSolicitorBSLifted" />
-    <bpmn:exclusiveGateway id="RPA_Continuous_Feed_Gate" default="Flow_1c2ryxi">
-      <bpmn:incoming>Flow_1nx22hv</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_CONTINUOUS_FEED</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1c2ryxi</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="NotifyRpaBsLifted" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_CONTINUOUS_FEED</bpmn:incoming>
+      <bpmn:incoming>Flow_03l3ldx</bpmn:incoming>
       <bpmn:outgoing>Flow_1kass09</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_RPA_CONTINUOUS_FEED" sourceRef="RPA_Continuous_Feed_Gate" targetRef="NotifyRpaBsLifted">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.SPEC_RPA_CONTINUOUS_FEED&amp;&amp; flowFlags.SPEC_RPA_CONTINUOUS_FEED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1nx22hv" sourceRef="NotifyRespondentSolicitorBSLifted" targetRef="RPA_Continuous_Feed_Gate" />
     <bpmn:endEvent id="Event_1g0kcde">
       <bpmn:incoming>Flow_1kj896s</bpmn:incoming>
     </bpmn:endEvent>
@@ -67,38 +58,24 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1c2ryxi</bpmn:incoming>
       <bpmn:incoming>Flow_1kass09</bpmn:incoming>
       <bpmn:outgoing>Flow_1kj896s</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
-    <bpmn:sequenceFlow id="Flow_1c2ryxi" sourceRef="RPA_Continuous_Feed_Gate" targetRef="Activity_0g68wbz" />
     <bpmn:sequenceFlow id="Flow_1kass09" sourceRef="NotifyRpaBsLifted" targetRef="Activity_0g68wbz" />
+    <bpmn:sequenceFlow id="Flow_03l3ldx" sourceRef="NotifyRespondentSolicitorBSLifted" targetRef="NotifyRpaBsLifted" />
   </bpmn:process>
   <bpmn:message id="Message_1bt9nfa" name="LIFT_BREATHING_SPACE_SPEC" />
   <bpmn:message id="Message_1sxevdt" name="LIFT_BREATHING_SPACE_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BREATHING_SPACE_LIFTED">
       <bpmndi:BPMNEdge id="Flow_1kass09_di" bpmnElement="Flow_1kass09">
-        <di:waypoint x="850" y="160" />
-        <di:waypoint x="850" y="190" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c2ryxi_di" bpmnElement="Flow_1c2ryxi">
-        <di:waypoint x="745" y="230" />
+        <di:waypoint x="770" y="230" />
         <di:waypoint x="800" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
         <di:waypoint x="900" y="230" />
         <di:waypoint x="942" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nx22hv_di" bpmnElement="Flow_1nx22hv">
-        <di:waypoint x="640" y="230" />
-        <di:waypoint x="695" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0l0m5y9_di" bpmnElement="Flow_RPA_CONTINUOUS_FEED">
-        <di:waypoint x="720" y="205" />
-        <di:waypoint x="720" y="120" />
-        <di:waypoint x="800" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lzk3lu_di" bpmnElement="Flow_0lzk3lu">
         <di:waypoint x="500" y="230" />
@@ -115,6 +92,10 @@
       <bpmndi:BPMNEdge id="Flow_07qelqa_di" bpmnElement="Flow_07qelqa">
         <di:waypoint x="208" y="230" />
         <di:waypoint x="250" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03l3ldx_di" bpmnElement="Flow_03l3ldx">
+        <di:waypoint x="640" y="230" />
+        <di:waypoint x="670" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0y09tpb_di" bpmnElement="Event_0y09tpb">
         <dc:Bounds x="172" y="212" width="36" height="36" />
@@ -134,17 +115,14 @@
       <bpmndi:BPMNShape id="Activity_0eg1mu3_di" bpmnElement="NotifyRespondentSolicitorBSLifted">
         <dc:Bounds x="540" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_038j3lc_di" bpmnElement="RPA_Continuous_Feed_Gate" isMarkerVisible="true">
-        <dc:Bounds x="695" y="205" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yug86e_di" bpmnElement="NotifyRpaBsLifted">
-        <dc:Bounds x="800" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
         <dc:Bounds x="942" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
         <dc:Bounds x="800" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yug86e_di" bpmnElement="NotifyRpaBsLifted">
+        <dc:Bounds x="670" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
         <dc:Bounds x="282" y="172" width="36" height="36" />

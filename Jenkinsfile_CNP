@@ -7,6 +7,10 @@ import uk.gov.hmcts.contino.GithubAPI
 def type = "java"
 def product = "civil"
 def component = "camunda"
+def ccdBranch = "master"
+def branchesToSync = ['demo', 'perftest','ithc']
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
 AppPipelineConfig pipelineConf
 
 static Map<String, Object> secret(String secretName, String envVariable) {
@@ -44,6 +48,12 @@ def secrets = [
   ]
 ]
 
+def secretsOtherenv = [
+  'civil-${env}': [
+    secret('microservicekey-civil-service', 'S2S_SECRET'),
+  ]
+]
+
 def createGithubRelease() {
   sh """
     ./bin/create-github-release.sh
@@ -78,50 +88,49 @@ withPipeline(type, product, component) {
     env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
   onMaster {
+    env.ENVIRONMENT = "aat"
     loadVaultSecrets(secrets)
   }
   onDemo {
-    loadVaultSecrets(secrets)
+    env.ENVIRONMENT = "demo"
+    loadVaultSecrets(secretsOtherenv)
   }
+
+  onPerftest {
+    env.ENVIRONMENT = "perftest"
+    loadVaultSecrets(secretsOtherenv)
+  }
+
+  onIthc {
+    env.ENVIRONMENT = "ithc"
+    loadVaultSecrets(secretsOtherenv)
+  }
+
+  syncBranchesWithMaster(branchesToSync)
 
   afterSuccess('checkout') {
-    onMaster {
-      withCredentials([usernamePassword(credentialsId: 'jenkins-github-hmcts-api-token', usernameVariable: 'USERNAME', passwordVariable: 'BEARER_TOKEN')]) {
-        try {
-          sh '''
-            set -e
-
-            git remote set-url origin $(git config remote.origin.url | sed "s/github.com/${BEARER_TOKEN}@github.com/g")
-
-            git fetch origin demo:demo
-            git push --force origin HEAD:demo
-          '''
-        } catch (err) {
-          notifyBuildEvent channel: '#civil_notifications', color: 'warning', message: 'Failed to update demo branch'
-        }
-      }
-    }
-
-    onDemo {
-      def subscription = 'nonprod'
+    def subscription = 'nonprod'
+    if ( env.ENVIRONMENT == 'ithc' || env.ENVIRONMENT == 'demo' || env.ENVIRONMENT == 'perftest') {
       withSubscription(subscription) {
-        withTeamSecrets(pipelineConf, 'demo') {
-          uploadBpmnDiagrams('demo')
+        withTeamSecrets(pipelineConf, env.ENVIRONMENT) {
+          uploadBpmnDiagrams(env.ENVIRONMENT)
         }
       }
     }
   }
+
 
   before('smoketest:preview') {
     sh """
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
       ./bin/add-roles.sh
-      ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
-      ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*CUI-nonprod.json"
+      ./bin/pull-latest-ccd-files.sh ${ccdBranch}
+      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
     """
-    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    yarnBuilder.yarn('yarn-update')
+    yarnBuilder.yarn('install-dependencies')
   }
 
   afterSuccess('smoketest:preview') {
@@ -131,9 +140,9 @@ withPipeline(type, product, component) {
   before('functionalTest:preview') {
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-    env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.service.core-compute-preview.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -150,12 +159,13 @@ withPipeline(type, product, component) {
     sh """
       eval \$(./bin/variables/load-staging-environment-variables.sh)
       ./bin/add-roles.sh
-      ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-ccd-definition.zip
-      ./bin/pull-latest-release-asset.sh civil-ccd-definition civil-e2e.zip
-      ./bin/import-ccd-definition.sh "-e *GAspec.json,*DJspec.json,*-nonprod.json,*DJ.json,*DJ-SDO-nonprod.json,*DJ-nonprod.json,*-COS-nonprod.json"
+      ./bin/pull-latest-ccd-files.sh ${ccdBranch}
+      ./bin/import-ccd-definition.sh "-e *GAspec.json,*-nonprod.json,*-COS-nonprod.json,*CUI.json,*-shuttered.json"
     """
     env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
+    yarnBuilder.yarn('yarn-update')
+    yarnBuilder.yarn('install-dependencies')
   }
 
   afterSuccess('smoketest:aat') {
@@ -168,7 +178,7 @@ withPipeline(type, product, component) {
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.service.core-compute-aat.internal"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.aat.platform.hmcts.net"
 
     uploadBpmnDiagrams('staging')
   }

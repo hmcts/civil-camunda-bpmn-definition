@@ -28,9 +28,9 @@ public abstract class BpmnBaseJudgeGASpecTest {
 
     private static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
-    public static final String START_BUSINESS_TOPIC = "START_BUSINESS_PROCESS_MAKE_DECISION";
-    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS_MAKE_DECISION";
-    public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessMakeDecisionspecTaskId";
+    public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
     public static final String MAKE_DECISION_CASE_EVENT = "applicationProcessCaseEventGASpec";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
@@ -47,7 +47,6 @@ public abstract class BpmnBaseJudgeGASpecTest {
 
     public static final String END_BUSINESS_PROCESS = "END_JUDGE_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
-    public static final String RPA_CONTINUOUS_FEED = "RPA_CONTINUOUS_FEED";
 
     public final String bpmnFileName;
     public final String processId;
@@ -76,7 +75,7 @@ public abstract class BpmnBaseJudgeGASpecTest {
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH,
-                                                "start_general_application_make_decision_business_process.bpmn"))
+                                                "start_business_process_in_general_application.bpmn"))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
