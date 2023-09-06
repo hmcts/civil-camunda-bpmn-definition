@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "CLAIMANT_RESPONSE_CUI";
-    private static final String PROCESS_ID = "CLAIMANT_RESPONSE_PROCESS_ID_CUI";
+    private static final String PROCESS_ID = "CLAIMANT_RESPONSE_CUI_PROCESS_ID_CUI";
 
     //CCD Case Event
 
