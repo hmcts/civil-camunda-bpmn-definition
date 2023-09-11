@@ -4,13 +4,13 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-public class EnterBreathingSpaceCuiTest extends BpmnBaseTest {
+public class EnterBreathingSpaceLipTest extends BpmnBaseTest {
 
-    private static final String FILE_NAME = "enter_breathing_space_cui.bpmn";
-    private static final String MESSAGE_NAME = "ENTER_BREATHING_SPACE_CUI";
-    private static final String PROCESS_ID = "ENTER_BREATHING_SPACE_PROCESS_ID_CUI";
+    private static final String FILE_NAME = "enter_breathing_space_lip.bpmn";
+    private static final String MESSAGE_NAME = "ENTER_BREATHING_SPACE_LIP";
+    private static final String PROCESS_ID = "ENTER_BREATHING_SPACE_PROCESS_ID_LIP";
 
-    public EnterBreathingSpaceCuiTest() {
+    public EnterBreathingSpaceLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
 
