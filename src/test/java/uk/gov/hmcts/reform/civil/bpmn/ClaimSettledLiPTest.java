@@ -5,7 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-
 public class ClaimSettledLiPTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "claim_settled_lip.bpmn";
