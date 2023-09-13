@@ -2,9 +2,10 @@ plugins {
   id 'application'
   id 'checkstyle'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+//  id 'org.springframework.boot' version '2.5.14'
   id 'org.owasp.dependencycheck' version '8.2.1'
-  id 'com.github.ben-manes.versions' version '0.39.0'
+  id 'com.github.ben-manes.versions' version '0.47.0'
   id 'org.sonarqube' version '3.4.0.2513'
 }
 
@@ -12,9 +13,11 @@ group = 'uk.gov.hmcts.reform'
 version = '0.0.1'
 
 allprojects {
-
-  sourceCompatibility = '11'
-  targetCompatibility = '11'
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+    }
+  }
 
   apply plugin: 'java'
   apply plugin: 'jacoco'
@@ -24,13 +27,13 @@ allprojects {
 
   checkstyle {
     maxWarnings = 0
-    toolVersion = '8.29'
+    toolVersion = '10.4'
     getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
   }
 
   jacoco {
-    toolVersion = '0.8.5' // jacocoMavenPluginVersion
-    reportsDir = file("$buildDir/reports/jacoco")
+    toolVersion = '0.8.8' // jacocoMavenPluginVersion
+    reportsDirectory = file("$buildDir/reports/jacoco")
   }
 
 // before committing a change, make sure task still works
@@ -65,7 +68,7 @@ allprojects {
       // CVE-2020-26945 - Mishandles deserialization of object streams.
       dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.13'
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.8'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.10'
 
       dependencySet(
         group: 'org.camunda.bpm',
@@ -91,6 +94,11 @@ allprojects {
       ) {
         entry 'kotlin-reflect'
       }
+
+      dependencySet(group: 'com.squareup.okio', version: '3.4.0') {
+        entry 'okio'
+      }
+
     }
     imports {
       mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.6'
@@ -99,17 +107,11 @@ allprojects {
 
   repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
     maven {
-      url "https://dl.bintray.com/hmcts/hmcts-maven"
+      url "https://jitpack.io"
     }
-    maven {
-      url  "http://repo.spring.io/milestone"
-    }
-    maven {
-      url  "https://repo.spring.io/libs-milestone"
-    }
+    jcenter()
   }
 }
 
@@ -130,8 +132,8 @@ test {
 }
 
 task awaitApplicationReadiness(type: Exec, description: 'Awaits until application is ready.') {
-  commandLine './bin/wait-for.sh', System.env.URL
-  commandLine './bin/wait-for.sh', System.env.TEST_URL
+  commandLine './bin/wait-for.sh', System.getenv('URL') ?: 'https://localhost:4100'
+  commandLine './bin/wait-for.sh', System.getenv('TEST_URL')?: 'https://localhost:4100'
 }
 
 task runCosTests(type: Exec, description: 'Runs DJ Api functional tests.') {
@@ -244,6 +246,7 @@ dependencies {
   testImplementation libraries.junit5
   testImplementation group: 'org.camunda.bpm.extension.springboot', name: 'camunda-bpm-spring-boot-starter-test', version: '2.2.0'
   testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation 'junit:junit:4.13.1'
 }
 
 

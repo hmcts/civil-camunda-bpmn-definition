@@ -22,6 +22,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "ClaimantResponseGenerateDirectionsQuestionnaire";
+    private static final String GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID = "ClaimantGenerateDQMeditation";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
@@ -216,7 +217,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true,
+            "SDO_ENABLED", true
         ));
 
         //complete the start business process
@@ -385,6 +387,14 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_CYA_ON_AGREED_MEDIATION",
             "CyaAgreedMediationNotification"
+        );
+
+        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDQ,
+            PROCESS_CASE_EVENT,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE,
+            GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID
         );
 
         //complete the Robotics notification
