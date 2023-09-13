@@ -91,6 +91,60 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyCompleteTrialReadyFormAndNotifyDefendantsHearingLiP(boolean twoRepresentatives) {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
+                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+
+        ExternalTask notificationTask;
+        if (twoRepresentatives) {
+            //complete the defendant2 notification
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY,
+                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
+                                       variables
+            );
+        }
+
+        //complete the applicant notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   GENERATE_TRIAL_READY_FORM_APPLICANT,
+                                   GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
