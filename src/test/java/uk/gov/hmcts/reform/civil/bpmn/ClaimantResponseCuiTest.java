@@ -70,13 +70,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
-         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-         assertCompleteExternalTask(
-             notificationTask,
-             PROCESS_CASE_EVENT,
-             NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
-             NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-         );
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
     }
 
     private void endBusinessProcess() {
