@@ -217,7 +217,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true,
+            "SDO_ENABLED", true
         ));
 
         //complete the start business process
