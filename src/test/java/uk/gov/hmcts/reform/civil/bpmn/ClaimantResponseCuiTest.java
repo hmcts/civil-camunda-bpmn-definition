@@ -16,6 +16,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "CLAIMANT_RESPONSE_CUI_PROCESS_ID";
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
+    //CCD Case Event
+    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
+        = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
+
+    //Activity IDs
+    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPRespondentClaimantConfirmToProceed";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -56,8 +63,20 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             JUDICIAL_REFERRAL_ACTIVITY_ID,
             variables
         );
+
+        notifyRespondentClaimantConfirmsToProceed();
         endBusinessProcess();
         assertNoExternalTasksLeft();
+    }
+
+    private void notifyRespondentClaimantConfirmsToProceed() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
     }
 
     private void endBusinessProcess() {
