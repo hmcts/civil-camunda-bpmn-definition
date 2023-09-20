@@ -23,6 +23,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
+        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
+
+    //Activity IDs
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPApplicantClaimantConfirmToProceed";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -76,6 +82,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
             NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+    }
+
+    private void notifyApplicantClaimantConfirmsToProceed() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
     }
 
