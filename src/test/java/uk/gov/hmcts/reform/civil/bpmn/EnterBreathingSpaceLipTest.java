@@ -21,6 +21,7 @@ public class EnterBreathingSpaceLipTest extends BpmnBaseTest {
         = "NotifyApplicant1BreathingSpaceLIP";
     private static final String NOTIFY_RESPONDENT_BREATHING_SPACE_LIP_ID
         = "NotifyRespondentBreathingSpaceLIP";
+
     public EnterBreathingSpaceLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -34,6 +35,7 @@ public class EnterBreathingSpaceLipTest extends BpmnBaseTest {
         notifyRespondentBreathingSpaceLip();
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
+
     private void notifyApplicant1BreathingSpaceLip() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -43,6 +45,7 @@ public class EnterBreathingSpaceLipTest extends BpmnBaseTest {
             NOTIFY_APPLICANT1_BREATHING_SPACE_LIP_ID
         );
     }
+
     private void notifyRespondentBreathingSpaceLip() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
