@@ -13,9 +13,9 @@ public class EnterBreathingSpaceLipTest extends BpmnBaseTest {
 
     //CCD Case Event
     private static final String NOTIFY_APPLICANT1_BREATHING_SPACE_LIP
-        = "NOTIFY_APPLICANT1_BREATHING_SPACE_LIP";
+        = "NOTIFY_LIP_APPLICANT1_BREATHING_SPACE_ENTER";
     private static final String NOTIFY_RESPONDENT_BREATHING_SPACE_LIP
-        = "NOTIFY_RESPONDENT_BREATHING_SPACE_LIP";
+        = "NOTIFY_LIP_RESPONDENT_BREATHING_SPACE_ENTER";
     //Activity IDs
     private static final String NOTIFY_APPLICANT1_BREATHING_SPACE_LIP_ID
         = "NotifyApplicant1BreathingSpaceLIP";
