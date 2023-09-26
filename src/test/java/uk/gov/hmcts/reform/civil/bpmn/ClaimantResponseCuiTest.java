@@ -58,8 +58,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
-
     private void assertProcessHasStarted() {
         assertFalse(processInstance.isEnded());
     }
