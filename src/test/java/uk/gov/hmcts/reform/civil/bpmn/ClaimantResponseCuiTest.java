@@ -18,10 +18,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
+
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
+        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
+
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPApplicantClaimantConfirmToProceed";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -53,6 +59,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
         notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -91,9 +98,18 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
+    private void notifyApplicantClaimantConfirmsToProceed() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+    }
+
     private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
     }
-
 }
