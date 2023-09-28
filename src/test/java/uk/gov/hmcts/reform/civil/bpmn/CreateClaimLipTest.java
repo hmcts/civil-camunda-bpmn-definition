@@ -15,6 +15,10 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String ASSIGN_CASE_TO_APPLICANT1_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
     private static final String ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID = "CaseAssignmentToApplicant1";
 
+    //Notify applicant 1 claim submitted
+    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT = "NOTIFY_APPLICANT1_CLAIM_SUBMITTED";
+    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID = "NotifyApplicant1ClaimSubmitted";
+
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -25,7 +29,19 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
         completeClaimIssue(variables);
+        notifyApplicant1ClaimSubmitted(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
+    }
+
+    private void notifyApplicant1ClaimSubmitted(VariableMap variables) {
+        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimIssue,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT,
+            NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID,
+            variables
+        );
     }
 
     private void completeClaimIssue(final VariableMap variables) {
