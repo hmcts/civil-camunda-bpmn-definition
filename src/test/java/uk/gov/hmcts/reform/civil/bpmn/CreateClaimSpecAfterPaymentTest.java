@@ -352,9 +352,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-
         @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedToUnReperentedDefendant() {
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimIssued_UnregisteredDefendant() {
 
             //assert process has started
             assertFalse(processInstance.isEnded());
@@ -378,9 +377,9 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             startBusinessProcess(variables);
 
             //Update Respondent response deadline date
-            ExternalTask UpdateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
+            ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                UpdateRespondentResponseDeadLine,
+                updateRespondentResponseDeadLine,
                 PROCESS_CASE_EVENT,
                 SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
                 SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
