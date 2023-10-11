@@ -17,6 +17,9 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String GENERATE_PDF_FORM_EVENT = "GENERATE_DRAFT_FORM";
     private static final String GENERATE_PDF_FORM_ACTIVITY_ID = "GenerateDraftForm";
 
+    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT = "NOTIFY_APPLICANT1_CLAIM_SUBMITTED";
+    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID = "NotifyApplicant1ClaimSubmitted";
+
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -26,12 +29,26 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
-        completeApplicantAssignment(variables);
+        completeClaimIssue(variables);
+        notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
-    private void completeApplicantAssignment(final VariableMap variables) {
+    private void notifyApplicant1ClaimSubmitted(VariableMap variables) {
+        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimIssue,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT,
+            NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void completeClaimIssue(final VariableMap variables) {
+
+        //complete the applicant assignment
         ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             assignTask,

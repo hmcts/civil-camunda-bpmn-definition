@@ -179,9 +179,9 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             "ClaimantDisAgreeRepaymentPlanNotifyApplicant"
         );
 
-        ExternalTask notifyLipDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyLipDefendant,
+            notifyRespondent,
             PROCESS_CASE_EVENT,
             "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT",
             "ClaimantDisAgreedRepaymentPlanNotifyLip"
@@ -217,7 +217,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true,
+            "SDO_ENABLED", true
         ));
 
         //complete the start business process
@@ -434,10 +435,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to LIP respondent
-        ExternalTask notifyLipRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyLipRespondent,
+            notifyRespondent,
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
