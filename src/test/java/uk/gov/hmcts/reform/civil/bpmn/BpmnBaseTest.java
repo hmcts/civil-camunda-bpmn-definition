@@ -47,6 +47,8 @@ public abstract class BpmnBaseTest {
     public static final String FLOW_STATE = "flowState";
     public static final String IS_MULTI_TRACK = "MULTI_CLAIM";
     public static final String BULK_CLAIM_ENABLED = "BULK_CLAIM_ENABLED";
+    public static final String LIP_CASE = "LIP_CASE";
+    public static final String PIP_ENABLED = "PIP_ENABLED";
 
     public final String bpmnFileName;
     public final String processId;
