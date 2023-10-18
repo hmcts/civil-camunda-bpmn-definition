@@ -31,6 +31,7 @@
 ./bin/utils/ccd-add-role.sh "cui-nbc-profile"
 ./bin/utils/ccd-add-role.sh "citizen-profile"
 ./bin/utils/ccd-add-role.sh "next-hearing-date-admin"
+./bin/utils/ccd-add-role.sh "caseworker-civil-citizen-ui-pcqextractor"
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
