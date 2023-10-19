@@ -26,6 +26,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "GENERATE_HEARING_FORM";
     public static final String CREATE_SERVICE_REQUEST_API
         = "CREATE_SERVICE_REQUEST_API";
+    public static final String SEND_HEARING_TO_LIP_DEFENDANT
+        = "SEND_HEARING_TO_LIP_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
@@ -39,6 +41,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "GenerateHearingForm";
     private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         = "ServiceRequestAPI";
+    private static final String SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID
+        = "SendHearingToDefendantLIP";
 
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
@@ -176,6 +180,12 @@ class HearingProcessTest extends BpmnBaseTest {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
