@@ -236,7 +236,13 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -287,7 +293,7 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
