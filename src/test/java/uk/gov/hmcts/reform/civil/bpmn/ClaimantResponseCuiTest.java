@@ -87,7 +87,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
-
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
