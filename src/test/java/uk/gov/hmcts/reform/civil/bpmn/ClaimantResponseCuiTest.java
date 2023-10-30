@@ -101,7 +101,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-	@Test
+    @Test
     void shouldRunProcess_ClaimIsInFullAdmitRepaymentAccept() {
 
         //assert process has started
@@ -152,7 +152,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
-	
+
     private void notifyRespondentClaimantConfirmsToProceed() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
