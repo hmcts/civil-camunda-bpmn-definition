@@ -14,7 +14,6 @@
       <bpmn:outgoing>Flow_fullDefence</bpmn:outgoing>
       <bpmn:outgoing>CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION</bpmn:outgoing>
       <bpmn:outgoing>IN_MEDIATION_FLOW</bpmn:outgoing>
-      <bpmn:outgoing>Flow_14td75f</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="JudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -61,7 +60,6 @@
       <bpmn:incoming>Flow_fullDefence</bpmn:incoming>
       <bpmn:incoming>Flow_0usnw79</bpmn:incoming>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
-      <bpmn:incoming>Flow_14td75f</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zgri</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v6zgri" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -88,9 +86,6 @@
     <bpmn:sequenceFlow id="IN_MEDIATION_FLOW" name="In Mediation" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_14td75f" name="Manual Determination" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT"}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -102,18 +97,11 @@
           <dc:Bounds x="160" y="308" width="23" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="CLRUI_End">
-        <dc:Bounds x="1502" y="265" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0p15z9i_di" bpmnElement="Gateway_RESPONSE_FLOW" isMarkerVisible="true">
         <dc:Bounds x="415" y="258" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="377" y="246" width="46" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
-        <dc:Bounds x="610" y="440" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1iyxejm_di" bpmnElement="Event_1iyxejm">
         <dc:Bounds x="272" y="142" width="36" height="36" />
@@ -122,8 +110,8 @@
         <dc:Bounds x="240" y="243" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0negovp_di" bpmnElement="END_BUSINESS_PROCESS">
-        <dc:Bounds x="1350" y="243" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
+        <dc:Bounds x="610" y="440" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1xo1yot_di" bpmnElement="NotifyLiPRespondentClaimantConfirmToProceed">
@@ -133,6 +121,13 @@
       <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="NotifyLiPApplicantClaimantConfirmToProceed">
         <dc:Bounds x="1140" y="243" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0negovp_di" bpmnElement="END_BUSINESS_PROCESS">
+        <dc:Bounds x="1350" y="243" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="CLRUI_End">
+        <dc:Bounds x="1502" y="265" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
         <dc:Bounds x="272" y="225" width="36" height="36" />
@@ -192,20 +187,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02ja65l_di" bpmnElement="IN_MEDIATION_FLOW">
         <di:waypoint x="440" y="308" />
-        <di:waypoint x="440" y="660" />
-        <di:waypoint x="970" y="660" />
+        <di:waypoint x="440" y="830" />
+        <di:waypoint x="970" y="830" />
         <di:waypoint x="970" y="323" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="451" y="642" width="60" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14td75f_di" bpmnElement="Flow_14td75f">
-        <di:waypoint x="440" y="308" />
-        <di:waypoint x="440" y="770" />
-        <di:waypoint x="970" y="770" />
-        <di:waypoint x="970" y="323" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="446" y="736" width="69" height="27" />
+          <dc:Bounds x="451" y="812" width="60" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
