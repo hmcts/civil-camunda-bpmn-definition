@@ -77,6 +77,31 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldRunProcess_ClaimIsInMediation() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+	@Test
     void shouldRunProcess_ClaimIsInFullAdmitRepaymentAccept() {
 
         //assert process has started
@@ -127,7 +152,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
-
+	
     private void notifyRespondentClaimantConfirmsToProceed() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
