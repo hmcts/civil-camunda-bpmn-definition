@@ -89,6 +89,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
