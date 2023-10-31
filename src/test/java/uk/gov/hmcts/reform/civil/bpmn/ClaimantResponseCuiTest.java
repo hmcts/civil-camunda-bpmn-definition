@@ -26,6 +26,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
+    private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
+    private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
@@ -39,13 +41,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     @Test
     void shouldRunProcess() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION");
         variables.put(FLOW_FLAGS, Map.of(
@@ -54,17 +50,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true
         ));
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-        ExternalTask judicialReferral = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            judicialReferral,
-            PROCESS_CASE_EVENT,
+
+        //Then
+        assertProcessHasStarted();
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        startBusinessProcess(variables);
+        assertCompletedCaseEvent(
             JUDICIAL_REFERRAL_EVENT,
             JUDICIAL_REFERRAL_ACTIVITY_ID,
             variables
@@ -72,6 +63,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -97,17 +89,41 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
 
+    private void assertProcessHasStarted() {
+        assertFalse(processInstance.isEnded());
+    }
+
     private void notifyRespondentClaimantConfirmsToProceed() {
+        assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    }
+
+    private void generateDQPdf() {
+        assertCompletedCaseEvent(DQ_PDF_EVENT, DQ_PDF_ACTIVITY_ID);
+    }
+
+    private void assertCompletedCaseEvent(String eventName, String activityId) {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+            eventName,
+            activityId
+        );
+    }
+
+    private void assertCompletedCaseEvent(String eventName, String activityId, VariableMap variables) {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            eventName,
+            activityId,
+            variables
         );
     }
 
