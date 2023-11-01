@@ -23,6 +23,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
+        = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -31,6 +34,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+
 
     public ClaimantResponseCuiTest() {
         super(
@@ -90,6 +95,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        generateRPAContinuousFeed();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -104,6 +110,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateDQPdf() {
         assertCompletedCaseEvent(DQ_PDF_EVENT, DQ_PDF_ACTIVITY_ID);
+    }
+
+    private void generateRPAContinuousFeed() {
+        assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
