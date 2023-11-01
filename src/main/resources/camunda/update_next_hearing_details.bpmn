@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:process id="UPDATE_NEXT_HEARING_DETAILS_ID" isExecutable="true">
-    <bpmn:startEvent id="Updat" name="Start" camunda:initiator="UpdateNextHearingInfo">
+    <bpmn:startEvent id="start" name="Start" camunda:initiator="UpdateNextHearingInfo">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_0e1sudl" />
     </bpmn:startEvent>
@@ -16,7 +16,7 @@
       <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartHearingNoticeBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
         <camunda:out variables="all" />
@@ -32,7 +32,7 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0uj9pwb" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
-    <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="Updat" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="start" targetRef="Activity_StartBusinessProcess" />
     <bpmn:serviceTask id="UpdateNextHearingDate" name="Update next hearing date" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -47,7 +47,7 @@
     <bpmn:textAnnotation id="TextAnnotation_0tiu9or">
       <bpmn:text>UpdateNextHearingInfo</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1nih7ul" sourceRef="Updat" targetRef="TextAnnotation_0tiu9or" />
+    <bpmn:association id="Association_1nih7ul" sourceRef="start" targetRef="TextAnnotation_0tiu9or" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="NOTIFY_DEFENDANT_OF_CLAIM_DETAILS" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -76,7 +76,7 @@
         <di:waypoint x="780" y="250" />
         <di:waypoint x="832" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Updat">
+      <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="start">
         <dc:Bounds x="242" y="232" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="248" y="275" width="24" height="14" />

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,13 +9,40 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class UpdateNextHearingDetailsTest extends BpmnBaseTest {
 
+    private static final String DIAGRAM_PATH = "camunda/%s";
+
     public static final String MESSAGE_NAME = "UpdateNextHearingInfo";
+
+    public static final String START_BUSINESS_TOPIC = "START_HEARING_NOTICE_BUSINESS_PROCESS";
+
+    public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS";
+
     public static final String PROCESS_ID = "UPDATE_NEXT_HEARING_DETAILS_ID";
     private static final String UPDATE_NEXT_HEARING_DETAILS = "UPDATE_NEXT_HEARING_DETAILS";
+
+    public static final String START_BUSINESS_ACTIVITY = "StartHearingNoticeBusinessProcessTaskId";
     private static final String UPDATE_NEXT_HEARING_DETAILS_ACTIVITY_ID = "UpdateNextHearingDate";
 
     public UpdateNextHearingDetailsTest() {
         super("update_next_hearing_details.bpmn", PROCESS_ID);
+    }
+
+    @BeforeEach
+    void setup() {
+        //deploy process
+        startBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "start_hearing_notice_business_process.bpmn"))
+            .deploy();
+        endBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_business_process.bpmn"))
+            .deploy();
+        deployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
+            .deploy();
+        processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
     @Test
