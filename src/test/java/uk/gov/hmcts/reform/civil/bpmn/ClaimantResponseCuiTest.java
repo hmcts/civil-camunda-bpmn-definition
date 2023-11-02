@@ -36,7 +36,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
-
     public ClaimantResponseCuiTest() {
         super(
             "claimant_response_cui.bpmn",
@@ -151,5 +150,4 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
     }
-
 }
