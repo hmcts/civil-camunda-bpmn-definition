@@ -1,13 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,9 +11,15 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     //BPMN Settings
     private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT";
     private static final String PROCESS_ID = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID";
-    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
+    public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
+    private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
+    private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
 
     //Notifying respondents
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
@@ -28,17 +28,13 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
               "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -46,8 +42,25 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
+        );
+
+        //complete the document generation
+        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_DRAFT_DOCUMENT,
+            GENERATE_DRAFT_DOCUMENT_ID
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID
         );
 
         //notify respondents
@@ -56,8 +69,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             notifyRespondents,
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTYFYING_RESPONDENTS_EVENT,
-            GENERAL_APPLICATION_NOTIYFYING_ID,
-            variables
+            GENERAL_APPLICATION_NOTIYFYING_ID
         );
 
         //end business process

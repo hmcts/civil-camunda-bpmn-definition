@@ -30,6 +30,9 @@ java:
         - robotics-notification-multipartyrecipient
         - notification-caseworker-spec-receiver
         - ordnance-survey-api-key
+        - default-password
+        - judge-default-password
+        - iac-default-password
   environment:
     IDAM_CLIENT_ID: civil-service
     IDAM_CLIENT_REDIRECT_URI: https://civil-camunda-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2/callback
@@ -72,6 +75,7 @@ java:
     LAUNCH_DARKLY_ENV: camunda-staging
     EM_CCD_ORCHESTRATOR_URL: http://em-ccd-orchestrator-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     RELEASE_REVISION: "{{ .Release.Revision }}"
+    HMC_HEARINGS_SUBSCRIPTION_ENABLED: false
   postgresql:
     enabled: true
     releaseNameOverride: ${SERVICE_NAME}-postgresql
@@ -170,7 +174,10 @@ ccd:
   ccd-data-store-api:
     java:
       imagePullPolicy: Always
-      devcpuRequests: 500m
+      devmemoryRequests: 2048Mi
+      devcpuRequests: 1000m
+      devmemoryLimits: 4096Mi
+      devcpuLimits: 2000m
       environment:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql

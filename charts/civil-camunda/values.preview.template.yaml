@@ -5,7 +5,7 @@ java:
   applicationPort: 4000
   image: 'hmctspublic.azurecr.io/civil/service:latest'
   imagePullPolicy: Always
-  ingressHost: ${SERVICE_FQDN}
+  ingressHost: ${SERVICE_NAME}.preview.platform.hmcts.net
   keyVaults:
     civil:
       resourceGroup: civil
@@ -30,6 +30,9 @@ java:
         - robotics-notification-multipartyrecipient
         - ordnance-survey-api-key
         - notification-caseworker-spec-receiver
+        - default-password
+        - judge-default-password
+        - iac-default-password
   environment:
     IDAM_CLIENT_ID: civil-service
     IDAM_CLIENT_REDIRECT_URI: https://civil-camunda-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2/callback
@@ -70,6 +73,9 @@ java:
     FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
     STITCHING_API_ENABLED: false
     POLLING_EVENT_EMITTER_ENABLED: false
+    SERVICE_REQUEST_UPDATE: https://${SERVICE_FQDN}/service-request-update
+    SERVICE_REQUEST_UPDATE_CLAIM_ISSUED: https://${SERVICE_FQDN}/service-request-update-claim-issued
+    HMC_HEARINGS_SUBSCRIPTION_ENABLED: false
   postgresql:
     enabled: true
     releaseNameOverride: ${SERVICE_NAME}-postgresql
@@ -99,7 +105,7 @@ idam-pr:
   enabled: true
   redirect_uris:
     XUI:
-      - https://xui-${SERVICE_FQDN}/oauth2/callback
+      - https://xui-${SERVICE_NAME}.preview.platform.hmcts.net/oauth2/callback
 
 xui-webapp:
   enabled: true
@@ -167,6 +173,8 @@ ccd:
     java:
       imagePullPolicy: Always
       devcpuRequests: 500m
+      devmemoryRequests: 2048Mi
+      devmemoryLimits: 4096Mi
       environment:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql

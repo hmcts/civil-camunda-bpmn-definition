@@ -22,21 +22,11 @@
     <bpmn:endEvent id="Event_0pltq59">
       <bpmn:incoming>Flow_0nufgia</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="CreateGeneralApplicationCase" name="Create General Application Case" camunda:type="external" camunda:topic="createApplicationEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_GENERAL_APPLICATION_CASE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0wc0u17</bpmn:incoming>
-      <bpmn:outgoing>Flow_1i7iyh8</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0zyvudm" sourceRef="LinkGeneralApplicationCaseToParentCase" targetRef="AssigningOfRoles" />
     <bpmn:sequenceFlow id="Flow_1i7iyh8" sourceRef="CreateGeneralApplicationCase" targetRef="LinkGeneralApplicationCaseToParentCase" />
-    <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
     <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
     <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
     <bpmn:sequenceFlow id="Flow_0cw5dnh" sourceRef="AssigningOfRoles" targetRef="GeneralApplicationValidateFee" />
@@ -75,20 +65,50 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1s97v1o</bpmn:incoming>
-      <bpmn:outgoing>Flow_14l3rsx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ftk70c</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_14l3rsx" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="Activity_18x7hxw" />
+    <bpmn:sequenceFlow id="Flow_0nlz92w" sourceRef="Activity_18x7hxw" targetRef="Event_05yxbay" />
+    <bpmn:sequenceFlow id="Flow_1xd58c9" sourceRef="DraftDocumentGenerator" targetRef="GeneralApplicationNotifying" />
+    <bpmn:sequenceFlow id="Flow_0wc0u17" sourceRef="Activity_099a8bs" targetRef="CreateGeneralApplicationCase" />
+    <bpmn:serviceTask id="CreateGeneralApplicationCase" name="Create General Application Case" camunda:type="external" camunda:topic="createApplicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_GENERAL_APPLICATION_CASE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wc0u17</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i7iyh8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="DraftDocumentGenerator" name="Generate Draft Document" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_DRAFT_DOCUMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ftk70c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xd58c9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xd58c9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f547ld</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1f547ld" sourceRef="GeneralApplicationNotifying" targetRef="Activity_18x7hxw" />
     <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_14l3rsx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tfjg70</bpmn:outgoing>
+      <bpmn:incoming>Flow_1f547ld</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nlz92w</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_05yxbay">
-      <bpmn:incoming>Flow_0tfjg70</bpmn:incoming>
+      <bpmn:incoming>Flow_0nlz92w</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0tfjg70" sourceRef="Activity_18x7hxw" targetRef="Event_05yxbay" />
+    <bpmn:sequenceFlow id="Flow_1ftk70c" sourceRef="GeneralApplicationPaymentServiceReq" targetRef="DraftDocumentGenerator" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
@@ -108,9 +128,6 @@
       <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
         <dc:Bounds x="322" y="100" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00cyec9_di" bpmnElement="CreateGeneralApplicationCase">
-        <dc:Bounds x="460" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0n2dfke_di" bpmnElement="AssigningOfRoles">
         <dc:Bounds x="780" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -124,11 +141,20 @@
         <dc:Bounds x="1050" y="208" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00cyec9_di" bpmnElement="CreateGeneralApplicationCase">
+        <dc:Bounds x="460" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1amyxzl_di" bpmnElement="DraftDocumentGenerator">
+        <dc:Bounds x="1190" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
+        <dc:Bounds x="1510" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
-        <dc:Bounds x="1200" y="208" width="100" height="80" />
+        <dc:Bounds x="1690" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
-        <dc:Bounds x="1352" y="230" width="36" height="36" />
+        <dc:Bounds x="1832" y="230" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -143,10 +169,6 @@
       <bpmndi:BPMNEdge id="Flow_1i7iyh8_di" bpmnElement="Flow_1i7iyh8">
         <di:waypoint x="560" y="248" />
         <di:waypoint x="620" y="248" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
-        <di:waypoint x="390" y="248" />
-        <di:waypoint x="460" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
         <di:waypoint x="340" y="208" />
@@ -164,13 +186,25 @@
         <di:waypoint x="1010" y="248" />
         <di:waypoint x="1050" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14l3rsx_di" bpmnElement="Flow_14l3rsx">
-        <di:waypoint x="1150" y="248" />
-        <di:waypoint x="1200" y="248" />
+      <bpmndi:BPMNEdge id="Flow_0nlz92w_di" bpmnElement="Flow_0nlz92w">
+        <di:waypoint x="1790" y="248" />
+        <di:waypoint x="1832" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tfjg70_di" bpmnElement="Flow_0tfjg70">
-        <di:waypoint x="1300" y="248" />
-        <di:waypoint x="1352" y="248" />
+      <bpmndi:BPMNEdge id="Flow_1xd58c9_di" bpmnElement="Flow_1xd58c9">
+        <di:waypoint x="1290" y="248" />
+        <di:waypoint x="1510" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wc0u17_di" bpmnElement="Flow_0wc0u17">
+        <di:waypoint x="390" y="248" />
+        <di:waypoint x="460" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f547ld_di" bpmnElement="Flow_1f547ld">
+        <di:waypoint x="1610" y="248" />
+        <di:waypoint x="1690" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ftk70c_di" bpmnElement="Flow_1ftk70c">
+        <di:waypoint x="1150" y="248" />
+        <di:waypoint x="1190" y="248" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

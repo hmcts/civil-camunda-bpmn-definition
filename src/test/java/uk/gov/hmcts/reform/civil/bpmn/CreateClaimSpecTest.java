@@ -19,8 +19,8 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
     private static final String FLOW_STATE = "flowState";
     private static final String FLOW_FLAGS = "flowFlags";
     //assign case access
-    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1_SPEC";
-    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1ForSpec";
+    private static final String CASE_ASSIGNMENT_EVENT = "ASSIGN_CASE_TO_APPLICANT_SOLICITOR1";
+    private static final String CASE_ASSIGNMENT_ACTIVITY_ID = "CaseAssignmentToApplicantSolicitor1";
     //validate fee
     private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE_SPEC";
     private static final String VALIDATE_FEE_ACTIVITY_ID = "ValidateClaimFeeForSpec";
@@ -122,7 +122,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                "RPA_CONTINUOUS_FEED", true,
                 "PIP_ENABLED", true));
 
             startBusinessProcess(variables);
@@ -198,7 +197,7 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
+            variables.put(FLOW_FLAGS, null);
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -265,7 +264,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -332,7 +330,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);
@@ -383,7 +380,6 @@ public class CreateClaimSpecTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of("RPA_CONTINUOUS_FEED", true));
 
             //complete the start business process
             startBusinessProcess(variables);

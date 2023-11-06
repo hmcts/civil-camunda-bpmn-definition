@@ -4,10 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,13 +32,20 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
     private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
 
+    //Make Service Request
+    private static final String GENERATE_DRAFT_DOC_EVENT = "GENERATE_DRAFT_DOCUMENT";
+    private static final String GENERATE_DRAFT_DOC_ID = "DraftDocumentGenerator";
+
+    //Notifying respondents
+    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
+    private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
+
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(Boolean rpaContinuousFeed) {
+    @Test
+    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -50,7 +53,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -109,6 +111,26 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             MAKE_SERVICE_REQ_EVENT,
             MAKE_SERVICE_REQ_ID,
             variables
+        );
+
+        //make service request
+        ExternalTask generateDraftDoc = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            generateDraftDoc,
+            APPLICATION_EVENT_GASPEC,
+            GENERATE_DRAFT_DOC_EVENT,
+            GENERATE_DRAFT_DOC_ID,
+            variables
+        );
+
+        //notify respondents
+        ExternalTask notifyRespondents = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+                notifyRespondents,
+                APPLICATION_EVENT_GASPEC,
+                NOTYFYING_RESPONDENTS_EVENT,
+                GENERAL_APPLICATION_NOTIYFYING_ID,
+                variables
         );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
