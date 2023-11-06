@@ -23,6 +23,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
+        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
+        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
+
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -31,6 +38,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
+
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -118,8 +131,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -145,8 +158,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -154,6 +167,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRespondentClaimantConfirmsToProceed() {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    }
+
+    private void notifyClaimantClaimantRejectRepayment() {
+        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
+    }
+
+    private void notifyRespondentClaimantRejectRepayment() {
+        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
     }
 
     private void generateDQPdf() {

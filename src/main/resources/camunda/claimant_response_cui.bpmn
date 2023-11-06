@@ -61,7 +61,6 @@
       <bpmn:incoming>Flow_fullDefence</bpmn:incoming>
       <bpmn:incoming>Flow_0usnw79</bpmn:incoming>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
-      <bpmn:incoming>Flow_1lx3lav</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zgri</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v6zgri" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -95,10 +94,11 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g9m4jb</bpmn:incoming>
+      <bpmn:incoming>Flow_1d27v7f</bpmn:incoming>
       <bpmn:outgoing>Flow_0beyd6n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0beyd6n" sourceRef="Generate_LIP_Claimant_DQ" targetRef="END_BUSINESS_PROCESS" />
-    <bpmn:sequenceFlow id="Flow_187wcee" name="Applicant proposes new repayment plan (Respondent is LTD company or organization)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant">
+    <bpmn:sequenceFlow id="Flow_187wcee" name="Applicant proposes new repayment plan (Respondent is LTD company or organization)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ClaimantDisAgreedRepaymentPlanNotifyLip" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -107,20 +107,20 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0p9rlzq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1lx3lav</bpmn:outgoing>
+      <bpmn:incoming>Flow_187wcee</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xewyo8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1lx3lav" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="NotifyLiPRespondentClaimantConfirmToProceed" />
+    <bpmn:sequenceFlow id="Flow_1xewyo8" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" />
     <bpmn:serviceTask id="ClaimantDisAgreeRepaymentPlanNotifyApplicant" name="Notify applicant 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_187wcee</bpmn:incoming>
-      <bpmn:outgoing>Flow_0p9rlzq</bpmn:outgoing>
+      <bpmn:incoming>Flow_1xewyo8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d27v7f</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0p9rlzq" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip" />
+    <bpmn:sequenceFlow id="Flow_1d27v7f" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="Generate_LIP_Claimant_DQ" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -169,11 +169,11 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1i7id8i" bpmnElement="ClaimantDisAgreedRepaymentPlanNotifyLip">
-        <dc:Bounds x="780" y="630" width="100" height="80" />
+        <dc:Bounds x="610" y="710" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_13aq65z" bpmnElement="ClaimantDisAgreeRepaymentPlanNotifyApplicant">
-        <dc:Bounds x="610" y="630" width="100" height="80" />
+        <dc:Bounds x="820" y="710" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
@@ -234,11 +234,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02ja65l_di" bpmnElement="IN_MEDIATION_FLOW">
         <di:waypoint x="440" y="308" />
-        <di:waypoint x="440" y="830" />
-        <di:waypoint x="970" y="830" />
+        <di:waypoint x="440" y="610" />
+        <di:waypoint x="970" y="610" />
         <di:waypoint x="970" y="323" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="445" y="790" width="89" height="40" />
+          <dc:Bounds x="445" y="570" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0beyd6n_di" bpmnElement="Flow_0beyd6n">
@@ -247,20 +247,20 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_187wcee_di" bpmnElement="Flow_187wcee">
         <di:waypoint x="440" y="308" />
-        <di:waypoint x="440" y="670" />
-        <di:waypoint x="610" y="670" />
+        <di:waypoint x="440" y="750" />
+        <di:waypoint x="610" y="750" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="449" y="590" width="82" height="80" />
+          <dc:Bounds x="449" y="668" width="82" height="80" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lx3lav_di" bpmnElement="Flow_1lx3lav">
-        <di:waypoint x="880" y="670" />
-        <di:waypoint x="970" y="670" />
-        <di:waypoint x="970" y="323" />
+      <bpmndi:BPMNEdge id="Flow_1xewyo8_di" bpmnElement="Flow_1xewyo8">
+        <di:waypoint x="710" y="750" />
+        <di:waypoint x="820" y="750" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0p9rlzq_di" bpmnElement="Flow_0p9rlzq">
-        <di:waypoint x="710" y="670" />
-        <di:waypoint x="780" y="670" />
+      <bpmndi:BPMNEdge id="Flow_1d27v7f_di" bpmnElement="Flow_1d27v7f">
+        <di:waypoint x="920" y="750" />
+        <di:waypoint x="1250" y="750" />
+        <di:waypoint x="1250" y="323" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
