@@ -112,7 +112,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldRunProcess_ClaimIsInFullAdmitRejecRepayment() {
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepayment() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
