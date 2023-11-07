@@ -59,7 +59,7 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         );
     }
 
-    private void generateDraftForm (final VariableMap variables) {
+    private void generateDraftForm(final VariableMap variables) {
         ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             assignTask,
