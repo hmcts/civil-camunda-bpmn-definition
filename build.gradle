@@ -154,6 +154,24 @@ task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:smoke'
 }
 
+task runProdApiTests(type: Exec, description: 'Runs Prod features in functional tests.') {
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-prod'
+}
+
+task runNonProdApiTests(type: Exec, description: 'Runs Non Prod featuers in functional tests.') {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-nonprod'
+}
+
+task runNightlyApiTests(type: Exec, description: 'Runs additional multiparty nightly tests.') {
+  onlyIf {
+    return System.env.NIGHTLY_RUN == 'true'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-nightly-prod'
+}
+
 task runDJTests(type: Exec, description: 'Runs DJ Api functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-dj'
 }
@@ -165,7 +183,6 @@ task runSpecApiTests(type: Exec, description: 'Runs Spec functional tests.') {
 task runApiTests(type: Exec, description: 'Runs Api functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-unspec'
 }
-
 
 task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:rpa'
@@ -188,7 +205,7 @@ task smoke(description: 'Runs the smoke tests.') {
 
 task functional(description: 'Runs the functional tests.') {
   dependsOn(inStrictOrder(awaitApplicationReadiness,
-    runCosTests, runDJTests, runSpecApiTests, runSdoApiTests, runApiTests))
+    runProdApiTests, runNonProdApiTests, runNightlyApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
