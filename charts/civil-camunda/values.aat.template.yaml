@@ -62,10 +62,10 @@ java:
     RD_COMMONDATA_API_URL: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CORE_CASE_DATA_API_URL: http://${SERVICE_NAME}-ccd-data-store-api
     CASE_DOCUMENT_AM_URL: http://ccd-case-document-am-api-aat.service.core-compute-aat.internal
-    CMC_DB_HOST: "{{ .Values.postgresql.releaseNameOverride}}"
+    CMC_DB_HOST: ${SERVICE_NAME}-postgresql
+    CMC_DB_USERNAME: ${POSTGRES_USER}
+    CMC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     CMC_DB_CONNECTION_OPTIONS: '?sslmode=allow'
-    CMC_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
-    CMC_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     REFERENCE_DATABASE_MIGRATION: true
     FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
     FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
@@ -79,7 +79,6 @@ java:
     ACA_SERVICE_API_BASEURL: http://${SERVICE_NAME}-aac-manage-case-assignment
   postgresql:
     enabled: true
-    releaseNameOverride: ${SERVICE_NAME}-postgresql
     image:
       registry: hmctspublic.azurecr.io
       repository: imported/bitnami/postgresql
