@@ -98,8 +98,8 @@ java:
             CREATE DATABASE "camunda" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
             CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
-      username: hmcts
-      password: hmcts
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
 
 idam-pr:
   releaseNameOverride: ${SERVICE_NAME}-xui-idam-pr
@@ -170,14 +170,15 @@ ccd:
         PROXY_DOCUMENT_MANAGEMENT: http://dm-store-aat.service.core-compute-aat.internal
       ingressHost: civil-camunda-gateway-staging-aat.service.core-compute-aat.internal
       ingressIP: ${INGRESS_IP}
-      keyVaults: []
+      disableKeyVaults: true
   ccd-data-store-api:
     java:
       imagePullPolicy: Always
+      devcpuRequests: 500m
       devmemoryRequests: 2048Mi
-      devcpuRequests: 1000m
-      devmemoryLimits: 4096Mi
-      devcpuLimits: 2000m
+      devmemoryLimits: 8Gi
+      autoscaling:
+        enabled: false
       environment:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
@@ -197,7 +198,7 @@ ccd:
         CCD_MULTIPARTY_EVENTS: DEFENDANT_RESPONSE,ACKNOWLEDGE_CLAIM,CLAIMANT_RESPONSE
         ROLE_ASSIGNMENT_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
         RELEASE_REVISION: "{{ .Release.Revision }}"
-      keyVaults: []
+      disableKeyVaults: true
       ingressHost: civil-camunda-data-store-staging-aat.service.core-compute-aat.internal
   ccd-definition-store-api:
     java:
@@ -205,13 +206,13 @@ ccd:
       devcpuRequests: 500m
       devmemoryRequests: 512Mi
       devcpuLimits: 2
-      devmemoryLimits: 1Gi
+      devmemoryLimits: 8Gi
       environment:
         DEFINITION_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
         DEFINITION_STORE_IDAM_KEY: ${CCD_DEFINITION_STORE_S2S_SECRET}
         IDAM_USER_URL: https://idam-web-public.aat.platform.hmcts.net
         RELEASE_REVISION: "{{ .Release.Revision }}"
-      keyVaults: []
+      disableKeyVaults: true
       ingressHost: civil-camunda-definition-store-staging-aat.service.core-compute-aat.internal
 
   postgresql:
@@ -233,8 +234,8 @@ camunda-bpm:
       CAMUNDA_API_AUTH_ENABLED: false
       CAMUNDA_DB_HOST: ${SERVICE_NAME}-postgresql
       CAMUNDA_DB_NAME: camunda
-      CAMUNDA_DB_USER_NAME: hmcts
-      CAMUNDA_DB_PASSWORD: hmcts
+      CAMUNDA_DB_USER_NAME: ${POSTGRES_USER}
+      CAMUNDA_DB_PASSWORD: ${POSTGRES_PASSWORD}
       CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE: true
       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
       CAMUNDA_DB_CONN_OPTIONS: ""
