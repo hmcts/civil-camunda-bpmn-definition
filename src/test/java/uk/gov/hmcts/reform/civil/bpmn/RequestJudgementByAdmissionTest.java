@@ -1,7 +1,11 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,6 +20,10 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
         = "PROCEEDS_IN_HERITAGE_SYSTEM";
     public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION
         = "NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION";
+    public static final String NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT
+        = "NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT";
+    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT
+        = "NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE
         = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
 
@@ -24,6 +32,10 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
         = "proceedsInHeritageSystem";
     public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_ACTIVITY_ID
         = "RequestJudgementByAdmissionNotifyRespondent1";
+    public static final String NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
+        = "RequestJudgementByAdmissionLipClaimantNotifyApplicant1";
+    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
+        = "RequestJudgementByAdmissionLipClaimantNotifyRespondent1";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     public RequestJudgementByAdmissionTest() {
@@ -31,10 +43,14 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteBreathingSpaceLifted_withRpa() {
+    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLr() {
 
         assertFalse(processInstance.isEnded());
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "LIP_CASE", false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -42,7 +58,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
         //complete the proceed offline
@@ -59,6 +76,63 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION,
                                    NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_ACTIVITY_ID
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+        );
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLipClaimant() {
+        assertFalse(processInstance.isEnded());
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "LIP_CASE", true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the proceed offline
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   PROCEEDS_IN_HERITAGE_SYSTEM,
+                                   PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //complete the applicant lip notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT,
+                                   NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
+        );
+
+        //complete the respondent lip notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT,
+                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
         );
 
         //complete the Robotics notification
