@@ -14,7 +14,7 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     //Assigning claim to applicant 1
     private static final String ASSIGN_CASE_TO_APPLICANT1_EVENT = "ASSIGN_CASE_TO_APPLICANT1";
 
-    private static final String CREATE_SERVICE_REQUEST_CUI_EVENT = "CREATE_SERVICE_REQUEST_CUI";
+    private static final String CREATE_SERVICE_REQUEST_CUI_EVENT = "CREATE_SERVICE_REQUEST_CUI_CLAIM_ISSUE";
     private static final String ASSIGN_CASE_TO_APPLICANT1_ACTIVITY_ID = "CaseAssignmentToApplicant1";
     private static final String CREATE_SERVICE_REQUEST_CUI_ACTIVITY_ID = "CreateServiceRequestCUI";
 
