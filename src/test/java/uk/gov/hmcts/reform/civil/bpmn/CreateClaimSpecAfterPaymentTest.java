@@ -365,10 +365,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
             variables.put(FLOW_FLAGS, Map.of(
                 BULK_CLAIM_ENABLED, true,
-                CERTIFICATE_OF_SERVICE, true,
                 LIP_CASE, true,
                 GENERAL_APPLICATION_ENABLED, true,
-                NOTICE_OF_CHANGE, true,
                 UNREPRESENTED_DEFENDANT_ONE, true,
                 PIP_ENABLED, true
             ));
