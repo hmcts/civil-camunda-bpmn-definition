@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class RetriggerCasesSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "RETRIGGER_CASES";
+    public static final String TOPIC_NAME = "RETRIGGER_CASES_EVENTS";
 
     public RetriggerCasesSchedulerTest() {
         super("retrigger_cases_scheduler.bpmn", "RETRIGGER_CASES_SCHEDULER");
