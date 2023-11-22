@@ -36,7 +36,7 @@ class BundleCreationSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 21 * * ? 2024";
+        String cronString = "0 0 21 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
