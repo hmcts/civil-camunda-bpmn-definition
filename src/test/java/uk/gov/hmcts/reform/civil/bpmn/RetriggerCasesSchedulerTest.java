@@ -13,16 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class BundleCreationSchedulerTest extends BpmnBaseTest {
+public class RetriggerCasesSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "BUNDLE_CREATION_CHECK";
+    public static final String TOPIC_NAME = "RETRIGGER_CASES_EVENTS";
 
-    public BundleCreationSchedulerTest() {
-        super("bundle_creation_scheduler.bpmn", "BUNDLE_CREATION_SCHEDULER");
+    public RetriggerCasesSchedulerTest() {
+        super("retrigger_cases_scheduler.bpmn", "RETRIGGER_CASES_SCHEDULER");
     }
 
     @Test
-    void schedulerShouldRaiseTakeCaseOfflineExternalTask_whenStarted() throws ParseException {
+    void notifyRPAEventsSchedulerShouldFireResendNotifyRPAEventsExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,12 +36,12 @@ class BundleCreationSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 21 * * ?";
+        String cronString = "0 0 0 1 * ? 2026";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2024, 1, 1, 21, 0, 0),
-            LocalDateTime.of(2024, 1, 2, 21, 0, 0)
+            LocalDateTime.of(2026, 2, 1, 0, 0, 0),
+            LocalDateTime.of(2026, 3, 1, 0, 0, 0)
         );
 
         //get external tasks
@@ -58,7 +58,7 @@ class BundleCreationSchedulerTest extends BpmnBaseTest {
         List<ExternalTask> externalTasksAfter = getExternalTasks();
         assertThat(externalTasksAfter).isEmpty();
 
-        //assert process is still active - timer event, so always running
+        //assert process is still active - timer event so always running
         assertFalse(processInstance.isEnded());
     }
 }
