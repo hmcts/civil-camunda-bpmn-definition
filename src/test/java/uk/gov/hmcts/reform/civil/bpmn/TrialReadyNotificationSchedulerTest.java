@@ -37,12 +37,12 @@ class TrialReadyNotificationSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
         //scheduler set to run every 10 minutes to ease testing.
-        String cronString = "0 0 0 * * ? 2024";
+        String cronString = "0 0 0 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 0, 0, 1),
-            LocalDateTime.of(2024, 1, 1, 0, 0, 0)
+            LocalDateTime.of(2024, 11, 30, 0, 0, 0),
+            LocalDateTime.of(2024, 12, 1, 0, 0, 0)
         );
 
         //get external tasks

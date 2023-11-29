@@ -42,6 +42,11 @@ def secrets = [
     secret('ccd-importer-password', 'CCD_CONFIGURER_IMPORTER_PASSWORD'),
     secret('ccd-importer-username', 'DEFINITION_IMPORTER_USERNAME'),
     secret('ccd-importer-password', 'DEFINITION_IMPORTER_PASSWORD'),
+    secret('postgres-user', 'POSTGRES_USER'),
+    secret('postgres-password', 'POSTGRES_PASSWORD'),
+    secret('default-password', 'DEFAULT_PASSWORD'),
+    secret('judge-default-password', 'JUDGE_DEFAULT_PASSWORD'),
+    secret('iac-default-password', 'IAC_DEFAULT_PASSWORD')
   ],
   'civil-prod': [
     secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
@@ -82,9 +87,6 @@ withPipeline(type, product, component) {
   onPR {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
-    if (!checkForEnableHelmLabel(env.BRANCH_NAME)) {
-      enableCleanupOfHelmReleaseAlways();
-    }
     env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
   onMaster {
@@ -143,6 +145,7 @@ withPipeline(type, product, component) {
     env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -179,7 +182,7 @@ withPipeline(type, product, component) {
     env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-staging.aat.platform.hmcts.net"
-
+    env.AAC_API_URL="https://civil-camunda-manage-case-assignment-staging.aat.platform.hmcts.net"
     uploadBpmnDiagrams('staging')
   }
 
