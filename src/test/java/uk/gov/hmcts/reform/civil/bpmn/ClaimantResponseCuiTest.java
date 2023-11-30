@@ -36,6 +36,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
+        = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        = "GenerateInterlocutoryJudgementDocument";
+
     public ClaimantResponseCuiTest() {
         super(
             "claimant_response_cui.bpmn",
@@ -158,7 +163,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldRunProcess_ClaimIsInFullAdmitRejecRepayment() {
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepayment() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -176,7 +181,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
+        requestInterlockJudgement();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -203,7 +208,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
+        requestInterlockJudgement();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -254,6 +259,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
+    private void requestInterlockJudgement() {
+        assertCompletedCaseEvent(
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        );
+
+    }
     private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
