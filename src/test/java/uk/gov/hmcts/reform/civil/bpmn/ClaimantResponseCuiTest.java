@@ -35,6 +35,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
+    private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -177,6 +179,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateManualDeterminationPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -204,6 +207,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateManualDeterminationPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -252,6 +256,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
+    }
+
+    private void generateManualDeterminationPdf() {
+        assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
     }
 
     private void endBusinessProcess() {
