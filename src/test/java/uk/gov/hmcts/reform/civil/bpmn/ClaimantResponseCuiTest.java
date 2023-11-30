@@ -266,6 +266,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
     }
+
     private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
