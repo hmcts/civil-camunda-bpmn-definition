@@ -26,6 +26,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
         = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
 
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
+        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
+        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -35,6 +41,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
 
@@ -160,7 +173,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldRunProcess_ClaimIsInFullAdmitRejecRepayment() {
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepayment() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -179,9 +192,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -207,9 +220,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -219,12 +232,24 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
     }
 
+    private void notifyClaimantClaimantRejectRepayment() {
+        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
+    }
+
+    private void notifyRespondentClaimantRejectRepayment() {
+        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
+    }
+
     private void generateDQPdf() {
         assertCompletedCaseEvent(DQ_PDF_EVENT, DQ_PDF_ACTIVITY_ID);
     }
 
     private void generateRPAContinuousFeed() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
+    }
+
+    private void generateManualDeterminationPdf() {
+        assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
@@ -256,10 +281,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
-    }
-
-    private void generateManualDeterminationPdf() {
-        assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
     }
 
     private void endBusinessProcess() {
