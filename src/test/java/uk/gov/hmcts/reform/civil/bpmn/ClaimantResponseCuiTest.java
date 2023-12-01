@@ -26,6 +26,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
         = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
 
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
+        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
+        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -36,6 +42,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
         = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
@@ -181,9 +192,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
+
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         requestInterlockJudgement();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -208,16 +220,34 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
+
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
         requestInterlockJudgement();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
-        assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+        assertCompletedCaseEvent(
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+    }
+
+    private void notifyClaimantClaimantRejectRepayment() {
+        assertCompletedCaseEvent(
+            NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT,
+            NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
+        );
+    }
+
+    private void notifyRespondentClaimantRejectRepayment() {
+        assertCompletedCaseEvent(
+            NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT,
+            NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
+        );
     }
 
     private void generateDQPdf() {
@@ -249,6 +279,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
+    private void requestInterlockJudgement() {
+        assertCompletedCaseEvent(
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        );
+
+    }
+
     private void notifyApplicantClaimantConfirmsToProceed() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -257,14 +295,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
-    }
-
-    private void requestInterlockJudgement() {
-        assertCompletedCaseEvent(
-            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
-            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
-        );
-
     }
 
     private void endBusinessProcess() {
