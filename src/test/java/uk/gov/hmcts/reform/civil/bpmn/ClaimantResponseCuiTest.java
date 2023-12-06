@@ -284,7 +284,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
             GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
         );
-
     }
 
     private void notifyApplicantClaimantConfirmsToProceed() {
