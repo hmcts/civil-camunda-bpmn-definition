@@ -50,6 +50,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
 
+    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
+
+    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
+        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+
     public ClaimantResponseCuiTest() {
         super(
             "claimant_response_cui.bpmn",
