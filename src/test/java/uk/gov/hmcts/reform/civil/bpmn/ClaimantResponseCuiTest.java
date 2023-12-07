@@ -47,6 +47,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
         = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
@@ -230,24 +231,15 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
-        assertCompletedCaseEvent(
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        );
+        assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
     }
 
     private void notifyClaimantClaimantRejectRepayment() {
-        assertCompletedCaseEvent(
-            NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT,
-            NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
-        );
+        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
     }
 
     private void notifyRespondentClaimantRejectRepayment() {
-        assertCompletedCaseEvent(
-            NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT,
-            NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
-        );
+        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
     }
 
     private void generateDQPdf() {
