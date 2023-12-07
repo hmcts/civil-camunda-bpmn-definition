@@ -122,7 +122,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0xsst33" name="No" sourceRef="Gateway_RPA_FLOW" targetRef="END_BUSINESS_PROCESS">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; !(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0o8yi48" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="END_BUSINESS_PROCESS" />
     <bpmn:exclusiveGateway id="Gateway_0xpw8z2">
@@ -172,7 +172,9 @@
       <bpmn:outgoing>Flow_1cmu7zm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1cmu7zm" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="Generate_LIP_Claimant_DQ" />
-    <bpmn:sequenceFlow id="Flow_09aogqc" name="Applicant confirms repayment plan(full/part admin)" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_09aogqc" name="Applicant confirms repayment plan(full/part admin)" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnCaseHandedOffline">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
