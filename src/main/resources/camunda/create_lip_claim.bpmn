@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -51,17 +51,9 @@
       <bpmn:outgoing>Flow_1f9xfbw</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1f9xfbw" sourceRef="NotifyApplicant1ClaimSubmitted" targetRef="GenerateDraftForm" />
-    <bpmn:sequenceFlow id="Flow_0cdhxo6" sourceRef="GenerateDraftForm" targetRef="Activity_19rrcw0" />
     <bpmn:endEvent id="Event_1irqmkk">
       <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0cdhxo6</bpmn:incoming>
-      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:serviceTask id="GenerateDraftForm" name="Generate Draft Claim" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -69,7 +61,25 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1f9xfbw</bpmn:incoming>
-      <bpmn:outgoing>Flow_0cdhxo6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06x85j3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0012tae" sourceRef="CreateServiceRequestCUI" targetRef="Activity_19rrcw0" />
+    <bpmn:callActivity id="Activity_19rrcw0" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_06x85j3" sourceRef="GenerateDraftForm" targetRef="CreateServiceRequestCUI" />
+    <bpmn:serviceTask id="CreateServiceRequestCUI" name="Service Request CUI" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_SERVICE_REQUEST_CUI_CLAIM_ISSUE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1f9xfbw</bpmn:incoming>
+      <bpmn:incoming>Flow_06x85j3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0012tae</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -99,13 +109,17 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="1242" y="362" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="1070" y="340" width="100" height="80" />
+        <dc:Bounds x="1402" y="362" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0pltpg9" bpmnElement="GenerateDraftForm">
         <dc:Bounds x="920" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
+        <dc:Bounds x="1280" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cbdfi6_di" bpmnElement="CreateServiceRequestCUI">
+        <dc:Bounds x="1122" y="362" width="36" height="36" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
@@ -123,8 +137,10 @@
         <di:waypoint x="470" y="258" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="1170" y="380" />
-        <di:waypoint x="1242" y="380" />
+        <di:waypoint x="1380" y="390" />
+        <di:waypoint x="1391" y="390" />
+        <di:waypoint x="1391" y="380" />
+        <di:waypoint x="1402" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ca60wt_di" bpmnElement="Flow_1ca60wt">
         <di:waypoint x="520" y="380" />
@@ -138,9 +154,13 @@
         <di:waypoint x="860" y="380" />
         <di:waypoint x="920" y="380" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cdhxo6_di" bpmnElement="Flow_0cdhxo6">
+      <bpmndi:BPMNEdge id="Flow_0012tae_di" bpmnElement="Flow_0012tae">
+        <di:waypoint x="1158" y="380" />
+        <di:waypoint x="1280" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06x85j3_di" bpmnElement="Flow_06x85j3">
         <di:waypoint x="1020" y="380" />
-        <di:waypoint x="1070" y="380" />
+        <di:waypoint x="1122" y="380" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
