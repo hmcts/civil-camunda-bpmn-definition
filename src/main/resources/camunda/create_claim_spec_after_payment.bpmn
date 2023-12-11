@@ -38,7 +38,7 @@
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_12m4mo5" sourceRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec" />
     <bpmn:sequenceFlow id="Flow_Notify_RPA_RegisteredAndRepresented_Solicitor" sourceRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec" />
-    <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaimForSpec" targetRef="ClaimIssuedNotifyApplicant1ForSpec" />
+    <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaimForSpec" targetRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" />
     <bpmn:sequenceFlow id="Flow_1kgddyt" name="Respondent 1 represented and registered" sourceRef="Gateway_1i24lv3" targetRef="IssueClaimForSpec">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -227,7 +227,6 @@
       <bpmn:incoming>Flow_1kgddyt</bpmn:incoming>
       <bpmn:outgoing>Flow_0mdk6wm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0nxwmio" sourceRef="ClaimIssuedNotifyApplicant1ForSpec" targetRef="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec" />
     <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec" name="Notify respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -252,17 +251,8 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0nxwmio</bpmn:incoming>
-      <bpmn:outgoing>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="ClaimIssuedNotifyApplicant1ForSpec" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_FOR_SUCCESSFUL_PAYMENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mdk6wm</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nxwmio</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Notify_RPA_RegisteredAndRepresented_Solicitor</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0v9sl34" name="1v1 Case?">
       <bpmn:extensionElements />
@@ -284,7 +274,7 @@
       <bpmn:outgoing>Flow_0wambq9</bpmn:outgoing>
       <bpmn:outgoing>Flow_0m7rqcj</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="ClaimIssuedNotifyApplicant1ForSpec2" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ClaimIssuedNotifyApplicant1ForSpec" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_FOR_SUCCESSFUL_PAYMENT</camunda:inputParameter>
@@ -293,8 +283,8 @@
       <bpmn:incoming>Flow_17iwrz6</bpmn:incoming>
       <bpmn:outgoing>Flow_0tave15</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_17iwrz6" sourceRef="IssueClaimForSpecUnrepresentedSolicitor" targetRef="ClaimIssuedNotifyApplicant1ForSpec2" />
-    <bpmn:sequenceFlow id="Flow_0tave15" sourceRef="ClaimIssuedNotifyApplicant1ForSpec2" targetRef="Gateway_09y2h07" />
+    <bpmn:sequenceFlow id="Flow_17iwrz6" sourceRef="IssueClaimForSpecUnrepresentedSolicitor" targetRef="ClaimIssuedNotifyApplicant1ForSpec" />
+    <bpmn:sequenceFlow id="Flow_0tave15" sourceRef="ClaimIssuedNotifyApplicant1ForSpec" targetRef="Gateway_09y2h07" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -383,10 +373,6 @@
       <bpmndi:BPMNShape id="Activity_0f5fw3t_di" bpmnElement="CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec">
         <dc:Bounds x="1570" y="560" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0aawrh2" bpmnElement="ClaimIssuedNotifyApplicant1ForSpec">
-        <dc:Bounds x="1410" y="560" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0v9sl34_di" bpmnElement="Gateway_0v9sl34" isMarkerVisible="true">
         <dc:Bounds x="1335" y="465" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -402,7 +388,7 @@
           <dc:Bounds x="1643" y="522" width="65" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0iq3aj1" bpmnElement="ClaimIssuedNotifyApplicant1ForSpec2">
+      <bpmndi:BPMNShape id="BPMNShape_0iq3aj1" bpmnElement="ClaimIssuedNotifyApplicant1ForSpec">
         <dc:Bounds x="1530" y="450" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -517,7 +503,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mdk6wm_di" bpmnElement="Flow_0mdk6wm">
         <di:waypoint x="1360" y="600" />
-        <di:waypoint x="1410" y="600" />
+        <di:waypoint x="1570" y="600" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kgddyt_di" bpmnElement="Flow_1kgddyt">
         <di:waypoint x="1160" y="515" />
@@ -579,10 +565,6 @@
         <di:waypoint x="1030" y="600" />
         <di:waypoint x="1160" y="600" />
         <di:waypoint x="1160" y="515" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nxwmio_di" bpmnElement="Flow_0nxwmio">
-        <di:waypoint x="1510" y="600" />
-        <di:waypoint x="1570" y="600" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17iwrz6_di" bpmnElement="Flow_17iwrz6">
         <di:waypoint x="1500" y="490" />
