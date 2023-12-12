@@ -21,6 +21,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
 
+
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
@@ -32,6 +33,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
         = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
+
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
+
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
 
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
@@ -52,6 +59,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
+
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByAdmissionPdf";
+
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByDeterminationPdf";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -137,7 +150,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -168,6 +181,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -205,6 +219,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -292,9 +307,18 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
+    }
+
+    private void generateJudgmentByAdmissionPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID);
+    }
+
+    private void generateJudgmentByDeterminationPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID);
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
