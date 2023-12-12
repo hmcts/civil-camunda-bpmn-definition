@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0">
   <bpmn:process id="CLAIMANT_RESPONSE_CUI_PROCESS_ID" name="CLAIMANT_RESPONSE_CUI_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="CLRCUI_StartEvent_1" name="start">
       <bpmn:outgoing>Flow_0uwkh9v</bpmn:outgoing>
@@ -65,7 +65,7 @@
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
       <bpmn:incoming>Flow_1tfpl26</bpmn:incoming>
       <bpmn:incoming>Flow_1fuyad6</bpmn:incoming>
-      <bpmn:incoming>Flow_Full_PartAdmit</bpmn:incoming>
+      <bpmn:incoming>Flow_1x75x11</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zgri</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v6zgri" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -96,7 +96,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g9m4jb</bpmn:incoming>
-      <bpmn:incoming>Flow_1cmu7zm</bpmn:incoming>
+      <bpmn:incoming>Flow_11lml7u</bpmn:incoming>
       <bpmn:outgoing>Flow_0beyd6n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0beyd6n" sourceRef="Generate_LIP_Claimant_DQ" targetRef="Gateway_RPA_FLOW" />
@@ -149,7 +149,7 @@
     <bpmn:sequenceFlow id="Flow_1fuyad6" name="Agree To Mediation" sourceRef="Gateway_0xpw8z2" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Full_PartAdmit" name="Applicant confirm repayment plan(Full/Part admit)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
+    <bpmn:sequenceFlow id="Flow_Full_PartAdmit" name="Applicant confirm repayment plan(Full/Part admit)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="GenerateJudgmentByAdmissionPdf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_AGREE_REPAYMENT" || flowState == "MAIN.PART_ADMIT_AGREE_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ClaimantDisAgreedRepaymentPlanNotifyLip" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -171,7 +171,7 @@
       <bpmn:incoming>Flow_192ex4z</bpmn:incoming>
       <bpmn:outgoing>Flow_1cmu7zm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1cmu7zm" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:sequenceFlow id="Flow_1cmu7zm" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="GenerateJudgmentByDeterminationPdf" />
     <bpmn:sequenceFlow id="Flow_09aogqc" name="Applicant confirms repayment plan(full/part admin)" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnCaseHandedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -185,6 +185,26 @@
       <bpmn:outgoing>Flow_1s9xana</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1s9xana" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:serviceTask id="GenerateJudgmentByDeterminationPdf" name="Generate Judgment By Determination PDF" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1cmu7zm</bpmn:incoming>
+      <bpmn:outgoing>Flow_11lml7u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_11lml7u" sourceRef="GenerateJudgmentByDeterminationPdf" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:serviceTask id="GenerateJudgmentByAdmissionPdf" name="Generate Judgment By Admission PDF" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Full_PartAdmit</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x75x11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1x75x11" sourceRef="GenerateJudgmentByAdmissionPdf" targetRef="NotifyLiPRespondentClaimantConfirmToProceed" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -258,6 +278,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
         <dc:Bounds x="1470" y="730" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qvvz3s_di" bpmnElement="GenerateJudgmentByDeterminationPdf">
+        <dc:Bounds x="940" y="960" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rp10cx_di" bpmnElement="GenerateJudgmentByAdmissionPdf">
+        <dc:Bounds x="610" y="750" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
@@ -381,10 +409,9 @@
       <bpmndi:BPMNEdge id="Flow_0vdp7ur_di" bpmnElement="Flow_Full_PartAdmit">
         <di:waypoint x="440" y="528" />
         <di:waypoint x="440" y="790" />
-        <di:waypoint x="970" y="790" />
-        <di:waypoint x="970" y="543" />
+        <di:waypoint x="610" y="790" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="445" y="733" width="84" height="53" />
+          <dc:Bounds x="434" y="733" width="85" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_192ex4z_di" bpmnElement="Flow_192ex4z">
@@ -393,8 +420,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1cmu7zm_di" bpmnElement="Flow_1cmu7zm">
         <di:waypoint x="850" y="1000" />
-        <di:waypoint x="1250" y="1000" />
-        <di:waypoint x="1250" y="543" />
+        <di:waypoint x="940" y="1000" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09aogqc_di" bpmnElement="Flow_09aogqc">
         <di:waypoint x="1360" y="528" />
@@ -408,6 +434,16 @@
         <di:waypoint x="1570" y="770" />
         <di:waypoint x="1680" y="770" />
         <di:waypoint x="1680" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11lml7u_di" bpmnElement="Flow_11lml7u">
+        <di:waypoint x="1040" y="1000" />
+        <di:waypoint x="1250" y="1000" />
+        <di:waypoint x="1250" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x75x11_di" bpmnElement="Flow_1x75x11">
+        <di:waypoint x="710" y="790" />
+        <di:waypoint x="970" y="790" />
+        <di:waypoint x="970" y="543" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
