@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
   <bpmn:process id="CLAIMANT_RESPONSE_CUI_PROCESS_ID" name="CLAIMANT_RESPONSE_CUI_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="CLRCUI_StartEvent_1" name="start">
       <bpmn:outgoing>Flow_0uwkh9v</bpmn:outgoing>
@@ -50,6 +50,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0xsst33</bpmn:incoming>
       <bpmn:incoming>Flow_0o8yi48</bpmn:incoming>
+      <bpmn:incoming>Flow_1s9xana</bpmn:incoming>
       <bpmn:outgoing>Flow_1utmlsv</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1utmlsv" sourceRef="END_BUSINESS_PROCESS" targetRef="CLRUI_End" />
@@ -62,7 +63,6 @@
       <bpmn:incoming>Flow_FullAdmitPayImmediatly</bpmn:incoming>
       <bpmn:incoming>Flow_0usnw79</bpmn:incoming>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
-      <bpmn:incoming>Flow_187wcee</bpmn:incoming>
       <bpmn:incoming>Flow_1tfpl26</bpmn:incoming>
       <bpmn:incoming>Flow_1fuyad6</bpmn:incoming>
       <bpmn:incoming>Flow_Full_PartAdmit</bpmn:incoming>
@@ -96,16 +96,18 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g9m4jb</bpmn:incoming>
+      <bpmn:incoming>Flow_1cmu7zm</bpmn:incoming>
       <bpmn:outgoing>Flow_0beyd6n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0beyd6n" sourceRef="Generate_LIP_Claimant_DQ" targetRef="Gateway_RPA_FLOW" />
-    <bpmn:sequenceFlow id="Flow_187wcee" name="Applicant proposes new repayment plan (Respondent is LTD company or organization)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
+    <bpmn:sequenceFlow id="Flow_187wcee" name="Applicant proposes new repayment plan (Respondent is LTD company or organization)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_RPA_FLOW" name="In Mediation?">
+    <bpmn:exclusiveGateway id="Gateway_RPA_FLOW" name="Claimant Response">
       <bpmn:incoming>Flow_0beyd6n</bpmn:incoming>
       <bpmn:outgoing>Flow_089b2nt</bpmn:outgoing>
       <bpmn:outgoing>Flow_0xsst33</bpmn:outgoing>
+      <bpmn:outgoing>Flow_09aogqc</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="NotifyRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -120,7 +122,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0xsst33" name="No" sourceRef="Gateway_RPA_FLOW" targetRef="END_BUSINESS_PROCESS">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; !(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0o8yi48" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="END_BUSINESS_PROCESS" />
     <bpmn:exclusiveGateway id="Gateway_0xpw8z2">
@@ -150,6 +152,39 @@
     <bpmn:sequenceFlow id="Flow_Full_PartAdmit" name="Applicant confirm repayment plan(Full/Part admit)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_AGREE_REPAYMENT" || flowState == "MAIN.PART_ADMIT_AGREE_REPAYMENT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="ClaimantDisAgreedRepaymentPlanNotifyLip" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_187wcee</bpmn:incoming>
+      <bpmn:outgoing>Flow_192ex4z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_192ex4z" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" />
+    <bpmn:serviceTask id="ClaimantDisAgreeRepaymentPlanNotifyApplicant" name="Notify applicant 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_192ex4z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cmu7zm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cmu7zm" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:sequenceFlow id="Flow_09aogqc" name="Applicant confirms repayment plan(full/part admin)" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnCaseHandedOffline">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09aogqc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s9xana</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1s9xana" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="END_BUSINESS_PROCESS" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -200,7 +235,7 @@
       <bpmndi:BPMNShape id="Gateway_0us1dhc_di" bpmnElement="Gateway_RPA_FLOW" isMarkerVisible="true">
         <dc:Bounds x="1335" y="478" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1327" y="448" width="67" height="14" />
+          <dc:Bounds x="1336" y="448" width="50" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
@@ -211,6 +246,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12j0k71_di" bpmnElement="Judicial_Referral">
         <dc:Bounds x="750" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1i7id8i" bpmnElement="ClaimantDisAgreedRepaymentPlanNotifyLip">
+        <dc:Bounds x="570" y="960" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_13aq65z" bpmnElement="ClaimantDisAgreeRepaymentPlanNotifyApplicant">
+        <dc:Bounds x="750" y="960" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1470" y="730" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
@@ -262,11 +309,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02ja65l_di" bpmnElement="IN_MEDIATION_FLOW">
         <di:waypoint x="440" y="528" />
-        <di:waypoint x="440" y="1050" />
-        <di:waypoint x="970" y="1050" />
+        <di:waypoint x="440" y="890" />
+        <di:waypoint x="970" y="890" />
         <di:waypoint x="970" y="543" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="445" y="1010" width="89" height="40" />
+          <dc:Bounds x="445" y="850" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0beyd6n_di" bpmnElement="Flow_0beyd6n">
@@ -275,11 +322,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_187wcee_di" bpmnElement="Flow_187wcee">
         <di:waypoint x="440" y="528" />
-        <di:waypoint x="440" y="890" />
-        <di:waypoint x="970" y="890" />
-        <di:waypoint x="970" y="543" />
+        <di:waypoint x="440" y="1000" />
+        <di:waypoint x="570" y="1000" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="449" y="810" width="82" height="80" />
+          <dc:Bounds x="446" y="920" width="82" height="80" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_089b2nt_di" bpmnElement="Flow_089b2nt">
@@ -338,8 +384,30 @@
         <di:waypoint x="970" y="790" />
         <di:waypoint x="970" y="543" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="663" y="772" width="84" height="53" />
+          <dc:Bounds x="445" y="733" width="84" height="53" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_192ex4z_di" bpmnElement="Flow_192ex4z">
+        <di:waypoint x="670" y="1000" />
+        <di:waypoint x="750" y="1000" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cmu7zm_di" bpmnElement="Flow_1cmu7zm">
+        <di:waypoint x="850" y="1000" />
+        <di:waypoint x="1250" y="1000" />
+        <di:waypoint x="1250" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09aogqc_di" bpmnElement="Flow_09aogqc">
+        <di:waypoint x="1360" y="528" />
+        <di:waypoint x="1360" y="770" />
+        <di:waypoint x="1470" y="770" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1365" y="663" width="90" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s9xana_di" bpmnElement="Flow_1s9xana">
+        <di:waypoint x="1570" y="770" />
+        <di:waypoint x="1680" y="770" />
+        <di:waypoint x="1680" y="550" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
