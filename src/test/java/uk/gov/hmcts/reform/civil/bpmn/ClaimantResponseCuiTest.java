@@ -41,6 +41,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
     private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
         = "ClaimantDisAgreedRepaymentPlanNotifyLip";
@@ -127,7 +129,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
-
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", true
+        ));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -139,6 +143,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -154,7 +159,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_REPAYMENT");
-
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", true
+        ));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -166,6 +173,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -185,7 +193,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
-
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", false
+        ));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -213,7 +223,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_REJECT_REPAYMENT");
-
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", false
+        ));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -291,5 +303,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+    }
+
+    private void notifyRPACaseHandledOffline() {
+        assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
     }
 }
