@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0">
+  <bpmn:process id="NOTIFY_CLAIM_RECONSIDERATION_UPHELD" isExecutable="true">
+    <bpmn:callActivity id="NotifyClaimRreconsiderationUpheld" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xqzkty</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nvdd4d</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1vs00o9</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_065sy6f" name="Abort" attachedToRef="NotifyClaimRreconsiderationUpheld">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_18nu2xn" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_0andzqc">
+      <bpmn:incoming>Flow_0nvdd4d</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0nvdd4d" sourceRef="NotifyClaimRreconsiderationUpheld" targetRef="Event_0andzqc" />
+    <bpmn:startEvent id="Event_0x1swz2" name="Start">
+      <bpmn:outgoing>Flow_1xqzkty</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1kwntce" messageRef="Message_1koptmo" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1xqzkty" sourceRef="Event_0x1swz2" targetRef="NotifyClaimRreconsiderationUpheld" />
+    <bpmn:callActivity id="Activity_0pqcpvc" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ut7dif</bpmn:incoming>
+      <bpmn:outgoing>Flow_1og0z75</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0jlhskg">
+      <bpmn:incoming>Flow_1og0z75</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
+    <bpmn:sequenceFlow id="Flow_1vs00o9" sourceRef="NotifyClaimRreconsiderationUpheld" targetRef="Activity_0nyrqab" />
+    <bpmn:serviceTask id="Activity_0nyrqab" name="Notify Claim Reconsideration Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vs00o9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0posdss</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="Activity_0nyrqab" targetRef="Activity_0txb7dk" />
+    <bpmn:serviceTask id="Activity_0txb7dk" name="Notify Claim Reconsideration Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0posdss</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ut7dif</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ut7dif" sourceRef="Activity_0txb7dk" targetRef="Activity_0pqcpvc" />
+  </bpmn:process>
+  <bpmn:message id="Message_0slk3de" />
+  <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_0htno5u" />
+  <bpmn:message id="Message_00airaq" />
+  <bpmn:message id="Message_1koptmo" name="NOTIFY_CLAIM_RECONSIDERATION_UPHELD" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NOTIFY_CLAIM_RECONSIDERATION_UPHELD">
+      <bpmndi:BPMNShape id="Activity_0x0o0ha_di" bpmnElement="NotifyClaimRreconsiderationUpheld">
+        <dc:Bounds x="280" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0andzqc_di" bpmnElement="Event_0andzqc">
+        <dc:Bounds x="312" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x1swz2_di" bpmnElement="Event_0x1swz2">
+        <dc:Bounds x="172" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="245" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="Activity_0nyrqab">
+        <dc:Bounds x="430" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="Activity_0txb7dk">
+        <dc:Bounds x="590" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
+        <dc:Bounds x="750" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
+        <dc:Bounds x="912" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
+        <dc:Bounds x="312" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="143" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0nvdd4d_di" bpmnElement="Flow_0nvdd4d">
+        <di:waypoint x="330" y="180" />
+        <di:waypoint x="330" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xqzkty_di" bpmnElement="Flow_1xqzkty">
+        <di:waypoint x="208" y="220" />
+        <di:waypoint x="280" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
+        <di:waypoint x="850" y="220" />
+        <di:waypoint x="912" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vs00o9_di" bpmnElement="Flow_1vs00o9">
+        <di:waypoint x="380" y="220" />
+        <di:waypoint x="430" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0posdss_di" bpmnElement="Flow_0posdss">
+        <di:waypoint x="530" y="220" />
+        <di:waypoint x="590" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ut7dif_di" bpmnElement="Flow_0ut7dif">
+        <di:waypoint x="690" y="220" />
+        <di:waypoint x="750" y="220" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
