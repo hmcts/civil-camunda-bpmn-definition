@@ -28,10 +28,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     //notify applicant solicitor 1 continuing online
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT
-        = "NOTIFY_CLAIMANT_FOR_SUCCESSFUL_PAYMENT";
-    private static final String NOTIFY_APPLICANT_ACTIVITY_ID
-        = "ClaimIssuedNotifyApplicant1ForSpec";
+
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
@@ -128,15 +125,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CLAIM_ISSUE_EVENT,
                 PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
                 variables
-            );
-
-            //complete the notification
-            ExternalTask notificationApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationApplicantTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT,
-                NOTIFY_APPLICANT_ACTIVITY_ID
             );
 
             //complete the notification
@@ -404,15 +392,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CLAIM_ISSUE_EVENT,
                 PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
                 variables
-            );
-
-            //complete the notification
-            ExternalTask notificationApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationApplicantTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT,
-                NOTIFY_APPLICANT_ACTIVITY_ID
             );
 
             //complete the applicant notification
