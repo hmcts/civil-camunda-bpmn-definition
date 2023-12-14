@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.15.1">
   <bpmn:message id="Message_0slk3dg" name="CREATE_CLAIM_SPEC_AFTER_PAYMENT" />
   <bpmn:error id="Error_0t2ju7f" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:collaboration id="CreateClaim">
@@ -246,13 +246,6 @@
     <bpmn:sequenceFlow id="Flow_1dqvyjk" name="Yes" sourceRef="Gateway_0w83mdr" targetRef="GenerateClaimFormForSpec">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_1i24lv3">
-      <bpmn:incoming>Flow_1fr3g5j</bpmn:incoming>
-      <bpmn:incoming>Flow_031fe3b</bpmn:incoming>
-      <bpmn:outgoing>Flow_1uhc41o</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1ct7l4z</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1kgddyt</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="GenerateClaimFormForSpec" name="Generate claim form" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -265,7 +258,15 @@
     <bpmn:sequenceFlow id="Flow_1t7ggur" name="No" sourceRef="Gateway_0w83mdr" targetRef="SetRespondent1Deadline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_031fe3b" sourceRef="SetRespondent1Deadline" targetRef="Gateway_1i24lv3" />
+    <bpmn:sequenceFlow id="Flow_031fe3b" sourceRef="SetRespondent1Deadline" targetRef="GenerateLipClaimantClaimFormForSpec" />
+    <bpmn:exclusiveGateway id="Gateway_1i24lv3">
+      <bpmn:incoming>Flow_1fr3g5j</bpmn:incoming>
+      <bpmn:incoming>Flow_1waaudm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uhc41o</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ct7l4z</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kgddyt</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_074a1x3" sourceRef="GenerateLipClaimantClaimFormForSpec" targetRef="GenerateLipDefendantClaimFormForSpec" />
     <bpmn:serviceTask id="SetRespondent1Deadline" name="Set Response Deadline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -275,11 +276,30 @@
       <bpmn:incoming>Flow_1t7ggur</bpmn:incoming>
       <bpmn:outgoing>Flow_031fe3b</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1waaudm" sourceRef="GenerateLipDefendantClaimFormForSpec" targetRef="Gateway_1i24lv3" />
+    <bpmn:serviceTask id="GenerateLipDefendantClaimFormForSpec" name="Generate Lip defendant claim form" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_074a1x3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1waaudm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GenerateLipClaimantClaimFormForSpec" name="Generate Lip claimant claim form" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_031fe3b</bpmn:incoming>
+      <bpmn:outgoing>Flow_074a1x3</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
-        <dc:Bounds x="160" y="120" width="2248" height="610" />
+        <dc:Bounds x="160" y="120" width="2248" height="730" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0y4gxfi_di" bpmnElement="ProceedOfflineForUnRepresentedSolicitor">
         <dc:Bounds x="1500" y="260" width="100" height="80" />
@@ -376,7 +396,15 @@
         <dc:Bounds x="1000" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tzufir_di" bpmnElement="SetRespondent1Deadline">
-        <dc:Bounds x="930" y="540" width="100" height="80" />
+        <dc:Bounds x="850" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0x6neb9" bpmnElement="GenerateLipDefendantClaimFormForSpec">
+        <dc:Bounds x="1120" y="730" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0qhpq6o" bpmnElement="GenerateLipClaimantClaimFormForSpec">
+        <dc:Bounds x="980" y="730" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="782" y="432" width="36" height="36" />
@@ -545,15 +573,21 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1t7ggur_di" bpmnElement="Flow_1t7ggur">
         <di:waypoint x="900" y="515" />
-        <di:waypoint x="900" y="580" />
-        <di:waypoint x="930" y="580" />
+        <di:waypoint x="900" y="730" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="908" y="545" width="15" height="14" />
+          <dc:Bounds x="903" y="599" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_031fe3b_di" bpmnElement="Flow_031fe3b">
-        <di:waypoint x="1030" y="600" />
-        <di:waypoint x="1160" y="600" />
+        <di:waypoint x="950" y="770" />
+        <di:waypoint x="980" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_074a1x3_di" bpmnElement="Flow_074a1x3">
+        <di:waypoint x="1080" y="770" />
+        <di:waypoint x="1120" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1waaudm_di" bpmnElement="Flow_1waaudm">
+        <di:waypoint x="1160" y="730" />
         <di:waypoint x="1160" y="515" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
