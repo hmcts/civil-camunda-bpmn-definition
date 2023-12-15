@@ -28,10 +28,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     //notify applicant solicitor 1 continuing online
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT
-        = "NOTIFY_CLAIMANT_FOR_SUCCESSFUL_PAYMENT";
-    private static final String NOTIFY_APPLICANT_ACTIVITY_ID
-        = "ClaimIssuedNotifyApplicant1ForSpec";
+
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
@@ -137,15 +134,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             );
 
             //complete the notification
-            ExternalTask notificationApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationApplicantTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT,
-                NOTIFY_APPLICANT_ACTIVITY_ID
-            );
-
-            //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 notificationTask,
@@ -161,16 +149,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-            );
-
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                variables
             );
 
             //end business process
@@ -428,15 +406,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CLAIM_ISSUE_EVENT,
                 PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
                 variables
-            );
-
-            //complete the notification
-            ExternalTask notificationApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationApplicantTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_APPLICANT_ONLINE_ISSUE_EVENT,
-                NOTIFY_APPLICANT_ACTIVITY_ID
             );
 
             //complete the applicant notification
