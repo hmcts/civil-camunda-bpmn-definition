@@ -10,6 +10,14 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     private static final String FILE_NAME = "defendant_sign_settlement_agreement.bpmn";
     private static final String MESSAGE_NAME = "DEFENDANT_SIGN_SETTLEMENT_AGREEMENT";
     private static final String PROCESS_ID = "DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_PROCESS_ID";
+    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT =
+        "NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT";
+    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT =
+        "NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT";
+    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
+        "NotifyApplicantForSignSettlementAgreement";
+    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
+        "NotifyRespondentForSignSettlementAgreement";
 
     public DefendantSignSettlementAgreementTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -20,6 +28,8 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
+        notifyApplicantSignSettlementAgreement();
+        notifyRespondentSignSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -29,4 +39,23 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         completeBusinessProcess(endBusinessProcess);
     }
 
+    private void notifyApplicantSignSettlementAgreement() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT,
+            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
+        );
+    }
+
+    private void notifyRespondentSignSettlementAgreement() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT,
+            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
+        );
+    }
 }
