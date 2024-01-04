@@ -149,6 +149,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
+
         generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
@@ -306,7 +307,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
-        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
