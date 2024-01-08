@@ -28,11 +28,12 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     //notify applicant solicitor 1 continuing online
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
         = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpecUnrepresented";
-    //proceed offline
+
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID
         = "ProceedOfflineForUnRepresentedSolicitor";
@@ -142,16 +143,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-            );
-
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                variables
             );
 
             //end business process
