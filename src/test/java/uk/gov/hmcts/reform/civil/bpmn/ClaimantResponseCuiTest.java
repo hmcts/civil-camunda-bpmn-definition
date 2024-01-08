@@ -16,6 +16,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "CLAIMANT_RESPONSE_CUI_PROCESS_ID";
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
+    private static final String JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID = "Judicial_Referral";
     //CCD Case Event
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
@@ -230,6 +231,35 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
+        //Given
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            GENERAL_APPLICATION_ENABLED, true,
+            IS_MULTI_TRACK, true
+        ));
+
+        //Then
+        assertProcessHasStarted();
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        startBusinessProcess(variables);
+        assertCompletedCaseEvent(
+            JUDICIAL_REFERRAL_EVENT,
+            JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
+            variables
+        );
+
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
