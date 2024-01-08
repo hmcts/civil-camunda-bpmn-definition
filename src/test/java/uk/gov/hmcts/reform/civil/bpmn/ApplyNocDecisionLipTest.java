@@ -36,13 +36,22 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
             "UpdateCaseDetailsAfterNoC"
         );
 
-        //complete updating case details
+        //complete notify claimant
         ExternalTask notifyClaimantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            updateCaseDetails,
+            notifyClaimantAfterNoc,
             PROCESS_CASE_EVENT,
             "NOTIFY_CLAIMANT_LIP_AFTER_NOC_APPROVAL",
             "NotifyClaimantLipAfterNocApproval"
+        );
+
+        //complete notify defendant
+        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyDefendantAfterNoc,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_LIP_CLAIMANT_REPRESENTED",
+            "NotifyDefendantLipClaimantRepresented"
         );
 
         //end business process
