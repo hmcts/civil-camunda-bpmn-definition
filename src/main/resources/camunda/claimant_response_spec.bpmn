@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
   <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID_SPEC" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
@@ -425,7 +425,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_PAY_IMMEDIATELY"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00f0sau" sourceRef="proceedsInHeritageSystem" targetRef="NotifyRoboticsOnCaseHandedOffline" />
-    <bpmn:sequenceFlow id="Flow_0j3xxwh" sourceRef="ClaimantDefendantAgreedMediationNotifyRespondent" targetRef="CyaAgreedMediationNotification" />
+    <bpmn:sequenceFlow id="Flow_0j3xxwh" sourceRef="ClaimantDefendantAgreedMediationNotifyRespondent" targetRef="ClaimantGenerateDQMeditation" />
     <bpmn:serviceTask id="Activity_00lleen" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -436,23 +436,13 @@
       <bpmn:outgoing>Flow_0qiuirk</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0qiuirk" sourceRef="Activity_00lleen" targetRef="ClaimantAgreedRepaymentNotifyRespondent1" />
-    <bpmn:serviceTask id="CyaAgreedMediationNotification" name="Sending CSV file" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CYA_ON_AGREED_MEDIATION</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0j3xxwh</bpmn:incoming>
-      <bpmn:outgoing>Flow_0uajqnd</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0uajqnd" sourceRef="CyaAgreedMediationNotification" targetRef="ClaimantGenerateDQMeditation" />
     <bpmn:serviceTask id="ClaimantGenerateDQMeditation" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">GENERATE_DIRECTIONS_QUESTIONNAIRE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0uajqnd</bpmn:incoming>
+      <bpmn:incoming>Flow_0j3xxwh</bpmn:incoming>
       <bpmn:outgoing>Flow_0rus79u</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0rus79u" sourceRef="ClaimantGenerateDQMeditation" targetRef="NotifyRoboticsOnContinuousFeed" />
@@ -618,10 +608,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1nidhyn" bpmnElement="Activity_00lleen">
         <dc:Bounds x="680" y="1040" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0nq2e3e" bpmnElement="CyaAgreedMediationNotification">
-        <dc:Bounds x="1220" y="1290" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_14uoqjs" bpmnElement="ClaimantGenerateDQMeditation">
         <dc:Bounds x="1390" y="1290" width="100" height="80" />
@@ -947,15 +933,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j3xxwh_di" bpmnElement="Flow_0j3xxwh">
         <di:waypoint x="1060" y="1330" />
-        <di:waypoint x="1220" y="1330" />
+        <di:waypoint x="1390" y="1330" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qiuirk_di" bpmnElement="Flow_0qiuirk">
         <di:waypoint x="780" y="1080" />
         <di:waypoint x="969" y="1080" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0uajqnd_di" bpmnElement="Flow_0uajqnd">
-        <di:waypoint x="1320" y="1330" />
-        <di:waypoint x="1390" y="1330" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rus79u_di" bpmnElement="Flow_0rus79u">
         <di:waypoint x="1490" y="1330" />
