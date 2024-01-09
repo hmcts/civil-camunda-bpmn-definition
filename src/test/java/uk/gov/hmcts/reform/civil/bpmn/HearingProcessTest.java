@@ -26,6 +26,10 @@ class HearingProcessTest extends BpmnBaseTest {
         = "GENERATE_HEARING_FORM";
     public static final String CREATE_SERVICE_REQUEST_API
         = "CREATE_SERVICE_REQUEST_API";
+    public static final String SEND_HEARING_TO_LIP_DEFENDANT
+        = "SEND_HEARING_TO_LIP_DEFENDANT";
+    public static final String SEND_HEARING_TO_LIP_CLAIMANT
+        = "SEND_HEARING_TO_LIP_CLAIMANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
@@ -39,6 +43,10 @@ class HearingProcessTest extends BpmnBaseTest {
         = "GenerateHearingForm";
     private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         = "ServiceRequestAPI";
+    private static final String SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID
+        = "SendHearingToDefendantLIP";
+    private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
+        = "SendHearingToClaimantLIP";
 
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
@@ -165,7 +173,8 @@ class HearingProcessTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            LIP_CASE, true
         ));
 
         //complete the start business process
@@ -176,6 +185,18 @@ class HearingProcessTest extends BpmnBaseTest {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -216,7 +237,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
-            UNREPRESENTED_DEFENDANT_TWO, false
+            UNREPRESENTED_DEFENDANT_TWO, false,
+            LIP_CASE, true
         ));
 
         //complete the start business process
@@ -226,7 +248,19 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -277,7 +311,7 @@ class HearingProcessTest extends BpmnBaseTest {
         //complete the hearing form generation
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
         //complete the defendant1 notification
@@ -290,6 +324,63 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
+        );
+
+        //complete the claimant notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+        );
+
+        //complete the service request process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteHearingFormAndNotifyDefendantLipHearing_1v1() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //Setup Case as 1v1
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            UNREPRESENTED_DEFENDANT_TWO, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        //complete the hearing form generation
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
+        );
+
+        //complete the bulk print
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+        );
+
+        //complete the defendant1 notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
         );
 
         //complete the claimant notification
