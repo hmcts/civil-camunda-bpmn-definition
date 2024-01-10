@@ -10,26 +10,56 @@ java:
     civil:
       resourceGroup: civil
       secrets:
-        - civil-idam-client-secret
-        - microservicekey-civil-service
-        - system-update-user-username
-        - system-update-user-password
-        - cross-access-user-username
-        - cross-access-user-password
-        - prd-admin-user-username
-        - prd-admin-user-password
-        - AppInsightsInstrumentationKey
-        - docmosis-api-key
-        - gov-notify-api-key
-        - sendgrid-api-key
-        - robotics-notification-sender
-        - robotics-notification-recipient
-        - robotics-notification-recipient-spec
+        - name: civil-idam-client-secret
+          alias: idam.client.secret
+        - name: microservicekey-civil-service
+          alias: idam.s2s-auth.totp_secret
+        - name: system-update-user-username
+          alias: CIVIL_SYSTEM_UPDATE_USERNAME
+        - name: system-update-user-password
+          alias: CIVIL_SYSTEM_UPDATE_PASSWORD
+        - name: cross-access-user-username
+          alias: CIVIL_CROSS_ACCESS_USERNAME
+        - name: cross-access-user-password
+          alias: CIVIL_CROSS_ACCESS_PASSWORD
+        - name: prd-admin-user-username
+          alias: CIVIL_PRD_ADMIN_USERNAME
+        - name: prd-admin-user-password
+          alias: CIVIL_PRD_ADMIN_PASSWORD
+        - name: appinsights-connection-string
+          alias: appinsights-connection-string
+        - name: AppInsightsInstrumentationKey
+          alias: azure.application-insights.instrumentation-key
+        - name: docmosis-api-key
+          alias: docmosis.tornado.key
+        - name: cmc-db-password-v11
+          alias: CMC_DB_PASSWORD
+        - name: gov-notify-api-key
+          alias: GOV_NOTIFY_API_KEY
+        - name: sendgrid-api-key
+          alias: SENDGRID_API_KEY
+        - name: robotics-notification-sender
+          alias: robotics.notification.sender
+        - name: robotics-notification-recipient
+          alias: robotics.notification.recipient
         - name: launch-darkly-sdk-key-non-prod
-          alias: launch-darkly-sdk-key
-        - robotics-notification-multipartyrecipient
-        - ordnance-survey-api-key
-        - notification-caseworker-spec-receiver
+          alias: LAUNCH_DARKLY_SDK_KEY
+        - name: robotics-notification-multipartyrecipient
+          alias: robotics.notification.multipartyrecipient
+        - name: robotics-notification-recipient-spec
+          alias: robotics.notification.specRecipient
+        - name: robotics-notification-recipient-lipj
+          alias: robotics.notification.lipJRecipient
+        - name: ordnance-survey-api-key
+          alias: OS_POSTCODE_LOOKUP_API_KEY
+        - name: notification-caseworker-spec-receiver
+          alias: notification.caseworker.spec.receiver
+        - name: mediation-notification-sender
+          alias: mediation.emails.sender
+        - name: mediation-notification-recipient
+          alias: mediation.emails.recipient
+        - name: hmc-servicebus-shared-access-key-tf
+          alias: HMC_HEARINGS_TOPIC_ACCESS_KEY
   environment:
     IDAM_CLIENT_ID: civil-service
     IDAM_CLIENT_REDIRECT_URI: https://civil-camunda-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2/callback
@@ -73,6 +103,7 @@ java:
     SERVICE_REQUEST_UPDATE: https://${SERVICE_FQDN}/service-request-update
     SERVICE_REQUEST_UPDATE_CLAIM_ISSUED: https://${SERVICE_FQDN}/service-request-update-claim-issued
     HMC_HEARINGS_SUBSCRIPTION_ENABLED: false
+    ACA_SERVICE_API_BASEURL: http://${SERVICE_NAME}-aac-manage-case-assignment
   postgresql:
     enabled: true
     releaseNameOverride: ${SERVICE_NAME}-postgresql
@@ -176,7 +207,7 @@ ccd:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
         DATA_STORE_IDAM_KEY: ${CCD_DATA_STORE_S2S_SECRET}
-        DATA_STORE_S2S_AUTHORISED_SERVICES: ccd_data,ccd_gw,ccd_ps,bulk_scan_orchestrator,ccpay_bubble,ctsc_work_allocation,em_ccd_orchestrator,xui_webapp,civil_service,ccd_case_document_am_api
+        DATA_STORE_S2S_AUTHORISED_SERVICES: ccd_data,ccd_gw,ccd_ps,bulk_scan_orchestrator,ccpay_bubble,ctsc_work_allocation,em_ccd_orchestrator,xui_webapp,civil_service,ccd_case_document_am_api,aac_manage_case_assignment
         IDAM_API_BASE_URL: https://idam-api.aat.platform.hmcts.net
         IDAM_OIDC_URL:  https://idam-web-public.aat.platform.hmcts.net
         OIDC_ISSUER: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
@@ -230,3 +261,41 @@ camunda-bpm:
       CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE: true
       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
       CAMUNDA_DB_CONN_OPTIONS: ""
+
+aac-manage-case-assignment:
+  enabled: true
+  java:
+    imagePullPolicy: Always
+    releaseNameOverride: ${SERVICE_NAME}-aac-manage-case-assignment
+    image: hmctspublic.azurecr.io/aac/manage-case-assignment:latest
+    ingressHost: manage-case-assignment-${SERVICE_NAME}.preview.platform.hmcts.net
+    environment:
+      IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+      IDAM_OIDC_URL: https://idam-web-public.aat.platform.hmcts.net
+      OIDC_ISSUER: https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts
+      S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+      MCA_DS_PROXY_URLS_ALLOWED_LIST: /searchCases.*,/internal/searchCases.*,/internal/cases.*
+      MCA_DEF_STORE_PROXY_URLS_ALLOWED_LIST: /api/display/challenge-questions.*
+      MANAGE_CASE_S2S_AUTHORISED_SERVICES: xui_webapp,ccd_data,fpl_case_service,divorce_frontend,divorce_ccd_submission,finrem_case_orchestration,civil_service
+      CCD_DATA_STORE_API_BASE_URL: http://${SERVICE_NAME}-ccd-data-store-api
+      CCD_DEFINITION_STORE_API_BASE_URL: http://${SERVICE_NAME}-ccd-definition-store
+      PRD_HOST: http://rd-professional-api-aat.service.core-compute-aat.internal
+    autoscaling:
+      enabled: false
+    keyVaults:
+      aac:
+        secrets:
+          - name: aac-manage-case-s2s-secret
+            alias: MANAGE_CASE_S2S_KEY
+          - name: idam-mca-client-secret
+            alias: IDAM_CLIENT_SECRET
+          - name: idam-mca-system-user-username
+            alias: IDAM_CAA_USERNAME
+          - name: idam-mca-system-user-password
+            alias: IDAM_CAA_PASSWORD
+          - name: idam-noc-approver-username
+            alias: IDAM_NOC_APPROVER_USERNAME
+          - name: idam-noc-approver-password
+            alias: IDAM_NOC_APPROVER_PASSWORD
+          - name: notify-mca-api-key-secret
+            alias: NOTIFY_MCA_API_KEY

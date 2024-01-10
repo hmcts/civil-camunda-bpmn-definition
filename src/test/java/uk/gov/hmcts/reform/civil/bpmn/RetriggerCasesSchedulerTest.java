@@ -13,17 +13,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
+public class RetriggerCasesSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "GAFailedEventEmitterScheduler";
+    public static final String TOPIC_NAME = "RETRIGGER_CASES_EVENTS";
 
-    public GeneralApplicationFailedEventEmitterSchedulerTest() {
-        super("general_application_failed_event_emitter_scheduler.bpmn",
-               "GAFailedEventEmitterScheduler");
+    public RetriggerCasesSchedulerTest() {
+        super("retrigger_cases_scheduler.bpmn", "RETRIGGER_CASES_SCHEDULER");
     }
 
     @Test
-    void pollingEventBmpnShouldFirePollingEventEmmiterExternalTask_whenStarted() throws ParseException {
+    void notifyRPAEventsSchedulerShouldFireResendNotifyRPAEventsExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -37,12 +36,12 @@ class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0/30 * * * ?";
+        String cronString = "0 0 0 1 * ? 2026";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 9, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 9, 0, 30, 0)
+            LocalDateTime.of(2026, 2, 1, 0, 0, 0),
+            LocalDateTime.of(2026, 3, 1, 0, 0, 0)
         );
 
         //get external tasks
@@ -51,6 +50,7 @@ class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
 
         //fetch and complete task
         List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
+
         assertThat(lockedExternalTasks).hasSize(1);
         completeTask(lockedExternalTasks.get(0).getId());
 

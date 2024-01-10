@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iivus5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="LIFT_BREATHING_SPACE_LIP" isExecutable="true">
+    <bpmn:startEvent id="Event_1rrxrp4" name="Start">
+      <bpmn:outgoing>Flow_1yl7kg1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_17bh4tn" messageRef="Message_3c4n22o" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_0nfw3ar" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yl7kg1</bpmn:incoming>
+      <bpmn:outgoing>Flow_01z0m2h</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1yl7kg1" sourceRef="Event_1rrxrp4" targetRef="Activity_0nfw3ar" />
+    <bpmn:serviceTask id="NotifyApplicantBreathingSpaceLifted" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_APPLICANT_BREATHING_SPACE_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01z0m2h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b32w7j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_01z0m2h" sourceRef="Activity_0nfw3ar" targetRef="NotifyApplicantBreathingSpaceLifted" />
+    <bpmn:serviceTask id="NotifyRespondentBreathingSpaceLifted" name="Notify Respondent" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_RESPONDENT_BREATHING_SPACE_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0b32w7j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v5pf6o</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0b32w7j" sourceRef="NotifyApplicantBreathingSpaceLifted" targetRef="NotifyRespondentBreathingSpaceLifted" />
+    <bpmn:callActivity id="Activity_07660om" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0v5pf6o</bpmn:incoming>
+      <bpmn:outgoing>Flow_03k346z</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0v5pf6o" sourceRef="NotifyRespondentBreathingSpaceLifted" targetRef="Activity_07660om" />
+    <bpmn:endEvent id="Event_0jqwqkk">
+      <bpmn:incoming>Flow_03k346z</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_03k346z" sourceRef="Activity_07660om" targetRef="Event_0jqwqkk" />
+  </bpmn:process>
+  <bpmn:message id="Message_1bt9nfa" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmn:message id="Message_1sxevdt" name="LIFT_BREATHING_SPACE_SPEC" />
+  <bpmn:message id="Message_3c4n22o" name="LIFT_BREATHING_SPACE_LIP" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="LIFT_BREATHING_SPACE_LIP">
+      <bpmndi:BPMNShape id="Event_1rrxrp4_di" bpmnElement="Event_1rrxrp4">
+        <dc:Bounds x="172" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="185" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nfw3ar_di" bpmnElement="Activity_0nfw3ar">
+        <dc:Bounds x="260" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13z753m_di" bpmnElement="NotifyApplicantBreathingSpaceLifted">
+        <dc:Bounds x="420" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l9xl1u_di" bpmnElement="NotifyRespondentBreathingSpaceLifted">
+        <dc:Bounds x="580" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07660om_di" bpmnElement="Activity_07660om">
+        <dc:Bounds x="750" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jqwqkk_di" bpmnElement="Event_0jqwqkk">
+        <dc:Bounds x="922" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1yl7kg1_di" bpmnElement="Flow_1yl7kg1">
+        <di:waypoint x="208" y="160" />
+        <di:waypoint x="260" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01z0m2h_di" bpmnElement="Flow_01z0m2h">
+        <di:waypoint x="360" y="160" />
+        <di:waypoint x="420" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b32w7j_di" bpmnElement="Flow_0b32w7j">
+        <di:waypoint x="520" y="160" />
+        <di:waypoint x="580" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v5pf6o_di" bpmnElement="Flow_0v5pf6o">
+        <di:waypoint x="680" y="160" />
+        <di:waypoint x="750" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03k346z_di" bpmnElement="Flow_03k346z">
+        <di:waypoint x="850" y="160" />
+        <di:waypoint x="922" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

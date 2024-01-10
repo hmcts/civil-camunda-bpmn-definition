@@ -36,8 +36,6 @@ public abstract class BpmnBaseTest {
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String FLOW_FLAGS = "flowFlags";
-    public static final String NOTICE_OF_CHANGE = "NOTICE_OF_CHANGE";
-    public static final String CERTIFICATE_OF_SERVICE = "CERTIFICATE_OF_SERVICE";
     public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
     public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
     public static final String GENERAL_APPLICATION_ENABLED = "GENERAL_APPLICATION_ENABLED";
