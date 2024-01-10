@@ -37,6 +37,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
+    private static final String DQ_PDF_ACTIVITY_ID_BILINGUAL = "Generate_LIP_Claimant_DQ_Bilingual";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
@@ -88,6 +89,32 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldRunProcess_WhenBilingual() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of(
+            "BILINGUAL", true));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        assertCompletedCaseEvent(DQ_PDF_EVENT, DQ_PDF_ACTIVITY_ID_BILINGUAL);
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
     void shouldRunProcess_ClaimIsInMediation() {
 
         //assert process has started
@@ -98,6 +125,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of(
+            "BILINGUAL", false));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
