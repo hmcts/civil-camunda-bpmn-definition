@@ -16,6 +16,7 @@
       <bpmn:outgoing>Flow_187wcee</bpmn:outgoing>
       <bpmn:outgoing>Flow_Full_Defence</bpmn:outgoing>
       <bpmn:outgoing>Flow_Full_PartAdmit</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0slswz6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="JudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -66,6 +67,7 @@
       <bpmn:incoming>Flow_1tfpl26</bpmn:incoming>
       <bpmn:incoming>Flow_1fuyad6</bpmn:incoming>
       <bpmn:incoming>Flow_Full_PartAdmit</bpmn:incoming>
+      <bpmn:incoming>Flow_0slswz6</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zgri</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v6zgri" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -195,6 +197,9 @@
       <bpmn:outgoing>Flow_0bb0qbd</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0bb0qbd" sourceRef="Generate_LIP_Claimant_MD" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:sequenceFlow id="Flow_0slswz6" name="part admit claim settle" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMIT_PAY_IMMEDIATELY" || flowState == "MAIN.PART_ADMIT_AGREE_SETTLE"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -426,6 +431,15 @@
         <di:waypoint x="1060" y="1000" />
         <di:waypoint x="1250" y="1000" />
         <di:waypoint x="1250" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0slswz6_di" bpmnElement="Flow_0slswz6">
+        <di:waypoint x="440" y="528" />
+        <di:waypoint x="440" y="600" />
+        <di:waypoint x="970" y="600" />
+        <di:waypoint x="970" y="543" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="442" y="566" width="78" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
