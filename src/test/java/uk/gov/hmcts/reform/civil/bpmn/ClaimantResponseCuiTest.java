@@ -50,6 +50,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+    private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
+    private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -202,6 +204,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
+        generateManualDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -231,6 +234,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
+        generateManualDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -265,6 +269,56 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", false
+        ));
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+    }
+    
+    @Test
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
+        //Given
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            GENERAL_APPLICATION_ENABLED, true,
+            IS_MULTI_TRACK, true
+        ));
+
+        //Then
+        assertProcessHasStarted();
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        startBusinessProcess(variables);
+        assertCompletedCaseEvent(
+            JUDICIAL_REFERRAL_EVENT,
+            JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
+        );
+
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
     private void notifyRespondentClaimantConfirmsToProceed() {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
     }
@@ -283,6 +337,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateRPAContinuousFeed() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
+    }
+
+    private void generateManualDeterminationPdf() {
+        assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
