@@ -288,7 +288,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY,
-                variables);
+                variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
