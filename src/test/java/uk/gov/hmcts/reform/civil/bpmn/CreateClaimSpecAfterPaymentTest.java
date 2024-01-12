@@ -408,6 +408,44 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             assertNoExternalTasksLeft();
         }
+
+        @Test
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
+
+            //assert process has started
+            assertFalse(processInstance.isEnded());
+
+            //assert message start event
+            assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+            VariableMap variables = Variables.createVariables();
+            variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC_BILINGUAL");
+            variables.put(FLOW_FLAGS, Map.of(
+                BULK_CLAIM_ENABLED, true,
+                LIP_CASE, true,
+                GENERAL_APPLICATION_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, true,
+                PIP_ENABLED, true
+            ));
+
+            //complete the start business process
+            startBusinessProcess(variables);
+
+            //Update Respondent response deadline date
+            ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                updateRespondentResponseDeadLine,
+                PROCESS_CASE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
+            );
+
+            //end business process
+            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+            completeBusinessProcess(endBusinessProcess);
+
+            assertNoExternalTasksLeft();
+        }
     }
 
     public void startBusinessProcess(VariableMap variables) {

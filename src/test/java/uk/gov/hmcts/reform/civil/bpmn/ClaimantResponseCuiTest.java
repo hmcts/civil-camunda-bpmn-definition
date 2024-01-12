@@ -288,35 +288,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY,
-                variables
-    }
-    
-    @Test
-    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
-        //Given
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
-        variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
-            IS_MULTI_TRACK, true
-        ));
-
-        //Then
-        assertProcessHasStarted();
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-        startBusinessProcess(variables);
-        assertCompletedCaseEvent(
-            JUDICIAL_REFERRAL_EVENT,
-            JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
-        );
-
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
-        generateDQPdf();
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
+                variables);
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
