@@ -19,6 +19,11 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
         "NotifyRespondentForSignSettlementAgreement";
 
+    private static final String GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM =
+            "GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM";
+    private static final String GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM_ID =
+            "GenerateSignSettlementAgreement";
+
     public DefendantSignSettlementAgreementTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -30,6 +35,7 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         startBusinessProcess(variables);
         notifyApplicantSignSettlementAgreement();
         notifyRespondentSignSettlementAgreement();
+        generateSettlementAgreementDoc();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -56,6 +62,16 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT,
             NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
+        );
+    }
+
+    private void generateSettlementAgreementDoc() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM,
+                GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM_ID
         );
     }
 }
