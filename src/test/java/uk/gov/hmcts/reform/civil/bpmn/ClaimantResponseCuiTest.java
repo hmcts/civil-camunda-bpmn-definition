@@ -52,6 +52,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT = "UPDATE_CLAIMANT_INTENTION_CLAIM_STATE";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID = "updateClaimantIntentionClaimStateID";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -85,6 +87,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -111,6 +114,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         generateRPAContinuousFeed();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -142,6 +146,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         notifyRPACaseHandledOffline();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -172,6 +177,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         notifyRPACaseHandledOffline();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -206,6 +212,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -236,6 +243,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -265,6 +273,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -293,6 +302,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -319,6 +329,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateManualDeterminationPdf() {
         assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
+    }
+
+    private void updateClaimState() {
+        assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
