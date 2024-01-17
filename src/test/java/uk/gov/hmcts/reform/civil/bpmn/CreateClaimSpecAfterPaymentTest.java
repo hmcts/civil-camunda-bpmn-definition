@@ -383,7 +383,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //Generate Lip defendant claim form
             ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                generateLipClaimantClaimForm,
+                generateLipDefendantClaimForm,
                 PROCESS_CASE_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
@@ -468,7 +468,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //Generate Lip defendant claim form
             ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                generateLipClaimantClaimForm,
+                generateLipDefendantClaimForm,
                 PROCESS_CASE_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
