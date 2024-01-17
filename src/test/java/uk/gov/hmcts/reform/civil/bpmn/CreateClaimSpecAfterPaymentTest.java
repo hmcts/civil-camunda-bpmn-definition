@@ -82,7 +82,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipClaimantClaimFormForSpec";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
-
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
     public CreateClaimSpecAfterPaymentTest() {
@@ -372,15 +371,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             startBusinessProcess(variables);
 
-            //Update Respondent response deadline date
-            ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateRespondentResponseDeadLine,
-                PROCESS_CASE_EVENT,
-                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
-                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
-            );
-
             //Generate Lip claimant claim form
             ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -397,6 +387,15 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
                 GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
+
+            //Update Respondent response deadline date
+            ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                updateRespondentResponseDeadLine,
+                PROCESS_CASE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
             );
 
             //complete the claim issue
@@ -457,8 +456,23 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             startBusinessProcess(variables);
 
-            //Notify applicant
-            //TO DO: Add notify applicant task to the flow (new template needed)
+            //Generate Lip claimant claim form
+            ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
+
+            //Generate Lip defendant claim form
+            ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
 
             //end business process
             ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
