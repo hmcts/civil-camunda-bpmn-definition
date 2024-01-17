@@ -66,7 +66,6 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
     private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendAutomaticHearingToClaimantLIP";
 
-
     public GenerateHearingNoticeTest() {
         super("generate_hearing_notice.bpmn", PROCESS_ID);
     }
@@ -135,19 +134,19 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
             //complete the bulk print
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+                                       SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID,
+                                       variables
             );
 
             if (lipCase) {
                 //complete the bulk print
                 notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                           SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
+                                           SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
+                                           variables
                 );
             }
         }
-
-
 
         //complete notify claimant solicitor hearing
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
