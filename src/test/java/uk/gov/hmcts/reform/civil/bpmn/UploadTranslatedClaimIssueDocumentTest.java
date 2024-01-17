@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +9,7 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_LIP";
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
-    private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpecUnrepresentedSolicitor";
+    private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForLip";
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
             = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
@@ -19,9 +17,18 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
     private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
             = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
     private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-            = "NotifyRespondent1";
+            = "NotifyRespondent1ForClaimContinuingOnlineSpec";
+    private static final String NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED
+            = "NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED_ID
+            = "NotifyTranslatedDocumentUploadedToClaimant";
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED
+            = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
+            = "updateClaimStateAfterTranslateDocumentUploadedID";
+
     public UploadTranslatedClaimIssueDocumentTest() {
-        super("upload_translated_claim_issue_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP");
+        super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
     }
 
     @Test
@@ -63,13 +70,26 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
         );
 
+        //complete the claimant notification for translated doc
+        ExternalTask notificationTaskForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForClaimant,
+                PROCESS_CASE_EVENT,
+                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED,
+                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED_ID
+        );
+
+        //complete the case state update
+        ExternalTask notificationTaskForCaseStateUpdate = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForCaseStateUpdate,
+                PROCESS_CASE_EVENT,
+                UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED,
+                UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
     }
-
-
-
 }
