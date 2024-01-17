@@ -70,7 +70,7 @@
           <camunda:inputParameter name="caseEvent">UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_02cu20h</bpmn:incoming>
+      <bpmn:incoming>Flow_06bac67</bpmn:incoming>
       <bpmn:outgoing>Flow_0njciqm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0njciqm" sourceRef="updateClaimStateAfterTranslateDocumentUploadedID" targetRef="Activity_1cweuly" />
@@ -83,7 +83,17 @@
       <bpmn:incoming>Flow_0x0c9sg</bpmn:incoming>
       <bpmn:outgoing>Flow_02cu20h</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_02cu20h" sourceRef="NotifyTranslatedDocumentUploadedToClaimant" targetRef="updateClaimStateAfterTranslateDocumentUploadedID" />
+    <bpmn:sequenceFlow id="Flow_02cu20h" sourceRef="NotifyTranslatedDocumentUploadedToClaimant" targetRef="NotifyTranslatedDocumentUploadedToDefendant" />
+    <bpmn:serviceTask id="NotifyTranslatedDocumentUploadedToDefendant" name="Notify defendant uploaded translated document" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02cu20h</bpmn:incoming>
+      <bpmn:outgoing>Flow_06bac67</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_06bac67" sourceRef="NotifyTranslatedDocumentUploadedToDefendant" targetRef="updateClaimStateAfterTranslateDocumentUploadedID" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIM_ISSUE" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -98,32 +108,36 @@
       <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
         <dc:Bounds x="1422" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14sbez9_di" bpmnElement="Activity_1cweuly">
-        <dc:Bounds x="1240" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0gt1863_di" bpmnElement="Activity_0gt1863">
         <dc:Bounds x="230" y="167" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0nc34kd_di" bpmnElement="Event_0nc34kd">
         <dc:Bounds x="262" y="79" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1up0lu9_di" bpmnElement="NotifyTranslatedDocumentUploadedToClaimant">
-        <dc:Bounds x="900" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_14sbez9_di" bpmnElement="Activity_1cweuly">
+        <dc:Bounds x="1280" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02dljcm" bpmnElement="updateClaimStateAfterTranslateDocumentUploadedID">
+        <dc:Bounds x="1140" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mmuzv3" bpmnElement="IssueClaimForLip">
-        <dc:Bounds x="390" y="170" width="100" height="80" />
+        <dc:Bounds x="370" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0mjqq0c" bpmnElement="CreateClaimContinuingOnlineNotifyApplicant1ForSpec">
-        <dc:Bounds x="560" y="170" width="100" height="80" />
+        <dc:Bounds x="520" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_15ltc4j" bpmnElement="NotifyRespondent1ForClaimContinuingOnlineSpec">
-        <dc:Bounds x="730" y="170" width="100" height="80" />
+        <dc:Bounds x="680" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_02dljcm" bpmnElement="updateClaimStateAfterTranslateDocumentUploadedID">
-        <dc:Bounds x="1070" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1up0lu9_di" bpmnElement="NotifyTranslatedDocumentUploadedToClaimant">
+        <dc:Bounds x="840" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyTranslatedDocumentUploadedToDefendant">
+        <dc:Bounds x="1000" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
@@ -133,7 +147,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0tgwl48_di" bpmnElement="Flow_0tgwl48">
-        <di:waypoint x="1340" y="210" />
+        <di:waypoint x="1380" y="210" />
         <di:waypoint x="1422" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13dgz5v_di" bpmnElement="Flow_13dgz5v">
@@ -146,27 +160,31 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19mft34_di" bpmnElement="Flow_19mft34">
         <di:waypoint x="330" y="209" />
-        <di:waypoint x="390" y="210" />
+        <di:waypoint x="370" y="211" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02cu20h_di" bpmnElement="Flow_02cu20h">
+        <di:waypoint x="940" y="210" />
         <di:waypoint x="1000" y="210" />
-        <di:waypoint x="1070" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13no8ra_di" bpmnElement="Flow_13no8ra">
-        <di:waypoint x="490" y="210" />
-        <di:waypoint x="560" y="210" />
+        <di:waypoint x="470" y="210" />
+        <di:waypoint x="520" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n7fvbu_di" bpmnElement="Flow_0n7fvbu">
-        <di:waypoint x="660" y="210" />
-        <di:waypoint x="730" y="210" />
+        <di:waypoint x="620" y="210" />
+        <di:waypoint x="680" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x0c9sg_di" bpmnElement="Flow_0x0c9sg">
-        <di:waypoint x="830" y="210" />
-        <di:waypoint x="900" y="210" />
+        <di:waypoint x="780" y="210" />
+        <di:waypoint x="840" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0njciqm_di" bpmnElement="Flow_0njciqm">
-        <di:waypoint x="1170" y="210" />
         <di:waypoint x="1240" y="210" />
+        <di:waypoint x="1280" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06bac67_di" bpmnElement="Flow_06bac67">
+        <di:waypoint x="1100" y="210" />
+        <di:waypoint x="1140" y="210" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
