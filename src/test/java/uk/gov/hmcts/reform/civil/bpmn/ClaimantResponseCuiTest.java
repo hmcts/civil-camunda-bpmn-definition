@@ -250,6 +250,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
