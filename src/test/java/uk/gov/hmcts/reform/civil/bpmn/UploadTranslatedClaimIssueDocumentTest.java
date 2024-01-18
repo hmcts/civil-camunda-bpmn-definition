@@ -10,6 +10,8 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_LIP";
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForLip";
+    public static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT = "SET_LIP_RESPONDENT_RESPONSE_DEADLINE";
+    private static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID = "Respondent1Deadline";
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
             = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
     private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
@@ -46,6 +48,15 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY
+        );
+
+        //Update Respondent response deadline date
+        ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateRespondentResponseDeadLine,
+                PROCESS_CASE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
         );
 
         //complete the claim issue
