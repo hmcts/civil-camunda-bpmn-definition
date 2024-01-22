@@ -52,6 +52,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
+        = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        = "GenerateInterlocutoryJudgementDocument";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -205,6 +209,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
+        requestInterlockJudgement();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -235,6 +240,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
+        requestInterlockJudgement();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -349,6 +355,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
             NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+    }
+
+    private void requestInterlockJudgement() {
+        assertCompletedCaseEvent(
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
         );
     }
 
