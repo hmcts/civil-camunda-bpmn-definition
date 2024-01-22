@@ -10,14 +10,19 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_LIP";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT = "SET_SETTLEMENT_AGREEMENT_DEADLINE";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID = "SetSettlementAgreementDeadline";
-    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
-        = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-        = "CreateClaimContinuingOnlineNotifyApplicant1ForSpec";
-    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
-        = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-        = "NotifyRespondent1";
+    private static final String NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_EVENT
+        = "NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_ACTIVITY_ID
+        = "NotifyTranslatedDocumentUploadedToDefendant";
+    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT
+        = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_TRANSLATED_DOC";
+    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPRespondentClaimantConfirmToProceed";
+    private static final String UPDATE_CLAIM_STATE_EVENT
+        = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String UPDATE_CLAIM_STATE_ACTIVITY_ID
+        = "UpdateClaimStateAfterTranslatedDocUploaded";
+
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
     }
@@ -48,8 +53,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
-            NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+            NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_EVENT,
+            NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_ACTIVITY_ID
         );
 
         //complete the respondent notification
@@ -57,8 +62,17 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             notificationRespondentTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
-            NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+
+        //complete the state change task
+        ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            UPDATE_CLAIM_STATE_EVENT,
+            UPDATE_CLAIM_STATE_ACTIVITY_ID
         );
 
         //end business process
