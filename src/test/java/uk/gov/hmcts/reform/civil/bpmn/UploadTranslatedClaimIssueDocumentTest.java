@@ -28,6 +28,10 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
             = "NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED";
     private static final String NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "NotifyTranslatedDocumentUploadedToDefendant";
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED
+            = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
+            = "updateClaimStateAfterTranslateDocumentUploadedID";
 
     public UploadTranslatedClaimIssueDocumentTest() {
         super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
@@ -44,22 +48,6 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY
-        );
-
-        //complete the claimant notification for translated doc
-        ExternalTask notificationTaskForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTaskForClaimant,
-                PROCESS_CASE_EVENT,
-                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED,
-                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED_ID
-        );
-
-        //complete the defendant notification for translated doc
-        ExternalTask notificationTaskForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTaskForDefendant,
-                PROCESS_CASE_EVENT,
-                NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED,
-                NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED_ID
         );
 
         //Update Respondent response deadline date
@@ -96,6 +84,30 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
                 NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        );
+
+        //complete the claimant notification for translated doc
+        ExternalTask notificationTaskForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForClaimant,
+                PROCESS_CASE_EVENT,
+                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED,
+                NOTIFY_CLAIMANT_TRANSLATED_DOCUMENT_UPLOADED_ID
+        );
+
+        //complete the defendant notification for translated doc
+        ExternalTask notificationTaskForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForDefendant,
+                PROCESS_CASE_EVENT,
+                NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED,
+                NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED_ID
+        );
+
+        //complete the case state update
+        ExternalTask notificationTaskForCaseStateUpdate = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForCaseStateUpdate,
+                PROCESS_CASE_EVENT,
+                UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED,
+                UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
         );
 
         //end business process
