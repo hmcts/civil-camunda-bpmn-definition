@@ -38,6 +38,10 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         = "UPDATE_PARTIES_NOTIFIED_HMC";
     public static final String UPDATE_CASE_PROGRESS_HMC
         = "UPDATE_CASE_PROGRESS_HMC";
+    public static final String SEND_HEARING_TO_LIP_DEFENDANT
+        = "SEND_HEARING_TO_LIP_DEFENDANT";
+    public static final String SEND_HEARING_TO_LIP_CLAIMANT
+        = "SEND_HEARING_TO_LIP_CLAIMANT";
 
     //ACTIVITY IDs
 
@@ -57,6 +61,10 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         = "UpdateHMCPartiesNotified";
     public static final String UPDATE_CASE_PROGRESS_HMC_ACTIVITY_ID
         = "UpdateCaseProgress";
+    private static final String SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID
+        = "SendAutomaticHearingToDefendantLIP";
+    private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
+        = "SendAutomaticHearingToClaimantLIP";
 
     public GenerateHearingNoticeTest() {
         super("generate_hearing_notice.bpmn", PROCESS_ID);
@@ -81,16 +89,17 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"CASE_PROGRESSION, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
-        "CASE_PROGRESSION, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
-        "JUDICIAL_REFERRAL, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
-        "JUDICIAL_REFERRAL, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES",
-        "CASE_PROGRESSION, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
-        "CASE_PROGRESSION, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
-        "JUDICIAL_REFERRAL, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO",
-        "JUDICIAL_REFERRAL, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO"})
+    @CsvSource({"CASE_PROGRESSION, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "CASE_PROGRESSION, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "JUDICIAL_REFERRAL, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "JUDICIAL_REFERRAL, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "CASE_PROGRESSION, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false",
+        "CASE_PROGRESSION, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, true",
+        "JUDICIAL_REFERRAL, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false",
+        "JUDICIAL_REFERRAL, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false"})
     void shouldSuccessfullyCompleteGenerateHearingNotice(String caseState, boolean twoRespondents,
-                                                         String respondentOne, String respondentTwo) {
+                                                         String respondentOne, String respondentTwo,
+                                                         boolean lipCase) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -100,7 +109,8 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             respondentOne, !twoRespondents,
-            respondentTwo, twoRespondents));
+            respondentTwo, twoRespondents,
+            LIP_CASE, lipCase));
 
         variables.put("caseState", caseState);
 
@@ -119,6 +129,24 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    GENERATE_HEARING_NOTICE_HMC_ACTIVITY_ID,
                                    variables
         );
+
+        if (respondentOne.equals("UNREPRESENTED_DEFENDANT_ONE") && !twoRespondents) {
+            //complete the bulk print
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID,
+                                       variables
+            );
+
+            if (lipCase) {
+                //complete the bulk print
+                notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                           SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
+                                           variables
+                );
+            }
+        }
 
         //complete notify claimant solicitor hearing
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
