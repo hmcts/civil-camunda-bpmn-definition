@@ -62,10 +62,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
         = "GenerateInterlocutoryJudgementDocument";
-
     private static final String GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID
         = "GenerateJudgmentByAdmissionPdf";
-
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
         = "GenerateJudgmentByDeterminationPdf";
 
