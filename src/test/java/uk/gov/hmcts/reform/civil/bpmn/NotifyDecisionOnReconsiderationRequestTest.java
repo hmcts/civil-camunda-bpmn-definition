@@ -51,6 +51,15 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             "Activity_0txb7dk"
         );
 
+        //complete the generate form for Claim
+        ExternalTask generateClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateClaimForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_CLAIM_FORM_RECONSIDERATION",
+            "Activity_06y8ktx"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
