@@ -82,6 +82,13 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
+    private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC";
+
+    private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipClaimantClaimFormForSpec";
+    private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
+
+    private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
+
     public CreateClaimSpecAfterPaymentTest() {
         super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
     }
@@ -404,6 +411,24 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
                 SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
+            );
+
+            //Generate Lip claimant claim form
+            ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
+
+            //Generate Lip defendant claim form
+            ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
             );
 
             //complete the claim issue
