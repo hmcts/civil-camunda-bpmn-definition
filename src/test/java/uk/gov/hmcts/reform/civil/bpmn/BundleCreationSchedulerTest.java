@@ -41,7 +41,7 @@ class BundleCreationSchedulerTest extends BpmnBaseTest {
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
             LocalDateTime.of(2024, 1, 31, 00, 0, 0),
-            LocalDateTime.of(2024, 2, 31, 00, 0, 0)
+            LocalDateTime.of(2024, 3, 31, 00, 0, 0)
         );
 
         //get external tasks
