@@ -79,7 +79,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_NO_ACTIVITY_ID = "Activity_0ooszcc";
 
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC";
-
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipClaimantClaimFormForSpec";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
