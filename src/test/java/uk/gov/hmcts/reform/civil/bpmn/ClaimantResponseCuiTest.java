@@ -33,6 +33,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
         = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
 
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
+
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -56,6 +62,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
         = "GenerateInterlocutoryJudgementDocument";
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByAdmissionPdf";
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByDeterminationPdf";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -142,6 +152,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -172,6 +183,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -210,6 +222,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -241,6 +254,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyClaimantClaimantRejectRepayment();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -301,6 +315,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
+    }
+
+    private void generateJudgmentByAdmissionPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID);
+    }
+
+    private void generateJudgmentByDeterminationPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID);
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
