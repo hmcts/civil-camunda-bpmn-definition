@@ -51,7 +51,7 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             "Activity_0txb7dk"
         );
 
-        //complete the generate form for Claim
+        //complete the claim form for reconsideration generation
         ExternalTask generateClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generateClaimForm,
