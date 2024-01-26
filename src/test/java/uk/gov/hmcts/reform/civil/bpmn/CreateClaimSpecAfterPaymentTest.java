@@ -77,6 +77,10 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     public static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT = "SET_LIP_RESPONDENT_RESPONSE_DEADLINE";
     private static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID = "SetRespondent1Deadline";
     private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_NO_ACTIVITY_ID = "Activity_0ooszcc";
+    private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC";
+    private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipClaimantClaimFormForSpec";
+    private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
+    private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
     public CreateClaimSpecAfterPaymentTest() {
         super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
@@ -375,6 +379,24 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             startBusinessProcess(variables);
 
+            //Generate Lip claimant claim form
+            ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
+
+            //Generate Lip defendant claim form
+            ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateLipDefendantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
+
             //Update Respondent response deadline date
             ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -418,6 +440,54 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             assertNoExternalTasksLeft();
         }
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
+        variables.put(FLOW_FLAGS, Map.of(
+            BULK_CLAIM_ENABLED, true,
+            LIP_CASE, true,
+            GENERAL_APPLICATION_ENABLED, true,
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            PIP_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
+        ));
+
+        //complete the start business process
+        startBusinessProcess(variables);
+
+        //Generate Lip claimant claim form
+        ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateLipClaimantClaimForm,
+            PROCESS_CASE_EVENT,
+            GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+            GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+        );
+
+        //Generate Lip defendant claim form
+        ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateLipDefendantClaimForm,
+            PROCESS_CASE_EVENT,
+            GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+            GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
     }
 
     public void startBusinessProcess(VariableMap variables) {
