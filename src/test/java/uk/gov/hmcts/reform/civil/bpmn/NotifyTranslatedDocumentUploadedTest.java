@@ -23,6 +23,9 @@ public class NotifyTranslatedDocumentUploadedTest extends  BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED_ID
         = "NotifyTranslatedDocumentUploadedToDefendant";
 
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+    private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID = "updateClaimStateAfterTranslateDocumentUploadedID";
+
     public NotifyTranslatedDocumentUploadedTest() {
         super("upload_translated_document_notify.bpmn", PROCESS_ID);
     }
@@ -49,6 +52,12 @@ public class NotifyTranslatedDocumentUploadedTest extends  BpmnBaseTest {
                                    NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED_ID,
                                    variables
         );
+
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED,
+                                   UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID,
+                                   variables);
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
