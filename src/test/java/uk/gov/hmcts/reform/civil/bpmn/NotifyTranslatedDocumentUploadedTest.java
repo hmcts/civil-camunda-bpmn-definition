@@ -28,7 +28,6 @@ public class NotifyTranslatedDocumentUploadedTest extends  BpmnBaseTest {
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
         = "updateClaimStateAfterTranslateDocumentUploadedID";
 
-
     public NotifyTranslatedDocumentUploadedTest() {
         super("upload_translated_document_notify.bpmn", PROCESS_ID);
     }
