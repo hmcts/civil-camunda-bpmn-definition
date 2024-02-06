@@ -19,7 +19,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String UPDATE_CLAIM_STATE_EVENT
-        = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+        = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_ACTIVITY_ID
         = "UpdateClaimStateAfterTranslatedDocUploaded";
 
