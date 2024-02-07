@@ -10,10 +10,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_LIP";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT = "SET_SETTLEMENT_AGREEMENT_DEADLINE";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID = "SetSettlementAgreementDeadline";
-    private static final String NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_EVENT
-        = "NOTIFY_DEFENDANT_TRANSLATED_DOCUMENT_UPLOADED";
-    private static final String NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_ACTIVITY_ID
-        = "NotifyTranslatedDocumentUploadedToDefendant";
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_TRANSLATED_DOC";
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
@@ -47,14 +43,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             PROCESS_CASE_EVENT,
             SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT,
             SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID
-        );
-        //complete the applicant notification
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_EVENT,
-            NOTIFY_DEFENDANT_TRANSLATED_DOC_UPLOADED_ACTIVITY_ID
         );
 
         //complete the respondent notification
