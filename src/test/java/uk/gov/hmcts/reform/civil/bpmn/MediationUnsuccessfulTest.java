@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
+
 public class MediationUnsuccessfulTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "mediation_unsuccessful.bpmn";
