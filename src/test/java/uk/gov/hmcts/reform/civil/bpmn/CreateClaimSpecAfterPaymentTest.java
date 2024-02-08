@@ -82,6 +82,12 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
+    private static final String NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_EVENT
+        = "NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION";
+
+    private static final String NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_ACTIVITY_ID
+        = "NotifyLipClaimantClaimSubmission";
+
     public CreateClaimSpecAfterPaymentTest() {
         super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
     }
@@ -481,6 +487,15 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
             GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+        );
+
+        //Notify Lip Claimant claim submission
+        ExternalTask notifyLipClaimantClaimSubmission = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLipClaimantClaimSubmission,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_EVENT,
+            NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_ACTIVITY_ID
         );
 
         //end business process
