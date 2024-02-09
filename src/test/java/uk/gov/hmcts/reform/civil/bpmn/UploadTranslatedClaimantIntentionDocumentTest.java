@@ -38,7 +38,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of( ));
+        variables.put(FLOW_FLAGS, null);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -131,7 +131,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             notifyRPA,
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
         //end business process
