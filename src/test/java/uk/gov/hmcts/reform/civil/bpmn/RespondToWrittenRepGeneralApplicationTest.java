@@ -10,7 +10,7 @@ class RespondToWrittenRepGeneralApplicationTest extends BpmnBaseGAAfterPaymentTe
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "RESPOND_TO_JUDGE_WRITTEN_REPRESENTATION";
-    private static final String PROCESS_ID = "RESPOND_TO_WRITTEN_REP_GA_PROCESS_ID";
+    private static final String PROCESS_ID = "GA_RESPOND_TO_WRITTEN_REP_PROCESS_ID";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
@@ -20,7 +20,7 @@ class RespondToWrittenRepGeneralApplicationTest extends BpmnBaseGAAfterPaymentTe
 
     public RespondToWrittenRepGeneralApplicationTest() {
         super("respond_to_written_rep_general_application.bpmn",
-              "RESPOND_TO_WRITTEN_REP_GA_PROCESS_ID");
+              "GA_RESPOND_TO_WRITTEN_REP_PROCESS_ID");
     }
 
     @Test
