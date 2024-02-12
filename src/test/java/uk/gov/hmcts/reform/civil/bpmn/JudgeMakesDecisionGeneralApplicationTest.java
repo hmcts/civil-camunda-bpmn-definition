@@ -10,7 +10,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "MAKE_DECISION";
-    private static final String PROCESS_ID = "MAKE_DECISION_PROCESS_ID";
+    private static final String PROCESS_ID = "GA_MAKE_DECISION_PROCESS_ID";
     //Create PDF
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
@@ -26,7 +26,7 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_ID = "ObtainAdditionalPaymentReference";
 
     public JudgeMakesDecisionGeneralApplicationTest() {
-        super("judge_makes_decision_general_application.bpmn", "MAKE_DECISION_PROCESS_ID");
+        super("judge_makes_decision_general_application.bpmn", "GA_MAKE_DECISION_PROCESS_ID");
     }
 
     @Test
