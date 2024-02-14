@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class TransferOnlineCaseInGATest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "TRIGGER_TASK_RECONFIG_GA";
-    public static final String PROCESS_ID = "TRIGGER_TASK_RECONFIG_GA";
+    public static final String PROCESS_ID = "GA_TRIGGER_TASK_RECONFIG";
     private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_TASK_RECONFIG_GA";
     private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
 
