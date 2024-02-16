@@ -88,7 +88,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+                           variables.put(FLOW_FLAGS, Map.of(
             "LIP_JUDGMENT_ADMISSION", true
         ));
         assertCompleteExternalTask(
