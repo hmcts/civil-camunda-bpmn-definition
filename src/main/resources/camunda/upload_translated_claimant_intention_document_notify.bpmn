@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0qdw8hu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0qdw8hu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" isExecutable="true">
     <bpmn:startEvent id="Event_Upload_Translated_Claimant_Intention_Doc" name="Start">
       <bpmn:outgoing>Flow_17h811r</bpmn:outgoing>
@@ -27,6 +27,7 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_04ufl57</bpmn:incoming>
+      <bpmn:incoming>Flow_1t08sfu</bpmn:incoming>
       <bpmn:outgoing>Flow_0d2uvw4</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1eh2s0e">
@@ -41,16 +42,15 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1lz4ayi</bpmn:incoming>
-      <bpmn:outgoing>Flow_0v4vil5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0kmhge4</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0v4vil5" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="UpdateClaimStateAfterTranslatedDocUploaded" />
     <bpmn:serviceTask id="UpdateClaimStateAfterTranslatedDocUploaded" name="Update Claim State" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0v4vil5</bpmn:incoming>
+      <bpmn:incoming>Flow_0bl6z41</bpmn:incoming>
       <bpmn:outgoing>Flow_04ufl57</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_04ufl57" sourceRef="UpdateClaimStateAfterTranslatedDocUploaded" targetRef="Activity_19g768l" />
@@ -64,6 +64,38 @@
       <bpmn:outgoing>Flow_1lz4ayi</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1lz4ayi" sourceRef="SetSettlementAgreementDeadline" targetRef="NotifyLiPRespondentClaimantConfirmToProceed" />
+    <bpmn:serviceTask id="ProceedOffline" name="Proceed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ldqt2c</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z2obnu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_16ilbl0">
+      <bpmn:incoming>Flow_0kmhge4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bl6z41</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ldqt2c</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0kmhge4" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="Gateway_16ilbl0" />
+    <bpmn:sequenceFlow id="Flow_0bl6z41" sourceRef="Gateway_16ilbl0" targetRef="UpdateClaimStateAfterTranslatedDocUploaded">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_JUDGMENT_ADMISSION || (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; !flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z2obnu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t08sfu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0z2obnu" sourceRef="ProceedOffline" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_1t08sfu" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19g768l" />
+    <bpmn:sequenceFlow id="Flow_0ldqt2c" name="Applicant accepts or rejects repayment plan and request CCJ (full/part admit)" sourceRef="Gateway_16ilbl0" targetRef="ProceedOffline">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -81,24 +113,35 @@
       <bpmndi:BPMNShape id="Event_0vvdqpp_di" bpmnElement="Event_0vvdqpp">
         <dc:Bounds x="272" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1in8epx_di" bpmnElement="SetSettlementAgreementDeadline">
-        <dc:Bounds x="480" y="190" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1qc8men_di" bpmnElement="NotifyLiPRespondentClaimantConfirmToProceed">
-        <dc:Bounds x="720" y="190" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ig9de5_di" bpmnElement="UpdateClaimStateAfterTranslatedDocUploaded">
-        <dc:Bounds x="970" y="190" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19g768l_di" bpmnElement="Activity_19g768l">
         <dc:Bounds x="1220" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1eh2s0e_di" bpmnElement="Event_1eh2s0e">
         <dc:Bounds x="1482" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1in8epx_di" bpmnElement="SetSettlementAgreementDeadline">
+        <dc:Bounds x="480" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16ilbl0_di" bpmnElement="Gateway_16ilbl0" isMarkerVisible="true">
+        <dc:Bounds x="875" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0l350c4" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1220" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="ProceedOffline">
+        <dc:Bounds x="1025" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ig9de5_di" bpmnElement="UpdateClaimStateAfterTranslatedDocUploaded">
+        <dc:Bounds x="1025" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qc8men_di" bpmnElement="NotifyLiPRespondentClaimantConfirmToProceed">
+        <dc:Bounds x="680" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
         <dc:Bounds x="272" y="172" width="36" height="36" />
@@ -122,17 +165,40 @@
         <di:waypoint x="340" y="230" />
         <di:waypoint x="480" y="230" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0v4vil5_di" bpmnElement="Flow_0v4vil5">
-        <di:waypoint x="820" y="230" />
-        <di:waypoint x="970" y="230" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04ufl57_di" bpmnElement="Flow_04ufl57">
-        <di:waypoint x="1070" y="230" />
+        <di:waypoint x="1125" y="230" />
         <di:waypoint x="1220" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lz4ayi_di" bpmnElement="Flow_1lz4ayi">
         <di:waypoint x="580" y="230" />
-        <di:waypoint x="720" y="230" />
+        <di:waypoint x="680" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kmhge4_di" bpmnElement="Flow_0kmhge4">
+        <di:waypoint x="780" y="230" />
+        <di:waypoint x="875" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bl6z41_di" bpmnElement="Flow_0bl6z41">
+        <di:waypoint x="925" y="230" />
+        <di:waypoint x="1025" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="968" y="212" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z2obnu_di" bpmnElement="Flow_0z2obnu">
+        <di:waypoint x="1125" y="410" />
+        <di:waypoint x="1220" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t08sfu_di" bpmnElement="Flow_1t08sfu">
+        <di:waypoint x="1270" y="370" />
+        <di:waypoint x="1270" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ldqt2c_di" bpmnElement="Flow_0ldqt2c">
+        <di:waypoint x="900" y="255" />
+        <di:waypoint x="900" y="410" />
+        <di:waypoint x="1025" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="909" y="420" width="86" height="66" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
