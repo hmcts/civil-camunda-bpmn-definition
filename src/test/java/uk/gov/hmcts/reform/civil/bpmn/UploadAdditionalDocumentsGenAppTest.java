@@ -11,9 +11,7 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
     //BPMN Settings
     private static final String MESSAGE_NAME = "UPLOAD_ADDL_DOCUMENTS";
     private static final String PROCESS_ID = "GA_UPLOAD_ADDL_DOC_PROCESS_ID";
-    public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
-    private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
-    private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
@@ -27,7 +25,7 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
     }
 
     @Test
-    void shouldSuccessfullyCompleteRespondToApplication_whenCalled() {
+    void shouldSuccessfullyCompleteUploadAddlDocuments_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -41,15 +39,6 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
-            APPLICATION_PROCESS_CASE_EVENT,
-            GENERATE_DRAFT_DOCUMENT,
-            GENERATE_DRAFT_DOCUMENT_ID
         );
 
         //Complete add pdf to main case event
