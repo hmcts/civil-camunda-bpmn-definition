@@ -14,7 +14,7 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
 
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
-    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
+    private static final String ADD_PDF_ID = "AddAddlDocToMainCaseID";
     private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
     private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
     private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
