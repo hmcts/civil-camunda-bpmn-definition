@@ -87,7 +87,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
-            IS_MULTI_TRACK, true
+            IS_MULTI_TRACK, true,
+            CLAIM_ISSUE_BILINGUAL,false
         ));
 
         //Then
@@ -119,6 +120,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of(
+              CLAIM_ISSUE_BILINGUAL,false
+        ));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -148,7 +152,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", true
+                LIP_JUDGMENT_ADMISSION, true,
+                CLAIM_ISSUE_BILINGUAL,false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -180,7 +185,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", true
+                LIP_JUDGMENT_ADMISSION, true,
+                CLAIM_ISSUE_BILINGUAL,false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -216,7 +222,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", false
+                LIP_JUDGMENT_ADMISSION, false,
+                CLAIM_ISSUE_BILINGUAL,false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -249,7 +256,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", false
+                LIP_JUDGMENT_ADMISSION, false,
+                CLAIM_ISSUE_BILINGUAL,false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -279,7 +287,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
-            IS_MULTI_TRACK, true
+            IS_MULTI_TRACK, true,
+            CLAIM_ISSUE_BILINGUAL,false
         ));
 
         //Then
@@ -312,7 +321,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
         variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", false
+                LIP_JUDGMENT_ADMISSION, false,
+                CLAIM_ISSUE_BILINGUAL,false
         ));
         assertCompleteExternalTask(
                 startBusiness,
@@ -325,6 +335,34 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIssueInBilingual() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+                CLAIM_ISSUE_BILINGUAL,true
+        ));
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
