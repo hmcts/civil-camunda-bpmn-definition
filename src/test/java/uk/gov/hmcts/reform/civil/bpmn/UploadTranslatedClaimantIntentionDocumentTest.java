@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
