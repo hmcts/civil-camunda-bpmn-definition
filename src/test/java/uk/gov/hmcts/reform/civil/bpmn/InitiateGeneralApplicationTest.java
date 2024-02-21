@@ -12,7 +12,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION";
-    private static final String PROCESS_ID = "GA_INITIATE_PROCESS_ID";
+    private static final String PROCESS_ID = "INITIATE_GENERAL_APPLICATION_PROCESS_ID";
     //create general application Case
     private static final String CREATE_GENERAL_APPLICATION_EVENT = "CREATE_GENERAL_APPLICATION_CASE";
     private static final String CREATE_GENERAL_APPLICATION_ID = "CreateGeneralApplicationCase";
@@ -41,7 +41,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     public InitiateGeneralApplicationTest() {
-        super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
+        super("initiate_general_application.bpmn", "INITIATE_GENERAL_APPLICATION_PROCESS_ID");
     }
 
     @Test

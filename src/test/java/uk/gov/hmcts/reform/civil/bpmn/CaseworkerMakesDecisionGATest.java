@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
 
     private static final String MESSAGE_NAME = "APPROVE_CONSENT_ORDER";
-    private static final String PROCESS_ID = "GA_APPROVE_CONSENT_ORDER_PROCESS_ID";
+    private static final String PROCESS_ID = "APPROVE_CONSENT_ORDER_PROCESS_ID";
 
     private static final String GENERATE_CONSENT_ORDER_EVENT = "GENERATE_JUDGES_FORM";
     private static final String GENERATE_CONSENT_ORDER_ACTIVITY_ID = "GenerateConsentOrderDocument";

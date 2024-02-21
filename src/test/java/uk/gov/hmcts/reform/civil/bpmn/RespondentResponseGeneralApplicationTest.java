@@ -10,7 +10,7 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "RESPOND_TO_APPLICATION";
-    private static final String PROCESS_ID = "GA_RESPONDENT_RESPONSE_PROCESS_ID";
+    private static final String PROCESS_ID = "RESPONDENT_RESPONSE_GA_PROCESS_ID";
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
@@ -23,7 +23,7 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
 
     public RespondentResponseGeneralApplicationTest() {
         super("respondent_response_general_application.bpmn",
-              "GA_RESPONDENT_RESPONSE_PROCESS_ID");
+              "RESPONDENT_RESPONSE_GA_PROCESS_ID");
     }
 
     @Test

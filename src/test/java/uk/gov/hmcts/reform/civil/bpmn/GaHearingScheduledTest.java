@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String MESSAGE_NAME = "HEARING_SCHEDULED_GA";
-    private static final String PROCESS_ID = "GA_HEARING_SCHEDULED_PROCESS_ID";
+    private static final String PROCESS_ID = "HEARING_SCHEDULED_PROCESS_ID";
 
     private static final String GENERATE_HEARING_NOTICE_EVENT = "GENERATE_HEARING_NOTICE_DOCUMENT";
     private static final String GENERATE_HEARING_FORM_ACTIVITY_ID = "GenerateHearingNoticeDocument";

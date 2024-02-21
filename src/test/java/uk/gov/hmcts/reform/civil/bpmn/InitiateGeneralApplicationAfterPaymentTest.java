@@ -10,7 +10,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
     //BPMN Settings
     private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT";
-    private static final String PROCESS_ID = "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID";
+    private static final String PROCESS_ID = "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID";
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
@@ -25,7 +25,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
-              "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
+              "INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID");
     }
 
     @Test
