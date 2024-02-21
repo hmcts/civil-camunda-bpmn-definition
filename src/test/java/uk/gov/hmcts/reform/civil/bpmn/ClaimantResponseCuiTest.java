@@ -68,6 +68,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByAdmissionPdf";
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
         = "GenerateJudgmentByDeterminationPdf";
+    private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -160,8 +162,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
-        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -192,8 +194,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
-        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -408,5 +410,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRPACaseHandledOffline() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
+    }
+
+    private void proceedCaseOffline() {
+        assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
     }
 }
