@@ -22,7 +22,7 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
             = "NotifyRespondent1ForClaimContinuingOnlineSpec";
 
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED
-            = "UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED";
+            = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "updateClaimStateAfterTranslateDocumentUploadedID";
 
