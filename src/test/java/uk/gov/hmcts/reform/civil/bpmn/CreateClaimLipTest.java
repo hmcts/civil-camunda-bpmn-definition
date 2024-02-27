@@ -5,6 +5,8 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 public class CreateClaimLipTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "create_lip_claim.bpmn";
@@ -34,12 +36,27 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     void shouldSuccessfullyCreateLipClaim() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+                "CLAIM_ISSUE_HWF", false));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
         createServiceRequestCui(variables);
         generateDashboardNotification(variables);
+        completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
+    }
+
+    @Test
+    void shouldPauseServiceRequestApiCall_WhenHwFApplied() {
+        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+                "CLAIM_ISSUE_HWF", true));
+        startBusinessProcess(variables);
+        completeClaimIssue(variables);
+        notifyApplicant1ClaimSubmitted(variables);
+        generateDraftForm(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
