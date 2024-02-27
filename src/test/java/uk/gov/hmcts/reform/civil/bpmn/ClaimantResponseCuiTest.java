@@ -16,6 +16,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "CLAIMANT_RESPONSE_CUI_PROCESS_ID";
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
+    private static final String JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID = "Judicial_Referral";
     //CCD Case Event
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
@@ -31,6 +32,12 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
         = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
+
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
+
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
+        = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
 
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
@@ -49,6 +56,20 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+    private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
+    private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT = "UPDATE_CLAIMANT_INTENTION_CLAIM_STATE";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID = "updateClaimantIntentionClaimStateID";
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
+        = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
+    private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        = "GenerateInterlocutoryJudgementDocument";
+    private static final String GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByAdmissionPdf";
+    private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
+        = "GenerateJudgmentByDeterminationPdf";
+    private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -82,6 +103,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -109,6 +131,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         generateRPAContinuousFeed();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -135,9 +158,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -165,9 +190,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateJudgmentByAdmissionPdf();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -201,7 +228,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -230,9 +261,80 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantRejectRepayment();
         notifyClaimantClaimantRejectRepayment();
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
+        //Given
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            GENERAL_APPLICATION_ENABLED, true,
+            IS_MULTI_TRACK, true
+        ));
+
+        //Then
+        assertProcessHasStarted();
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        startBusinessProcess(variables);
+        assertCompletedCaseEvent(
+            JUDICIAL_REFERRAL_EVENT,
+            JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
+            variables
+        );
+
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimState();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", false
+        ));
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimState();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    private void generateJudgmentByAdmissionPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID);
+    }
+
+    private void generateJudgmentByDeterminationPdf() {
+        assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID);
     }
 
     private void notifyRespondentClaimantConfirmsToProceed() {
@@ -253,6 +355,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateRPAContinuousFeed() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
+    }
+
+    private void generateManualDeterminationPdf() {
+        assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
+    }
+
+    private void updateClaimState() {
+        assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
@@ -286,6 +396,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
+    private void requestInterlockJudgement() {
+        assertCompletedCaseEvent(
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT,
+            GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
+        );
+    }
+
     private void endBusinessProcess() {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -293,5 +410,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRPACaseHandledOffline() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
+    }
+
+    private void proceedCaseOffline() {
+        assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
     }
 }
