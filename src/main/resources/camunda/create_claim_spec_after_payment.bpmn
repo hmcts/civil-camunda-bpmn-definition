@@ -189,7 +189,7 @@
     <bpmn:sequenceFlow id="Flow_0wzcptl" sourceRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" targetRef="NotifyRoboticsOnContinuousFeed" />
     <bpmn:sequenceFlow id="Flow_104uutx" sourceRef="CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec" targetRef="NotifyRoboticsOnContinuousFeed" />
     <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_1ppx3ep" sourceRef="Activity_0ooszcc" targetRef="CUIDashboardRespondent1Notification" />
+    <bpmn:sequenceFlow id="Flow_1ppx3ep" sourceRef="Activity_0ooszcc" targetRef="Applicant1Notification" />
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
     <bpmn:sequenceFlow id="Flow_077qhcm" sourceRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" targetRef="Activity_0ooszcc" />
     <bpmn:sequenceFlow id="Flow_0wambq9" name="No" sourceRef="Gateway_09y2h07" targetRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec">
@@ -299,8 +299,7 @@
       <bpmn:outgoing>Flow_07e8le1</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_07e8le1" sourceRef="NotifyLipClaimantClaimSubmission" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_1amnh02" sourceRef="CUIDashboardApplicant1Notification" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_11z8o4c" sourceRef="CUIDashboardRespondent1Notification" targetRef="CUIDashboardApplicant1Notification" />
+    <bpmn:sequenceFlow id="Flow_1amnh02" sourceRef="Applicant1Notification" targetRef="Activity_19rrcw0" />
     <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -319,22 +318,13 @@
       <bpmn:incoming>Flow_077qhcm</bpmn:incoming>
       <bpmn:outgoing>Flow_1ppx3ep</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="CUIDashboardRespondent1Notification" name="CUI Dashboard Respondent1 Notification" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="Applicant1Notification" name="Applicant1 Notification" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CUI_DASHBOARD_CLAIM_PAID_DEFENDANT_NOTIFICATION</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFICATION_APPLICANT1_AFTER_PAY_FEE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ppx3ep</bpmn:incoming>
-      <bpmn:outgoing>Flow_11z8o4c</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="CUIDashboardApplicant1Notification" name="CUI Dashboard Applicant1 Notification" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">DASHBOARD_APPLICANT1_AFTER_PAY_FEE_SCENARIO</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_11z8o4c</bpmn:incoming>
       <bpmn:outgoing>Flow_1amnh02</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
@@ -343,6 +333,11 @@
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Participant_0fyrupj" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="2248" height="830" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1amnh02_di" bpmnElement="Flow_1amnh02">
+        <di:waypoint x="2190" y="350" />
+        <di:waypoint x="2230" y="350" />
+        <di:waypoint x="2230" y="410" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07e8le1_di" bpmnElement="Flow_07e8le1">
         <di:waypoint x="790" y="840" />
         <di:waypoint x="2230" y="840" />
@@ -457,7 +452,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ppx3ep_di" bpmnElement="Flow_1ppx3ep">
         <di:waypoint x="1930" y="350" />
-        <di:waypoint x="1960" y="350" />
+        <di:waypoint x="2090" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tm6p28_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
         <di:waypoint x="2140" y="450" />
@@ -542,15 +537,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1366" y="347" width="49" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1amnh02_di" bpmnElement="Flow_1amnh02">
-        <di:waypoint x="2190" y="350" />
-        <di:waypoint x="2230" y="350" />
-        <di:waypoint x="2230" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11z8o4c_di" bpmnElement="Flow_11z8o4c">
-        <di:waypoint x="2060" y="350" />
-        <di:waypoint x="2090" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0y4gxfi_di" bpmnElement="ProceedOfflineForUnRepresentedSolicitor">
         <dc:Bounds x="1500" y="220" width="100" height="80" />
@@ -667,10 +653,7 @@
       <bpmndi:BPMNShape id="BPMNShape_06p97ja" bpmnElement="Activity_0ooszcc">
         <dc:Bounds x="1830" y="310" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1rs5zcb_di" bpmnElement="CUIDashboardRespondent1Notification">
-        <dc:Bounds x="1960" y="310" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vvj1l6_di" bpmnElement="CUIDashboardApplicant1Notification">
+      <bpmndi:BPMNShape id="Activity_0vvj1l6_di" bpmnElement="Applicant1Notification">
         <dc:Bounds x="2090" y="310" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
