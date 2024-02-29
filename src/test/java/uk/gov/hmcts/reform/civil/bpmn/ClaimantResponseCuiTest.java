@@ -58,6 +58,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT = "UPDATE_CLAIMANT_INTENTION_CLAIM_STATE";
+    private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID = "updateClaimantIntentionClaimStateID";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT
         = "GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT";
     private static final String GENERATE_INTERLOCUTORY_JUDGEMENT_DOCUMENT_ACTIVITY_ID
@@ -66,6 +68,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByAdmissionPdf";
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
         = "GenerateJudgmentByDeterminationPdf";
+    private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -99,6 +103,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -126,6 +131,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         generateRPAContinuousFeed();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -156,6 +162,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -187,6 +194,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        proceedCaseOffline();
         notifyRPACaseHandledOffline();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -224,6 +232,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -256,34 +265,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
-        variables.put(FLOW_FLAGS, Map.of(
-                "LIP_JUDGMENT_ADMISSION", false
-        ));
-        assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-        );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
-        generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -313,6 +295,36 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        updateClaimState();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+                "LIP_JUDGMENT_ADMISSION", false
+        ));
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimState();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -347,6 +359,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateManualDeterminationPdf() {
         assertCompletedCaseEvent(LIP_CLAIMANT_MD, LIP_CLAIMANT_MD_ACTIVITY_ID);
+    }
+
+    private void updateClaimState() {
+        assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
@@ -394,5 +410,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRPACaseHandledOffline() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
+    }
+
+    private void proceedCaseOffline() {
+        assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
     }
 }
