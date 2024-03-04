@@ -49,7 +49,6 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
-
     @Test
     void shouldPauseServiceRequestApiCall_WhenHwFApplied() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
