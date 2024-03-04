@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0df4yy5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="MultiProceedOffline" name="Multi Proceed Offline" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_1bzbgi0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0r7z4xr" name="End">
+      <bpmn:incoming>Flow_1g9pumw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1bzbgi0" sourceRef="StartEvent_1" targetRef="CASE_PROCEEDS_IN_CASEMAN" />
+    <bpmn:callActivity id="CASE_PROCEEDS_IN_CASEMAN" name="Case Proceeds In CASEMAN" calledElement="CASE_PROCEEDS_IN_CASEMAN">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
+          <camunda:inputParameter name="flowState">MAIN.TAKEN_OFFLINE_BY_STAFF</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bzbgi0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g9pumw</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${caseIds}" camunda:elementVariable="caseId" />
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1g9pumw" sourceRef="CASE_PROCEEDS_IN_CASEMAN" targetRef="Event_0r7z4xr" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MultiProceedOffline">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="132" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="139" y="145" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r7z4xr_di" bpmnElement="Event_0r7z4xr">
+        <dc:Bounds x="712" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="145" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ocls7v_di" bpmnElement="CASE_PROCEEDS_IN_CASEMAN">
+        <dc:Bounds x="380" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1bzbgi0_di" bpmnElement="Flow_1bzbgi0">
+        <di:waypoint x="168" y="120" />
+        <di:waypoint x="380" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g9pumw_di" bpmnElement="Flow_1g9pumw">
+        <di:waypoint x="480" y="120" />
+        <di:waypoint x="712" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
