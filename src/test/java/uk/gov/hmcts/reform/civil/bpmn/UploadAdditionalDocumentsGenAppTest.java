@@ -50,15 +50,6 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
             ADD_PDF_ID
         );
 
-        //Complete add pdf to main case event
-        ExternalTask waitMainCaseDocUpdated = assertNextExternalTask(WAIT_PDF_UPDATE_TOPIC);
-        assertCompleteExternalTask(
-            waitMainCaseDocUpdated,
-            WAIT_PDF_UPDATE_TOPIC,
-            WAIT_PDF_UPDATE_EVENT,
-            WAIT_PDF_UPDATE_ID
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
