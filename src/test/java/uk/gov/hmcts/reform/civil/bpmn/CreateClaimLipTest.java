@@ -57,7 +57,6 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
-        generateDashboardNotification(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
