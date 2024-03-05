@@ -25,10 +25,10 @@ Camunda BPMN definitions will be pulled from the latest GitHub release.
 Service instance will be running the latest version deployed to ACR.
 
 To access XUI visit url (make sure that it starts with `https`, otherwise IDAM won't let you log in):
-- `https://xui-civil-camunda-pr-PR_NUMBER.service.core-compute-preview.internal`
+- `https://xui-civil-camunda-pr-PR_NUMBER.preview.platform.hmcts.net`
 
 To access Camunda visit url (login and password are both `admin`):
-- `https://camunda-civil-camunda-pr-PR_NUMBER.service.core-compute-preview.internal`
+- `https://camunda-civil-camunda-pr-PR_NUMBER.preview.platform.hmcts.net`
 
 ## Camunda
 
