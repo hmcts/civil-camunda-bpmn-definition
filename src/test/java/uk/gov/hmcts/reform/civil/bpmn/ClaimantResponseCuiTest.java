@@ -39,6 +39,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
         = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
 
+    private static final String CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1
+        = "CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -70,6 +73,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByDeterminationPdf";
     private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_1_ACTIVITY_ID
+        = "GenerateDashboardNotificationGoToHearing1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_2_ACTIVITY_ID
+        = "GenerateDashboardNotificationGoToHearing2";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -101,6 +108,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateDashboardNotificationGoToHearing2();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -301,6 +309,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
+        generateDashboardNotificationGoToHearing1();
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
@@ -378,6 +387,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRespondentClaimantConfirmsToProceed() {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    }
+
+    private void generateDashboardNotificationGoToHearing1() {
+        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1, GENERATE_DASHBOARD_NOTIFICATION_1_ACTIVITY_ID);
+    }
+
+    private void generateDashboardNotificationGoToHearing2() {
+        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1, GENERATE_DASHBOARD_NOTIFICATION_2_ACTIVITY_ID);
     }
 
     private void notifyClaimantClaimantRejectRepayment() {
