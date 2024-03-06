@@ -26,6 +26,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1
+            = "GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1_ACTIVITY_ID
+            = "GenerateDashboardNotificationSettlementAgreement";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
             = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
@@ -77,6 +81,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             PROCESS_CASE_EVENT,
             UPDATE_CLAIM_STATE_EVENT,
             UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        //generate dashboard notification task for settlement agreement
+        ExternalTask generateDashboardNotificationsTaskForSettlement = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                generateDashboardNotificationsTaskForSettlement,
+                PROCESS_CASE_EVENT,
+                GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1,
+                GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1_ACTIVITY_ID
         );
 
         //end business process
@@ -195,6 +208,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 PROCESS_CASE_EVENT,
                 UPDATE_CLAIM_STATE_EVENT,
                 UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        //generate dashboard notification task for settlement agreement
+        ExternalTask generateDashboardNotificationsTaskForSettlement = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                generateDashboardNotificationsTaskForSettlement,
+                PROCESS_CASE_EVENT,
+                GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1,
+                GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1_ACTIVITY_ID
         );
 
         //end business process

@@ -68,6 +68,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByAdmissionPdf";
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID
         = "GenerateJudgmentByDeterminationPdf";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1
+            = "GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1_ACTIVITY_ID
+            = "GenerateDashboardNotificationSettlementAgreement";
     private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
 
@@ -105,6 +109,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -136,6 +141,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         generateRPAContinuousFeed();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -240,6 +246,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -274,6 +281,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -305,6 +313,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -335,6 +344,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -364,6 +374,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationForSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -402,6 +413,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void updateClaimState() {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID);
+    }
+
+    private void generateDashboardNotificationForSettlementAgreement() {
+        assertCompletedCaseEvent(GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1,
+                GENERATE_DASHBOARD_NOTIFICATION_SETTLEMENT_AGREEMENT_CLAIMANT1_ACTIVITY_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
