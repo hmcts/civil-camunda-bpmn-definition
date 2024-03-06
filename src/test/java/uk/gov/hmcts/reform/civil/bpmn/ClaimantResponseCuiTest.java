@@ -39,6 +39,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
         = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
 
+    private static final String CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1
+        = "CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -70,6 +73,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByDeterminationPdf";
     private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        = "GenerateDashboardNotificationGoToHearing";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -105,6 +110,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -136,6 +142,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         generateRPAContinuousFeed();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -240,6 +247,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -274,6 +282,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -305,6 +314,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -335,6 +345,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -364,6 +375,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        generateDashboardNotificationGoToHearing();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -378,6 +390,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRespondentClaimantConfirmsToProceed() {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    }
+
+    private void generateDashboardNotificationGoToHearing() {
+        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1, GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID);
     }
 
     private void notifyClaimantClaimantRejectRepayment() {
