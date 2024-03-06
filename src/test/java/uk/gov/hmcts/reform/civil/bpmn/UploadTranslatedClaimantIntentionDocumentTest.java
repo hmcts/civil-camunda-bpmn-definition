@@ -30,6 +30,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
             = "NotifyRoboticsOnContinuousFeed";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1
+        = "CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        = "GenerateDashboardNotificationGoToHearing";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -77,6 +81,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             PROCESS_CASE_EVENT,
             UPDATE_CLAIM_STATE_EVENT,
             UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        // generate dashboard notification task
+        ExternalTask generateDashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1,
+            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
@@ -195,6 +208,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 PROCESS_CASE_EVENT,
                 UPDATE_CLAIM_STATE_EVENT,
                 UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        // generate dashboard notification task
+        ExternalTask generateDashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_GO_TO_HEARING_FOR_APPLICANT1,
+            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
