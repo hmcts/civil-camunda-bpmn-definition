@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.APPLICATION_EVENT_GASPEC;
 
 class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -22,6 +23,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
+    private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
+    private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
 
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
@@ -43,6 +46,15 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
+        );
+
+        //assigne of roles
+        ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignRoles,
+            APPLICATION_EVENT_GASPEC,
+            ASSIGNIN_OF_ROLES_EVENT,
+            ASSIGNIN_OF_ROLES_ID
         );
 
         //complete the document generation
