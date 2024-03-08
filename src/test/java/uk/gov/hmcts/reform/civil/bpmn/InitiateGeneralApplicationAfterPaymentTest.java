@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.APPLICATION_EVENT_GASPEC;
 
 class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -52,7 +51,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
         ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             assignRoles,
-            APPLICATION_EVENT_GASPEC,
+            APPLICATION_PROCESS_CASE_EVENT,
             ASSIGNIN_OF_ROLES_EVENT,
             ASSIGNIN_OF_ROLES_ID
         );
