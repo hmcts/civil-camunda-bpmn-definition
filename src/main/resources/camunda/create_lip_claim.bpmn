@@ -80,7 +80,7 @@
       <bpmn:outgoing>Flow_1hi4tb8</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ad6bt0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0ad6bt0" name="Yes" sourceRef="Gateway_0w83mdr" targetRef="Activity_19rrcw0">
+    <bpmn:sequenceFlow id="Flow_0ad6bt0" name="Yes" sourceRef="Gateway_0w83mdr" targetRef="GenerateDashboardNotificationClaimIssueHwfClaimant1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CLAIM_ISSUE_HWF&amp;&amp; flowFlags.CLAIM_ISSUE_HWF}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_1irqmkk">
@@ -90,11 +90,11 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ad6bt0</bpmn:incoming>
       <bpmn:incoming>Flow_0lhg2f5</bpmn:incoming>
+      <bpmn:incoming>Flow_1wbmgtt</bpmn:incoming>
       <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="GenerateDashboardNotificationClaimFeeRequired" name="Generate Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationClaimFeeRequired" name="Generate Dashboard Notification Claim Fee Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CLAIMANT1</camunda:inputParameter>
@@ -104,6 +104,16 @@
       <bpmn:outgoing>Flow_0lhg2f5</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0lhg2f5" sourceRef="GenerateDashboardNotificationClaimFeeRequired" targetRef="Activity_19rrcw0" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationClaimIssueHwfClaimant1" name="Generate Dashboard Notification HWF Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ad6bt0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wbmgtt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1wbmgtt" sourceRef="GenerateDashboardNotificationClaimIssueHwfClaimant1" targetRef="Activity_19rrcw0" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -111,13 +121,16 @@
         <dc:Bounds x="160" y="60" width="2038" height="660" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0lhg2f5_di" bpmnElement="Flow_0lhg2f5">
+        <di:waypoint x="1390" y="380" />
+        <di:waypoint x="1460" y="380" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ad6bt0_di" bpmnElement="Flow_0ad6bt0">
         <di:waypoint x="1090" y="405" />
         <di:waypoint x="1090" y="480" />
-        <di:waypoint x="1500" y="480" />
-        <di:waypoint x="1500" y="430" />
+        <di:waypoint x="1290" y="480" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1152" y="462" width="18" height="14" />
+          <dc:Bounds x="1138" y="462" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hi4tb8_di" bpmnElement="Flow_1hi4tb8">
@@ -159,9 +172,10 @@
         <di:waypoint x="318" y="380" />
         <di:waypoint x="420" y="380" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0lhg2f5_di" bpmnElement="Flow_0lhg2f5">
-        <di:waypoint x="1390" y="380" />
-        <di:waypoint x="1460" y="380" />
+      <bpmndi:BPMNEdge id="Flow_1wbmgtt_di" bpmnElement="Flow_1wbmgtt">
+        <di:waypoint x="1390" y="480" />
+        <di:waypoint x="1500" y="480" />
+        <di:waypoint x="1500" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0yfoky6_di" bpmnElement="Event_0yfoky6">
         <dc:Bounds x="282" y="362" width="36" height="36" />
@@ -205,6 +219,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="GenerateDashboardNotificationClaimFeeRequired_di" bpmnElement="GenerateDashboardNotificationClaimFeeRequired">
         <dc:Bounds x="1290" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_108voca_di" bpmnElement="GenerateDashboardNotificationClaimIssueHwfClaimant1">
+        <dc:Bounds x="1290" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="452" y="322" width="36" height="36" />
