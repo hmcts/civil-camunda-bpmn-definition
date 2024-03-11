@@ -67,6 +67,7 @@
       <bpmn:incoming>Flow_0slswz6</bpmn:incoming>
       <bpmn:incoming>Flow_0xb2qk0</bpmn:incoming>
       <bpmn:incoming>IN_MEDIATION_FLOW</bpmn:incoming>
+      <bpmn:incoming>Flow_13nmhiz</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zgri</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v6zgri" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -130,6 +131,7 @@
       <bpmn:incoming>Flow_Full_Defence</bpmn:incoming>
       <bpmn:outgoing>Flow_15u1zrg</bpmn:outgoing>
       <bpmn:outgoing>Flow_1fuyad6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13nmhiz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_Full_Defence" name="Full Defence" sourceRef="Gateway_RESPONSE_FLOW" targetRef="Gateway_0xpw8z2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED"}</bpmn:conditionExpression>
@@ -272,6 +274,9 @@
       <bpmn:outgoing>Flow_1du76y6</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1du76y6" sourceRef="GenerateClaimantDashboardNotificationClaimantResponse" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:sequenceFlow id="Flow_13nmhiz" sourceRef="Gateway_0xpw8z2" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)) &amp;&amp; flowFags.SETTLE_THE_CLAIM}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -580,6 +585,14 @@
       <bpmndi:BPMNEdge id="Flow_1du76y6_di" bpmnElement="Flow_1du76y6">
         <di:waypoint x="1980" y="503" />
         <di:waypoint x="2030" y="503" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13nmhiz_di" bpmnElement="Flow_13nmhiz">
+        <di:waypoint x="600" y="335" />
+        <di:waypoint x="600" y="473" />
+        <di:waypoint x="920" y="473" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="606" y="401" width="19" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
