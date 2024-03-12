@@ -26,6 +26,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE
         = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
+    public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
+        = "GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
 
     //ACTIVITY IDs
     public static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
@@ -37,6 +39,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
         = "RequestJudgementByAdmissionLipClaimantNotifyRespondent1";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
+    public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID
+        = "GenerateJudgmentByAdmissonDoc";
 
     public RequestJudgementByAdmissionTest() {
         super("request_judgement_by_admission.bpmn", PROCESS_ID);
@@ -133,6 +137,14 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT,
                                    NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
+        );
+
+        //generate the Judgment By Admission Document
+        ExternalTask generateDocTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(generateDocTask,
+                                   PROCESS_CASE_EVENT,
+                                   GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC,
+                                   GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID
         );
 
         //complete the Robotics notification

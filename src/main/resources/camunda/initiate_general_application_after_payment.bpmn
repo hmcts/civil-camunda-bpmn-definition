@@ -3,21 +3,21 @@
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT" />
   <bpmn:collaboration id="InitiateGeneralApplicationAfterPayment">
     <bpmn:extensionElements />
-    <bpmn:participant id="Participant_11shrki" name="Initiate General Application After Payment" processRef="INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID" />
+    <bpmn:participant id="Participant_11shrki" name="Initiate General Application After Payment" processRef="GA_INITIATE_AFTER_PAYMENT_PROCESS_ID" />
   </bpmn:collaboration>
-  <bpmn:process id="INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT_PROCESS_ID" isExecutable="true">
+  <bpmn:process id="GA_INITIATE_AFTER_PAYMENT_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="Event_19ttrus" name="Start">
       <bpmn:outgoing>Flow_1lowlui</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_024hrqa" messageRef="Message_0yl8iuc" />
     </bpmn:startEvent>
-    <bpmn:callActivity id="Activity_099a8bs" name="Start Business Process" calledElement="StartGeneralApplicationBusinessProcessGAspec">
+    <bpmn:callActivity id="Activity_099a8bs" name="Start Business Process" calledElement="GA_StartGeneralApplicationBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
         <camunda:out variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1lowlui</bpmn:incoming>
       <bpmn:outgoing>Flow_0nufgia</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0gk750v</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ksbz12</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_0pltq59">
       <bpmn:incoming>Flow_0nufgia</bpmn:incoming>
@@ -29,14 +29,45 @@
     <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
     <bpmn:sequenceFlow id="Flow_0a98f0b" sourceRef="GeneralApplicationNotifying" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_0n6ts4r" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
-    <bpmn:sequenceFlow id="Flow_0gk750v" sourceRef="Activity_099a8bs" targetRef="GenerateDraftDocumentId" />
+    <bpmn:sequenceFlow id="Flow_0702sw7" sourceRef="GenerateDraftDocumentId" targetRef="AddDraftDocToMainCaseID" />
+    <bpmn:sequenceFlow id="Flow_15ok91n" sourceRef="AddDraftDocToMainCaseID" targetRef="GeneralApplicationNotifying" />
+    <bpmn:endEvent id="Event_0ii7uzg">
+      <bpmn:incoming>Flow_0n6ts4r</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a98f0b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n6ts4r</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15ok91n</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a98f0b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="AssigningOfRoles" name="Assigning of GA roles" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">ASSIGN_GA_ROLES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ksbz12</bpmn:incoming>
+      <bpmn:outgoing>Flow_0p2nz8j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ksbz12" sourceRef="Activity_099a8bs" targetRef="AssigningOfRoles" />
+    <bpmn:sequenceFlow id="Flow_0p2nz8j" sourceRef="AssigningOfRoles" targetRef="GenerateDraftDocumentId" />
     <bpmn:serviceTask id="GenerateDraftDocumentId" name="Generate Draft Document" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">GENERATE_DRAFT_DOCUMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0gk750v</bpmn:incoming>
+      <bpmn:incoming>Flow_0p2nz8j</bpmn:incoming>
       <bpmn:outgoing>Flow_0702sw7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="AddDraftDocToMainCaseID" name="Add Draft Document to Parent Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
@@ -48,27 +79,6 @@
       <bpmn:incoming>Flow_0702sw7</bpmn:incoming>
       <bpmn:outgoing>Flow_15ok91n</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0702sw7" sourceRef="GenerateDraftDocumentId" targetRef="AddDraftDocToMainCaseID" />
-    <bpmn:sequenceFlow id="Flow_15ok91n" sourceRef="AddDraftDocToMainCaseID" targetRef="GeneralApplicationNotifying" />
-    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_15ok91n</bpmn:incoming>
-      <bpmn:outgoing>Flow_0a98f0b</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="EndGeneralApplicationBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0a98f0b</bpmn:incoming>
-      <bpmn:outgoing>Flow_0n6ts4r</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_0ii7uzg">
-      <bpmn:incoming>Flow_0n6ts4r</bpmn:incoming>
-    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplicationAfterPayment">
@@ -88,22 +98,25 @@
       <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
         <dc:Bounds x="322" y="100" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
+        <dc:Bounds x="1282" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="1130" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
+        <dc:Bounds x="970" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n2dfke_di" bpmnElement="AssigningOfRoles">
+        <dc:Bounds x="470" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0blxg0o" bpmnElement="GenerateDraftDocumentId">
-        <dc:Bounds x="490" y="208" width="100" height="80" />
+        <dc:Bounds x="640" y="208" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1cajp65" bpmnElement="AddDraftDocToMainCaseID">
-        <dc:Bounds x="670" y="208" width="100" height="80" />
+        <dc:Bounds x="800" y="208" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
-        <dc:Bounds x="860" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1040" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
-        <dc:Bounds x="1282" y="230" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -120,24 +133,28 @@
         <di:waypoint x="290" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0a98f0b_di" bpmnElement="Flow_0a98f0b">
-        <di:waypoint x="960" y="250" />
-        <di:waypoint x="1040" y="250" />
+        <di:waypoint x="1070" y="250" />
+        <di:waypoint x="1130" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n6ts4r_di" bpmnElement="Flow_0n6ts4r">
-        <di:waypoint x="1140" y="248" />
+        <di:waypoint x="1230" y="248" />
         <di:waypoint x="1282" y="248" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gk750v_di" bpmnElement="Flow_0gk750v">
-        <di:waypoint x="390" y="248" />
-        <di:waypoint x="490" y="248" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0702sw7_di" bpmnElement="Flow_0702sw7">
-        <di:waypoint x="590" y="248" />
-        <di:waypoint x="670" y="248" />
+        <di:waypoint x="740" y="248" />
+        <di:waypoint x="800" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15ok91n_di" bpmnElement="Flow_15ok91n">
-        <di:waypoint x="770" y="248" />
-        <di:waypoint x="860" y="248" />
+        <di:waypoint x="900" y="248" />
+        <di:waypoint x="970" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ksbz12_di" bpmnElement="Flow_0ksbz12">
+        <di:waypoint x="390" y="248" />
+        <di:waypoint x="470" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p2nz8j_di" bpmnElement="Flow_0p2nz8j">
+        <di:waypoint x="570" y="248" />
+        <di:waypoint x="640" y="248" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

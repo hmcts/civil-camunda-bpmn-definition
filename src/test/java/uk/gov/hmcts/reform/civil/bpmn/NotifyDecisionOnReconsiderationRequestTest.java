@@ -6,25 +6,18 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RespondToDirectionsGeneralApplicationTest extends BpmnBaseGAAfterPaymentTest {
+class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
 
-    //BPMN Settings
-    private static final String MESSAGE_NAME = "RESPOND_TO_JUDGE_DIRECTIONS";
-    private static final String PROCESS_ID = "GA_RESPOND_TO_DIRECTIONS_PROCESS_ID";
-    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
-    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
-    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
-    private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
-    private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
-    private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
+    public static final String MESSAGE_NAME = "DECISION_ON_RECONSIDERATION_REQUEST";
+    public static final String PROCESS_ID = "DECISION_ON_RECONSIDERATION_REQUEST";
 
-    public RespondToDirectionsGeneralApplicationTest() {
-        super("respond_to_directions_general_application.bpmn",
-              "GA_RESPOND_TO_DIRECTIONS_PROCESS_ID");
+    public NotifyDecisionOnReconsiderationRequestTest() {
+        super("notify_decision_on_reconsideration_request.bpmn", "DECISION_ON_RECONSIDERATION_REQUEST");
     }
 
     @Test
-    void shouldSuccessfullyCompleteRespondToApplication_whenCalled() {
+    void shouldSuccessfullyNotifyDecisionOnReconsiderationRequest() {
+
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -40,22 +33,31 @@ class RespondToDirectionsGeneralApplicationTest extends BpmnBaseGAAfterPaymentTe
             START_BUSINESS_ACTIVITY
         );
 
-        //Complete add pdf to main case event
-        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        //complete the notification to Claimant
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            addDocumentToMainCase,
-            UPDATE_FROM_GA_CASE_EVENT,
-            ADD_PDF_EVENT,
-            ADD_PDF_ID
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+            "Activity_0nyrqab"
         );
 
-        //Complete add pdf to main case event
-        ExternalTask waitMainCaseDocUpdated = assertNextExternalTask(WAIT_PDF_UPDATE_TOPIC);
+        //complete the notification to Respondent
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                waitMainCaseDocUpdated,
-                WAIT_PDF_UPDATE_TOPIC,
-                WAIT_PDF_UPDATE_EVENT,
-                WAIT_PDF_UPDATE_ID
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+            "Activity_0txb7dk"
+        );
+
+        //complete the claim form for reconsideration generation
+        ExternalTask generateClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateClaimForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_CLAIM_FORM_RECONSIDERATION",
+            "Activity_06y8ktx"
         );
 
         //end business process

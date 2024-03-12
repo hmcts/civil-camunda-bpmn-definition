@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1wpha7s" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="MANAGE_CONTACT_INFORMATION_ID" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0nv58bd</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_06xkj54" messageRef="Message_15z1aji" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1hyjose">
+      <bpmn:incoming>Flow_1cgj86m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0nv58bd</bpmn:incoming>
+      <bpmn:outgoing>Flow_05w58kj</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_1mtqud7">
+      <bpmn:incoming>Flow_0h072ea</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0o3sg3o" name="Abort" attachedToRef="Activity_0y089q8">
+      <bpmn:outgoing>Flow_0h072ea</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0uj9pwb" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
+    <bpmn:callActivity id="Activity_072j7li" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bgrb4p</bpmn:incoming>
+      <bpmn:incoming>Flow_1kahp80</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cgj86m</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1cgj86m" sourceRef="Activity_072j7li" targetRef="Event_1hyjose" />
+    <bpmn:sequenceFlow id="Flow_0nv58bd" sourceRef="StartEvent_1" targetRef="Activity_0y089q8" />
+    <bpmn:serviceTask id="ContactInformationUpdated" name="Contact Information Updated" camunda:type="external" camunda:topic="processEventWithDescription">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CONTACT_INFORMATION_UPDATED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05w58kj</bpmn:incoming>
+      <bpmn:outgoing>Flow_17laedf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_05w58kj" sourceRef="Activity_0y089q8" targetRef="ContactInformationUpdated" />
+    <bpmn:sequenceFlow id="Flow_17laedf" sourceRef="ContactInformationUpdated" targetRef="Gateway_17kjvo7" />
+    <bpmn:serviceTask id="ContactInformationUpdatedWa" name="Trigger Contact Information Updated WA" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CONTACT_INFORMATION_UPDATED_WA</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1p45pfz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kahp80</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_17kjvo7">
+      <bpmn:incoming>Flow_17laedf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bgrb4p</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1p45pfz</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0bgrb4p" sourceRef="Gateway_17kjvo7" targetRef="Activity_072j7li">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${submittedByCaseworker}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1p45pfz" sourceRef="Gateway_17kjvo7" targetRef="ContactInformationUpdatedWa">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!submittedByCaseworker}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1kahp80" sourceRef="ContactInformationUpdatedWa" targetRef="Activity_072j7li" />
+    <bpmn:textAnnotation id="TextAnnotation_1y0szum">
+      <bpmn:text>MANAGE_CONTACT_INFORMATION</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_041jred" sourceRef="StartEvent_1" targetRef="TextAnnotation_1y0szum" />
+    <bpmn:textAnnotation id="TextAnnotation_1tsklrq">
+      <bpmn:text>Submitted by Caseworker?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_123rxks" sourceRef="Gateway_17kjvo7" targetRef="TextAnnotation_1tsklrq" />
+    <bpmn:textAnnotation id="TextAnnotation_12l8tbq">
+      <bpmn:text>No</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_08njt5v">
+      <bpmn:text>Yes</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmn:message id="Message_15z1aji" name="MANAGE_CONTACT_INFORMATION" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MANAGE_CONTACT_INFORMATION_ID">
+      <bpmndi:BPMNShape id="TextAnnotation_1tsklrq_di" bpmnElement="TextAnnotation_1tsklrq">
+        <dc:Bounds x="790" y="360" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12l8tbq_di" bpmnElement="TextAnnotation_12l8tbq">
+        <dc:Bounds x="860" y="196" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_08njt5v_di" bpmnElement="TextAnnotation_08njt5v">
+        <dc:Bounds x="950" y="310" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1y0szum_di" bpmnElement="TextAnnotation_1y0szum">
+        <dc:Bounds x="160" y="200" width="260" height="26" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17laedf_di" bpmnElement="Flow_17laedf">
+        <di:waypoint x="760" y="297" />
+        <di:waypoint x="885" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05w58kj_di" bpmnElement="Flow_05w58kj">
+        <di:waypoint x="530" y="297" />
+        <di:waypoint x="660" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nv58bd_di" bpmnElement="Flow_0nv58bd">
+        <di:waypoint x="328" y="300" />
+        <di:waypoint x="430" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cgj86m_di" bpmnElement="Flow_1cgj86m">
+        <di:waypoint x="1150" y="297" />
+        <di:waypoint x="1272" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h072ea_di" bpmnElement="Flow_0h072ea">
+        <di:waypoint x="480" y="239" />
+        <di:waypoint x="480" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bgrb4p_di" bpmnElement="Flow_0bgrb4p">
+        <di:waypoint x="935" y="297" />
+        <di:waypoint x="1050" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p45pfz_di" bpmnElement="Flow_1p45pfz">
+        <di:waypoint x="910" y="272" />
+        <di:waypoint x="910" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kahp80_di" bpmnElement="Flow_1kahp80">
+        <di:waypoint x="960" y="120" />
+        <di:waypoint x="1100" y="120" />
+        <di:waypoint x="1100" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0nk3psx_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="292" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_0y089q8">
+        <dc:Bounds x="430" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mtqud7_di" bpmnElement="Event_1mtqud7">
+        <dc:Bounds x="462" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_17kjvo7_di" bpmnElement="Gateway_17kjvo7" isMarkerVisible="true">
+        <dc:Bounds x="885" y="272" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="NotifyClaimDetailsApplicantSolicitor1CC_di" bpmnElement="ContactInformationUpdated">
+        <dc:Bounds x="660" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_072j7li_di" bpmnElement="Activity_072j7li">
+        <dc:Bounds x="1050" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hyjose_di" bpmnElement="Event_1hyjose">
+        <dc:Bounds x="1272" y="279" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ncyle_di" bpmnElement="ContactInformationUpdatedWa">
+        <dc:Bounds x="860" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_123rxks_di" bpmnElement="Association_123rxks">
+        <di:waypoint x="898" y="310" />
+        <di:waypoint x="853" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_041jred_di" bpmnElement="Association_041jred">
+        <di:waypoint x="296" y="289" />
+        <di:waypoint x="223" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
+        <dc:Bounds x="462" y="239" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="497" y="220" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
