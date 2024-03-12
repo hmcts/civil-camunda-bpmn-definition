@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
 
-        private static final String FILE_NAME = "notify_claimant_hwf_outcome.bpmn";
+    private static final String FILE_NAME = "notify_claimant_hwf_outcome.bpmn";
     private static final String MESSAGE_NAME = "NOTIFY_LIP_CLAIMANT_HWF_OUTCOME";
     private static final String PROCESS_ID = "NOTIFY_LIP_CLAIMANT_HWF_OUTCOME";
 
