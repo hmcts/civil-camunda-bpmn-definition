@@ -357,8 +357,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            TWO_RESPONDENT_REPRESENTATIVES, false));
+            ONE_RESPONDENT_REPRESENTATIVE, true));
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
