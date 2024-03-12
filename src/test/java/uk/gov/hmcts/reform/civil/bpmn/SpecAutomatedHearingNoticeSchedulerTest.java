@@ -43,7 +43,7 @@ class SpecAutomatedHearingNoticeSchedulerTest extends BpmnBaseTest {
 
         String cronString = "0 0 0,12 ? * * *";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
-        assertThat(jobDefinitions.get(1).getJobConfiguration()).isEqualTo("DURATION: PT30S");
+        assertThat(jobDefinitions.get(1).getJobConfiguration()).isEqualTo("DURATION: PT300S");
         assertThat(jobDefinitions.get(2).getJobConfiguration()).isEqualTo("DURATION: PT30M");
 
         assertCronTriggerFiresAtExpectedTime(
