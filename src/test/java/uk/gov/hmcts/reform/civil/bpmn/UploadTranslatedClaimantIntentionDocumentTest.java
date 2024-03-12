@@ -32,6 +32,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             = "NotifyRoboticsOnContinuousFeed";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE
+            = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+            = "GenerateClaimantDashboardNotificationClaimantResponse";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -79,6 +83,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             PROCESS_CASE_EVENT,
             UPDATE_CLAIM_STATE_EVENT,
             UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        // generate dashboard notification task
+        ExternalTask generateDashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //complete the Generate Dashboard Notification Respondent 1
@@ -148,14 +161,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
-        //complete the Generate Dashboard Notification Respondent 1
-        ExternalTask notificationTaskForDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTaskForDashboardNotification,
-                                   PROCESS_CASE_EVENT,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -213,6 +218,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 PROCESS_CASE_EVENT,
                 UPDATE_CLAIM_STATE_EVENT,
                 UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        // generate dashboard notification task
+        ExternalTask generateDashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //complete the Generate Dashboard Notification Respondent 1
