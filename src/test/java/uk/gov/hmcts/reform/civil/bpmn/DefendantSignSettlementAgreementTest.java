@@ -14,6 +14,10 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         "NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT";
     private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT =
         "NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT";
+    private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_EVENT_ID =
+        "CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE";
+    private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_ACTIVITY_ID =
+        "GenerateDashboardNotificationSignSettlementAgreement";
     private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
         "NotifyApplicantForSignSettlementAgreement";
     private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
@@ -36,6 +40,7 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         notifyApplicantSignSettlementAgreement();
         notifyRespondentSignSettlementAgreement();
         generateSettlementAgreementDoc();
+        generateDashboardNotificationSignSettlementAgreement();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -64,6 +69,17 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
             NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
         );
     }
+
+    private void generateDashboardNotificationSignSettlementAgreement() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_EVENT_ID,
+            DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_ACTIVITY_ID
+        );
+    }
+
 
     private void generateSettlementAgreementDoc() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
