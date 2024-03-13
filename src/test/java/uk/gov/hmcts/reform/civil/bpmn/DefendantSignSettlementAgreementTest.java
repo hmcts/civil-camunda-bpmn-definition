@@ -80,7 +80,6 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         );
     }
 
-
     private void generateSettlementAgreementDoc() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
