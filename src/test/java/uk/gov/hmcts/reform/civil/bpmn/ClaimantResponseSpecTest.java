@@ -356,6 +356,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true));
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
@@ -379,6 +381,75 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
             "ClaimantDefendantAgreedMediationNotifyRespondent"
+        );
+
+        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDQ,
+            PROCESS_CASE_EVENT,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE,
+            GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation1v2DifferentSol() {
+
+        assertFalse(processInstance.isEnded());
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, false,
+            TWO_RESPONDENT_REPRESENTATIVES, true));
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantLR,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyApplicant"
+        );
+
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyRespondent"
+        );
+
+        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent2,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT2_MEDIATION_AGREEMENT",
+            "ClaimantDefendantAgreedMediationNotifyRespondent2"
         );
 
         ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
