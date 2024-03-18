@@ -20,6 +20,9 @@ public class ExtendResponseDeadlineTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_DEFENDANT_EVENT = "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION";
     private static final String NOTIFY_LIP_DEFENDANT_ACTIVITY_NAME
         = "DefendantResponseDeadlineExtensionNotifyDefendant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1 = "CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID
+        = "GenerateDashboardNotificationMoreTimeRequestedForRespondent1";
 
     public ExtendResponseDeadlineTest() {
         super("extend_response_deadline.bpmn", PROCESS_ID);
@@ -57,6 +60,14 @@ public class ExtendResponseDeadlineTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LIP_DEFENDANT_EVENT,
             NOTIFY_LIP_DEFENDANT_ACTIVITY_NAME,
+            variables
+        );
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1,
+            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID,
             variables
         );
 
