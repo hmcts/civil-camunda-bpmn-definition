@@ -29,12 +29,29 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
             "MediationSuccessfulNotifyApplicant"
         );
 
+        //dashboarNotification applicant
+        ExternalTask dashboardApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardApplicant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_APPLICANT",
+            "GenerateDashboardNotificationClaimantMediationSuccessful"
+        );
+
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_MEDIATION_SUCCESSFUL",
             "MediationSuccessfulNotifyRespondent"
+        );
+
+        ExternalTask dashboardRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardRespondent,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_RESPONDENT",
+            "GenerateDashboardNotificationDefendantMediationSuccessful"
         );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
