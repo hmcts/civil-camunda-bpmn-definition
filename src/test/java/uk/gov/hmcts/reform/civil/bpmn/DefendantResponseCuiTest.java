@@ -70,10 +70,10 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyApplicantNotificationOfAddressChangeCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
         verifyGenerateDashboardNotificationClaimant();
         verifyGenerateDashboardNotificationDefendant();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -95,10 +95,10 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
         verifyGenerateDashboardNotificationClaimant();
         verifyGenerateDashboardNotificationDefendant();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -121,8 +121,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
-        verifyGenerateDashboardNotificationClaimant();
-        verifyGenerateDashboardNotificationDefendant();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
