@@ -1,28 +1,26 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.util.List;
+class FullAdmitPayImmediatelyNoPaymentSchedulerTest extends BpmnBaseTest {
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+    public static final String TOPIC_NAME = "FULL_ADMIT_PAY_IMMEDIATELY_NO_PAYMENT_CHECK";
 
-class EvidenceUploadSchedulerTest extends BpmnBaseTest {
-
-    public static final String TOPIC_NAME = "EVIDENCE_UPLOAD_CHECK";
-
-    public EvidenceUploadSchedulerTest() {
-        super("evidence_upload_scheduler.bpmn", "EVIDENCE_UPLOAD_SCHEDULER");
+    public FullAdmitPayImmediatelyNoPaymentSchedulerTest() {
+        super("full_admit_pay_immediately_no_payment_scheduler.bpmn", "FULL_ADMIT_PAY_IMMEDIATELY_NO_PAYMENT_SCHEDULER");
     }
 
     @Test
-    void schedulerShouldRaiseEvidenceUploadCheckExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseFullAdmitPayImmediatelyNoPaymentCheckExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -36,12 +34,12 @@ class EvidenceUploadSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 30 17 * * ?";
+        String cronString = "0 0 0 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2024, 11, 30, 17, 30, 0),
-            LocalDateTime.of(2024, 12, 1, 17, 30, 0)
+            LocalDateTime.of(2024, 11, 30, 0, 0, 0),
+            LocalDateTime.of(2024, 12, 1, 0, 0, 0)
         );
 
         //get external tasks
