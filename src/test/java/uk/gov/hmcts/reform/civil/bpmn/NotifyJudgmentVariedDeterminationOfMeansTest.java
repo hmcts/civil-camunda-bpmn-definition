@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,17 +18,25 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS";
 
     public NotifyJudgmentVariedDeterminationOfMeansTest() {
-        super("notify_judgment_varied_determination_of_means.bpmn.bpmn", "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS");
+        super("notify_judgment_varied_determination_of_means.bpmn", "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS");
     }
 
-    @Test
-    void shouldSuccessfullyNotifyDecisionOnReconsiderationRequest() {
+
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyNotifyDecisionOnReconsiderationRequest(boolean twoRepresentatives) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            UNREPRESENTED_DEFENDANT_ONE, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -34,31 +48,35 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         );
 
         //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
+            claimantNotification,
             PROCESS_CASE_EVENT,
             "NOTIFY_CLAIMANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-            "Activity_0nyrqab"
+            "NotifyClaimantJudgmentVariedDeterminationOfMeans"
         );
 
         //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk"
-        );
-
-        //complete the claim form for reconsideration generation
-        ExternalTask generateClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            generateClaimForm,
+            respondent1Notification,
             PROCESS_CASE_EVENT,
             "NOTIFY_SOLICITOR1_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-            "Activity_06y8ktx"
+            "NotifyDefendantVariedDeterminationOfMeans",
+            variables
         );
+
+        if (twoRepresentatives) {
+            //complete the notification to Respondent2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_SOLICITOR2_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
+                "Activity_1i46gcv",
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
