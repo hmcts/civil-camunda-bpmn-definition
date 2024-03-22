@@ -24,7 +24,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void shouldSuccessfullyNotifyDecisionOnReconsiderationRequest(boolean twoRepresentatives) {
+    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
