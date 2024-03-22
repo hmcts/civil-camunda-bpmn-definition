@@ -19,6 +19,13 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM_ACTIVITY_ID
         = "NotifyDefendantClaimantSettleTheClaim";
 
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1
+        = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1";
+
+    //Activity IDs
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1_ACTIVITY_ID
+        = "CreateClaimSettledDashboardNotificationsForClaimant1";
+
     public ClaimSettledLiPTest() {
         super(FILE_NAME, PROCESS_ID);
     }
@@ -29,6 +36,7 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
         notifyRespondentClaimantSettleTheClaim();
+        createDashboardNotificationForClaimant();
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
@@ -41,4 +49,15 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
             NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM_ACTIVITY_ID
         );
     }
+
+    private void createDashboardNotificationForClaimant() {
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1_ACTIVITY_ID
+        );
+    }
+
 }
