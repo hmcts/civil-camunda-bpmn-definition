@@ -21,7 +21,6 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         super("notify_judgment_varied_determination_of_means.bpmn", "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS");
     }
 
-
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives) {
