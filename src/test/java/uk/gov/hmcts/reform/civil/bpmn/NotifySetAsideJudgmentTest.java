@@ -56,7 +56,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             "NotifyClaimSetAsideJudgmentClaimant"
         );
 
-        if(!isLiPDefendant) {
+        if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -78,7 +78,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                     variables
                 );
             }
-        } else if(isLiPDefendant) {
+        } else if (isLiPDefendant) {
             ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendLipLetter,
