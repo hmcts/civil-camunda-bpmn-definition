@@ -80,6 +80,18 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             }
         }
 
+        if(isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
+                "NotifyClaimSetAsideJudgmentDefendant1LiP",
+                variables
+            );
+        }
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
