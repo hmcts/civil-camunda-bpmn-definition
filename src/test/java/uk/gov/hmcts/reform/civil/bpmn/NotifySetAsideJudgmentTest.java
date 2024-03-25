@@ -78,6 +78,15 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                     variables
                 );
             }
+        } else if(isLiPDefendant) {
+            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendLipLetter,
+                PROCESS_CASE_EVENT,
+                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
+                "SendSetAsideLiPLetterDef1",
+                variables
+            );
         }
 
         //end business process
@@ -91,7 +100,6 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
         assertFalse(processInstance.isEnded());
-
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
