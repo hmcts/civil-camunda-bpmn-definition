@@ -35,7 +35,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -56,7 +57,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             "NotifyClaimSetAsideJudgmentClaimant"
         );
 
-        if(!isLiPDefendant) {
+        if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
