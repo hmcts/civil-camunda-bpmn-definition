@@ -13,12 +13,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RespondentResponseDeadlineCheckSchedulerTest extends BpmnBaseTest {
+class DefendantResponseDeadlineCheckSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "RESPONDENT_RESPONSE_DEADLINE_CHECK";
+    public static final String TOPIC_NAME = "DEFENDANT_RESPONSE_DEADLINE_CHECK";
 
-    public RespondentResponseDeadlineCheckSchedulerTest() {
-        super("respondent_response_deadline_check_scheduler.bpmn", "RESPONDENT_RESPONSE_DEADLINE_CHECK_SCHEDULER");
+    public DefendantResponseDeadlineCheckSchedulerTest() {
+        super("defendant_response_deadline_check_scheduler.bpmn", "DEFENDANT_RESPONSE_DEADLINE_CHECK_SCHEDULER");
     }
 
     @Test
