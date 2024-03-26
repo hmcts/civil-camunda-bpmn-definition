@@ -87,6 +87,13 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
         );
 
+        //complete the case state update
+        ExternalTask notificationTaskForDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1",
+                                   "CreateIssueClaimDashboardNotificationsForApplicant1"
+        );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
