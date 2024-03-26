@@ -412,6 +412,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
