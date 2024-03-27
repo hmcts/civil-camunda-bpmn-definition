@@ -19,6 +19,10 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_APPLICANT
+        = "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_APPLICANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_RESPONDENT
+        = "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_RESPONDENT";
 
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR_ACTIVITY_ID
         = "SendMediationUnsuccessfulClaimantLR";
@@ -28,6 +32,10 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "SendMediationUnsuccessfulDefendant1LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_SOLICITOR_2_ACTIVITY_ID
         = "SendMediationUnsuccessfulDefendant2LR";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationApplicantMediationUnsuccessful";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_DEFENDANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationRespondentMediationUnsuccessful";
 
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -51,12 +59,30 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    variables
         );
 
+        //dashboardNotification applicant
+        ExternalTask dashboardApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardApplicant,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_APPLICANT,
+            NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
+        );
+
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP,
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP_ACTIVITY_ID,
                                    variables
+        );
+
+        //dashboardNotification respondent
+        ExternalTask dashboardRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardRespondent,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_RESPONDENT,
+            NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_DEFENDANT_ACTIVITY_ID
         );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
@@ -78,6 +104,15 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR,
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR_ACTIVITY_ID,
                                    variables
+        );
+
+        //dashboardNotification applicant
+        ExternalTask dashboardApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardApplicant,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_APPLICANT,
+            NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         );
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -107,6 +142,15 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR,
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR_ACTIVITY_ID,
                                    variables
+        );
+
+        //dashboardNotification applicant
+        ExternalTask dashboardApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardApplicant,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_FOR_APPLICANT,
+            NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         );
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
