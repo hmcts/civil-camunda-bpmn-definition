@@ -149,9 +149,19 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             "DefendantResponseDeadlineExtensionNotifyDefendant",
             variables
         );
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notificationTask,
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_DEFENDANT_RESPONSE_DATE",
+            "GenerateClaimantDashboardNotificationClaimantNewResponseDeadline",
+            variables
+        );
+
+        dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
             PROCESS_CASE_EVENT,
             CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1,
             CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID,
