@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
-  <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID" name="Notify respondent solictor 1" isExecutable="true">
+  <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1oxj7lg" messageRef="Message_0ttrrz3" />
@@ -246,10 +246,10 @@
     <bpmn:sequenceFlow id="Flow_05wizle" sourceRef="Gateway_0aseqi2" targetRef="NotifyRoboticsOnCaseHandedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1iwzrak" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="Activity_02pkhby">
+    <bpmn:sequenceFlow id="Flow_1iwzrak" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ProceedOfflineForResponseToDefenceMultitrack">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_02pkhby" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ProceedOfflineForResponseToDefenceMultitrack" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">PROCEEDS_IN_HERITAGE_SYSTEM</camunda:inputParameter>
@@ -258,7 +258,7 @@
       <bpmn:incoming>Flow_1iwzrak</bpmn:incoming>
       <bpmn:outgoing>Flow_0mzdxwg</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0mzdxwg" sourceRef="Activity_02pkhby" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
+    <bpmn:sequenceFlow id="Flow_0mzdxwg" sourceRef="ProceedOfflineForResponseToDefenceMultitrack" targetRef="ClaimantResponseGenerateDirectionsQuestionnaire" />
     <bpmn:exclusiveGateway id="Gateway_0ivdn1l">
       <bpmn:incoming>Flow_18p0npf</bpmn:incoming>
       <bpmn:outgoing>Flow_1if3psp</bpmn:outgoing>
@@ -408,7 +408,7 @@
       <bpmndi:BPMNShape id="Gateway_0aseqi2_di" bpmnElement="Gateway_0aseqi2" isMarkerVisible="true">
         <dc:Bounds x="1425" y="385" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_065ckij" bpmnElement="Activity_02pkhby">
+      <bpmndi:BPMNShape id="BPMNShape_065ckij" bpmnElement="ProceedOfflineForResponseToDefenceMultitrack">
         <dc:Bounds x="520" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ivdn1l_di" bpmnElement="Gateway_0ivdn1l" isMarkerVisible="true">

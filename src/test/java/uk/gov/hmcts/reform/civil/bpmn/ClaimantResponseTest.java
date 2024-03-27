@@ -27,6 +27,9 @@ class ClaimantResponseTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
+
+    public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID_MULTITRACK
+        = "ProceedOfflineForResponseToDefenceMultitrack";
     public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
     private static final String APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
     public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
@@ -144,9 +147,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
-            IS_MULTI_TRACK, true,
-            "SDO_ENABLED", true
+            IS_MULTI_TRACK, true
         ));
 
         //complete the start business process
@@ -159,23 +160,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Judicial Referral event
-        ExternalTask judicialReferral = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the take offline event
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            judicialReferral,
+            takeOffline,
             PROCESS_CASE_EVENT,
-            JUDICIAL_REFERRAL_EVENT,
-            JUDICIAL_REFERRAL_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the Trigger and Update GA Location event
-        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            triggerAndUpdateGenAppLocation,
-            PROCESS_CASE_EVENT,
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID_MULTITRACK,
             variables
         );
 
@@ -194,8 +185,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
+            "NOTIFY_RES_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_MULTITRACK",
+            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1Multitrack"
         );
 
         //complete the CC notification to applicant
@@ -203,8 +194,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
+            "NOTIFY_RES_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_MULTITRACK",
+            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CCMultitrack"
         );
 
         //complete the Robotics notification
