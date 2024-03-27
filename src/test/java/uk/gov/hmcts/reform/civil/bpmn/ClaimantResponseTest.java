@@ -134,7 +134,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
 
     //  claimant response with intention to proceed and claim is Multi track
     @Test
-    void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaimAndProcessGA_WhenApplicantConfirmsToProceed() {
+    void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaim_WhenApplicantConfirmsToProceed() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -203,8 +203,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             forRobotics,
             PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
 
