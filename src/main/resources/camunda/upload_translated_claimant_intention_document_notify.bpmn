@@ -26,7 +26,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_04ufl57</bpmn:incoming>
+      <bpmn:incoming>Flow_18gxrql</bpmn:incoming>
       <bpmn:incoming>Flow_1t08sfu</bpmn:incoming>
       <bpmn:outgoing>Flow_0d2uvw4</bpmn:outgoing>
     </bpmn:callActivity>
@@ -54,7 +54,7 @@
       <bpmn:incoming>Flow_07cqff5</bpmn:incoming>
       <bpmn:outgoing>Flow_04ufl57</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_04ufl57" sourceRef="UpdateClaimStateAfterTranslatedDocUploaded" targetRef="Activity_19g768l" />
+    <bpmn:sequenceFlow id="Flow_04ufl57" sourceRef="UpdateClaimStateAfterTranslatedDocUploaded" targetRef="GenerateClaimantDashboardNotificationClaimantResponse" />
     <bpmn:serviceTask id="SetSettlementAgreementDeadline" name="Set settlement agreement deadline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -111,6 +111,26 @@
       <bpmn:outgoing>Flow_07cqff5</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_07cqff5" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="UpdateClaimStateAfterTranslatedDocUploaded" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationRespondent1" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10ievy6</bpmn:incoming>
+      <bpmn:outgoing>Flow_18gxrql</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_18gxrql" sourceRef="GenerateDashboardNotificationRespondent1" targetRef="Activity_19g768l" />
+    <bpmn:serviceTask id="GenerateClaimantDashboardNotificationClaimantResponse" name="Generate Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04ufl57</bpmn:incoming>
+      <bpmn:outgoing>Flow_10ievy6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_10ievy6" sourceRef="GenerateClaimantDashboardNotificationClaimantResponse" targetRef="GenerateDashboardNotificationRespondent1" />
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -129,11 +149,11 @@
         <dc:Bounds x="272" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19g768l_di" bpmnElement="Activity_19g768l">
-        <dc:Bounds x="1220" y="190" width="100" height="80" />
+        <dc:Bounds x="1540" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1eh2s0e_di" bpmnElement="Event_1eh2s0e">
-        <dc:Bounds x="1482" y="212" width="36" height="36" />
+        <dc:Bounds x="1692" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qc8men_di" bpmnElement="NotifyLiPRespondentClaimantConfirmToProceed">
         <dc:Bounds x="680" y="190" width="100" height="80" />
@@ -158,11 +178,19 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0l350c4" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="1220" y="480" width="100" height="80" />
+        <dc:Bounds x="1370" y="480" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
         <dc:Bounds x="980" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0n14wuw" bpmnElement="GenerateDashboardNotificationRespondent1">
+        <dc:Bounds x="1380" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ilo0tw" bpmnElement="GenerateClaimantDashboardNotificationClaimantResponse">
+        <dc:Bounds x="1220" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
         <dc:Bounds x="272" y="172" width="36" height="36" />
@@ -179,8 +207,8 @@
         <di:waypoint x="290" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d2uvw4_di" bpmnElement="Flow_0d2uvw4">
-        <di:waypoint x="1320" y="230" />
-        <di:waypoint x="1482" y="230" />
+        <di:waypoint x="1640" y="230" />
+        <di:waypoint x="1692" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17wyf0u_di" bpmnElement="Flow_17wyf0u">
         <di:waypoint x="340" y="230" />
@@ -207,11 +235,12 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z2obnu_di" bpmnElement="Flow_0z2obnu">
         <di:waypoint x="1125" y="520" />
-        <di:waypoint x="1220" y="520" />
+        <di:waypoint x="1370" y="520" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1t08sfu_di" bpmnElement="Flow_1t08sfu">
-        <di:waypoint x="1270" y="480" />
-        <di:waypoint x="1270" y="270" />
+        <di:waypoint x="1470" y="520" />
+        <di:waypoint x="1590" y="520" />
+        <di:waypoint x="1590" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ldqt2c_di" bpmnElement="Flow_0ldqt2c">
         <di:waypoint x="900" y="255" />
@@ -233,6 +262,14 @@
         <di:waypoint x="1080" y="360" />
         <di:waypoint x="1120" y="360" />
         <di:waypoint x="1120" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18gxrql_di" bpmnElement="Flow_18gxrql">
+        <di:waypoint x="1480" y="230" />
+        <di:waypoint x="1540" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10ievy6_di" bpmnElement="Flow_10ievy6">
+        <di:waypoint x="1320" y="230" />
+        <di:waypoint x="1380" y="230" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

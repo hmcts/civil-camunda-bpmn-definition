@@ -19,6 +19,10 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1 = "CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID
+        = "GenerateDashboardNotificationMoreTimeRequestedForRespondent1";
+
     enum FlowState {
         PENDING_CLAIM_ISSUED;
 
@@ -143,6 +147,24 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION",
             "DefendantResponseDeadlineExtensionNotifyDefendant",
+            variables
+        );
+
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_DEFENDANT_RESPONSE_DATE",
+            "GenerateClaimantDashboardNotificationClaimantNewResponseDeadline",
+            variables
+        );
+
+        dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1,
+            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID,
             variables
         );
 
