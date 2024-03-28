@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0">
   <bpmn:process id="DEFENDANT_RESPONSE_DEADLINE_CHECK" isExecutable="true">
     <bpmn:startEvent id="Event_834j80" name="Start">
       <bpmn:outgoing>Flow_08iu903</bpmn:outgoing>
@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_09n87f3</bpmn:incoming>
+      <bpmn:incoming>Flow_1tlh6bl</bpmn:incoming>
       <bpmn:outgoing>Flow_496ce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="RespondentResponseDeadlineProcess" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -43,33 +43,23 @@
       <bpmn:outgoing>Flow_09n87f3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1fopw39w" sourceRef="RespondentResponseDeadlineProcess" targetRef="GenerateClaimantDashboardNotificationDefendantResponseDeadlineCheck" />
-    <bpmn:sequenceFlow id="Flow_09n87f3" sourceRef="GenerateClaimantDashboardNotificationDefendantResponseDeadlineCheck" targetRef="Activity_0wre3o5" />
+    <bpmn:sequenceFlow id="Flow_09n87f3" sourceRef="GenerateClaimantDashboardNotificationDefendantResponseDeadlineCheck" targetRef="GenerateDefendantDashboardNotificationRespondentResponseDeadlineCheck" />
+    <bpmn:serviceTask id="GenerateDefendantDashboardNotificationRespondentResponseDeadlineCheck" name="Generate Dashboard Notification For Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_RESPONSE_DEADLINE_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09n87f3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tlh6bl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1tlh6bl" sourceRef="GenerateDefendantDashboardNotificationRespondentResponseDeadlineCheck" targetRef="Activity_0wre3o5" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:message id="Message_07vpgvo" name="DEFENDANT_RESPONSE_DEADLINE_CHECK" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DEFENDANT_RESPONSE_DEADLINE_CHECK">
-      <bpmndi:BPMNEdge id="Flow_0v3v7f3_di" bpmnElement="Flow_09n87f3">
-        <di:waypoint x="590" y="200" />
-        <di:waypoint x="740" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ffw39w_di" bpmnElement="Flow_1fopw39w">
-        <di:waypoint x="320" y="200" />
-        <di:waypoint x="490" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_08iu903">
-        <di:waypoint x="188" y="200" />
-        <di:waypoint x="220" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_083n0-">
-        <di:waypoint x="270" y="142" />
-        <di:waypoint x="270" y="118" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_496ce35l">
-        <di:waypoint x="840" y="200" />
-        <di:waypoint x="892" y="200" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_834j80">
         <dc:Bounds x="152" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -89,7 +79,11 @@
         <dc:Bounds x="252" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="GenerateClaimantDashboardNotificationDefendantResponseDeadlineCheck">
-        <dc:Bounds x="490" y="160" width="100" height="80" />
+        <dc:Bounds x="420" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0kztsvh" bpmnElement="GenerateDefendantDashboardNotificationRespondentResponseDeadlineCheck">
+        <dc:Bounds x="590" y="160" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
@@ -98,6 +92,30 @@
           <dc:Bounds x="287" y="123" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_496ce35l">
+        <di:waypoint x="840" y="200" />
+        <di:waypoint x="892" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_083n0-">
+        <di:waypoint x="270" y="142" />
+        <di:waypoint x="270" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_08iu903">
+        <di:waypoint x="188" y="200" />
+        <di:waypoint x="220" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ffw39w_di" bpmnElement="Flow_1fopw39w">
+        <di:waypoint x="320" y="200" />
+        <di:waypoint x="420" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v3v7f3_di" bpmnElement="Flow_09n87f3">
+        <di:waypoint x="520" y="200" />
+        <di:waypoint x="590" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tlh6bl_di" bpmnElement="Flow_1tlh6bl">
+        <di:waypoint x="690" y="200" />
+        <di:waypoint x="740" y="200" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

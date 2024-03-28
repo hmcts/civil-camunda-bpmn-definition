@@ -38,12 +38,20 @@ class DefendantResponseDeadlineCheckTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification for respondent 1
+        //complete the notification for claimant 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
                                    "CREATE_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE_DEADLINE_CLAIMANT",
                                    "GenerateClaimantDashboardNotificationDefendantResponseDeadlineCheck"
+        );
+
+        //complete the notification for defendant 1
+        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantNotification,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_RESPONSE_DEADLINE_DEFENDANT",
+                                   "GenerateDefendantDashboardNotificationRespondentResponseDeadlineCheck"
         );
 
         //end business process
