@@ -100,6 +100,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
         assertFalse(processInstance.isEnded());
+
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
