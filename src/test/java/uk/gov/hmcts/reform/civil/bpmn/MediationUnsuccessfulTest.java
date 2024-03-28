@@ -28,6 +28,10 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "SendMediationUnsuccessfulDefendant1LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_SOLICITOR_2_ACTIVITY_ID
         = "SendMediationUnsuccessfulDefendant2LR";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP_ACTIVITY_ID
+        = "GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
 
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -58,7 +62,13 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP_ACTIVITY_ID,
                                    variables
         );
-
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP,
+                                   NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP_ACTIVITY_ID,
+                                   variables
+        );
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
