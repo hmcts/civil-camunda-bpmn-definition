@@ -60,7 +60,7 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
             CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_SETTLED_FOR_CLAIMANT1_ACTIVITY_ID
         );
     }
-    
+
     private void createDashboardNotificationForDefendant() {
         ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
