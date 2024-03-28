@@ -22,7 +22,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
+    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
     void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
 
         //assert process has started
