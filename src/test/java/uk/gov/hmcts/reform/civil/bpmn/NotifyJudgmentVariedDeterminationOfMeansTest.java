@@ -61,7 +61,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
             respondent1Notification,
             PROCESS_CASE_EVENT,
             "NOTIFY_SOLICITOR1_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-            "NotifyDefendantVariedDeterminationOfMeans",
+            "NotifyDefendantVariedDeterminationOfMeans1",
             variables
         );
 
@@ -72,7 +72,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 respondent2Notification,
                 PROCESS_CASE_EVENT,
                 "NOTIFY_SOLICITOR2_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-                "Activity_1i46gcv",
+                "NotifyDefendantVariedDeterminationOfMeans2",
                 variables
             );
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <bpmn:process id="NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS" isExecutable="true">
     <bpmn:callActivity id="NotifyJudgmentVariedDeterminationOfMeans" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -44,8 +44,8 @@
       <bpmn:incoming>Flow_1vs00o9</bpmn:incoming>
       <bpmn:outgoing>Flow_0posdss</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="NotifyClaimantJudgmentVariedDeterminationOfMeans" targetRef="NotifyDefendantVariedDeterminationOfMeans" />
-    <bpmn:serviceTask id="NotifyDefendantVariedDeterminationOfMeans" name="Notify Judgment Varied to Solicitor1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="NotifyClaimantJudgmentVariedDeterminationOfMeans" targetRef="NotifyDefendantVariedDeterminationOfMeans1" />
+    <bpmn:serviceTask id="NotifyDefendantVariedDeterminationOfMeans1" name="Notify Judgment Varied to Solicitor1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_SOLICITOR1_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS</camunda:inputParameter>
@@ -54,7 +54,7 @@
       <bpmn:incoming>Flow_0posdss</bpmn:incoming>
       <bpmn:outgoing>Flow_0qjr8zn</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="NotifyDefendantVariedDeterminationOfMeans" targetRef="Gateway_19b5dvl" />
+    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="NotifyDefendantVariedDeterminationOfMeans1" targetRef="Gateway_19b5dvl" />
     <bpmn:exclusiveGateway id="Gateway_19b5dvl">
       <bpmn:incoming>Flow_0qjr8zn</bpmn:incoming>
       <bpmn:outgoing>Flow_0gpaflx</bpmn:outgoing>
@@ -63,7 +63,7 @@
     <bpmn:sequenceFlow id="Flow_0gpaflx" name="No" sourceRef="Gateway_19b5dvl" targetRef="Activity_0pqcpvc">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE) || (!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1i46gcv" name="Notify Judgment Varied to Solicitor2" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyDefendantVariedDeterminationOfMeans2" name="Notify Judgment Varied to Solicitor2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_SOLICITOR2_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS</camunda:inputParameter>
@@ -72,10 +72,10 @@
       <bpmn:incoming>Flow_0r8cqwr</bpmn:incoming>
       <bpmn:outgoing>Flow_0y6slka</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0r8cqwr" name="Yes" sourceRef="Gateway_19b5dvl" targetRef="Activity_1i46gcv">
+    <bpmn:sequenceFlow id="Flow_0r8cqwr" name="Yes" sourceRef="Gateway_19b5dvl" targetRef="NotifyDefendantVariedDeterminationOfMeans2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0y6slka" sourceRef="Activity_1i46gcv" targetRef="Activity_0pqcpvc" />
+    <bpmn:sequenceFlow id="Flow_0y6slka" sourceRef="NotifyDefendantVariedDeterminationOfMeans2" targetRef="Activity_0pqcpvc" />
     <bpmn:textAnnotation id="TextAnnotation_1eqw9nd">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -90,10 +90,6 @@
   <bpmn:message id="Message_3q7mgmn" name="NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS">
-      <bpmndi:BPMNShape id="TextAnnotation_1eqw9nd_di" bpmnElement="TextAnnotation_1eqw9nd">
-        <dc:Bounds x="622" y="290" width="115" height="40" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0x0o0ha_di" bpmnElement="NotifyJudgmentVariedDeterminationOfMeans">
         <dc:Bounds x="220" y="180" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -116,21 +112,21 @@
         <dc:Bounds x="360" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDefendantVariedDeterminationOfMeans">
+      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDefendantVariedDeterminationOfMeans1">
         <dc:Bounds x="500" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
         <dc:Bounds x="655" y="195" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0e1o9i1" bpmnElement="Activity_1i46gcv">
+      <bpmndi:BPMNShape id="BPMNShape_0e1o9i1" bpmnElement="NotifyDefendantVariedDeterminationOfMeans2">
         <dc:Bounds x="800" y="50" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1xc08zw_di" bpmnElement="Association_1xc08zw">
-        <di:waypoint x="678" y="243" />
-        <di:waypoint x="672" y="290" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1eqw9nd_di" bpmnElement="TextAnnotation_1eqw9nd">
+        <dc:Bounds x="622" y="290" width="115" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
         <dc:Bounds x="252" y="162" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -179,6 +175,10 @@
       <bpmndi:BPMNEdge id="Flow_0y6slka_di" bpmnElement="Flow_0y6slka">
         <di:waypoint x="850" y="130" />
         <di:waypoint x="850" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1xc08zw_di" bpmnElement="Association_1xc08zw">
+        <di:waypoint x="678" y="243" />
+        <di:waypoint x="672" y="290" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
