@@ -22,7 +22,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
+    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
     void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
 
         //assert process has started
@@ -35,8 +35,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant
-        ));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -79,6 +78,15 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                     variables
                 );
             }
+        } else if (isLiPDefendant) {
+            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendLipLetter,
+                PROCESS_CASE_EVENT,
+                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
+                "SendSetAsideLiPLetterDef1",
+                variables
+            );
         }
 
         //end business process
