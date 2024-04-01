@@ -12,18 +12,18 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifySetAsideJudgmentTest extends BpmnBaseTest {
+class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "NOTIFY_SET_ASIDE_JUDGMENT";
-    public static final String PROCESS_ID = "NOTIFY_SET_ASIDE_JUDGMENT";
+    public static final String MESSAGE_NAME = "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS";
+    public static final String PROCESS_ID = "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS";
 
-    public NotifySetAsideJudgmentTest() {
-        super("notify_set_aside_judgment_request.bpmn", "NOTIFY_SET_ASIDE_JUDGMENT");
+    public NotifyJudgmentVariedDeterminationOfMeansTest() {
+        super("notify_judgment_varied_determination_of_means.bpmn", "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS");
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -32,11 +32,10 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
+        variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant
-        ));
+            UNREPRESENTED_DEFENDANT_ONE, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -44,8 +43,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+            START_BUSINESS_ACTIVITY
         );
 
         //complete the notification to Claimant
@@ -53,42 +51,28 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             claimantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
-            "NotifyClaimSetAsideJudgmentClaimant"
+            "NOTIFY_CLAIMANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
+            "NotifyClaimantJudgmentVariedDeterminationOfMeans"
         );
 
-        if (!isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
-                "NotifyClaimSetAsideJudgmentDefendant1",
-                variables
-            );
+        //complete the notification to Respondent
+        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent1Notification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_SOLICITOR1_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
+            "NotifyDefendantVariedDeterminationOfMeans1",
+            variables
+        );
 
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
-                    "NotifyClaimSetAsideJudgmentDefendant2",
-                    variables
-                );
-            }
-        }
-
-        if(isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        if (twoRepresentatives) {
+            //complete the notification to Respondent2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                respondent1LIpNotification,
+                respondent2Notification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
-                "NotifyClaimSetAsideJudgmentDefendant1LiP",
+                "NOTIFY_SOLICITOR2_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
+                "NotifyDefendantVariedDeterminationOfMeans2",
                 variables
             );
         }
