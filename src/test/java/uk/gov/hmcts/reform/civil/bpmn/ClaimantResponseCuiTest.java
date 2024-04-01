@@ -180,6 +180,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
+        generateClaimantDashboardNotificationForCCJClaimantResponse();
+        generateDefendantDashboardNotificationForCCJClaimantResponse();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -213,6 +215,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
+        generateClaimantDashboardNotificationForCCJClaimantResponse();
+        generateDefendantDashboardNotificationForCCJClaimantResponse();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -382,6 +386,35 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
         generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_whenFullDefenceWithRejectAll() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+                LIP_JUDGMENT_ADMISSION, false,
+                CLAIM_ISSUE_BILINGUAL, false
+        ));
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
@@ -433,7 +466,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID);
     }
 
-    private void assertCompletedCaseEvent(String eventName, String activityId) {
+    private void    assertCompletedCaseEvent(String eventName, String activityId) {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -478,6 +511,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRPACaseHandledOffline() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
+    }
+
+    private void generateClaimantDashboardNotificationForCCJClaimantResponse() {
+        assertCompletedCaseEvent("CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateClaimantCCJDashboardNotificationClaimantResponse");
+    }
+
+    private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
+        assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
     }
 
     private void proceedCaseOffline() {
