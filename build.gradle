@@ -111,15 +111,14 @@ allprojects {
     maven {
       url "https://jitpack.io"
     }
-    jcenter()
   }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
   useJUnitPlatform()
 
   testLogging {
@@ -131,45 +130,45 @@ test {
   failFast = true
 }
 
-task awaitApplicationReadiness(type: Exec, description: 'Awaits until application is ready.') {
+tasks.register('awaitApplicationReadiness', Exec) {
   commandLine './bin/wait-for.sh', System.getenv('URL') ?: 'https://localhost:4100'
-  commandLine './bin/wait-for.sh', System.getenv('TEST_URL')?: 'https://localhost:4100'
+  commandLine './bin/wait-for.sh', System.getenv('TEST_URL') ?: 'https://localhost:4100'
 }
 
-task runProdApiTests(type: Exec, description: 'Runs Prod features in functional tests.') {
+tasks.register('runProdApiTests', Exec) {
   onlyIf {
     return System.env.ENVIRONMENT == 'aat'
   }
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-prod'
 }
 
-task runNonProdApiTests(type: Exec, description: 'Runs Non Prod featuers in functional tests.') {
+tasks.register('runNonProdApiTests', Exec) {
   onlyIf {
     return System.env.ENVIRONMENT == 'preview'
   }
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-nonprod'
 }
 
-task runNightlyApiTests(type: Exec, description: 'Runs additional multiparty nightly tests.') {
+tasks.register('runNightlyApiTests', Exec) {
   onlyIf {
     return System.env.NIGHTLY_RUN == 'true'
   }
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-nightly-prod'
 }
 
-task runSmokeTests(type: Exec, description: 'Runs smoke tests.') {
+tasks.register('runSmokeTests', Exec) {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:smoke'
 }
 
-task runRpaHandOffTests(type: Exec, description: 'Runs functional tests.') {
+tasks.register('runRpaHandOffTests', Exec) {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:rpa'
 }
 
-task runNightlyMultipartyTests(type: Exec, description: 'Runs additional multiparty nightly tests.') {
+tasks.register('runNightlyMultipartyTests', Exec) {
   commandLine '/usr/bin/yarn', '--silent', 'run', 'test:nightly-multiparty'
 }
 
-def inStrictOrder(Task... tasks) {
+static def inStrictOrder(Task... tasks) {
   for (int i = 0; i < tasks.size() - 1; i++) {
     tasks[i + 1].mustRunAfter(tasks[i])
   }
