@@ -20,5 +20,9 @@ jobs:
           for file in src/main/resources/camunda/*.bpmn;
           do
             echo "$file";
-            yq -oy -e -p xml '.definitions.process.+@name' "$file" || exit 1;
+            if ! yq -oy -e -p xml '.definitions.process.+@name' "$file";
+            then
+              echo "Process $file does not have a name";
+              exit 1;
+            fi;
           done
