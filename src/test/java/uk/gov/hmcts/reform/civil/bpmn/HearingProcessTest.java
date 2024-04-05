@@ -100,7 +100,7 @@ class HearingProcessTest extends BpmnBaseTest {
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
         );
 
-        //complete the service request process
+        //complete the dashboard notification process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
@@ -165,6 +165,13 @@ class HearingProcessTest extends BpmnBaseTest {
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         );
 
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -226,6 +233,13 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
+        );
+
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
         );
 
         //end business process
@@ -292,6 +306,13 @@ class HearingProcessTest extends BpmnBaseTest {
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         );
 
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -349,6 +370,13 @@ class HearingProcessTest extends BpmnBaseTest {
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
         );
 
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -404,6 +432,13 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
+        );
+
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
         );
 
         //end business process
