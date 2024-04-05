@@ -30,6 +30,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "SEND_HEARING_TO_LIP_DEFENDANT";
     public static final String SEND_HEARING_TO_LIP_CLAIMANT
         = "SEND_HEARING_TO_LIP_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED
+        = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
@@ -47,6 +49,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "SendHearingToDefendantLIP";
     private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendHearingToClaimantLIP";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID
+        = "GenerateDashboardNotificationHearingScheduled";
 
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
@@ -94,6 +98,13 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
+        );
+
+        //complete the service request process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
         );
 
         //end business process
