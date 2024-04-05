@@ -1,0 +1,24 @@
+name: Check bpmn processes have been linted
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  lint:
+    if: "!contains(github.event.pull_request.head.ref, 'renovate') && !contains(github.event.pull_request.head.ref, 'dependabot')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check processes have name
+      uses: mikefarah/yq@master
+      with:
+        cmd: >
+          for file in src/main/resources/camunda/*.bpmn;
+          do
+            echo "Checking $file";
+            yq -oy -e -p xml '.definitions.process.+@name' "$file";
+          done
