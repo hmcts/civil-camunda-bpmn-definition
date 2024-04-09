@@ -22,7 +22,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
+    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
     void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
 
         //assert process has started
@@ -35,8 +35,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant
-        ));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -79,6 +78,26 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                     variables
                 );
             }
+        } else if (isLiPDefendant) {
+            //complete the notification to LiP respondent
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
+                "NotifyClaimSetAsideJudgmentDefendant1LiP",
+                variables
+            );
+
+            // should send letter to LiP respondent
+            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendLipLetter,
+                PROCESS_CASE_EVENT,
+                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
+                "SendSetAsideLiPLetterDef1",
+                variables
+            );
         }
 
         //end business process
