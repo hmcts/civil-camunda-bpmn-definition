@@ -194,7 +194,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RES_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_MULTITRACK",
+            "NOTIFY_APP_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_MULTITRACK",
             "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CCMultitrack"
         );
 
