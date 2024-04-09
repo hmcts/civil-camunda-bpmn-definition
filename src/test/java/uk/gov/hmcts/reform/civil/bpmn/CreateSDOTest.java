@@ -72,6 +72,15 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
+        ExternalTask dashboardCuiNotificationClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardCuiNotificationClaimant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
+            "Activity_Notice_Hearing_Claimant",
+            variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -127,6 +136,15 @@ class CreateSDOTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
             "CreateSDONotifyRespondentSolicitor2",
+            variables
+        );
+
+        ExternalTask dashboardCuiNotificationClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardCuiNotificationClaimant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
+            "Activity_Notice_Hearing_Claimant",
             variables
         );
 
@@ -206,6 +224,15 @@ class CreateSDOTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
             "CreateSDONotifyRespondentSolicitor2",
+            variables
+        );
+
+        ExternalTask dashboardCuiNotificationClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardCuiNotificationClaimant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
+            "Activity_Notice_Hearing_Claimant",
             variables
         );
 
