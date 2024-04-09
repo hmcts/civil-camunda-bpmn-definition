@@ -26,11 +26,10 @@
     <bpmn:sequenceFlow id="Flow_0f1dt36" sourceRef="Event_Create_SDO" targetRef="Activity_StartBusinessProcess" />
     <bpmn:sequenceFlow id="Flow_1l2gbrf" sourceRef="Activity_StartBusinessProcess" targetRef="CreateSDONotifyApplicantsSolicitor" />
     <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
-    <bpmn:sequenceFlow id="Flow_0bmcvqp" sourceRef="CreateSDONotifyRespondentSolicitor2" targetRef="Gateway_1pc8agd" />
-    <bpmn:sequenceFlow id="Flow_1vgldhz" sourceRef="Gateway_0zj33b5" targetRef="Activity_Notice_Hearing_Claimant">
+    <bpmn:sequenceFlow id="Flow_1vgldhz" name="LiP" sourceRef="Gateway_0zj33b5" targetRef="SendSDOToDefendantLIP">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1hgmfhy" sourceRef="Gateway_0zj33b5" targetRef="CreateSDONotifyRespondentSolicitor1">
+    <bpmn:sequenceFlow id="Flow_1hgmfhy" name="LR" sourceRef="Gateway_0zj33b5" targetRef="CreateSDONotifyRespondentSolicitor1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0zj33b5">
@@ -52,7 +51,7 @@
       <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="Gateway_1pc8agd">
-      <bpmn:incoming>Flow_0bmcvqp</bpmn:incoming>
+      <bpmn:incoming>Flow_0p43sh4</bpmn:incoming>
       <bpmn:outgoing>Flow_1i7qse8</bpmn:outgoing>
       <bpmn:outgoing>Flow_1tspyrp</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -81,15 +80,15 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1d1dliv" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_0qhxnpv" sourceRef="Activity_Notice_Hearing_Claimant" targetRef="SendSDOToDefendantLIP" />
+    <bpmn:sequenceFlow id="Flow_0p43sh4" sourceRef="Activity_Notice_Hearing_Claimant" targetRef="Gateway_1pc8agd" />
     <bpmn:serviceTask id="Activity_Notice_Hearing_Claimant" name="Dashboard CUI notification claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1vgldhz</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qhxnpv</bpmn:outgoing>
+      <bpmn:incoming>Flow_0bmcvqp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0p43sh4</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="CreateSDONotifyRespondentSolicitor2" name="Notify respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -100,7 +99,6 @@
       <bpmn:incoming>Flow_0adcxbu</bpmn:incoming>
       <bpmn:outgoing>Flow_0bmcvqp</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0adcxbu" sourceRef="CreateSDONotifyRespondentSolicitor1" targetRef="CreateSDONotifyRespondentSolicitor2" />
     <bpmn:serviceTask id="CreateSDONotifyRespondentSolicitor1" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -117,9 +115,11 @@
           <camunda:inputParameter name="caseEvent">SEND_SDO_ORDER_TO_LIP_DEFENDANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qhxnpv</bpmn:incoming>
+      <bpmn:incoming>Flow_1vgldhz</bpmn:incoming>
       <bpmn:outgoing>Flow_1erbjd6</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0bmcvqp" sourceRef="CreateSDONotifyRespondentSolicitor2" targetRef="Activity_Notice_Hearing_Claimant" />
+    <bpmn:sequenceFlow id="Flow_0adcxbu" sourceRef="CreateSDONotifyRespondentSolicitor1" targetRef="CreateSDONotifyRespondentSolicitor2" />
     <bpmn:sequenceFlow id="Flow_1erbjd6" sourceRef="SendSDOToDefendantLIP" targetRef="CreateSDONotifyRespondentSolicitor1" />
     <bpmn:textAnnotation id="TextAnnotation_0k20fta">
       <bpmn:text>LR or LiP respondent?</bpmn:text>
@@ -140,16 +140,18 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hgmfhy_di" bpmnElement="Flow_1hgmfhy">
         <di:waypoint x="675" y="250" />
-        <di:waypoint x="1110" y="250" />
+        <di:waypoint x="790" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="725" y="232" width="16" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vgldhz_di" bpmnElement="Flow_1vgldhz">
         <di:waypoint x="650" y="275" />
         <di:waypoint x="650" y="380" />
-        <di:waypoint x="700" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bmcvqp_di" bpmnElement="Flow_0bmcvqp">
-        <di:waypoint x="1390" y="250" />
-        <di:waypoint x="1475" y="250" />
+        <di:waypoint x="790" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="657" y="325" width="17" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0w9edp6_di" bpmnElement="Flow_0w9edp6">
         <di:waypoint x="341" y="210" />
@@ -186,17 +188,21 @@
         <di:waypoint x="1660" y="380" />
         <di:waypoint x="1660" y="290" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qhxnpv_di" bpmnElement="Flow_0qhxnpv">
-        <di:waypoint x="800" y="380" />
-        <di:waypoint x="1110" y="380" />
+      <bpmndi:BPMNEdge id="Flow_0p43sh4_di" bpmnElement="Flow_0p43sh4">
+        <di:waypoint x="1240" y="250" />
+        <di:waypoint x="1475" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bmcvqp_di" bpmnElement="Flow_0bmcvqp">
+        <di:waypoint x="1070" y="250" />
+        <di:waypoint x="1140" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0adcxbu_di" bpmnElement="Flow_0adcxbu">
-        <di:waypoint x="1210" y="250" />
-        <di:waypoint x="1290" y="250" />
+        <di:waypoint x="890" y="250" />
+        <di:waypoint x="970" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1erbjd6_di" bpmnElement="Flow_1erbjd6">
-        <di:waypoint x="1160" y="340" />
-        <di:waypoint x="1160" y="290" />
+        <di:waypoint x="840" y="340" />
+        <di:waypoint x="840" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_000hq7z_di" bpmnElement="Event_Create_SDO">
         <dc:Bounds x="203" y="232" width="36" height="36" />
@@ -234,19 +240,19 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1wca5wy" bpmnElement="Activity_Notice_Hearing_Claimant">
-        <dc:Bounds x="700" y="340" width="100" height="80" />
+        <dc:Bounds x="1140" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0t0o4pm_di" bpmnElement="CreateSDONotifyRespondentSolicitor2">
-        <dc:Bounds x="1290" y="210" width="100" height="80" />
+        <dc:Bounds x="970" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05dumwf_di" bpmnElement="CreateSDONotifyRespondentSolicitor1">
-        <dc:Bounds x="1110" y="210" width="100" height="80" />
+        <dc:Bounds x="790" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1k6crm0_di" bpmnElement="SendSDOToDefendantLIP">
-        <dc:Bounds x="1110" y="340" width="100" height="80" />
+        <dc:Bounds x="790" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_178o507_di" bpmnElement="Event_11hktcj">
