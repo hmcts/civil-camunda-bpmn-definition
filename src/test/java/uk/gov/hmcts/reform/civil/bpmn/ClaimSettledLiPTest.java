@@ -5,6 +5,8 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 public class ClaimSettledLiPTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "claim_settled_lip.bpmn";
@@ -34,6 +36,7 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
     public void shouldSuccessfullyCompleteClaimSettledLiP() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
+        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
         startBusinessProcess(variables);
         notifyRespondentClaimantSettleTheClaim();
         createDashboardNotificationForClaimant();

@@ -48,7 +48,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, null);
+        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
         variables.put(FLOW_STATE, null);
         assertCompleteExternalTask(
             startBusiness,
@@ -176,6 +176,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
         assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,

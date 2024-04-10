@@ -39,7 +39,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", false));
+                "CLAIM_ISSUE_HWF", false,
+                "DASHBOARD_SERVICE_ENABLED", true));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
@@ -54,7 +55,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", true));
+                "CLAIM_ISSUE_HWF", true,
+                "DASHBOARD_SERVICE_ENABLED", true));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
