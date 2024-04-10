@@ -85,7 +85,7 @@
       <bpmn:incoming>Flow_15fy8lo</bpmn:incoming>
       <bpmn:incoming>Flow_08nz2a1</bpmn:incoming>
       <bpmn:incoming>Flow_07q2pp0</bpmn:incoming>
-      <bpmn:incoming>Flow_0sx4z19</bpmn:incoming>
+      <bpmn:incoming>Flow_19f8q6e</bpmn:incoming>
       <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant2LR" name="Send notification to defendant solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
@@ -109,6 +109,17 @@
     <bpmn:sequenceFlow id="Flow_0miwr61" name="Two respondent representatives" sourceRef="Gateway_163710c" targetRef="SendMediationUnsuccessfulDefendant2LR">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0sx4z19" sourceRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" targetRef="GenerateDashboardNotificationDefendantMediationUnsuccessful" />
+    <bpmn:sequenceFlow id="Flow_19f8q6e" sourceRef="GenerateDashboardNotificationDefendantMediationUnsuccessful" targetRef="Activity_146wk8x" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationDefendantMediationUnsuccessful" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sx4z19</bpmn:incoming>
+      <bpmn:outgoing>Flow_19f8q6e</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" name="Create applicant1 dashboard notification" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -118,7 +129,6 @@
       <bpmn:incoming>Flow_0b9vym8</bpmn:incoming>
       <bpmn:outgoing>Flow_0sx4z19</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0sx4z19" sourceRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" targetRef="Activity_146wk8x" />
   </bpmn:process>
   <bpmn:message id="Message_396b4ur" name="MEDIATION_UNSUCCESSFUL" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -178,8 +188,12 @@
         <dc:Bounds x="920" y="130" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0e3s1mi" bpmnElement="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1">
+      <bpmndi:BPMNShape id="BPMNShape_0y6ah1s" bpmnElement="GenerateDashboardNotificationDefendantMediationUnsuccessful">
         <dc:Bounds x="1430" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0e3s1mi" bpmnElement="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1">
+        <dc:Bounds x="1300" y="130" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1k9m1sq" bpmnElement="Event_183wgjg">
@@ -221,8 +235,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0b9vym8_di" bpmnElement="Flow_0b9vym8">
         <di:waypoint x="1020" y="170" />
-        <di:waypoint x="1480" y="170" />
-        <di:waypoint x="1480" y="210" />
+        <di:waypoint x="1300" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mxdu3t_di" bpmnElement="Flow_1mxdu3t">
         <di:waypoint x="1020" y="380" />
@@ -258,6 +271,11 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sx4z19_di" bpmnElement="Flow_0sx4z19">
+        <di:waypoint x="1400" y="170" />
+        <di:waypoint x="1480" y="170" />
+        <di:waypoint x="1480" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19f8q6e_di" bpmnElement="Flow_19f8q6e">
         <di:waypoint x="1480" y="290" />
         <di:waypoint x="1480" y="340" />
       </bpmndi:BPMNEdge>
