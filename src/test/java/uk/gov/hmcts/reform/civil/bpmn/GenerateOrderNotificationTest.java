@@ -28,6 +28,10 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "SEND_FINAL_ORDER_TO_LIP_DEFENDANT";
     public static final String SEND_FINAL_ORDER_TO_LIP_CLAIMANT
         = "SEND_FINAL_ORDER_TO_LIP_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_GENERATE_ORDER_ACTIVITY_ID
@@ -40,6 +44,10 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "SendFinalOrderToDefendantLIP";
     private static final String SEND_FINAL_ORDER_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendFinalOrderToClaimantLIP";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationFinalOrderClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationFinalOrderDefendant";
 
     public GenerateOrderNotificationTest() {
         super("generate_order_notification.bpmn", PROCESS_ID);
@@ -92,6 +100,20 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
                                    variables
         );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
+                                   variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -132,6 +154,21 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
@@ -191,6 +228,21 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
+                                   variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -238,6 +290,21 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
