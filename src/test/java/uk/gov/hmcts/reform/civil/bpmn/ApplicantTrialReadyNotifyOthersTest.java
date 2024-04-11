@@ -24,6 +24,8 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
         = "GENERATE_TRIAL_READY_FORM_APPLICANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
@@ -32,6 +34,8 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         = "OtherTrialReadyNotifyRespondentSolicitor1";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
         = "GenerateTrialReadyFormApplicant";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
+        = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
 
     public ApplicantTrialReadyNotifyOthersTest() {
         super("applicant_trial_ready_notify_others.bpmn", PROCESS_ID);
@@ -81,6 +85,13 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_TRIAL_READY_FORM_APPLICANT,
                                    GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
@@ -135,6 +146,13 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_TRIAL_READY_FORM_APPLICANT,
                                    GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
