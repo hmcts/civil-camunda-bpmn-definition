@@ -5,8 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -29,7 +27,6 @@ class DefendantResponseDeadlineCheckTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
