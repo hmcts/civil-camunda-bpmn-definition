@@ -5,8 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "notify_claimant_hwf_outcome.bpmn";
@@ -21,7 +19,6 @@ public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
     void shouldNotifyClaimantWithHwfOutcome() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
         startBusinessProcess(variables);
 
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ranzx9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ranzx9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_PROCESS_ID" name="Defendant sign settlement agreement process" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:callActivity id="START_BUSINESS_PROCESS" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -19,7 +19,6 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1bcrztk</bpmn:incoming>
-      <bpmn:incoming>Flow_0aloigp</bpmn:incoming>
       <bpmn:outgoing>Flow_0s09rb1</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:boundaryEvent id="Event_1dduelw" name="Abort" attachedToRef="START_BUSINESS_PROCESS">
@@ -64,28 +63,17 @@
       <bpmn:incoming>Flow_0iou2ms</bpmn:incoming>
       <bpmn:outgoing>Flow_162ion3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_162ion3" sourceRef="GenerateSignSettlementAgreement" targetRef="Gateway_0b3zwjf" />
+    <bpmn:sequenceFlow id="Flow_162ion3" sourceRef="GenerateSignSettlementAgreement" targetRef="GenerateDashboardNotificationSignSettlementAgreement" />
     <bpmn:serviceTask id="GenerateDashboardNotificationSignSettlementAgreement" name="Generate dashboard notification settlement agreement" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0iywbk8</bpmn:incoming>
+      <bpmn:incoming>Flow_162ion3</bpmn:incoming>
       <bpmn:outgoing>Flow_1bcrztk</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1bcrztk" sourceRef="GenerateDashboardNotificationSignSettlementAgreement" targetRef="END_BUSINESS_PROCESS" />
-    <bpmn:exclusiveGateway id="Gateway_0b3zwjf">
-      <bpmn:incoming>Flow_162ion3</bpmn:incoming>
-      <bpmn:outgoing>Flow_0iywbk8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0aloigp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0iywbk8" name="Dashboard Service Enabled" sourceRef="Gateway_0b3zwjf" targetRef="GenerateDashboardNotificationSignSettlementAgreement">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0aloigp" name="Dashboard Service Disabled" sourceRef="Gateway_0b3zwjf" targetRef="END_BUSINESS_PROCESS">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1pokpru" name="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -116,20 +104,17 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0262kdl_di" bpmnElement="Event_0262kdl">
-        <dc:Bounds x="1282" y="202" width="36" height="36" />
+        <dc:Bounds x="1112" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="737" y="245" width="8" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0uio47l_di" bpmnElement="END_BUSINESS_PROCESS">
-        <dc:Bounds x="1090" y="180" width="100" height="80" />
+        <dc:Bounds x="970" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0b3zwjf_di" bpmnElement="Gateway_0b3zwjf" isMarkerVisible="true">
-        <dc:Bounds x="825" y="195" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ry2oyd" bpmnElement="GenerateDashboardNotificationSignSettlementAgreement">
-        <dc:Bounds x="950" y="180" width="100" height="80" />
+        <dc:Bounds x="830" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dduelw_di" bpmnElement="Event_1dduelw">
@@ -147,8 +132,8 @@
         <di:waypoint x="310" y="108" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s09rb1_di" bpmnElement="Flow_0s09rb1">
-        <di:waypoint x="1190" y="220" />
-        <di:waypoint x="1282" y="220" />
+        <di:waypoint x="1070" y="220" />
+        <di:waypoint x="1112" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b0wlsx_di" bpmnElement="Flow_1b0wlsx">
         <di:waypoint x="360" y="220" />
@@ -164,27 +149,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_162ion3_di" bpmnElement="Flow_162ion3">
         <di:waypoint x="780" y="220" />
-        <di:waypoint x="825" y="220" />
+        <di:waypoint x="830" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bcrztk_di" bpmnElement="Flow_1bcrztk">
-        <di:waypoint x="1050" y="220" />
-        <di:waypoint x="1090" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0iywbk8_di" bpmnElement="Flow_0iywbk8">
-        <di:waypoint x="875" y="220" />
-        <di:waypoint x="950" y="220" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="868" y="186" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0aloigp_di" bpmnElement="Flow_0aloigp">
-        <di:waypoint x="850" y="245" />
-        <di:waypoint x="850" y="370" />
-        <di:waypoint x="1140" y="370" />
-        <di:waypoint x="1140" y="260" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="858" y="336" width="83" height="27" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="930" y="220" />
+        <di:waypoint x="970" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

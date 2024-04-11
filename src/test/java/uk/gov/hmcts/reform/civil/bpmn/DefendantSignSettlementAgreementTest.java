@@ -5,8 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "defendant_sign_settlement_agreement.bpmn";
@@ -38,7 +36,6 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     void shouldSuccessfullyProcessDefendantSignAgreement() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
         startBusinessProcess(variables);
         notifyApplicantSignSettlementAgreement();
         notifyRespondentSignSettlementAgreement();

@@ -1,11 +1,7 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -39,15 +35,12 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,
                 START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
+                START_BUSINESS_ACTIVITY
         );
 
         //Update Respondent response deadline date

@@ -40,10 +40,8 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            UNREPRESENTED_DEFENDANT_ONE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            UNREPRESENTED_DEFENDANT_ONE, true
         ));
-
         startBusinessProcess(variables);
 
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -89,10 +87,8 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            UNREPRESENTED_DEFENDANT_ONE, false
         ));
-
         startBusinessProcess(variables);
 
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -138,10 +134,8 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             TWO_RESPONDENT_REPRESENTATIVES, true,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            UNREPRESENTED_DEFENDANT_ONE, false
         ));
-
         startBusinessProcess(variables);
 
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);

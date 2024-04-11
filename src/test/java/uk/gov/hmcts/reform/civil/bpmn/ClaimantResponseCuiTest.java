@@ -95,8 +95,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
-            CLAIM_ISSUE_BILINGUAL, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            CLAIM_ISSUE_BILINGUAL, false
         ));
 
         //Then
@@ -131,8 +130,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put(FLOW_FLAGS, Map.of(
-            CLAIM_ISSUE_BILINGUAL, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -166,8 +164,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -202,8 +199,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -242,8 +238,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -279,8 +274,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -313,8 +307,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
-            CLAIM_ISSUE_BILINGUAL, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            CLAIM_ISSUE_BILINGUAL, false
         ));
 
         //Then
@@ -350,8 +343,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
                 startBusiness,
@@ -411,9 +403,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false,
-                DASHBOARD_SERVICE_ENABLED, true
-
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
                 startBusiness,
