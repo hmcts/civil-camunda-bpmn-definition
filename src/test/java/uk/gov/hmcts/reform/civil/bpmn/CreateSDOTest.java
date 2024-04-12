@@ -72,6 +72,26 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
+            "GenerateDashboardNotificationSDOClaimant",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
+            "GenerateDashboardNotificationSDODefendant",
+            variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -127,6 +147,26 @@ class CreateSDOTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
             "CreateSDONotifyRespondentSolicitor2",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
+            "GenerateDashboardNotificationSDOClaimant",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
+            "GenerateDashboardNotificationSDODefendant",
             variables
         );
 
@@ -206,6 +246,26 @@ class CreateSDOTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
             "CreateSDONotifyRespondentSolicitor2",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
+            "GenerateDashboardNotificationSDOClaimant",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
+            "GenerateDashboardNotificationSDODefendant",
             variables
         );
 
