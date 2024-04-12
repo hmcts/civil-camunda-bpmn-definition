@@ -3,10 +3,11 @@
   <bpmn:process id="GenerateCsvAndSendToMmtScheduler" name="Generate CSV and send to MMT scheduler" isExecutable="true">
     <bpmn:serviceTask id="GenerateCsvAndSendToMmtActivityID" name="Generate CSV and send to MMT" camunda:type="external" camunda:topic="GenerateCsvAndSendToMmt">
       <bpmn:incoming>Flow_1gnbmqe</bpmn:incoming>
-      <bpmn:outgoing>Flow_079yi7m</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1okib4d</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="endevent">
-      <bpmn:incoming>Flow_079yi7m</bpmn:incoming>
+      <bpmn:incoming>Flow_0amssmo</bpmn:incoming>
+      <bpmn:incoming>Flow_18wbpg8</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:startEvent id="InMediationMMTtimer">
       <bpmn:outgoing>Flow_1gnbmqe</bpmn:outgoing>
@@ -15,28 +16,88 @@
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1gnbmqe" sourceRef="InMediationMMTtimer" targetRef="GenerateCsvAndSendToMmtActivityID" />
-    <bpmn:sequenceFlow id="Flow_079yi7m" sourceRef="GenerateCsvAndSendToMmtActivityID" targetRef="endevent" />
+    <bpmn:exclusiveGateway id="Gateway_16s540n">
+      <bpmn:incoming>Flow_1okib4d</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ebe1z7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0amssmo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1okib4d" sourceRef="GenerateCsvAndSendToMmtActivityID" targetRef="Gateway_16s540n" />
+    <bpmn:sequenceFlow id="Flow_0ebe1z7" sourceRef="Gateway_16s540n" targetRef="GenerateJsonAndSendToMmtActivityID">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${carmFeatureEnabled==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0amssmo" sourceRef="Gateway_16s540n" targetRef="endevent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${carmFeatureEnabled==false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="GenerateJsonAndSendToMmtActivityID" name="Generate JSON and send to MMT" camunda:type="external" camunda:topic="GenerateJsonAndSendToMmt">
+      <bpmn:incoming>Flow_0ebe1z7</bpmn:incoming>
+      <bpmn:outgoing>Flow_18wbpg8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_18wbpg8" sourceRef="GenerateJsonAndSendToMmtActivityID" targetRef="endevent" />
+    <bpmn:textAnnotation id="TextAnnotation_09nrzzp">
+      <bpmn:text>feature toggle CARM not enabled</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_11vt49u" sourceRef="Gateway_16s540n" targetRef="TextAnnotation_09nrzzp" />
+    <bpmn:textAnnotation id="TextAnnotation_0dvv4ox">
+      <bpmn:text>feature toggle CARM enabled</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0o19h3p" sourceRef="TextAnnotation_0dvv4ox" targetRef="Gateway_16s540n" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="TRIGGER_HEARING_NOTICES" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GenerateCsvAndSendToMmtScheduler">
-      <bpmndi:BPMNShape id="Event_0okg972_di" bpmnElement="InMediationMMTtimer">
-        <dc:Bounds x="159" y="102" width="36" height="36" />
+      <bpmndi:BPMNShape id="TextAnnotation_09nrzzp_di" bpmnElement="TextAnnotation_09nrzzp">
+        <dc:Bounds x="500" y="80" width="100" height="55" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_01w86bj" bpmnElement="endevent">
-        <dc:Bounds x="452" y="102" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0x79iqk" bpmnElement="GenerateCsvAndSendToMmtActivityID">
-        <dc:Bounds x="270" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="TextAnnotation_0dvv4ox_di" bpmnElement="TextAnnotation_0dvv4ox">
+        <dc:Bounds x="350" y="240" width="100" height="41" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1gnbmqe_di" bpmnElement="Flow_1gnbmqe">
-        <di:waypoint x="195" y="120" />
-        <di:waypoint x="270" y="120" />
+        <di:waypoint x="195" y="190" />
+        <di:waypoint x="270" y="190" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_079yi7m_di" bpmnElement="Flow_079yi7m">
-        <di:waypoint x="370" y="120" />
-        <di:waypoint x="452" y="120" />
+      <bpmndi:BPMNEdge id="Flow_1okib4d_di" bpmnElement="Flow_1okib4d">
+        <di:waypoint x="370" y="190" />
+        <di:waypoint x="445" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ebe1z7_di" bpmnElement="Flow_0ebe1z7">
+        <di:waypoint x="470" y="215" />
+        <di:waypoint x="470" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0amssmo_di" bpmnElement="Flow_0amssmo">
+        <di:waypoint x="495" y="190" />
+        <di:waypoint x="652" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18wbpg8_di" bpmnElement="Flow_18wbpg8">
+        <di:waypoint x="510" y="340" />
+        <di:waypoint x="581" y="340" />
+        <di:waypoint x="581" y="190" />
+        <di:waypoint x="652" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_0x79iqk" bpmnElement="GenerateCsvAndSendToMmtActivityID">
+        <dc:Bounds x="270" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0okg972_di" bpmnElement="InMediationMMTtimer">
+        <dc:Bounds x="159" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_01w86bj" bpmnElement="endevent">
+        <dc:Bounds x="652" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16s540n_di" bpmnElement="Gateway_16s540n" isMarkerVisible="true">
+        <dc:Bounds x="445" y="165" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dyax4x_di" bpmnElement="GenerateJsonAndSendToMmtActivityID">
+        <dc:Bounds x="410" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_11vt49u_di" bpmnElement="Association_11vt49u">
+        <di:waypoint x="495" y="190" />
+        <di:waypoint x="520" y="190" />
+        <di:waypoint x="537" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0o19h3p_di" bpmnElement="Association_0o19h3p">
+        <di:waypoint x="450" y="253" />
+        <di:waypoint x="470" y="250" />
+        <di:waypoint x="470" y="215" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
