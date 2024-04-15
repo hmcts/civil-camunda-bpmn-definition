@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
-  <bpmn:process id="HEARING_FEE_UNPAID" isExecutable="true">
+  <bpmn:process id="HEARING_FEE_UNPAID" name="Hearing fee unpaid" isExecutable="true">
     <bpmn:startEvent id="Event_0t2zome" name="Start">
       <bpmn:outgoing>Flow_08myj65</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_07vpgvo" />
@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1gsn98m</bpmn:incoming>
+      <bpmn:incoming>Flow_1rcw4z2</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="HearingFeeUnpaidNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -26,7 +26,7 @@
       <bpmn:incoming>Flow_10x6e34</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsn98m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="HearingFeeUnpaidNotifyApplicantSolicitor1" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="HearingFeeUnpaidNotifyApplicantSolicitor1" targetRef="CreateHearingFeeUnpaidDashboardNotificationsForDefendant1" />
     <bpmn:callActivity id="HearingFeeUnpaidProcess" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -76,6 +76,26 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ffw39w" sourceRef="HearingFeeUnpaidProcess" targetRef="HearingFeeUnpaidNotifyRespondentSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1i0yhru" sourceRef="HearingFeeUnpaidNotifyRespondentSolicitor1" targetRef="Gateway_19b5dvl" />
+    <bpmn:serviceTask id="CreateHearingFeeUnpaidDashboardNotificationsForDefendant1" name="Create Defendant1 Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1gsn98m</bpmn:incoming>
+      <bpmn:outgoing>Flow_15sglnj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_15sglnj" sourceRef="CreateHearingFeeUnpaidDashboardNotificationsForDefendant1" targetRef="CreateHearingFeeUnpaidDashboardNotificationsForClaimant1" />
+    <bpmn:serviceTask id="CreateHearingFeeUnpaidDashboardNotificationsForClaimant1" name="Create Claimant1 Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15sglnj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rcw4z2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1rcw4z2" sourceRef="CreateHearingFeeUnpaidDashboardNotificationsForClaimant1" targetRef="Activity_0wretog" />
     <bpmn:textAnnotation id="TextAnnotation_0i3yd0i">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -86,9 +106,10 @@
   <bpmn:message id="Message_07vpgvo" name="HEARING_FEE_UNPAID" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="HEARING_FEE_UNPAID">
-      <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
-        <dc:Bounds x="500" y="300" width="120" height="40" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1i0yhru_di" bpmnElement="Flow_1i0yhru">
+        <di:waypoint x="450" y="260" />
+        <di:waypoint x="625" y="260" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ffw39w_di" bpmnElement="Flow_1ffw39w">
         <di:waypoint x="310" y="260" />
         <di:waypoint x="350" y="260" />
@@ -123,27 +144,25 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
         <di:waypoint x="940" y="260" />
-        <di:waypoint x="1030" y="260" />
+        <di:waypoint x="1000" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_1hce35l">
-        <di:waypoint x="1130" y="260" />
-        <di:waypoint x="1212" y="260" />
+        <di:waypoint x="1370" y="260" />
+        <di:waypoint x="1392" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1i0yhru_di" bpmnElement="Flow_1i0yhru">
-        <di:waypoint x="450" y="260" />
-        <di:waypoint x="625" y="260" />
+      <bpmndi:BPMNEdge id="Flow_15sglnj_di" bpmnElement="Flow_15sglnj">
+        <di:waypoint x="1100" y="260" />
+        <di:waypoint x="1140" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rcw4z2_di" bpmnElement="Flow_1rcw4z2">
+        <di:waypoint x="1240" y="260" />
+        <di:waypoint x="1270" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1m02c2o_di" bpmnElement="Event_0t2zome">
         <dc:Bounds x="152" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="285" width="25" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
-        <dc:Bounds x="1212" y="242" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
-        <dc:Bounds x="1030" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="HearingFeeUnpaidNotifyApplicantSolicitor1">
         <dc:Bounds x="840" y="220" width="100" height="80" />
@@ -163,16 +182,33 @@
       <bpmndi:BPMNShape id="Activity_1dxqaq3_di" bpmnElement="HearingFeeUnpaidNotifyRespondentSolicitor2">
         <dc:Bounds x="720" y="90" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0ycet74_di" bpmnElement="Association_0ycet74">
-        <di:waypoint x="634" y="269" />
-        <di:waypoint x="582" y="300" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
+        <dc:Bounds x="500" y="300" width="120" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
+        <dc:Bounds x="1392" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
+        <dc:Bounds x="1270" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0fexuk7" bpmnElement="CreateHearingFeeUnpaidDashboardNotificationsForDefendant1">
+        <dc:Bounds x="1000" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1alc9j6" bpmnElement="CreateHearingFeeUnpaidDashboardNotificationsForClaimant1">
+        <dc:Bounds x="1140" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="242" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="277" y="183" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0ycet74_di" bpmnElement="Association_0ycet74">
+        <di:waypoint x="634" y="269" />
+        <di:waypoint x="582" y="300" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
