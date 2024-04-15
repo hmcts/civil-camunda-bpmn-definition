@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_0lkiw1g">
     <bpmn:participant id="Participant_1nspjir" name="Apply NoC Decision for Lip" processRef="APPLY_NOC_DECISION_LIP" />
   </bpmn:collaboration>
@@ -28,10 +28,7 @@
     <bpmn:sequenceFlow id="Flow_0dm1zjw" sourceRef="Event_Apply_NoC_Decision" targetRef="Activity_0czttms" />
     <bpmn:sequenceFlow id="Flow_1x9k7i6" sourceRef="Activity_EndBusinessProcess" targetRef="Event_1ryj0ug" />
     <bpmn:sequenceFlow id="Flow_1bgy1m8" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="NotifyClaimantLipAfterNocApproval" />
-    <bpmn:sequenceFlow id="Flow_05auzpf" sourceRef="NotifyDefendantLipClaimantRepresented" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:endEvent id="Event_1ryj0ug">
-      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
-    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05auzpf" sourceRef="NotifyDefendantLipClaimantRepresented" targetRef="NotifyApplicantLipSolicitor" />
     <bpmn:serviceTask id="UpdateCaseDetailsAfterNoC" name="Update case details" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -42,13 +39,6 @@
       <bpmn:outgoing>Flow_1bgy1m8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1qc6s0r" sourceRef="NotifyClaimantLipAfterNocApproval" targetRef="NotifyDefendantLipClaimantRepresented" />
-    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05auzpf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:serviceTask id="NotifyDefendantLipClaimantRepresented" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -67,6 +57,26 @@
       <bpmn:incoming>Flow_1bgy1m8</bpmn:incoming>
       <bpmn:outgoing>Flow_1qc6s0r</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1ryj0ug">
+      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0r5cjn6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="NotifyApplicantLipSolicitor" name="Notify Applicant Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_LIP_SOLICITOR</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05auzpf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0r5cjn6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0r5cjn6" sourceRef="NotifyApplicantLipSolicitor" targetRef="Activity_EndBusinessProcess" />
   </bpmn:process>
   <bpmn:message id="Message_14dl5pe" name="APPLY_NOC_DECISION_LIP" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -87,14 +97,8 @@
           <dc:Bounds x="248" y="292" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
-        <dc:Bounds x="1122" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0dev963" bpmnElement="UpdateCaseDetailsAfterNoC">
         <dc:Bounds x="520" y="227" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="960" y="227" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="CaseAssignmentToApplicantSolicitor1_di" bpmnElement="NotifyDefendantLipClaimantRepresented">
         <dc:Bounds x="820" y="227" width="100" height="80" />
@@ -102,6 +106,16 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mqz8x4" bpmnElement="NotifyClaimantLipAfterNocApproval">
         <dc:Bounds x="670" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
+        <dc:Bounds x="1342" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1140" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1fqgqwi" bpmnElement="NotifyApplicantLipSolicitor">
+        <dc:Bounds x="970" y="227" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_056imgr_di" bpmnElement="Event_0rh0701">
@@ -123,8 +137,8 @@
         <di:waypoint x="339" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x9k7i6_di" bpmnElement="Flow_1x9k7i6">
-        <di:waypoint x="1060" y="267" />
-        <di:waypoint x="1122" y="267" />
+        <di:waypoint x="1240" y="267" />
+        <di:waypoint x="1342" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bgy1m8_di" bpmnElement="Flow_1bgy1m8">
         <di:waypoint x="620" y="267" />
@@ -132,11 +146,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05auzpf_di" bpmnElement="Flow_05auzpf">
         <di:waypoint x="920" y="267" />
-        <di:waypoint x="960" y="267" />
+        <di:waypoint x="970" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qc6s0r_di" bpmnElement="Flow_1qc6s0r">
         <di:waypoint x="770" y="267" />
         <di:waypoint x="820" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r5cjn6_di" bpmnElement="Flow_0r5cjn6">
+        <di:waypoint x="1070" y="267" />
+        <di:waypoint x="1140" y="267" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
