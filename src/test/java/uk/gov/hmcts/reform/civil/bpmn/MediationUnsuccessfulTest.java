@@ -19,10 +19,10 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_APPLICANT
-        = "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_APPLICANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_RESPONDENT
-        = "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_RESPONDENT";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
+        = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
 
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR_ACTIVITY_ID
         = "SendMediationUnsuccessfulClaimantLR";
@@ -35,7 +35,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         = "GenerateDashboardNotificationApplicantMediationUnsuccessful";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_DEFENDANT_ACTIVITY_ID
-        = "GenerateDashboardNotificationRespondentMediationUnsuccessful";
+        = "GenerateDashboardNotificationDefendantMediationUnsuccessful";
+
 
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -64,7 +65,7 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardApplicant,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_APPLICANT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
             NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         );
 
@@ -81,7 +82,7 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardRespondent,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_RESPONDENT,
+            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
             NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_DEFENDANT_ACTIVITY_ID
         );
 
@@ -111,7 +112,7 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardApplicant,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_APPLICANT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
             NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         );
 
@@ -149,7 +150,7 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardApplicant,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_APPLICANT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
             NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_APPLICANT_ACTIVITY_ID
         );
 
