@@ -73,6 +73,22 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
                                    "BundleCreationNotifyApplicantSolicitor1"
         );
 
+        //complete the Dashboard creation for defendant
+        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
+                                   "CreateBundleCreatedDashboardNotificationsForDefendant1"
+        );
+
+        //complete the Dashboard creation for claimant
+        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
+                                   "CreateBundleCreatedDashboardNotificationsForClaimant1"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
