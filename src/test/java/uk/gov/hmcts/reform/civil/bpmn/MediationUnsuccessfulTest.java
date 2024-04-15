@@ -37,7 +37,6 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DASHBOARD_DEFENDANT_ACTIVITY_ID
         = "GenerateDashboardNotificationDefendantMediationUnsuccessful";
 
-
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
     }
