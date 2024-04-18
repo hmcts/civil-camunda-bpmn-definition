@@ -47,7 +47,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            UNREPRESENTED_DEFENDANT_ONE, true
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
         startBusinessProcess(variables);
 
