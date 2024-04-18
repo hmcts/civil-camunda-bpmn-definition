@@ -58,7 +58,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "LIP_CASE", false));
+            "LIP_CASE", false,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -114,7 +115,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "LIP_CASE", true));
+            "LIP_CASE", true,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
