@@ -53,7 +53,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false));
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -114,7 +115,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, true,
-            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives));
+            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

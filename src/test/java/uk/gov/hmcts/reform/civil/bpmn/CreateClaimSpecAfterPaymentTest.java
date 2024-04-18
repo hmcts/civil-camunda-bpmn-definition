@@ -123,7 +123,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                "PIP_ENABLED", true));
+                "PIP_ENABLED", true,
+                "DASHBOARD_SERVICE_ENABLED", true));
 
             startBusinessProcess(variables);
 
@@ -395,7 +396,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 LIP_CASE, true,
                 GENERAL_APPLICATION_ENABLED, true,
                 UNREPRESENTED_DEFENDANT_ONE, true,
-                PIP_ENABLED, true
+                PIP_ENABLED, true,
+                DASHBOARD_SERVICE_ENABLED, true
             ));
 
             //complete the start business process
