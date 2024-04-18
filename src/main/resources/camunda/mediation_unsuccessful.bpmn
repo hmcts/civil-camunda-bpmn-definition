@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:collaboration id="MediationUnsuccessful">
@@ -49,7 +49,7 @@
     <bpmn:sequenceFlow id="Flow_0bvj55r" name="Not Lip Defendant" sourceRef="Gateway_175dj1r" targetRef="SendMediationUnsuccessfulDefendant1LR">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0b9vym8" sourceRef="SendMediationUnsuccessfulDefendantLIP" targetRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" />
+    <bpmn:sequenceFlow id="Flow_0b9vym8" sourceRef="SendMediationUnsuccessfulDefendantLIP" targetRef="Gateway_14l4y2b" />
     <bpmn:sequenceFlow id="Flow_1mxdu3t" sourceRef="SendMediationUnsuccessfulDefendant1LR" targetRef="Gateway_163710c" />
     <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant1LR" name="Send notification to defendant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -86,6 +86,7 @@
       <bpmn:incoming>Flow_08nz2a1</bpmn:incoming>
       <bpmn:incoming>Flow_07q2pp0</bpmn:incoming>
       <bpmn:incoming>Flow_19f8q6e</bpmn:incoming>
+      <bpmn:incoming>Flow_0ykigr5</bpmn:incoming>
       <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant2LR" name="Send notification to defendant solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
@@ -126,9 +127,20 @@
           <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0b9vym8</bpmn:incoming>
+      <bpmn:incoming>Flow_0wohw13</bpmn:incoming>
       <bpmn:outgoing>Flow_0sx4z19</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_14l4y2b">
+      <bpmn:incoming>Flow_0b9vym8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wohw13</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ykigr5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0wohw13" name="Dashboard Service Enabled" sourceRef="Gateway_14l4y2b" targetRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ykigr5" name="Dashboard Service Disabled" sourceRef="Gateway_14l4y2b" targetRef="Activity_146wk8x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_396b4ur" name="MEDIATION_UNSUCCESSFUL" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -196,6 +208,9 @@
         <dc:Bounds x="1300" y="130" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14l4y2b_di" bpmnElement="Gateway_14l4y2b" isMarkerVisible="true">
+        <dc:Bounds x="1115" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1k9m1sq" bpmnElement="Event_183wgjg">
         <dc:Bounds x="482" y="322" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -235,7 +250,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0b9vym8_di" bpmnElement="Flow_0b9vym8">
         <di:waypoint x="1020" y="170" />
-        <di:waypoint x="1300" y="170" />
+        <di:waypoint x="1115" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mxdu3t_di" bpmnElement="Flow_1mxdu3t">
         <di:waypoint x="1020" y="380" />
@@ -278,6 +293,24 @@
       <bpmndi:BPMNEdge id="Flow_19f8q6e_di" bpmnElement="Flow_19f8q6e">
         <di:waypoint x="1480" y="290" />
         <di:waypoint x="1480" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wohw13_di" bpmnElement="Flow_0wohw13">
+        <di:waypoint x="1165" y="170" />
+        <di:waypoint x="1300" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1159" y="176" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ykigr5_di" bpmnElement="Flow_0ykigr5">
+        <di:waypoint x="1140" y="145" />
+        <di:waypoint x="1140" y="90" />
+        <di:waypoint x="1580" y="90" />
+        <di:waypoint x="1580" y="310" />
+        <di:waypoint x="1480" y="310" />
+        <di:waypoint x="1480" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1148" y="96" width="83" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
