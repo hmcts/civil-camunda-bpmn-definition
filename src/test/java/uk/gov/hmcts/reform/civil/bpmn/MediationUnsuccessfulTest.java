@@ -15,6 +15,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
+        = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR
         = "NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR
@@ -24,10 +26,20 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         = "SendMediationUnsuccessfulClaimantLR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP_ACTIVITY_ID
         = "SendMediationUnsuccessfulDefendantLIP";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_ACTIVITY_ID
+        = "GenerateDashboardNotificationDefendantMediationUnsuccessful";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_SOLICITOR_1_ACTIVITY_ID
         = "SendMediationUnsuccessfulDefendant1LR";
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_SOLICITOR_2_ACTIVITY_ID
         = "SendMediationUnsuccessfulDefendant2LR";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP_ACTIVITY_ID
+        = "GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1";
+    private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_ACTIVITY_ID
+        = "GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1";
 
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -39,7 +51,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            UNREPRESENTED_DEFENDANT_ONE, true
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
         startBusinessProcess(variables);
 
@@ -58,6 +71,21 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP_ACTIVITY_ID,
                                    variables
         );
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP,
+                                   NOTIFY_MEDIATION_UNSUCCESSFUL_CLAIMANT_LIP_ACTIVITY_ID,
+                                   variables
+        );
+
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask,
+                                   PROCESS_CASE_EVENT,
+                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
+                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL_ACTIVITY_ID,
+                                   variables
+        );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
@@ -68,7 +96,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            UNREPRESENTED_DEFENDANT_ONE, false
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, false
         ));
         startBusinessProcess(variables);
 
@@ -97,7 +126,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             TWO_RESPONDENT_REPRESENTATIVES, true,
-            UNREPRESENTED_DEFENDANT_ONE, false
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, false
         ));
         startBusinessProcess(variables);
 

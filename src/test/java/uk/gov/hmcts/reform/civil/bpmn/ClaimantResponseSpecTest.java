@@ -37,6 +37,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
     private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
         "ClaimantAgreedSettledPartAdmitNotifyLip";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -53,6 +55,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -92,6 +95,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -111,6 +115,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_PAY_IMMEDIATELY");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -141,6 +146,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -160,6 +166,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -196,6 +203,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -218,7 +226,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
             GENERAL_APPLICATION_ENABLED, true,
-            "SDO_ENABLED", true
+            "SDO_ENABLED", true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -288,6 +297,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -308,7 +318,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -339,6 +350,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -357,7 +369,9 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true));
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            DASHBOARD_SERVICE_ENABLED, true));
+
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
@@ -400,7 +414,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
         );
-
+        createDefendantDashboardNotification();
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
@@ -418,7 +432,9 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            TWO_RESPONDENT_REPRESENTATIVES, true));
+            TWO_RESPONDENT_REPRESENTATIVES, true,
+            DASHBOARD_SERVICE_ENABLED, true));
+
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
@@ -470,6 +486,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        createDefendantDashboardNotification();
+
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
@@ -487,6 +505,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_SETTLE");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -506,11 +525,22 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
             NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
         );
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
+    }
+
+    private void createDefendantDashboardNotification() {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+        );
     }
 }

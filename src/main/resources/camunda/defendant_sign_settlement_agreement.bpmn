@@ -18,7 +18,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_162ion3</bpmn:incoming>
+      <bpmn:incoming>Flow_1bcrztk</bpmn:incoming>
       <bpmn:outgoing>Flow_0s09rb1</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:boundaryEvent id="Event_1dduelw" name="Abort" attachedToRef="START_BUSINESS_PROCESS">
@@ -63,7 +63,17 @@
       <bpmn:incoming>Flow_0iou2ms</bpmn:incoming>
       <bpmn:outgoing>Flow_162ion3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_162ion3" sourceRef="GenerateSignSettlementAgreement" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:sequenceFlow id="Flow_162ion3" sourceRef="GenerateSignSettlementAgreement" targetRef="GenerateDashboardNotificationSignSettlementAgreement" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationSignSettlementAgreement" name="Generate dashboard notification settlement agreement" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_162ion3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bcrztk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1bcrztk" sourceRef="GenerateDashboardNotificationSignSettlementAgreement" targetRef="END_BUSINESS_PROCESS" />
   </bpmn:process>
   <bpmn:message id="Message_1pokpru" name="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -78,18 +88,8 @@
           <dc:Bounds x="159" y="245" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0uio47l_di" bpmnElement="END_BUSINESS_PROCESS">
-        <dc:Bounds x="870" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qbq48j_di" bpmnElement="Event_0qbq48j">
         <dc:Bounds x="292" y="72" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0262kdl_di" bpmnElement="Event_0262kdl">
-        <dc:Bounds x="1062" y="202" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="737" y="245" width="8" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13z753m_di" bpmnElement="NotifyApplicantForSignSettlementAgreement">
         <dc:Bounds x="400" y="180" width="100" height="80" />
@@ -100,7 +100,21 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0anwp1i" bpmnElement="GenerateSignSettlementAgreement">
-        <dc:Bounds x="700" y="180" width="100" height="80" />
+        <dc:Bounds x="680" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0262kdl_di" bpmnElement="Event_0262kdl">
+        <dc:Bounds x="1112" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="737" y="245" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uio47l_di" bpmnElement="END_BUSINESS_PROCESS">
+        <dc:Bounds x="970" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ry2oyd" bpmnElement="GenerateDashboardNotificationSignSettlementAgreement">
+        <dc:Bounds x="830" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dduelw_di" bpmnElement="Event_1dduelw">
@@ -118,8 +132,8 @@
         <di:waypoint x="310" y="108" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s09rb1_di" bpmnElement="Flow_0s09rb1">
-        <di:waypoint x="970" y="220" />
-        <di:waypoint x="1062" y="220" />
+        <di:waypoint x="1070" y="220" />
+        <di:waypoint x="1112" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b0wlsx_di" bpmnElement="Flow_1b0wlsx">
         <di:waypoint x="360" y="220" />
@@ -131,11 +145,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0iou2ms_di" bpmnElement="Flow_0iou2ms">
         <di:waypoint x="630" y="220" />
-        <di:waypoint x="700" y="220" />
+        <di:waypoint x="680" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_162ion3_di" bpmnElement="Flow_162ion3">
-        <di:waypoint x="800" y="220" />
-        <di:waypoint x="870" y="220" />
+        <di:waypoint x="780" y="220" />
+        <di:waypoint x="830" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bcrztk_di" bpmnElement="Flow_1bcrztk">
+        <di:waypoint x="930" y="220" />
+        <di:waypoint x="970" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

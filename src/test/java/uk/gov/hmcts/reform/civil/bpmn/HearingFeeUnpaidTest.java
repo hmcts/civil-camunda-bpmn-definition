@@ -35,7 +35,8 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false));
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -73,6 +74,22 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                                    "HearingFeeUnpaidNotifyApplicantSolicitor1"
         );
 
+        //complete the notification to applicant
+        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1",
+                                   "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1"
+        );
+
+        //complete the notification to applicant
+        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1",
+                                   "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -91,7 +108,8 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true));
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -117,6 +135,22 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_APPLICANT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
                                    "HearingFeeUnpaidNotifyApplicantSolicitor1"
+        );
+
+        //complete the notification to applicant
+        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1",
+                                   "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1"
+        );
+
+        //complete the notification to applicant
+        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1",
+                                   "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1"
         );
 
         //end business process
