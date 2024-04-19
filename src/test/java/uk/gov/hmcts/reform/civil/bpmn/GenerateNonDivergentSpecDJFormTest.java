@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DEFAULT_JUDGEMENT_NON_DIVERGENT_SPEC";
-    public static final String PROCESS_ID = "GENERATE_DJ_FORM_SPEC";
+    public static final String PROCESS_ID = "GENERATE_DJ_NON_DIVERGENT_FORM_SPEC";
 
     //CCD CASE EVENT
     public static final String GENERATE_DJ_FORM_SPEC = "GENERATE_DJ_FORM_SPEC";
