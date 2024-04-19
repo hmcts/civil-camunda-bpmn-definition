@@ -40,7 +40,8 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            UNREPRESENTED_DEFENDANT_ONE, true
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
         startBusinessProcess(variables);
 
@@ -82,12 +83,13 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSubmitUnsuccessfulMediationFor1v1LR() {
+    void shouldSubmitSuccessfulMediationFor1v1LR() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            UNREPRESENTED_DEFENDANT_ONE, false
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
         startBusinessProcess(variables);
 
@@ -120,12 +122,13 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSubmitUnsuccessfulMediationFor1v2LR() {
+    void shouldSubmitSuccessfulMediationFor1v2LR() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             TWO_RESPONDENT_REPRESENTATIVES, true,
-            UNREPRESENTED_DEFENDANT_ONE, false
+            UNREPRESENTED_DEFENDANT_ONE, false,
+                DASHBOARD_SERVICE_ENABLED, true
         ));
         startBusinessProcess(variables);
 

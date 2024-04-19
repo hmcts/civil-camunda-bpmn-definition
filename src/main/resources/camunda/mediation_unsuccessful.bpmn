@@ -6,79 +6,6 @@
     <bpmn:participant id="Mediation_unsuccessful_participant_id" name="Mediation Unsuccessful" processRef="MEDIATION_UNSUCCESSFUL_ID" />
   </bpmn:collaboration>
   <bpmn:process id="MEDIATION_UNSUCCESSFUL_ID" name="Mediation unsuccessful" isExecutable="true">
-    <bpmn:sequenceFlow id="Flow_0wbl391" sourceRef="SendMediationUnsuccessfulClaimantLR" targetRef="GenerateDashboardNotificationApplicantMediationUnsuccessful" />
-    <bpmn:exclusiveGateway id="Gateway_175dj1r">
-      <bpmn:incoming>Flow_05gvvyf</bpmn:incoming>
-      <bpmn:outgoing>Flow_0z75338</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0bvj55r</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0z75338" name="LIP Defendant" sourceRef="Gateway_175dj1r" targetRef="SendMediationUnsuccessfulDefendantLIP">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0bvj55r" name="Not Lip Defendant" sourceRef="Gateway_175dj1r" targetRef="SendMediationUnsuccessfulDefendant1LR">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0b9vym8" sourceRef="SendMediationUnsuccessfulDefendantLIP" targetRef="GenerateDashboardNotificationDefendantMediationUnsuccessful" />
-    <bpmn:sequenceFlow id="Flow_1mxdu3t" sourceRef="SendMediationUnsuccessfulDefendant1LR" targetRef="Gateway_163710c" />
-    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant1LR" name="Send notification to defendant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Input_04c3qlj" />
-          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0bvj55r</bpmn:incoming>
-      <bpmn:outgoing>Flow_1mxdu3t</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_163710c">
-      <bpmn:incoming>Flow_1mxdu3t</bpmn:incoming>
-      <bpmn:outgoing>Flow_15fy8lo</bpmn:outgoing>
-      <bpmn:outgoing>Flow_08nz2a1</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0miwr61</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="end_mediation_unsuccessful" name="END">
-      <bpmn:incoming>Flow_0vd4pw7</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0vd4pw7" sourceRef="Activity_146wk8x" targetRef="end_mediation_unsuccessful" />
-    <bpmn:sequenceFlow id="Flow_15fy8lo" sourceRef="Gateway_163710c" targetRef="Activity_146wk8x">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_08nz2a1" name="One respondent representative" sourceRef="Gateway_163710c" targetRef="Activity_146wk8x">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_07q2pp0" sourceRef="SendMediationUnsuccessfulDefendant2LR" targetRef="Activity_146wk8x" />
-    <bpmn:callActivity id="Activity_146wk8x" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_15fy8lo</bpmn:incoming>
-      <bpmn:incoming>Flow_08nz2a1</bpmn:incoming>
-      <bpmn:incoming>Flow_07q2pp0</bpmn:incoming>
-      <bpmn:incoming>Flow_19f8q6e</bpmn:incoming>
-      <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant2LR" name="Send notification to defendant solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0miwr61</bpmn:incoming>
-      <bpmn:outgoing>Flow_07q2pp0</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendantLIP" name="Send notification to defendant LIP" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0z75338</bpmn:incoming>
-      <bpmn:outgoing>Flow_0b9vym8</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0miwr61" name="Two respondent representatives" sourceRef="Gateway_163710c" targetRef="SendMediationUnsuccessfulDefendant2LR">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_19f8q6e" sourceRef="GenerateDashboardNotificationDefendantMediationUnsuccessful" targetRef="Activity_146wk8x" />
     <bpmn:startEvent id="start_unsuccessful_mediation" name="Start">
       <bpmn:outgoing>Flow_18nnml0</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1kqvhs8" messageRef="Message_396b4ur" />
@@ -94,13 +21,6 @@
     <bpmn:endEvent id="Event_01dsvwb" name="END">
       <bpmn:incoming>Flow_0zmuneb</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:boundaryEvent id="Event_183wgjg" name="Abort" attachedToRef="start_mediation_unsuccessful_business_process">
-      <bpmn:outgoing>Flow_0zmuneb</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1i6z3nu" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_18nnml0" sourceRef="start_unsuccessful_mediation" targetRef="start_mediation_unsuccessful_business_process" />
-    <bpmn:sequenceFlow id="Flow_1iqrjks" sourceRef="start_mediation_unsuccessful_business_process" targetRef="SendMediationUnsuccessfulClaimantLR" />
-    <bpmn:sequenceFlow id="Flow_0zmuneb" sourceRef="Event_183wgjg" targetRef="Event_01dsvwb" />
     <bpmn:serviceTask id="SendMediationUnsuccessfulClaimantLR" name="Send notification to claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -110,15 +30,76 @@
       <bpmn:incoming>Flow_1iqrjks</bpmn:incoming>
       <bpmn:outgoing>Flow_0wbl391</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_05gvvyf" sourceRef="GenerateDashboardNotificationApplicantMediationUnsuccessful" targetRef="Gateway_175dj1r" />
-    <bpmn:serviceTask id="GenerateDashboardNotificationApplicantMediationUnsuccessful" name="Generate Dashboard Notification Applicant1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:exclusiveGateway id="Gateway_175dj1r">
+      <bpmn:incoming>Flow_0hrfd16</bpmn:incoming>
+      <bpmn:incoming>Flow_15z9r61</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z75338</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0bvj55r</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" name="Create applicant1 dashboard notification" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lmlwiu</bpmn:incoming>
+      <bpmn:outgoing>Flow_15z9r61</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0zkzvkt">
       <bpmn:incoming>Flow_0wbl391</bpmn:incoming>
-      <bpmn:outgoing>Flow_05gvvyf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hrfd16</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1lmlwiu</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant1LR" name="Send notification to defendant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_04c3qlj" />
+          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_1_LR</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bvj55r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mxdu3t</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_163710c">
+      <bpmn:incoming>Flow_1mxdu3t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0miwr61</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08nz2a1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendantLIP" name="Send notification to defendant LIP" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_LIP</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z75338</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tctuer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_mediation_unsuccessful" name="END">
+      <bpmn:incoming>Flow_0vd4pw7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_146wk8x" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1w5mjzx</bpmn:incoming>
+      <bpmn:incoming>Flow_1b298uk</bpmn:incoming>
+      <bpmn:incoming>Flow_08nz2a1</bpmn:incoming>
+      <bpmn:incoming>Flow_1aiugdy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_1dbsu98">
+      <bpmn:incoming>Flow_1tctuer</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b298uk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0e3x02w</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="SendMediationUnsuccessfulDefendant2LR" name="Send notification to defendant solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_MEDIATION_UNSUCCESSFUL_DEFENDANT_2_LR</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0miwr61</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w5mjzx</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateDashboardNotificationDefendantMediationUnsuccessful" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -126,156 +107,229 @@
           <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0b9vym8</bpmn:incoming>
-      <bpmn:outgoing>Flow_19f8q6e</bpmn:outgoing>
+      <bpmn:incoming>Flow_0e3x02w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aiugdy</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_183wgjg" name="Abort" attachedToRef="start_mediation_unsuccessful_business_process">
+      <bpmn:outgoing>Flow_0zmuneb</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1i6z3nu" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0bvj55r" name="Not Lip Defendant" sourceRef="Gateway_175dj1r" targetRef="SendMediationUnsuccessfulDefendant1LR">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0z75338" name="LIP Defendant" sourceRef="Gateway_175dj1r" targetRef="SendMediationUnsuccessfulDefendantLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0hrfd16" name="Dashboard Service Disabled" sourceRef="Gateway_0zkzvkt" targetRef="Gateway_175dj1r">
+      <bpmn:documentation>${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:documentation>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18nnml0" sourceRef="start_unsuccessful_mediation" targetRef="start_mediation_unsuccessful_business_process" />
+    <bpmn:sequenceFlow id="Flow_1iqrjks" sourceRef="start_mediation_unsuccessful_business_process" targetRef="SendMediationUnsuccessfulClaimantLR" />
+    <bpmn:sequenceFlow id="Flow_0zmuneb" sourceRef="Event_183wgjg" targetRef="Event_01dsvwb" />
+    <bpmn:sequenceFlow id="Flow_0wbl391" sourceRef="SendMediationUnsuccessfulClaimantLR" targetRef="Gateway_0zkzvkt" />
+    <bpmn:sequenceFlow id="Flow_1lmlwiu" name="Dashboard Service Enabled" sourceRef="Gateway_0zkzvkt" targetRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1">
+      <bpmn:documentation>${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:documentation>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15z9r61" sourceRef="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1" targetRef="Gateway_175dj1r" />
+    <bpmn:sequenceFlow id="Flow_1mxdu3t" sourceRef="SendMediationUnsuccessfulDefendant1LR" targetRef="Gateway_163710c" />
+    <bpmn:sequenceFlow id="Flow_0miwr61" name="Two respondent representatives" sourceRef="Gateway_163710c" targetRef="SendMediationUnsuccessfulDefendant2LR">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_08nz2a1" name="One respondent representative" sourceRef="Gateway_163710c" targetRef="Activity_146wk8x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1w5mjzx" sourceRef="SendMediationUnsuccessfulDefendant2LR" targetRef="Activity_146wk8x" />
+    <bpmn:sequenceFlow id="Flow_1tctuer" sourceRef="SendMediationUnsuccessfulDefendantLIP" targetRef="Gateway_1dbsu98" />
+    <bpmn:sequenceFlow id="Flow_0vd4pw7" sourceRef="Activity_146wk8x" targetRef="end_mediation_unsuccessful" />
+    <bpmn:sequenceFlow id="Flow_1b298uk" name="Dashboard Service Disabled" sourceRef="Gateway_1dbsu98" targetRef="Activity_146wk8x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0e3x02w" name="Dashboard Service Enabled" sourceRef="Gateway_1dbsu98" targetRef="GenerateDashboardNotificationDefendantMediationUnsuccessful">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1aiugdy" sourceRef="GenerateDashboardNotificationDefendantMediationUnsuccessful" targetRef="Activity_146wk8x" />
   </bpmn:process>
   <bpmn:message id="Message_396b4ur" name="MEDIATION_UNSUCCESSFUL" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MediationUnsuccessful">
       <bpmndi:BPMNShape id="Participant_0fyrupj_di" bpmnElement="Mediation_unsuccessful_participant_id" isHorizontal="true">
-        <dc:Bounds x="160" y="60" width="2038" height="660" />
+        <dc:Bounds x="160" y="80" width="1480" height="480" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_19f8q6e_di" bpmnElement="Flow_19f8q6e">
-        <di:waypoint x="1350" y="170" />
-        <di:waypoint x="1480" y="170" />
-        <di:waypoint x="1480" y="340" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0miwr61_di" bpmnElement="Flow_0miwr61">
-        <di:waypoint x="1150" y="355" />
-        <di:waypoint x="1150" y="260" />
-        <di:waypoint x="1250" y="260" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1150" y="226" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07q2pp0_di" bpmnElement="Flow_07q2pp0">
-        <di:waypoint x="1350" y="260" />
-        <di:waypoint x="1385" y="260" />
-        <di:waypoint x="1385" y="380" />
-        <di:waypoint x="1430" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08nz2a1_di" bpmnElement="Flow_08nz2a1">
-        <di:waypoint x="1175" y="380" />
-        <di:waypoint x="1430" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1180" y="346" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15fy8lo_di" bpmnElement="Flow_15fy8lo">
-        <di:waypoint x="1175" y="380" />
-        <di:waypoint x="1430" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vd4pw7_di" bpmnElement="Flow_0vd4pw7">
-        <di:waypoint x="1530" y="380" />
-        <di:waypoint x="1642" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mxdu3t_di" bpmnElement="Flow_1mxdu3t">
-        <di:waypoint x="1020" y="380" />
-        <di:waypoint x="1125" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0b9vym8_di" bpmnElement="Flow_0b9vym8">
-        <di:waypoint x="1020" y="170" />
-        <di:waypoint x="1250" y="170" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bvj55r_di" bpmnElement="Flow_0bvj55r">
-        <di:waypoint x="805" y="380" />
-        <di:waypoint x="920" y="380" />
+        <di:waypoint x="855" y="470" />
+        <di:waypoint x="980" y="470" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="805" y="362" width="89" height="14" />
+          <dc:Bounds x="859" y="452" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z75338_di" bpmnElement="Flow_0z75338">
-        <di:waypoint x="780" y="355" />
-        <di:waypoint x="780" y="170" />
-        <di:waypoint x="920" y="170" />
+        <di:waypoint x="830" y="445" />
+        <di:waypoint x="830" y="260" />
+        <di:waypoint x="980" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="804" y="153" width="71" height="14" />
+          <dc:Bounds x="858" y="243" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wbl391_di" bpmnElement="Flow_0wbl391">
-        <di:waypoint x="540" y="380" />
-        <di:waypoint x="610" y="380" />
+      <bpmndi:BPMNEdge id="Flow_0hrfd16_di" bpmnElement="Flow_0hrfd16">
+        <di:waypoint x="615" y="470" />
+        <di:waypoint x="805" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="618" y="436" width="83" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18nnml0_di" bpmnElement="Flow_18nnml0">
-        <di:waypoint x="248" y="380" />
-        <di:waypoint x="290" y="380" />
+        <di:waypoint x="248" y="470" />
+        <di:waypoint x="300" y="470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1iqrjks_di" bpmnElement="Flow_1iqrjks">
-        <di:waypoint x="390" y="380" />
-        <di:waypoint x="440" y="380" />
+        <di:waypoint x="400" y="470" />
+        <di:waypoint x="430" y="470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zmuneb_di" bpmnElement="Flow_0zmuneb">
-        <di:waypoint x="340" y="322" />
-        <di:waypoint x="340" y="218" />
+        <di:waypoint x="350" y="412" />
+        <di:waypoint x="350" y="348" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05gvvyf_di" bpmnElement="Flow_05gvvyf">
-        <di:waypoint x="710" y="380" />
-        <di:waypoint x="755" y="380" />
+      <bpmndi:BPMNEdge id="Flow_0wbl391_di" bpmnElement="Flow_0wbl391">
+        <di:waypoint x="530" y="470" />
+        <di:waypoint x="565" y="470" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lmlwiu_di" bpmnElement="Flow_1lmlwiu">
+        <di:waypoint x="590" y="445" />
+        <di:waypoint x="590" y="390" />
+        <di:waypoint x="680" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="356" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15z9r61_di" bpmnElement="Flow_15z9r61">
+        <di:waypoint x="730" y="430" />
+        <di:waypoint x="730" y="470" />
+        <di:waypoint x="805" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mxdu3t_di" bpmnElement="Flow_1mxdu3t">
+        <di:waypoint x="1080" y="470" />
+        <di:waypoint x="1125" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0miwr61_di" bpmnElement="Flow_0miwr61">
+        <di:waypoint x="1150" y="445" />
+        <di:waypoint x="1150" y="370" />
+        <di:waypoint x="1250" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1150" y="336" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08nz2a1_di" bpmnElement="Flow_08nz2a1">
+        <di:waypoint x="1175" y="470" />
+        <di:waypoint x="1370" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1170" y="436" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w5mjzx_di" bpmnElement="Flow_1w5mjzx">
+        <di:waypoint x="1350" y="370" />
+        <di:waypoint x="1420" y="370" />
+        <di:waypoint x="1420" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tctuer_di" bpmnElement="Flow_1tctuer">
+        <di:waypoint x="1080" y="260" />
+        <di:waypoint x="1125" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vd4pw7_di" bpmnElement="Flow_0vd4pw7">
+        <di:waypoint x="1470" y="470" />
+        <di:waypoint x="1562" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b298uk_di" bpmnElement="Flow_1b298uk">
+        <di:waypoint x="1175" y="260" />
+        <di:waypoint x="1420" y="260" />
+        <di:waypoint x="1420" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1178" y="226" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e3x02w_di" bpmnElement="Flow_0e3x02w">
+        <di:waypoint x="1150" y="235" />
+        <di:waypoint x="1150" y="170" />
+        <di:waypoint x="1250" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1149" y="136" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aiugdy_di" bpmnElement="Flow_1aiugdy">
+        <di:waypoint x="1350" y="170" />
+        <di:waypoint x="1420" y="170" />
+        <di:waypoint x="1420" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1u85785" bpmnElement="start_unsuccessful_mediation">
+        <dc:Bounds x="212" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="219" y="495" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0f1bmvb" bpmnElement="start_mediation_unsuccessful_business_process">
+        <dc:Bounds x="300" y="430" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ksjohv" bpmnElement="Event_01dsvwb">
+        <dc:Bounds x="332" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="339" y="282" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f5gd2h_di" bpmnElement="SendMediationUnsuccessfulClaimantLR">
+        <dc:Bounds x="430" y="430" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_175dj1r_di" bpmnElement="Gateway_175dj1r" isMarkerVisible="true">
-        <dc:Bounds x="755" y="355" width="50" height="50" />
+        <dc:Bounds x="805" y="445" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="738" y="412" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0auiozo_di" bpmnElement="GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1">
+        <dc:Bounds x="680" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zkzvkt_di" bpmnElement="Gateway_0zkzvkt" isMarkerVisible="true">
+        <dc:Bounds x="565" y="445" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nkv3sb_di" bpmnElement="SendMediationUnsuccessfulDefendant1LR">
-        <dc:Bounds x="920" y="340" width="100" height="80" />
+        <dc:Bounds x="980" y="430" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_163710c_di" bpmnElement="Gateway_163710c" isMarkerVisible="true">
-        <dc:Bounds x="1125" y="355" width="50" height="50" />
+        <dc:Bounds x="1125" y="445" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1105" y="412" width="90" height="185" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="SendMediationUnsuccessfulDefendantLIP">
+        <dc:Bounds x="980" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ys86x0" bpmnElement="end_mediation_unsuccessful">
-        <dc:Bounds x="1642" y="362" width="36" height="36" />
+        <dc:Bounds x="1562" y="452" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1648" y="405" width="24" height="14" />
+          <dc:Bounds x="1568" y="495" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0yj82kf" bpmnElement="Activity_146wk8x">
-        <dc:Bounds x="1430" y="340" width="100" height="80" />
+        <dc:Bounds x="1370" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1dbsu98_di" bpmnElement="Gateway_1dbsu98" isMarkerVisible="true">
+        <dc:Bounds x="1125" y="235" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1u6s98u_di" bpmnElement="SendMediationUnsuccessfulDefendant2LR">
-        <dc:Bounds x="1250" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="SendMediationUnsuccessfulDefendantLIP">
-        <dc:Bounds x="920" y="130" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1u85785" bpmnElement="start_unsuccessful_mediation">
-        <dc:Bounds x="212" y="362" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="219" y="405" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0f1bmvb" bpmnElement="start_mediation_unsuccessful_business_process">
-        <dc:Bounds x="290" y="340" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ksjohv" bpmnElement="Event_01dsvwb">
-        <dc:Bounds x="322" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="329" y="152" width="24" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1f5gd2h_di" bpmnElement="SendMediationUnsuccessfulClaimantLR">
-        <dc:Bounds x="440" y="340" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yvbo9i_di" bpmnElement="GenerateDashboardNotificationApplicantMediationUnsuccessful">
-        <dc:Bounds x="610" y="340" width="100" height="80" />
+        <dc:Bounds x="1250" y="330" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0y6ah1s" bpmnElement="GenerateDashboardNotificationDefendantMediationUnsuccessful">
         <dc:Bounds x="1250" y="130" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1k9m1sq" bpmnElement="Event_183wgjg">
-        <dc:Bounds x="322" y="322" width="36" height="36" />
+        <dc:Bounds x="332" y="412" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="357" y="303" width="27" height="14" />
+          <dc:Bounds x="367" y="393" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
