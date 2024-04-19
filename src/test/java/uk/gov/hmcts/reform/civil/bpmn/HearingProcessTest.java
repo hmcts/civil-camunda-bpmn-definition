@@ -73,7 +73,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            TWO_RESPONDENT_REPRESENTATIVES, false
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -138,7 +139,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            TWO_RESPONDENT_REPRESENTATIVES, true
+            TWO_RESPONDENT_REPRESENTATIVES, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -210,7 +212,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
-            LIP_CASE, true
+            LIP_CASE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -288,7 +291,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
             UNREPRESENTED_DEFENDANT_TWO, false,
-            LIP_CASE, true
+            LIP_CASE, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -365,7 +369,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
-            UNREPRESENTED_DEFENDANT_TWO, true
+            UNREPRESENTED_DEFENDANT_TWO, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -436,7 +441,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
-            UNREPRESENTED_DEFENDANT_TWO, false
+            UNREPRESENTED_DEFENDANT_TWO, false,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -474,7 +480,7 @@ class HearingProcessTest extends BpmnBaseTest {
         );
 
         //complete the dashboard notification process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+       notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
                                    CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
