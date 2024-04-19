@@ -480,7 +480,7 @@ class HearingProcessTest extends BpmnBaseTest {
         );
 
         //complete the dashboard notification process
-       notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
                                    CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
