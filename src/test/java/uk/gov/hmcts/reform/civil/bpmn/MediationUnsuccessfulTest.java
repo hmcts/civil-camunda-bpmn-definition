@@ -77,7 +77,6 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
                                    variables
         );
 
-
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
