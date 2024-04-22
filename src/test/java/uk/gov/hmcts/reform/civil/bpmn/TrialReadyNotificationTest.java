@@ -39,7 +39,8 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false
                 ? twoRepresentatives : false,
             UNREPRESENTED_DEFENDANT_ONE, defendantLip,
-            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip));
+            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
