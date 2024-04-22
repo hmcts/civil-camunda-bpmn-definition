@@ -46,6 +46,13 @@ class ApplyHelpWithHearingFeeTest extends BpmnBaseTest {
                                    NOTIFY_CLAIMANT_LIP_HELP_WITH_FEES_ACTIVITY_ID, variables
         );
 
+        //complete generation of dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_HELP_FEE_IN_REVIEW_CLAIMANT",
+                                   "DB_Notify_Claim_HWF", variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
