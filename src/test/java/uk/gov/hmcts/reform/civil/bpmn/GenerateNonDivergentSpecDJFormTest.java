@@ -11,11 +11,13 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "DEFAULT_JUDGEMENT_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "GENERATE_DJ_NON_DIVERGENT_FORM_SPEC";
 
-    //CCD CASE EVENT
+    //CCD CASE EVENTS
     public static final String GENERATE_DJ_FORM_SPEC = "GENERATE_DJ_FORM_SPEC";
+    public static final String SEND_COVER_LETTER_DEFENDANT_LR = "SEND_COVER_LETTER_DEFENDANT_LR";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
+    public static final String SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID = "SendCoverLetterToDefendantLR";
 
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
@@ -41,6 +43,13 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_DJ_FORM_SPEC,
                                    GENERATE_DJ_FORM_SPEC_ACTIVITY_ID
+        );
+
+        //complete the "sending cover letter to defendant LR" process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   SEND_COVER_LETTER_DEFENDANT_LR,
+                                   SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID
         );
 
         //end business process
