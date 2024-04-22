@@ -83,7 +83,7 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSubmitUnsuccessfulMediationFor1v1LR() {
+    void shouldSubmitSuccessfulMediationFor1v1LR() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
@@ -118,20 +118,11 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
                                    variables
         );
 
-        //dashboardNotification respondent
-        ExternalTask dashboardRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardRespondent,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_RESPONDENT",
-            "GenerateDashboardNotificationDefendantMediationSuccessful"
-        );
-
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
     @Test
-    void shouldSubmitUnsuccessfulMediationFor1v2LR() {
+    void shouldSubmitSuccessfulMediationFor1v2LR() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
@@ -172,15 +163,6 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
                                    NOTIFY_MEDIATION_SUCCESSFUL_DEFENDANT_2_LR,
                                    NOTIFY_MEDIATION_SUCCESSFUL_DEFENDANT_SOLICITOR_2_ACTIVITY_ID,
                                    variables
-        );
-
-        //dashboardNotification respondent
-        ExternalTask dashboardRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardRespondent,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_RESPONDENT",
-            "GenerateDashboardNotificationDefendantMediationSuccessful"
         );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
