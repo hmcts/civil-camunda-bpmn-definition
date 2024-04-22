@@ -63,7 +63,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false));
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
 
@@ -90,7 +91,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", false));
+            "CONTACT_DETAILS_CHANGE", false,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();

@@ -35,7 +35,8 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false));
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -71,6 +72,22 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_APPLICANT_SOLICITOR1_FOR_BUNDLE_CREATED",
                                    "BundleCreationNotifyApplicantSolicitor1"
+        );
+
+        //complete the Dashboard creation for defendant
+        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
+                                   "CreateBundleCreatedDashboardNotificationsForDefendant1"
+        );
+
+        //complete the Dashboard creation for claimant
+        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
+                                   "CreateBundleCreatedDashboardNotificationsForClaimant1"
         );
 
         //end business process

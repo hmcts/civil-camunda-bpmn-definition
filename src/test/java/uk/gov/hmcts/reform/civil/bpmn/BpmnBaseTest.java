@@ -43,12 +43,13 @@ public abstract class BpmnBaseTest {
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
     public static final String FLOW_STATE = "flowState";
-    public static final String IS_MULTI_TRACK = "MULTI_CLAIM";
+    public static final String IS_MULTI_TRACK = "IS_MULTI_TRACK";
     public static final String BULK_CLAIM_ENABLED = "BULK_CLAIM_ENABLED";
     public static final String LIP_CASE = "LIP_CASE";
     public static final String PIP_ENABLED = "PIP_ENABLED";
     public static final String LIP_JUDGMENT_ADMISSION = "LIP_JUDGMENT_ADMISSION";
     public static final String CLAIM_ISSUE_BILINGUAL = "CLAIM_ISSUE_BILINGUAL";
+    public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
 
     public final String bpmnFileName;
     public final String processId;
