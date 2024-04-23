@@ -24,7 +24,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         = "NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT1
         = "GENERATE_TRIAL_READY_FORM_RESPONDENT1";
-
+    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT";
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
         = "OtherTrialReadyNotifyRespondentSolicitor2";
@@ -32,6 +33,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         = "OtherTrialReadyNotifyApplicantSolicitor1";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT1_ACTIVITY_ID
         = "GenerateTrialReadyFormRespondent1";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT_ACTIVITY_ID
+        = "GenerateClaimantDashboardNotificationTrialArrangementsNotifyParty";
 
     public Respondent1TrialReadyNotifyOthersTest() {
         super("respondent1_trial_ready_notify_others.bpmn", PROCESS_ID);
@@ -50,7 +53,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false));
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -81,6 +85,13 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT1,
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT1_ACTIVITY_ID,
+                                   variables
+        );
+
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT_ACTIVITY_ID,
                                    variables
         );
 
@@ -104,7 +115,8 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, true,
-            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives));
+            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -135,6 +147,13 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT1,
                                    GENERATE_TRIAL_READY_FORM_RESPONDENT1_ACTIVITY_ID,
+                                   variables
+        );
+
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT_ACTIVITY_ID,
                                    variables
         );
 
