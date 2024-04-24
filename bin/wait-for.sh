@@ -8,6 +8,7 @@ echo "params: ${selected_service}"
 echo "CIVIL_SERVICE_URL: ${CIVIL_SERVICE_URL}"
 echo "URL: ${URL}"
 
+service_base_urls=${selected_service}
 if [[ "${selected_service}" == 'manage-case' ]]; then
   service_base_urls=${URL}
 fi
