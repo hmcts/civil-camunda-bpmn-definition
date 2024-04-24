@@ -15,8 +15,6 @@ if [[ "${selected_service}" == 'definition-store' ]]; then
   service_base_urls=${CCD_DEFINITION_STORE_API_BASE_URL}
 fi
 
-echo "service_base_urls: ${service_base_urls}"
-
 max_health_check_attempts=30
 
 function checkHealth {
