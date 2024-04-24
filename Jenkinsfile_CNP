@@ -135,6 +135,7 @@ withPipeline(type, product, component) {
     retry (3) {
       sh """
       eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
+      ./bin/wait-for.sh definition-store
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"

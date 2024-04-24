@@ -2,14 +2,31 @@
 
 set -eu
 
-service_base_urls=${@}
+selected_service=${@}
+
+echo "params: ${selected_service}"
+echo "CIVIL_SERVICE_URL: ${CIVIL_SERVICE_URL}"
+echo "URL: ${URL}"
+
+service_base_urls=${CIVIL_SERVICE_URL}
+if [[ "${selected_service}" == 'manage-case' ]]; then
+  service_base_urls=${URL}
+fi
+if [[ "${selected_service}" == 'definition-store' ]]; then
+  service_base_urls=${CCD_DEFINITION_STORE_API_BASE_URL}
+fi
+
+echo "service_base_urls: ${service_base_urls}"
 
 max_health_check_attempts=30
 
 function checkHealth {
+
   for service_base_url in ${service_base_urls}; do
-    curl -k --fail --silent --output /dev/null --head ${service_base_url}/health
-    if [ $? -ne 0 ]; then
+    uploadResponse=$(curl -k  -w "\n%{http_code}" --silent ${service_base_url}/health)
+    upload_http_code=$(echo "$uploadResponse" | tail -n1)
+    echo $'\n' Http status: ${upload_http_code} >&2
+    if [[ "${upload_http_code}" -ne '200' ]]; then
       exit 1
     fi
   done
