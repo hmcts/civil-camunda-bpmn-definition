@@ -63,12 +63,9 @@ allprojects {
 
   dependencyManagement {
     dependencies {
-      // CVE-2018-10237 - Unbounded memory allocation
-      dependency group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.77'
-      // CVE-2020-26945 - Mishandles deserialization of object streams.
-      dependency group: 'org.mybatis', name: 'mybatis', version: '3.5.13'
+
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.10'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.8.7'
 
       dependencySet(
         group: 'org.camunda.bpm',
@@ -81,23 +78,36 @@ allprojects {
         version: '1.8.20'
       ) {
         entry 'kotlin-stdlib-common'
-      }
-      dependencySet(
-        group: 'org.jetbrains.kotlin',
-        version: '1.8.20'
-      ) {
         entry 'kotlin-stdlib'
-      }
-      dependencySet(
-        group: 'org.jetbrains.kotlin',
-        version: '1.8.20'
-      ) {
         entry 'kotlin-reflect'
+
       }
 
       dependencySet(group: 'com.squareup.okio', version: '3.4.0') {
         entry 'okio'
       }
+
+      // Solves CVE-2023-20883
+      dependencySet(group: 'org.springframework.boot', version: '2.7.18'){
+        entry 'spring-boot-autoconfigure'
+        entry 'spring-boot-starter'
+        entry 'spring-boot-starter-aop'
+        entry 'spring-boot-starter-logging'
+      }
+
+      //Solves CVE-2023-0833
+      dependency group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.2'
+
+      //Solves CVE-2023-6378
+      dependencySet(group: 'ch.qos.logback', version: '1.4.14'){
+        entry 'logback-classic'
+        entry 'logback-core'
+      }
+
+
+      //Solves CVE-2023-24998
+      dependency group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+
 
     }
     imports {
@@ -232,7 +242,7 @@ dependencies {
   implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.27'
   implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.18.0'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.6'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.0'
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.14.0-rc1', ext: 'pom'
   implementation 'org.yaml:snakeyaml:2.0'
 

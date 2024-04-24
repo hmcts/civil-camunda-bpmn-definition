@@ -39,7 +39,8 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false
                 ? twoRepresentatives : false,
             UNREPRESENTED_DEFENDANT_ONE, defendantLip,
-            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip));
+            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -75,6 +76,20 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    "NOTIFY_APPLICANT_SOLICITOR1_FOR_TRIAL_READY",
                                    "TrialReadyNotifyApplicantSolicitor1"
+        );
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(respondentDashboardNotification,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_DEFENDANT",
+                                   "GenerateDefendantDashboardNotificationTrialArrangements"
+        );
+        //complete the dashboard notification for Applicant
+        ExternalTask applicantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(applicantDashboardNotification,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_CLAIMANT",
+                                   "GenerateClaimantDashboardNotificationTrialArrangements"
         );
 
         //end business process
