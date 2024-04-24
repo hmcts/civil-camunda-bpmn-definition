@@ -133,16 +133,17 @@ withPipeline(type, product, component) {
 
   before('smoketest:preview') {
     retry (3) {
+      env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+      env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+
       sh """
-      eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
-      ./bin/wait-for.sh definition-store
-      ./bin/add-roles.sh
-      ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
-    """
+        eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
+        ./bin/wait-for.sh definition-store
+        ./bin/add-roles.sh
+        ./bin/pull-latest-ccd-files.sh ${ccdBranch}
+        ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
+      """
     }
-    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     yarnBuilder.yarn('yarn-update')
     yarnBuilder.yarn('install-dependencies')
   }
