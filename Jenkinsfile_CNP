@@ -172,14 +172,14 @@ withPipeline(type, product, component) {
   }
 
   before('smoketest:aat') {
+    env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
     sh """
       eval \$(./bin/variables/load-staging-environment-variables.sh)
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-nonprod.json,*-COS-nonprod.json,*-shuttered.json"
     """
-    env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
     yarnBuilder.yarn('yarn-update')
     yarnBuilder.yarn('install-dependencies')
   }
