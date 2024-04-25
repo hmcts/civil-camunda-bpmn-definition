@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "REQUEST_JUDGEMENT_ADMISSION_NON_DIVERGENT_SPEC";
-    public static final String PROCESS_ID = "REQUEST_JUDGEMENT_ADMISSION_NON_DIVERGENT_SPEC_ID";
+    public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
+    public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
 
     //CCD CASE EVENT
     public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC = "GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
@@ -18,7 +18,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID = "GenerateJudgmentByAdmissonDoc";
 
     public RequestNonDivergentJudgementByAdmissionTest() {
-        super("request_non_divergent_judgement_by_admission.bpmn", PROCESS_ID);
+        super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
     @Test
