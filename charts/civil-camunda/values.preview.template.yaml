@@ -231,7 +231,7 @@ ccd:
         CCD_MULTIPARTY_CASE_TYPES: CIVIL
         CCD_MULTIPARTY_EVENTS: DEFENDANT_RESPONSE,ACKNOWLEDGE_CLAIM,CLAIMANT_RESPONSE
         ROLE_ASSIGNMENT_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
-      disableKeyVaults: true
+      keyVaults: []
       ingressHost: ccd-data-store-api-${SERVICE_FQDN}
   ccd-definition-store-api:
     java:
@@ -248,7 +248,7 @@ ccd:
         DEFINITION_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
         DEFINITION_STORE_IDAM_KEY: ${CCD_DEFINITION_STORE_S2S_SECRET}
         IDAM_USER_URL: https://idam-web-public.aat.platform.hmcts.net
-      disableKeyVaults: true
+      keyVaults: []
       ingressHost: ccd-definition-store-${SERVICE_FQDN}
 
   postgresql:
@@ -258,7 +258,7 @@ ccd:
 camunda-bpm:
   enabled: true
   java:
-    disableKeyVaults: true
+    keyVaults: []
     releaseNameOverride: ${SERVICE_NAME}-camunda
     ingressHost: camunda-${SERVICE_FQDN}
     imagePullPolicy: Always
@@ -294,22 +294,13 @@ aac-manage-case-assignment:
       CCD_DATA_STORE_API_BASE_URL: http://${SERVICE_NAME}-ccd-data-store-api
       CCD_DEFINITION_STORE_API_BASE_URL: http://${SERVICE_NAME}-ccd-definition-store
       PRD_HOST: http://rd-professional-api-aat.service.core-compute-aat.internal
+      IDAM_CAA_USERNAME: ${IDAM_CAA_USERNAME}
+      IDAM_CAA_PASSWORD: ${IDAM_CAA_PASSWORD}
+      IDAM_CLIENT_SECRET: ${IDAM_MCA_CLIENT_SECRET}
+      MANAGE_CASE_S2S_KEY: ${MANAGE_CASE_S2S_KEY}
+      IDAM_NOC_APPROVER_USERNAME: ${IDAM_NOC_APPROVER_USERNAME}
+      IDAM_NOC_APPROVER_PASSWORD: ${IDAM_NOC_APPROVER_PASSWORD}
+      NOTIFY_MCA_API_KEY: ${NOTIFY_MCA_API_KEY}
     autoscaling:
       enabled: false
-    keyVaults:
-      aac:
-        secrets:
-          - name: aac-manage-case-s2s-secret
-            alias: MANAGE_CASE_S2S_KEY
-          - name: idam-mca-client-secret
-            alias: IDAM_CLIENT_SECRET
-          - name: idam-mca-system-user-username
-            alias: IDAM_CAA_USERNAME
-          - name: idam-mca-system-user-password
-            alias: IDAM_CAA_PASSWORD
-          - name: idam-noc-approver-username
-            alias: IDAM_NOC_APPROVER_USERNAME
-          - name: idam-noc-approver-password
-            alias: IDAM_NOC_APPROVER_PASSWORD
-          - name: notify-mca-api-key-secret
-            alias: NOTIFY_MCA_API_KEY
+    disableKeyVaults: true
