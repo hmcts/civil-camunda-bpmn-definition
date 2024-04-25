@@ -32,7 +32,8 @@ class CreateSDOTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
             GENERAL_APPLICATION_ENABLED, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            LIP_CASE, true
         ));
 
         //complete the start business process
@@ -108,7 +109,8 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false
+            GENERAL_APPLICATION_ENABLED, false,
+            LIP_CASE, true
         ));
 
         //complete the start business process
@@ -167,7 +169,8 @@ class CreateSDOTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
             GENERAL_APPLICATION_ENABLED, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            LIP_CASE, true
         ));
 
         //complete the start business process
@@ -256,7 +259,8 @@ class CreateSDOTest extends BpmnBaseTest {
         variables.putValue(FLOW_FLAGS, Map.of(
             GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            LIP_CASE, true
         ));
 
         //complete the start business process
