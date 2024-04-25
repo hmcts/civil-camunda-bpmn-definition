@@ -50,7 +50,16 @@ def secrets = [
   ],
   'civil-prod': [
     secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
-  ]
+  ],
+  'aac-${env}': [
+    secret('idam-mca-client-secret', 'IDAM_MCA_CLIENT_SECRET'),
+    secret('idam-mca-system-user-username', 'IDAM_CAA_USERNAME'),
+    secret('idam-mca-system-user-password', 'IDAM_CAA_PASSWORD'),
+    secret('idam-noc-approver-username', 'IDAM_NOC_APPROVER_USERNAME'),
+    secret('idam-noc-approver-password', 'IDAM_NOC_APPROVER_PASSWORD'),
+    secret('aac-manage-case-s2s-secret', 'MANAGE_CASE_S2S_KEY'),
+    secret('notify-mca-api-key-secret', 'NOTIFY_MCA_API_KEY')
+  ],
 ]
 
 def secretsOtherenv = [
@@ -124,15 +133,17 @@ withPipeline(type, product, component) {
 
   before('smoketest:preview') {
     retry (3) {
+      env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+      env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+
       sh """
-      eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
-      ./bin/add-roles.sh
-      ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-      ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
-    """
+        eval \$(./bin/variables/load-preview-environment-variables.sh ${CHANGE_ID})
+        ./bin/wait-for.sh definition-store
+        ./bin/add-roles.sh
+        ./bin/pull-latest-ccd-files.sh ${ccdBranch}
+        ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
+      """
     }
-    env.URL="https://xui-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     yarnBuilder.yarn('yarn-update')
     yarnBuilder.yarn('install-dependencies')
   }
@@ -161,14 +172,14 @@ withPipeline(type, product, component) {
   }
 
   before('smoketest:aat') {
+    env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
+    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
     sh """
       eval \$(./bin/variables/load-staging-environment-variables.sh)
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-nonprod.json,*-COS-nonprod.json,*-shuttered.json"
     """
-    env.URL="https://civil-camunda-xui-staging.aat.platform.hmcts.net"
-    env.CIVIL_SERVICE_URL="https://civil-camunda-staging.preview.platform.hmcts.net"
     yarnBuilder.yarn('yarn-update')
     yarnBuilder.yarn('install-dependencies')
   }
