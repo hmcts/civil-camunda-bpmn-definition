@@ -45,48 +45,48 @@
       <bpmn:outgoing>Flow_04fl58p</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="GenerateDJFormSpec" />
-    <bpmn:sequenceFlow id="Flow_04fl58p" sourceRef="GenerateDJFormSpec" targetRef="NotifyDefaultJudgmentClaimant" />
-    <bpmn:serviceTask id="NotifyDefaultJudgmentClaimant" name="Notify DJ Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_04fl58p" sourceRef="GenerateDJFormSpec" targetRef="NotifyDJNonDivergentClaimant" />
+    <bpmn:serviceTask id="NotifyDJNonDivergentClaimant" name="Notify DJ Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_DEFAULT_JUDGMENT_CLAIMANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_04fl58p</bpmn:incoming>
       <bpmn:outgoing>Flow_0o891cl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0o891cl" sourceRef="NotifyDefaultJudgmentClaimant" targetRef="Gateway_00bae9b" />
+    <bpmn:sequenceFlow id="Flow_0o891cl" sourceRef="NotifyDJNonDivergentClaimant" targetRef="Gateway_00bae9b" />
     <bpmn:exclusiveGateway id="Gateway_00bae9b">
       <bpmn:incoming>Flow_0o891cl</bpmn:incoming>
       <bpmn:outgoing>Flow_0e6m2vd</bpmn:outgoing>
       <bpmn:outgoing>Flow_1g00tur</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0e6m2vd" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDefendantDefaultJudgment1">
+    <bpmn:sequenceFlow id="Flow_0e6m2vd" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDJNonDivergentDefendant1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="NotifyDefendantDefaultJudgment1" name="Notify DJ Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyDJNonDivergentDefendant1" name="Notify DJ Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_DEFAULT_JUDGMENT_DEFENDANT1</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LR</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0e6m2vd</bpmn:incoming>
       <bpmn:outgoing>Flow_0ucx9m0</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ucx9m0" sourceRef="NotifyDefendantDefaultJudgment1" targetRef="Gateway_19b5dvl" />
-    <bpmn:serviceTask id="NotifyDefendantDefaultJudgment1LiP" name="Notify DJ Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_0ucx9m0" sourceRef="NotifyDJNonDivergentDefendant1" targetRef="Gateway_19b5dvl" />
+    <bpmn:serviceTask id="NotifyDJNonDivergentDefendant1LiP" name="Notify DJ Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_DEFAULT_JUDGMENT_DEFENDANT1_LIP</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g00tur</bpmn:incoming>
       <bpmn:outgoing>Flow_12a21n3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1g00tur" name="LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDefendantDefaultJudgment1LiP">
+    <bpmn:sequenceFlow id="Flow_1g00tur" name="LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDJNonDivergentDefendant1LiP">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_12a21n3" sourceRef="NotifyDefendantDefaultJudgment1LiP" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_12a21n3" sourceRef="NotifyDJNonDivergentDefendant1LiP" targetRef="Activity_0wretog" />
     <bpmn:exclusiveGateway id="Gateway_19b5dvl">
       <bpmn:incoming>Flow_0ucx9m0</bpmn:incoming>
       <bpmn:outgoing>Flow_10ujgz7</bpmn:outgoing>
@@ -95,17 +95,17 @@
     <bpmn:sequenceFlow id="Flow_10ujgz7" name="No" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="NotifyDefendantDefaultJudgment2" name="Notify DJ  Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyDJNonDivergentDefendant2" name="Notify DJ  Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_DEFAULT_JUDGMENT_DEFENDANT2</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0o1d6v6</bpmn:incoming>
       <bpmn:outgoing>Flow_19foubv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_19foubv" sourceRef="NotifyDefendantDefaultJudgment2" targetRef="Activity_0wretog" />
-    <bpmn:sequenceFlow id="Flow_0o1d6v6" name="Yes" sourceRef="Gateway_19b5dvl" targetRef="NotifyDefendantDefaultJudgment2">
+    <bpmn:sequenceFlow id="Flow_19foubv" sourceRef="NotifyDJNonDivergentDefendant2" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_0o1d6v6" name="Yes" sourceRef="Gateway_19b5dvl" targetRef="NotifyDJNonDivergentDefendant2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
@@ -132,7 +132,7 @@
       <bpmndi:BPMNShape id="Activity_1co096w_di" bpmnElement="GenerateDJFormSpec">
         <dc:Bounds x="380" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="NotifyDefaultJudgmentClaimant">
+      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="NotifyDJNonDivergentClaimant">
         <dc:Bounds x="540" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -142,7 +142,7 @@
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
         <dc:Bounds x="1050" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0e1o9i1" bpmnElement="NotifyDefendantDefaultJudgment2">
+      <bpmndi:BPMNShape id="BPMNShape_0e1o9i1" bpmnElement="NotifyDJNonDivergentDefendant2">
         <dc:Bounds x="1050" y="70" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -158,11 +158,11 @@
           <dc:Bounds x="1307" y="285" width="86" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDefendantDefaultJudgment1">
+      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDJNonDivergentDefendant1">
         <dc:Bounds x="810" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="NotifyDefendantDefaultJudgment1LiP">
+      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="NotifyDJNonDivergentDefendant1LiP">
         <dc:Bounds x="810" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
