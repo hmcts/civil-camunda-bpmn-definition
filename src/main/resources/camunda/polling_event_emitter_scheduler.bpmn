@@ -13,7 +13,7 @@
     <bpmn:startEvent id="Event_16siul2">
       <bpmn:outgoing>Flow_1gnbmqe</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0g5qu8x">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 20,40 0 1 1/1 ? 2024</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 8-20 * * ?</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:boundaryEvent id="Event_12do4fy" attachedToRef="PollingEventEmitterActivityId">
@@ -26,6 +26,15 @@
     <bpmn:endEvent id="Event_187s2sd" name="No Listeners Available">
       <bpmn:incoming>Flow_0euea2g</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:endEvent id="Event_0s9ubft" name="Ended with exception">
+      <bpmn:documentation>Process ended with any exception but we don't want to keep a failed instance as this will be executed again in 1 hour</bpmn:documentation>
+      <bpmn:incoming>Flow_0uthfcx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0uthfcx" sourceRef="Event_174yjv0" targetRef="Event_0s9ubft" />
+    <bpmn:boundaryEvent id="Event_174yjv0" attachedToRef="PollingEventEmitterActivityId">
+      <bpmn:outgoing>Flow_0uthfcx</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1m85sbr" />
+    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PollingEventEmitterScheduler">
@@ -35,20 +44,29 @@
       <bpmndi:BPMNShape id="Event_0okg972_di" bpmnElement="Event_16siul2">
         <dc:Bounds x="199" y="162" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_187s2sd_di" bpmnElement="Event_187s2sd">
-        <dc:Bounds x="452" y="82" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0dr3fkw_di" bpmnElement="Event_0dr3fkw">
+        <dc:Bounds x="452" y="162" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="441" y="125" width="62" height="27" />
+          <dc:Bounds x="444" y="205" width="60" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0dr3fkw_di" bpmnElement="Event_0dr3fkw">
-        <dc:Bounds x="452" y="202" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0s9ubft_di" bpmnElement="Event_0s9ubft">
+        <dc:Bounds x="452" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="444" y="245" width="60" height="27" />
+          <dc:Bounds x="444" y="305" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_187s2sd_di" bpmnElement="Event_187s2sd">
+        <dc:Bounds x="452" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="441" y="105" width="62" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1mynde3_di" bpmnElement="Event_12do4fy">
         <dc:Bounds x="342" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10stbln_di" bpmnElement="Event_174yjv0">
+        <dc:Bounds x="302" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1gnbmqe_di" bpmnElement="Flow_1gnbmqe">
         <di:waypoint x="235" y="180" />
@@ -56,14 +74,17 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tjw87e_di" bpmnElement="Flow_0tjw87e">
         <di:waypoint x="390" y="180" />
-        <di:waypoint x="411" y="180" />
-        <di:waypoint x="411" y="220" />
-        <di:waypoint x="452" y="220" />
+        <di:waypoint x="452" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0euea2g_di" bpmnElement="Flow_0euea2g">
         <di:waypoint x="360" y="122" />
-        <di:waypoint x="360" y="100" />
-        <di:waypoint x="452" y="100" />
+        <di:waypoint x="360" y="80" />
+        <di:waypoint x="452" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uthfcx_di" bpmnElement="Flow_0uthfcx">
+        <di:waypoint x="320" y="238" />
+        <di:waypoint x="320" y="280" />
+        <di:waypoint x="452" y="280" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
