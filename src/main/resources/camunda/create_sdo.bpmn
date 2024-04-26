@@ -27,7 +27,7 @@
     <bpmn:sequenceFlow id="Flow_1l2gbrf" sourceRef="Activity_StartBusinessProcess" targetRef="CreateSDONotifyApplicantsSolicitor" />
     <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
     <bpmn:sequenceFlow id="Flow_0adcxbu" sourceRef="CreateSDONotifyRespondentSolicitor1" targetRef="CreateSDONotifyRespondentSolicitor2" />
-    <bpmn:sequenceFlow id="Flow_0bmcvqp" sourceRef="CreateSDONotifyRespondentSolicitor2" targetRef="Gateway_Dashboard_Active" />
+    <bpmn:sequenceFlow id="Flow_0bmcvqp" sourceRef="CreateSDONotifyRespondentSolicitor2" targetRef="Gateway_01l4u29" />
     <bpmn:serviceTask id="CreateSDONotifyRespondentSolicitor2" name="Notify respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -78,7 +78,16 @@
       <bpmn:incoming>Flow_1l2gbrf</bpmn:incoming>
       <bpmn:outgoing>Flow_15em7r9</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0h2h2vr" sourceRef="Activity_Notice_Hearing_Claimant" targetRef="Activity_Notice_Hearing_Defendant" />
+    <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndCreateSDO" />
+    <bpmn:sequenceFlow id="Flow_1tspyrp" name="General Application Disabled" sourceRef="Gateway_1pc8agd" targetRef="Activity_EndBusinessProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1d1dliv" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_1i7qse8" name="General Application Enabled" sourceRef="Gateway_1pc8agd" targetRef="TriggerAndUpdateGenAppLocation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_05hfl56" sourceRef="GenerateDashboardNotificationSDOClaimant" targetRef="GenerateDashboardNotificationSDODefendant" />
+    <bpmn:sequenceFlow id="Flow_06m0qjy" sourceRef="GenerateDashboardNotificationSDODefendant" targetRef="Activity_Notice_Hearing_Claimant" />
     <bpmn:endEvent id="Event_EndCreateSDO">
       <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
     </bpmn:endEvent>
@@ -90,12 +99,6 @@
       <bpmn:incoming>Flow_1d1dliv</bpmn:incoming>
       <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:exclusiveGateway id="Gateway_1pc8agd">
-      <bpmn:incoming>Flow_01km3vh</bpmn:incoming>
-      <bpmn:incoming>Flow_Dashboard_Disabled</bpmn:incoming>
-      <bpmn:outgoing>Flow_1i7qse8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1tspyrp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="TriggerAndUpdateGenAppLocation" name="Trigger and Update General Application Location" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -105,24 +108,43 @@
       <bpmn:incoming>Flow_1i7qse8</bpmn:incoming>
       <bpmn:outgoing>Flow_1d1dliv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndCreateSDO" />
-    <bpmn:sequenceFlow id="Flow_1tspyrp" name="General Application Disabled" sourceRef="Gateway_1pc8agd" targetRef="Activity_EndBusinessProcess">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    <bpmn:exclusiveGateway id="Gateway_1pc8agd">
+      <bpmn:incoming>Flow_1xnqdrx</bpmn:incoming>
+      <bpmn:incoming>Flow_0f5y8kz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i7qse8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1tspyrp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_01l4u29">
+      <bpmn:incoming>Flow_0bmcvqp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xnqdrx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_07v5pc8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1xnqdrx" name="Dashboard Service Disabled" sourceRef="Gateway_01l4u29" targetRef="Gateway_1pc8agd">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1d1dliv" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_1i7qse8" name="General Application Enabled" sourceRef="Gateway_1pc8agd" targetRef="TriggerAndUpdateGenAppLocation">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_07v5pc8" name="Dashboard Service Enabled" sourceRef="Gateway_01l4u29" targetRef="GenerateDashboardNotificationSDOClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01km3vh" sourceRef="Activity_Notice_Hearing_Defendant" targetRef="Gateway_1pc8agd" />
-    <bpmn:serviceTask id="Activity_Notice_Hearing_Claimant" name="Dashboard CUI notification claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationSDOClaimant" name="Generate Dashboard Notification Claimant1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_Dashboard_Enabled</bpmn:incoming>
-      <bpmn:outgoing>Flow_0h2h2vr</bpmn:outgoing>
+      <bpmn:incoming>Flow_07v5pc8</bpmn:incoming>
+      <bpmn:outgoing>Flow_05hfl56</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0h2h2vr" sourceRef="Activity_Notice_Hearing_Claimant" targetRef="Activity_Notice_Hearing_Defendant" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationSDODefendant" name="Generate Dashboard Notification Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05hfl56</bpmn:incoming>
+      <bpmn:outgoing>Flow_06m0qjy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0f5y8kz" sourceRef="Activity_Notice_Hearing_Defendant" targetRef="Gateway_1pc8agd" />
     <bpmn:serviceTask id="Activity_Notice_Hearing_Defendant" name="Dashboard CUI notification defendant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -130,19 +152,17 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0h2h2vr</bpmn:incoming>
-      <bpmn:outgoing>Flow_01km3vh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0f5y8kz</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_Dashboard_Active" name="Dashboard active?">
-      <bpmn:incoming>Flow_0bmcvqp</bpmn:incoming>
-      <bpmn:outgoing>Flow_Dashboard_Disabled</bpmn:outgoing>
-      <bpmn:outgoing>Flow_Dashboard_Enabled</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_Dashboard_Disabled" name="Dashboard disabled" sourceRef="Gateway_Dashboard_Active" targetRef="Gateway_1pc8agd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Dashboard_Enabled" name="Dashboard enabled" sourceRef="Gateway_Dashboard_Active" targetRef="Activity_Notice_Hearing_Claimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_Notice_Hearing_Claimant" name="Dashboard CUI notification claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06m0qjy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h2h2vr</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_0k20fta">
       <bpmn:text>LR or LiP respondent?</bpmn:text>
     </bpmn:textAnnotation>
@@ -154,55 +174,55 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0oe9xk7">
       <bpmndi:BPMNShape id="Participant_1st11o5_di" bpmnElement="Participant_1st11o5" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1630" height="500" />
+        <dc:Bounds x="160" y="80" width="1770" height="500" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0blux7m_di" bpmnElement="Flow_Dashboard_Enabled">
-        <di:waypoint x="1050" y="225" />
-        <di:waypoint x="1050" y="161" />
-        <di:waypoint x="1090" y="161" />
+      <bpmndi:BPMNEdge id="Flow_07v5pc8_di" bpmnElement="Flow_07v5pc8">
+        <di:waypoint x="1090" y="275" />
+        <di:waypoint x="1090" y="400" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="993" y="146" width="54" height="27" />
+          <dc:Bounds x="1099" y="316" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g6exm0_di" bpmnElement="Flow_Dashboard_Disabled">
-        <di:waypoint x="1075" y="250" />
-        <di:waypoint x="1425" y="250" />
+      <bpmndi:BPMNEdge id="Flow_1xnqdrx_di" bpmnElement="Flow_1xnqdrx">
+        <di:waypoint x="1090" y="225" />
+        <di:waypoint x="1090" y="190" />
+        <di:waypoint x="1590" y="190" />
+        <di:waypoint x="1590" y="225" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1203" y="266" width="54" height="27" />
+          <dc:Bounds x="1278" y="156" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01km3vh_di" bpmnElement="Flow_01km3vh">
-        <di:waypoint x="1360" y="161" />
-        <di:waypoint x="1393" y="161" />
-        <di:waypoint x="1393" y="250" />
-        <di:waypoint x="1425" y="250" />
+      <bpmndi:BPMNEdge id="Flow_06m0qjy_di" bpmnElement="Flow_06m0qjy">
+        <di:waypoint x="1290" y="440" />
+        <di:waypoint x="1410" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05hfl56_di" bpmnElement="Flow_05hfl56">
+        <di:waypoint x="1140" y="440" />
+        <di:waypoint x="1190" y="440" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1i7qse8_di" bpmnElement="Flow_1i7qse8">
-        <di:waypoint x="1450" y="275" />
-        <di:waypoint x="1450" y="340" />
+        <di:waypoint x="1590" y="275" />
+        <di:waypoint x="1590" y="380" />
+        <di:waypoint x="1630" y="380" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1397" y="302" width="53" height="40" />
+          <dc:Bounds x="1592" y="386" width="54" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d1dliv_di" bpmnElement="Flow_1d1dliv">
-        <di:waypoint x="1500" y="380" />
-        <di:waypoint x="1610" y="380" />
-        <di:waypoint x="1610" y="290" />
+        <di:waypoint x="1730" y="380" />
+        <di:waypoint x="1770" y="380" />
+        <di:waypoint x="1770" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tspyrp_di" bpmnElement="Flow_1tspyrp">
-        <di:waypoint x="1475" y="250" />
-        <di:waypoint x="1560" y="250" />
+        <di:waypoint x="1615" y="250" />
+        <di:waypoint x="1720" y="250" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1491" y="210" width="53" height="40" />
+          <dc:Bounds x="1641" y="210" width="54" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1huwtcs_di" bpmnElement="Flow_1huwtcs">
-        <di:waypoint x="1660" y="250" />
-        <di:waypoint x="1722" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0h2h2vr_di" bpmnElement="Flow_0h2h2vr">
-        <di:waypoint x="1190" y="161" />
-        <di:waypoint x="1260" y="161" />
+        <di:waypoint x="1820" y="250" />
+        <di:waypoint x="1842" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15em7r9_di" bpmnElement="Flow_15em7r9">
         <di:waypoint x="580" y="250" />
@@ -223,7 +243,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bmcvqp_di" bpmnElement="Flow_0bmcvqp">
         <di:waypoint x="1000" y="250" />
-        <di:waypoint x="1025" y="250" />
+        <di:waypoint x="1065" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0adcxbu_di" bpmnElement="Flow_0adcxbu">
         <di:waypoint x="840" y="250" />
@@ -240,6 +260,14 @@
       <bpmndi:BPMNEdge id="Flow_0f1dt36_di" bpmnElement="Flow_0f1dt36">
         <di:waypoint x="239" y="250" />
         <di:waypoint x="291" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h2h2vr_di" bpmnElement="Flow_0h2h2vr">
+        <di:waypoint x="1460" y="400" />
+        <di:waypoint x="1460" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f5y8kz_di" bpmnElement="Flow_0f5y8kz">
+        <di:waypoint x="1510" y="250" />
+        <di:waypoint x="1565" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_000hq7z_di" bpmnElement="Event_Create_SDO">
         <dc:Bounds x="203" y="232" width="36" height="36" />
@@ -270,34 +298,37 @@
         <dc:Bounds x="480" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndCreateSDO">
-        <dc:Bounds x="1722" y="232" width="36" height="36" />
+        <dc:Bounds x="1842" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vef0vg_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="1560" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1pc8agd_di" bpmnElement="Gateway_1pc8agd" isMarkerVisible="true">
-        <dc:Bounds x="1425" y="225" width="50" height="50" />
+        <dc:Bounds x="1720" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
-        <dc:Bounds x="1400" y="340" width="100" height="80" />
+        <dc:Bounds x="1630" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0jnmqpk" bpmnElement="Activity_Notice_Hearing_Claimant">
-        <dc:Bounds x="1090" y="121" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Gateway_1pc8agd_di" bpmnElement="Gateway_1pc8agd" isMarkerVisible="true">
+        <dc:Bounds x="1565" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ubkn4i" bpmnElement="Activity_Notice_Hearing_Defendant">
-        <dc:Bounds x="1260" y="121" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_058wud6_di" bpmnElement="Gateway_Dashboard_Active" isMarkerVisible="true">
-        <dc:Bounds x="1025" y="225" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1023" y="282" width="54" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="BPMNShape_1n2cdgo" bpmnElement="Gateway_01l4u29" isMarkerVisible="true">
+        <dc:Bounds x="1065" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0k20fta_di" bpmnElement="TextAnnotation_0k20fta">
         <dc:Bounds x="630" y="140" width="85" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationDJSDOClaimant_di" bpmnElement="GenerateDashboardNotificationSDOClaimant">
+        <dc:Bounds x="1040" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationDJSDODefendant_di" bpmnElement="GenerateDashboardNotificationSDODefendant">
+        <dc:Bounds x="1190" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ubkn4i" bpmnElement="Activity_Notice_Hearing_Defendant">
+        <dc:Bounds x="1410" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0jnmqpk" bpmnElement="Activity_Notice_Hearing_Claimant">
+        <dc:Bounds x="1410" y="400" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_178o507_di" bpmnElement="Event_11hktcj">
