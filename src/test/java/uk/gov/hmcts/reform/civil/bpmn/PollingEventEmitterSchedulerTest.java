@@ -33,7 +33,7 @@ class PollingEventEmitterSchedulerTest extends BpmnBaseTest {
         List<JobDefinition> jobDefinitions = getJobs();
 
         //assert that job is as expected
-        assertThat(jobDefinitions).hasSize(1);
+        assertThat(jobDefinitions).hasSize(2);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
         String cronString = "0 20,40 0 1 1/1 ? 2024";
