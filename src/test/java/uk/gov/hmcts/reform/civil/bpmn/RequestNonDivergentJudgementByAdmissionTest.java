@@ -11,12 +11,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
 
-    //CCD CASE EVENT
-    public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC = "GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
-
-    //ACTIVITY IDs
-    public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID = "GenerateJudgmentByAdmissonDoc";
-
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
@@ -33,16 +27,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
-
-        ExternalTask notificationTask;
-
-        //generate the Judgment By Admission Document
-        ExternalTask generateDocTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(generateDocTask,
-                                   PROCESS_CASE_EVENT,
-                                   GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC,
-                                   GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID
-        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
