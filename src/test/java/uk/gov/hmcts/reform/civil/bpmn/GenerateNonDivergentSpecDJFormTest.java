@@ -21,7 +21,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
-
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
