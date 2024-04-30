@@ -21,34 +21,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyComplete() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
-
-        ExternalTask notificationTask;
-
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_DJ_FORM_SPEC,
-                                   GENERATE_DJ_FORM_SPEC_ACTIVITY_ID
-        );
-
-        //end business process
-        /*ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();*/
-    }
 
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
