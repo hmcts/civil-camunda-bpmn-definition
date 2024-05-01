@@ -102,6 +102,18 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 variables
             );
 
+            if (twoRepresentatives) {
+                //complete the notification to Respondent2
+                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    respondent2Notification,
+                    PROCESS_CASE_EVENT,
+                    "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
+                    "NotifyDJNonDivergentDefendant2",
+                    variables
+                );
+            }
+
         }
 
         //end business process
