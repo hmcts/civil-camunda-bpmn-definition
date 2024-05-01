@@ -41,7 +41,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            UNREPRESENTED_DEFENDANT_TWO, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -60,15 +61,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                                    GENERATE_DJ_FORM_SPEC_ACTIVITY_ID
         );
 
-        //complete the notification to Claimant
-        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT",
-            "NotifyDJNonDivergentClaimant"
-        );
-
         if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -79,18 +71,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
-
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
-                    "NotifyDJNonDivergentDefendant2",
-                    variables
-                );
-            }
         } else if (isLiPDefendant) {
             //complete the notification to LiP respondent
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -101,19 +81,27 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1LiP",
                 variables
             );
+        }
 
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
-                    "NotifyDJNonDivergentDefendant2",
-                    variables
-                );
-            }
+        //complete the notification to Claimant
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT",
+            "NotifyDJNonDivergentClaimant"
+        );
 
+        if (twoRepresentatives) {
+            //complete the notification to Respondent2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
+                "NotifyDJNonDivergentDefendant2",
+                variables
+            );
         }
 
         //end business process
