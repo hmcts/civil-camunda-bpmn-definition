@@ -46,27 +46,8 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        if (!isLiPDefendant) {
-            //complete the notification for respondent 1
-            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT1_FOR_RECORD_JUDGMENT",
-                "RecordJudgmentNotifyRespondent1"
-            );
 
-            if (twoRepresentatives) {
-                //complete the notification for respondent 2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_RESPONDENT2_FOR_RECORD_JUDGMENT",
-                    "RecordJudgmentNotifyRespondentSolicitor2"
-                );
-            }
-        } else if (isLiPDefendant) {
+        if (isLiPDefendant) {
             // should send letter to LiP respondent
             ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -77,6 +58,27 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        //complete the notification for respondent 1
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT1_FOR_RECORD_JUDGMENT",
+            "RecordJudgmentNotifyRespondent1"
+        );
+
+        if (twoRepresentatives) {
+            //complete the notification for respondent 2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT2_FOR_RECORD_JUDGMENT",
+                "RecordJudgmentNotifyRespondentSolicitor2"
+            );
+        }
+
         //complete the notification for applicant solicitor
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
