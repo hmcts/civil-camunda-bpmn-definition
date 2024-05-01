@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,6 +33,10 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, false));
+
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
@@ -42,14 +51,14 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    GENERATE_DJ_FORM_SPEC,
-                                   GENERATE_DJ_FORM_SPEC_ACTIVITY_ID
+                                   GENERATE_DJ_FORM_SPEC_ACTIVITY_ID, variables
         );
 
         //complete the "sending cover letter to defendant LR" process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+        ExternalTask sendCoverLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(sendCoverLetter, PROCESS_CASE_EVENT,
                                    SEND_COVER_LETTER_DEFENDANT_LR,
-                                   SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID
+                                   SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID, variables
         );
 
         //end business process
