@@ -29,7 +29,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true,false", "false,false", "false,true", "true,true"})
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
