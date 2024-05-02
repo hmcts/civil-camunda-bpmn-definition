@@ -12,10 +12,12 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "GENERATE_DJ_NON_DIVERGENT_FORM_SPEC";
 
     //CCD CASE EVENT
-    public static final String GENERATE_DJ_FORM_SPEC = "GENERATE_DJ_FORM_SPEC";
+    public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT";
+    public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
 
     //ACTIVITY IDs
-    public static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
+    public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
+    public static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
 
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
@@ -34,15 +36,20 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        ExternalTask notificationTask;
+        ExternalTask docmosisTask;
 
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_DJ_FORM_SPEC,
-                                   GENERATE_DJ_FORM_SPEC_ACTIVITY_ID
+        //complete generate dj form claimant spec activity
+        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
+                                   GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
         );
-
+        //complete generate dj form claimant spec activity
+        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
+                                   GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
+        );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
