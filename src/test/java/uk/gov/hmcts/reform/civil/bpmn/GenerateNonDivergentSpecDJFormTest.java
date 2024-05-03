@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,18 +29,32 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyComplete() {
+    @ParameterizedTest
+    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant) {
+
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            UNREPRESENTED_DEFENDANT_TWO, false));
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
 
         ExternalTask docmosisTask;
 
@@ -50,7 +70,52 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
                                    GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
         );
+
         //end business process
+
+        if (!isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LR",
+                "NotifyDJNonDivergentDefendant1",
+                variables
+            );
+        } else if (isLiPDefendant) {
+            //complete the notification to LiP respondent
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
+                "NotifyDJNonDivergentDefendant1LiP",
+                variables
+            );
+        }
+
+        //complete the notification to Claimant
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT",
+            "NotifyDJNonDivergentClaimant"
+        );
+
+        if (twoRepresentatives) {
+            //complete the notification to Respondent2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
+                "NotifyDJNonDivergentDefendant2",
+                variables
+            );
+        }
+
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
