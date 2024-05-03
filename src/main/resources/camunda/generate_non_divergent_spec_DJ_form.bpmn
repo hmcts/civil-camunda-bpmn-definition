@@ -93,11 +93,11 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ucx9m0</bpmn:incoming>
-      <bpmn:incoming>Flow_0qkoocf</bpmn:incoming>
+      <bpmn:incoming>Flow_0bl7pgv</bpmn:incoming>
       <bpmn:outgoing>Flow_0bxssc2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDJNonDivergentClaimant" targetRef="Gateway_19b5dvl" />
-    <bpmn:sequenceFlow id="Flow_0qkoocf" sourceRef="NotifyDJNonDivergentDefendant1LiP" targetRef="NotifyDJNonDivergentClaimant" />
+    <bpmn:sequenceFlow id="Flow_0qkoocf" sourceRef="NotifyDJNonDivergentDefendant1LiP" targetRef="PostPINInLetterLIPDefendant1" />
     <bpmn:serviceTask id="GenerateDJFormNondivergentSpecClaimant" name="Generate DJ form non-divergent Spec claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -118,6 +118,16 @@
       <bpmn:outgoing>Flow_0km211y</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0km211y" sourceRef="GenerateDJFormNondivergentSpecDefendant" targetRef="Gateway_00bae9b" />
+    <bpmn:serviceTask id="PostPINInLetterLIPDefendant1" name="Post PIN in Letter Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">POST_DJ_NON_DIVERGENT_PIN_IN_LETTER_DEFENDANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qkoocf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bl7pgv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0bl7pgv" sourceRef="PostPINInLetterLIPDefendant1" targetRef="NotifyDJNonDivergentClaimant" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -158,10 +168,6 @@
         <dc:Bounds x="740" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="NotifyDJNonDivergentDefendant1LiP">
-        <dc:Bounds x="760" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
         <dc:Bounds x="1025" y="235" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -179,6 +185,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0efl0t3" bpmnElement="GenerateDJFormNondivergentSpecDefendant">
         <dc:Bounds x="490" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="NotifyDJNonDivergentDefendant1LiP">
+        <dc:Bounds x="690" y="380" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0g3p0gx" bpmnElement="PostPINInLetterLIPDefendant1">
+        <dc:Bounds x="820" y="380" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
@@ -216,10 +230,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g00tur_di" bpmnElement="Flow_1g00tur">
         <di:waypoint x="660" y="285" />
-        <di:waypoint x="660" y="410" />
-        <di:waypoint x="760" y="410" />
+        <di:waypoint x="660" y="420" />
+        <di:waypoint x="690" y="420" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="674" y="393" width="71" height="14" />
+          <dc:Bounds x="584" y="353" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10ujgz7_di" bpmnElement="Flow_10ujgz7">
@@ -246,9 +260,8 @@
         <di:waypoint x="1025" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qkoocf_di" bpmnElement="Flow_0qkoocf">
-        <di:waypoint x="860" y="410" />
-        <di:waypoint x="950" y="410" />
-        <di:waypoint x="950" y="300" />
+        <di:waypoint x="790" y="420" />
+        <di:waypoint x="820" y="418" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lzj11s_di" bpmnElement="Flow_1lzj11s">
         <di:waypoint x="460" y="260" />
@@ -257,6 +270,11 @@
       <bpmndi:BPMNEdge id="Flow_0km211y_di" bpmnElement="Flow_0km211y">
         <di:waypoint x="590" y="260" />
         <di:waypoint x="635" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bl7pgv_di" bpmnElement="Flow_0bl7pgv">
+        <di:waypoint x="920" y="420" />
+        <di:waypoint x="950" y="420" />
+        <di:waypoint x="950" y="300" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
