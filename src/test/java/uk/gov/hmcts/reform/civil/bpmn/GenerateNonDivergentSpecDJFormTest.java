@@ -20,14 +20,11 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     //CCD CASE EVENT
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT";
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
-    //CCD CASE EVENTS
-    public static final String GENERATE_DJ_FORM_SPEC = "GENERATE_DJ_FORM_SPEC";
     public static final String SEND_COVER_LETTER_DEFENDANT_LR = "SEND_COVER_LETTER_DEFENDANT_LR";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
     public static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
-    public static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
     public static final String SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID = "SendCoverLetterToDefendantLR";
 
     public GenerateNonDivergentSpecDJFormTest() {
@@ -76,13 +73,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                                    GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
         );
 
-        //complete the "sending cover letter to defendant LR" process
-        ExternalTask sendCoverLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(sendCoverLetter, PROCESS_CASE_EVENT,
-                                   SEND_COVER_LETTER_DEFENDANT_LR,
-                                   SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID, variables
-        );
-
         //end business process
 
         if (!isLiPDefendant) {
@@ -95,6 +85,17 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
+
+            //complete the "sending cover letter to defendant LR" process
+            ExternalTask sendCoverLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendCoverLetter,
+                PROCESS_CASE_EVENT,
+                SEND_COVER_LETTER_DEFENDANT_LR,
+                SEND_COVER_LETTER_DEFENDANT_LR_ACTIVITY_ID,
+                variables
+            );
+
         } else if (isLiPDefendant) {
             //complete the notification to LiP respondent
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
