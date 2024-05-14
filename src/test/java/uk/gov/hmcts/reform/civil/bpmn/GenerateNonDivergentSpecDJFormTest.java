@@ -20,11 +20,13 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     //CCD CASE EVENT
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT";
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
     public static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentDefendant";
 
     public GenerateNonDivergentSpecDJFormTest() {
@@ -126,6 +128,18 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             "NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT",
             "NotifyDJNonDivergentClaimant"
         );
+
+        if (dashboardServiceEnabled) {
+            //complete generate dashboard notification to defendant
+            ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
+                variables
+            );
+        }
 
         if (twoRepresentatives) {
             //complete the notification to Respondent2
