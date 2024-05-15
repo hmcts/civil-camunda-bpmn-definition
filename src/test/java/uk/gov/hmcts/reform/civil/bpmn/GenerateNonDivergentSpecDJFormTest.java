@@ -139,7 +139,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             "NotifyDJNonDivergentClaimant"
         );
 
-
         if (twoRepresentatives) {
             //complete the notification to Respondent2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
