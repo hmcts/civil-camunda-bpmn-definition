@@ -107,6 +107,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                     CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID,
                     variables
                 );
+
+                //complete generate dashboard notification to claimant
+                ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    claimantDashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
+                    variables
+                );
             }
         } else {
             //complete the notification to Respondent
@@ -129,17 +139,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             "NotifyDJNonDivergentClaimant"
         );
 
-        if (dashboardServiceEnabled) {
-            //complete generate dashboard notification to defendant
-            ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                claimantDashboardNotification,
-                PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
-                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
-                variables
-            );
-        }
 
         if (twoRepresentatives) {
             //complete the notification to Respondent2
