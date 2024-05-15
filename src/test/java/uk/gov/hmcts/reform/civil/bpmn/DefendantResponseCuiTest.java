@@ -29,6 +29,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
     private static final String GENERATE_DEFENDANT_DASHBOARD
         = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE_WELSH";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
@@ -43,6 +45,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "GenerateClaimantDashboardNotificationDefendantResponse";
     private static final String GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
         = "GenerateDefendantDashboardNotificationDefendantResponse";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
+        = "GenerateClaimantDashboardNotificationDefendantResponseWelsh";
 
     public DefendantResponseCuiTest() {
         super(
@@ -128,6 +132,30 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
+    void shouldNotNotifyApplicant_whenDefendantResponseBilingualAndDashboardIsSet() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
+            "DASHBOARD_SERVICE_ENABLED", true));
+
+        assertBusinessProcessHasStarted(variables);
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
     private void verifyApplicantNotificationOfAddressChangeCompleted() {
         verifyTaskIsComplete(
             NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
@@ -195,6 +223,13 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyTaskIsComplete(
             GENERATE_DEFENDANT_DASHBOARD,
             GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationClaimantForWelsh() {
+        verifyTaskIsComplete(
+            GENERATE_CLAIMANT_DASHBOARD_WELSH,
+            GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
         );
     }
 
