@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0">
+  <bpmn:process id="NOTIFY_LIP_GENERIC_TEMPLATE" name="Notify lip generic template" isExecutable="true">
+    <bpmn:startEvent id="EvidenceUploaded" name="Start">
+      <bpmn:outgoing>Flow_87785545</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1dvrj2w" messageRef="Message_07sm7e9" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_8788842">
+      <bpmn:incoming>Flow_58452122</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_58452122" sourceRef="Activity_1201998" targetRef="Event_8788842" />
+    <bpmn:callActivity id="Activity_1201998" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="variables" value="all" />
+        </camunda:properties>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04exeor</bpmn:incoming>
+      <bpmn:outgoing>Flow_58452122</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_78421444" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_87785545</bpmn:incoming>
+      <bpmn:outgoing>Flow_78545522</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_558788">
+      <bpmn:incoming>Flow_7787545</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0kza4it" name="Abort" attachedToRef="Activity_78421444">
+      <bpmn:outgoing>Flow_7787545</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_09jmy6o" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_7787545" sourceRef="Event_0kza4it" targetRef="Event_558788" />
+    <bpmn:sequenceFlow id="Flow_87785545" sourceRef="EvidenceUploaded" targetRef="Activity_78421444" />
+    <bpmn:sequenceFlow id="Flow_78545522" sourceRef="Activity_78421444" targetRef="GenerateDashboardNotificationEvidenceUploadedClaimant" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationEvidenceUploadedClaimant" name="Create applicant 1 dashboard notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_78545522</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xckrvu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1xckrvu" sourceRef="GenerateDashboardNotificationEvidenceUploadedClaimant" targetRef="GenerateDashboardNotificationEvidenceUploadedDefendant" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationEvidenceUploadedDefendant" name="Create defendant1 dashboard notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xckrvu</bpmn:incoming>
+      <bpmn:outgoing>Flow_04exeor</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_04exeor" sourceRef="GenerateDashboardNotificationEvidenceUploadedDefendant" targetRef="Activity_1201998" />
+  </bpmn:process>
+  <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_07sm7e9" name="EVIDENCE_UPLOADED" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NOTIFY_LIP_GENERIC_TEMPLATE">
+      <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="EvidenceUploaded">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="235" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_8788842">
+        <dc:Bounds x="1082" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_1201998">
+        <dc:Bounds x="940" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_78421444">
+        <dc:Bounds x="230" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_558788">
+        <dc:Bounds x="262" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1smbj8l" bpmnElement="GenerateDashboardNotificationEvidenceUploadedClaimant">
+        <dc:Bounds x="430" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1bpgaxl" bpmnElement="GenerateDashboardNotificationEvidenceUploadedDefendant">
+        <dc:Bounds x="630" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
+        <dc:Bounds x="262" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_58452122">
+        <di:waypoint x="1040" y="207" />
+        <di:waypoint x="1082" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_7787545">
+        <di:waypoint x="280" y="149" />
+        <di:waypoint x="280" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_87785545">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_78545522">
+        <di:waypoint x="330" y="207" />
+        <di:waypoint x="430" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xckrvu_di" bpmnElement="Flow_1xckrvu">
+        <di:waypoint x="530" y="207" />
+        <di:waypoint x="630" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04exeor_di" bpmnElement="Flow_04exeor">
+        <di:waypoint x="730" y="207" />
+        <di:waypoint x="940" y="207" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
