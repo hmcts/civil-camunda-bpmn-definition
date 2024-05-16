@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <bpmn:process id="GENERATE_DJ_NON_DIVERGENT_FORM_SPEC" name="Generate dj form non divergent spec" isExecutable="true">
     <bpmn:startEvent id="Event_NonDivergentSpec" name="Start">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
@@ -14,7 +14,7 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10ujgz7</bpmn:incoming>
-      <bpmn:incoming>Flow_19foubv</bpmn:incoming>
+      <bpmn:incoming>Flow_1t6n1ei</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -66,7 +66,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_19b5dvl">
-      <bpmn:incoming>Flow_1msjlqe</bpmn:incoming>
+      <bpmn:incoming>Flow_0bxssc2</bpmn:incoming>
       <bpmn:outgoing>Flow_10ujgz7</bpmn:outgoing>
       <bpmn:outgoing>Flow_0o1d6v6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -96,6 +96,9 @@
       <bpmn:incoming>Flow_0g7s1x9</bpmn:incoming>
       <bpmn:incoming>Flow_1q7n1fk</bpmn:incoming>
       <bpmn:outgoing>Flow_1msjlqe</bpmn:outgoing>
+      <bpmn:incoming>Flow_0qkoocf</bpmn:incoming>
+      <bpmn:incoming>Flow_0nqibou</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bxssc2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0qkoocf" sourceRef="NotifyDJNonDivergentDefendant1LiP" targetRef="Gateway_01l4u29" />
     <bpmn:serviceTask id="GenerateDJFormNondivergentSpecClaimant" name="Generate DJ form non-divergent Spec claimant" camunda:type="external" camunda:topic="processCaseEvent">
@@ -150,6 +153,26 @@
     <bpmn:sequenceFlow id="Flow_1q7n1fk" name="Dashboard Service Disabled" sourceRef="Gateway_01l4u29" targetRef="NotifyDJNonDivergentClaimant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="PostDjLetterDefendant1" name="Post DJ letter defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ucx9m0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nqibou</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0nqibou" sourceRef="PostDjLetterDefendant1" targetRef="NotifyDJNonDivergentClaimant" />
+    <bpmn:serviceTask id="PostDjLetterDefendant2" name="Post DJ letter defendant2" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19foubv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t6n1ei</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1t6n1ei" sourceRef="PostDjLetterDefendant2" targetRef="Activity_0wretog" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -181,7 +204,7 @@
         <dc:Bounds x="262" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
-        <dc:Bounds x="635" y="235" width="50" height="50" />
+        <dc:Bounds x="615" y="235" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="738" y="412" width="87" height="14" />
         </bpmndi:BPMNLabel>
@@ -211,6 +234,23 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0efl0t3" bpmnElement="GenerateDJFormNondivergentSpecDefendant">
         <dc:Bounds x="490" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0d992o7" bpmnElement="PostDjLetterDefendant1">
+        <dc:Bounds x="870" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
+        <dc:Bounds x="1492" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1307" y="285" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
+        <dc:Bounds x="1320" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1id44be" bpmnElement="PostDjLetterDefendant2">
+        <dc:Bounds x="1320" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1n2cdgo" bpmnElement="Gateway_01l4u29" isMarkerVisible="true">

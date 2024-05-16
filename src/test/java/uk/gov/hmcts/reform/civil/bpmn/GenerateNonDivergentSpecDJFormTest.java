@@ -22,12 +22,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT";
+    public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1 = "POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1";
+    public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2 = "POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
     public static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentDefendant";
+    public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1_ACTIVITY_ID = "PostDjLetterDefendant1";
+    public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2_ACTIVITY_ID = "PostDjLetterDefendant2";
 
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
@@ -128,6 +132,27 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
+
+            //complete the "Post DJ letter defendant1" process
+            ExternalTask postDjLetter1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                postDjLetter1,
+                PROCESS_CASE_EVENT,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1_ACTIVITY_ID,
+                variables
+            );
+
+        } else if (isLiPDefendant) {
+            //complete the notification to LiP respondent
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
+                "NotifyDJNonDivergentDefendant1LiP",
+                variables
+            );
         }
 
         //complete the notification to Claimant
@@ -147,6 +172,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
                 "NotifyDJNonDivergentDefendant2",
+                variables
+            );
+
+            //complete the "Post DJ letter defendant2" process
+            ExternalTask postDjLetter2 = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                postDjLetter2,
+                PROCESS_CASE_EVENT,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2_ACTIVITY_ID,
                 variables
             );
         }
