@@ -91,7 +91,28 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
         //end business process
 
-        if (isLiPDefendant) {
+        if (!isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LR",
+                "NotifyDJNonDivergentDefendant1",
+                variables
+            );
+
+            //complete the "Post DJ letter defendant1" process
+            ExternalTask postDjLetter1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                postDjLetter1,
+                PROCESS_CASE_EVENT,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1,
+                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1_ACTIVITY_ID,
+                variables
+            );
+
+        } else if (isLiPDefendant) {
             //complete the notification to LiP respondent
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -99,6 +120,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
                 "NotifyDJNonDivergentDefendant1LiP",
+                variables
+            );
+
+            // should send letter to LiP respondent
+            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendLipLetter,
+                PROCESS_CASE_EVENT,
+                "POST_DJ_NON_DIVERGENT_PIN_IN_LETTER_DEFENDANT1",
+                "PostPINInLetterLIPDefendant1",
                 variables
             );
 
@@ -123,26 +154,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                     variables
                 );
             }
-        } else {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LR",
-                "NotifyDJNonDivergentDefendant1",
-                variables
-            );
-
-            //complete the "Post DJ letter defendant1" process
-            ExternalTask postDjLetter1 = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                postDjLetter1,
-                PROCESS_CASE_EVENT,
-                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1,
-                POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1_ACTIVITY_ID,
-                variables
-            );
         }
 
         //complete the notification to Claimant
