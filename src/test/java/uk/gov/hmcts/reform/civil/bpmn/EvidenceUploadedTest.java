@@ -49,7 +49,6 @@ public class EvidenceUploadedTest extends BpmnBaseTest {
                                    CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT,
                                    CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT_ACTIVITY_ID);
 
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
