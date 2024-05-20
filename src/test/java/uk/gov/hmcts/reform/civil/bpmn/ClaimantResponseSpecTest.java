@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -44,8 +46,9 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteClaimantResponseWithQD_WhenApplicantConfirmsToProceed() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyCompleteClaimantResponseWithQD_WhenApplicantConfirmsToProceed(boolean isJudgementOnline) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -55,7 +58,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
-        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
+        variables.put(FLOW_FLAGS, Map.of(
+            DASHBOARD_SERVICE_ENABLED, true,
+            JUDGMENT_ONLINE_LIVE, isJudgementOnline
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -67,34 +73,37 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Robotics notification
-        ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            proccedOffline,
-            PROCESS_CASE_EVENT,
-            PROCEED_OFFLINE_EVENT,
-            "Activity_00lleen",
-            variables
-        );
+        if(!isJudgementOnline) {
+            //complete the Robotics notification
+            ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                proccedOffline,
+                PROCESS_CASE_EVENT,
+                PROCEED_OFFLINE_EVENT,
+                "Activity_00lleen",
+                variables
+            );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT1_FOR_CLAIMANT_AGREED_REPAYMENT",
-            "ClaimantAgreedRepaymentNotifyRespondent1"
-        );
+            //complete the notification to respondent
+            ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notifyRespondent,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT1_FOR_CLAIMANT_AGREED_REPAYMENT",
+                "ClaimantAgreedRepaymentNotifyRespondent1"
+            );
 
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
-            variables
-        );
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                variables
+            );
+        }
+
         createDefendantDashboardNotification();
 
         //end business process
