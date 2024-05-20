@@ -73,7 +73,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        if(!isJudgementOnline) {
+        if (!isJudgementOnline) {
             //complete the Robotics notification
             ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
