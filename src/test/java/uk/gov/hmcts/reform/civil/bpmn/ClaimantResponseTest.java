@@ -54,6 +54,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
+            IS_MULTI_TRACK, false,
             "SDO_ENABLED", true
         ));
 
@@ -229,7 +230,8 @@ class ClaimantResponseTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 GENERAL_APPLICATION_ENABLED, false,
                 ONE_RESPONDENT_REPRESENTATIVE, false,
-                TWO_RESPONDENT_REPRESENTATIVES, true
+                TWO_RESPONDENT_REPRESENTATIVES, true,
+                IS_MULTI_TRACK, false
         ));
 
         //complete the start business process
@@ -310,8 +312,9 @@ class ClaimantResponseTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 GENERAL_APPLICATION_ENABLED, true,
                 ONE_RESPONDENT_REPRESENTATIVE, false,
-                TWO_RESPONDENT_REPRESENTATIVES, true
-        ));
+                TWO_RESPONDENT_REPRESENTATIVES, true,
+                IS_MULTI_TRACK, false
+            ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

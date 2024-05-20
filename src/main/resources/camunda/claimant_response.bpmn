@@ -56,7 +56,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_FULL_DEFENCE_PROCEED" name="Applicant confirms to proceed" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="JudicialReferral">
-      <bpmn:documentation>${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK &amp;&amp; !empty flowFlags.SDO_ENABLED &amp;&amp; flowFlags.SDO_ENABLED}</bpmn:documentation>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK &amp;&amp; !empty flowFlags.SDO_ENABLED &amp;&amp; flowFlags.SDO_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ProceedOfflineForResponseToDefence" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
@@ -126,6 +125,7 @@
       <bpmn:outgoing>Flow_05kjspo</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0e2144a" sourceRef="Gateway_1izgizk" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor2">
+      <bpmn:documentation>${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:documentation>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_05kjspo" sourceRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor2" targetRef="ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC" />
@@ -240,16 +240,16 @@
       <bpmn:incoming>Flow_07ua8xi</bpmn:incoming>
       <bpmn:outgoing>Flow_1h1gnhq</bpmn:outgoing>
       <bpmn:outgoing>Flow_05wizle</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1i1asp7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1h1gnhq" sourceRef="Gateway_0aseqi2" targetRef="NotifyRoboticsOnContinuousFeed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_05wizle" sourceRef="Gateway_0aseqi2" targetRef="NotifyRoboticsOnCaseHandedOffline">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK &amp;&amp; flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1iwzrak" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ProceedOfflineForResponseToDefenceMultitrack">
-      <bpmn:documentation>${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK}</bpmn:documentation>
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_PROCEED" &amp;&amp; !empty flowFlags.IS_MULTI_TRACK &amp;&amp; flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ProceedOfflineForResponseToDefenceMultitrack" name="Proceed offline (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -268,7 +268,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_18p0npf" sourceRef="ClaimantResponseGenerateDirectionsQuestionnaire" targetRef="Gateway_0ivdn1l" />
     <bpmn:sequenceFlow id="Flow_1if3psp" sourceRef="Gateway_0ivdn1l" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK &amp;&amp; !flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ClaimantConfirmsToProceedNotifyRespondentSolicitor1Multitrack" name="Notify respondent solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -280,7 +280,7 @@
       <bpmn:outgoing>Flow_1ocoaw0</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1iix8cj" sourceRef="Gateway_0ivdn1l" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor1Multitrack">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_MULTI_TRACK &amp;&amp; flowFlags.IS_MULTI_TRACK}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_02rr4m0">
       <bpmn:incoming>Flow_1ocoaw0</bpmn:incoming>
@@ -311,10 +311,15 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1qewnk9" sourceRef="Gateway_02rr4m0" targetRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor2Multitrack">
+      <bpmn:documentation>${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:documentation>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15x0e7z" sourceRef="ClaimantConfirmsToProceedNotifyRespondentSolicitor2Multitrack" targetRef="ClaimantConfirmsToProceedNotifyApplicantSolicitor1CCMultitrack" />
     <bpmn:sequenceFlow id="Flow_07ua8xi" sourceRef="ClaimantConfirmsToProceedNotifyApplicantSolicitor1CCMultitrack" targetRef="Gateway_0aseqi2" />
+    <bpmn:intermediateThrowEvent id="Event_1lhj81p">
+      <bpmn:incoming>Flow_1i1asp7</bpmn:incoming>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_1i1asp7" sourceRef="Gateway_0aseqi2" targetRef="Event_1lhj81p" />
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -531,6 +536,11 @@
         <di:waypoint x="1610" y="590" />
         <di:waypoint x="1632" y="590" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i1asp7_di" bpmnElement="Flow_1i1asp7">
+        <di:waypoint x="1450" y="435" />
+        <di:waypoint x="1450" y="520" />
+        <di:waypoint x="1512" y="520" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1diii28_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="575" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -640,6 +650,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0zax79s_di" bpmnElement="TextAnnotation_0zax79s">
         <dc:Bounds x="980" y="610" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lhj81p_di" bpmnElement="Event_1lhj81p">
+        <dc:Bounds x="1512" y="502" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="272" y="532" width="36" height="36" />
