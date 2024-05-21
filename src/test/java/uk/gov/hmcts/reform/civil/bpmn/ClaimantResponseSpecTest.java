@@ -47,8 +47,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteClaimantResponseWithQD_WhenApplicantConfirmsToProceed(boolean isJudgementOnline) {
+    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
+    void shouldSuccessfullyCompleteClaimantResponseWithQD_WhenApplicantConfirmsToProceed(boolean isJudgementOnline, boolean isLrvLiPOnevOne) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -60,7 +60,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
             DASHBOARD_SERVICE_ENABLED, true,
-            JUDGMENT_ONLINE_LIVE, isJudgementOnline
+            JUDGMENT_ONLINE_LIVE, isJudgementOnline,
+            LR_V_LIP_ONE_V_ONE, isLrvLiPOnevOne
         ));
 
         //complete the start business process
@@ -73,7 +74,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        if (!isJudgementOnline) {
+        if (!isJudgementOnline || !isLrvLiPOnevOne) {
             //complete the Robotics notification
             ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

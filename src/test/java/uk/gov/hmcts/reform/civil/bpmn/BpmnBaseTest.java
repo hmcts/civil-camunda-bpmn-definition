@@ -40,6 +40,7 @@ public abstract class BpmnBaseTest {
     public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
     public static final String GENERAL_APPLICATION_ENABLED = "GENERAL_APPLICATION_ENABLED";
     public static final String JUDGMENT_ONLINE_LIVE = "JUDGMENT_ONLINE_LIVE";
+    public static final String LR_V_LIP_ONE_V_ONE = "LR_V_LIP_ONE_V_ONE";
     public static final String AGREED_TO_MEDIATION = "AGREED_TO_MEDIATION";
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
