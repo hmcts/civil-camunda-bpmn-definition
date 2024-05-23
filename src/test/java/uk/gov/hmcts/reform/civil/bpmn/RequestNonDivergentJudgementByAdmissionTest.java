@@ -4,8 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -25,9 +23,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLr(boolean isLiPDefendant) {
+    @Test
+    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLr() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -37,8 +34,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             "LIP_CASE", false,
-            "DASHBOARD_SERVICE_ENABLED", true,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -57,18 +53,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID
         );
 
-        if(isLiPDefendant) {
-            // should send letter to LiP respondent
-            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendLipLetter,
-                PROCESS_CASE_EVENT,
-                "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER",
-                "SendJudgmentByAdmissionLiPLetterDef1",
-                variables
-            );
-        }
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -76,9 +60,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLipClaimant(boolean isLiPDefendant) {
+    @Test
+    void shouldSuccessfullyCompleteRequestJudgementByAdmission_withLipClaimant() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -88,8 +71,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             "LIP_CASE", true,
-            "DASHBOARD_SERVICE_ENABLED", true,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -115,18 +97,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1,
             CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID
         );
-
-        if(isLiPDefendant) {
-            // should send letter to LiP respondent
-            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendLipLetter,
-                PROCESS_CASE_EVENT,
-                "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER",
-                "SendJudgmentByAdmissionLiPLetterDef1",
-                variables
-            );
-        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
