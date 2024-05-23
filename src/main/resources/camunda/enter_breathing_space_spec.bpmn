@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
   <bpmn:process id="ENTER_BREATHING_SPACE_SPEC" name="Enter breathing space process spec" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
@@ -22,7 +22,7 @@
         <camunda:out variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g2t112</bpmn:incoming>
-      <bpmn:outgoing>Flow_19mft34</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12fc6pb</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_0nc34kd">
       <bpmn:incoming>Flow_13dgz5v</bpmn:incoming>
@@ -33,7 +33,6 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_13dgz5v" sourceRef="Event_1p3emre" targetRef="Event_0nc34kd" />
     <bpmn:sequenceFlow id="Flow_0g2t112" sourceRef="StartEvent_1" targetRef="Activity_0gt1863" />
-    <bpmn:sequenceFlow id="Flow_19mft34" sourceRef="Activity_0gt1863" targetRef="BreathingSpaceEnterNotifyRespondentSolicitor1" />
     <bpmn:serviceTask id="NotifyRoboticsBreathingSpaceEnter" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -41,6 +40,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0fqn57l</bpmn:incoming>
+      <bpmn:incoming>Flow_1695l90</bpmn:incoming>
       <bpmn:outgoing>Flow_17evp7q</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_17evp7q" sourceRef="NotifyRoboticsBreathingSpaceEnter" targetRef="Activity_1cweuly" />
@@ -50,7 +50,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT_SOLICITOR1_BREATHING_SPACE_ENTER</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_19mft34</bpmn:incoming>
+      <bpmn:incoming>Flow_1na4vp2</bpmn:incoming>
       <bpmn:outgoing>Flow_1efafl8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="BreathingSpaceEnterNotifyApplicantSolicitor1" name="Notify applicant solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
@@ -86,6 +86,39 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17nnxrn" sourceRef="BreathingSpaceEnterNotifyRespondentSolicitor2" targetRef="BreathingSpaceEnterNotifyApplicantSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1efafl8" sourceRef="BreathingSpaceEnterNotifyRespondentSolicitor1" targetRef="Gateway_12s3fic" />
+    <bpmn:exclusiveGateway id="Gateway_0ke617k">
+      <bpmn:incoming>Flow_12fc6pb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1na4vp2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1j9p42y</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1na4vp2" name="LR" sourceRef="Gateway_0ke617k" targetRef="BreathingSpaceEnterNotifyRespondentSolicitor1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12fc6pb" sourceRef="Activity_0gt1863" targetRef="Gateway_0ke617k" />
+    <bpmn:sequenceFlow id="Flow_1j9p42y" name="LiP" sourceRef="Gateway_0ke617k" targetRef="NotifyApplicant1BreathingSpaceLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="NotifyApplicant1BreathingSpaceLIP" name="Notify Applicant1 Breathing Space LIP" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_APPLICANT1_BREATHING_SPACE_ENTER</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1j9p42y</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ud0npi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ud0npi" sourceRef="NotifyApplicant1BreathingSpaceLIP" targetRef="NotifyRespondentBreathingSpaceLIP" />
+    <bpmn:serviceTask id="NotifyRespondentBreathingSpaceLIP" name="Notify Respondent Breathing Space LIP" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_RESPONDENT_BREATHING_SPACE_ENTER
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ud0npi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1695l90</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1695l90" sourceRef="NotifyRespondentBreathingSpaceLIP" targetRef="NotifyRoboticsBreathingSpaceEnter" />
     <bpmn:textAnnotation id="TextAnnotation_12lq3or">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -95,50 +128,6 @@
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ENTER_BREATHING_SPACE_SPEC">
-      <bpmndi:BPMNEdge id="Flow_1efafl8_di" bpmnElement="Flow_1efafl8">
-        <di:waypoint x="540" y="310" />
-        <di:waypoint x="635" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17nnxrn_di" bpmnElement="Flow_17nnxrn">
-        <di:waypoint x="830" y="120" />
-        <di:waypoint x="890" y="120" />
-        <di:waypoint x="890" y="270" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_095m2os_di" bpmnElement="Flow_095m2os">
-        <di:waypoint x="660" y="285" />
-        <di:waypoint x="660" y="120" />
-        <di:waypoint x="730" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0b0so42_di" bpmnElement="Flow_0b0so42">
-        <di:waypoint x="685" y="310" />
-        <di:waypoint x="840" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fqn57l_di" bpmnElement="Flow_0fqn57l">
-        <di:waypoint x="940" y="310" />
-        <di:waypoint x="1030" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17evp7q_di" bpmnElement="Flow_17evp7q">
-        <di:waypoint x="1130" y="310" />
-        <di:waypoint x="1220" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19mft34_di" bpmnElement="Flow_19mft34">
-        <di:waypoint x="330" y="307" />
-        <di:waypoint x="375" y="307" />
-        <di:waypoint x="375" y="310" />
-        <di:waypoint x="440" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g2t112_di" bpmnElement="Flow_0g2t112">
-        <di:waypoint x="188" y="310" />
-        <di:waypoint x="230" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13dgz5v_di" bpmnElement="Flow_13dgz5v">
-        <di:waypoint x="280" y="249" />
-        <di:waypoint x="280" y="215" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tgwl48_di" bpmnElement="Flow_0tgwl48">
-        <di:waypoint x="1320" y="310" />
-        <di:waypoint x="1402" y="310" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1diii28_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="292" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -148,17 +137,8 @@
       <bpmndi:BPMNShape id="Activity_14sbez9_di" bpmnElement="Activity_1cweuly">
         <dc:Bounds x="1220" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gt1863_di" bpmnElement="Activity_0gt1863">
-        <dc:Bounds x="230" y="267" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0nc34kd_di" bpmnElement="Event_0nc34kd">
-        <dc:Bounds x="262" y="179" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15wxp1o_di" bpmnElement="NotifyRoboticsBreathingSpaceEnter">
         <dc:Bounds x="1030" y="270" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1up0lu9_di" bpmnElement="BreathingSpaceEnterNotifyRespondentSolicitor1">
-        <dc:Bounds x="440" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0f90qs7_di" bpmnElement="BreathingSpaceEnterNotifyApplicantSolicitor1">
         <dc:Bounds x="840" y="270" width="100" height="80" />
@@ -169,18 +149,106 @@
       <bpmndi:BPMNShape id="Activity_0z32kt8_di" bpmnElement="BreathingSpaceEnterNotifyRespondentSolicitor2">
         <dc:Bounds x="730" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ke617k_di" bpmnElement="Gateway_0ke617k" isMarkerVisible="true">
+        <dc:Bounds x="375" y="285" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_12lq3or_di" bpmnElement="TextAnnotation_12lq3or">
         <dc:Bounds x="520" y="140" width="100" height="40" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06w0csv_di" bpmnElement="NotifyApplicant1BreathingSpaceLIP">
+        <dc:Bounds x="550" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0blokhl_di" bpmnElement="NotifyRespondentBreathingSpaceLIP">
+        <dc:Bounds x="810" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gt1863_di" bpmnElement="Activity_0gt1863">
+        <dc:Bounds x="220" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nc34kd_di" bpmnElement="Event_0nc34kd">
+        <dc:Bounds x="252" y="179" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1up0lu9_di" bpmnElement="BreathingSpaceEnterNotifyRespondentSolicitor1">
+        <dc:Bounds x="490" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
-        <dc:Bounds x="262" y="249" width="36" height="36" />
+        <dc:Bounds x="252" y="252" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="297" y="230" width="27" height="14" />
+          <dc:Bounds x="287" y="233" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0tgwl48_di" bpmnElement="Flow_0tgwl48">
+        <di:waypoint x="1320" y="310" />
+        <di:waypoint x="1402" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13dgz5v_di" bpmnElement="Flow_13dgz5v">
+        <di:waypoint x="270" y="252" />
+        <di:waypoint x="270" y="215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g2t112_di" bpmnElement="Flow_0g2t112">
+        <di:waypoint x="188" y="310" />
+        <di:waypoint x="204" y="310" />
+        <di:waypoint x="204" y="313" />
+        <di:waypoint x="220" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17evp7q_di" bpmnElement="Flow_17evp7q">
+        <di:waypoint x="1130" y="310" />
+        <di:waypoint x="1220" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fqn57l_di" bpmnElement="Flow_0fqn57l">
+        <di:waypoint x="940" y="310" />
+        <di:waypoint x="1030" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b0so42_di" bpmnElement="Flow_0b0so42">
+        <di:waypoint x="685" y="310" />
+        <di:waypoint x="840" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_095m2os_di" bpmnElement="Flow_095m2os">
+        <di:waypoint x="660" y="285" />
+        <di:waypoint x="660" y="120" />
+        <di:waypoint x="730" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17nnxrn_di" bpmnElement="Flow_17nnxrn">
+        <di:waypoint x="830" y="120" />
+        <di:waypoint x="890" y="120" />
+        <di:waypoint x="890" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1efafl8_di" bpmnElement="Flow_1efafl8">
+        <di:waypoint x="590" y="310" />
+        <di:waypoint x="635" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1na4vp2_di" bpmnElement="Flow_1na4vp2">
+        <di:waypoint x="425" y="310" />
+        <di:waypoint x="490" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="442" y="263" width="16" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12fc6pb_di" bpmnElement="Flow_12fc6pb">
+        <di:waypoint x="320" y="310" />
+        <di:waypoint x="375" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j9p42y_di" bpmnElement="Flow_1j9p42y">
+        <di:waypoint x="400" y="335" />
+        <di:waypoint x="400" y="490" />
+        <di:waypoint x="550" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="451" y="473" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0k37ha8_di" bpmnElement="Association_0k37ha8">
         <di:waypoint x="651" y="294" />
         <di:waypoint x="583" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ud0npi_di" bpmnElement="Flow_0ud0npi">
+        <di:waypoint x="650" y="490" />
+        <di:waypoint x="810" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1695l90_di" bpmnElement="Flow_1695l90">
+        <di:waypoint x="910" y="490" />
+        <di:waypoint x="1080" y="490" />
+        <di:waypoint x="1080" y="350" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
