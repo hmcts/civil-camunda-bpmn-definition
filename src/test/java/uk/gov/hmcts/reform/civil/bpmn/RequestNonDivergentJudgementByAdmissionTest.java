@@ -42,7 +42,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
-            variables);
+            variables
+        );
 
         ExternalTask dashboardNotificationRespondent1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -52,7 +53,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_ACTIVITY_ID
         );
 
-        if(isLiPDefendant) {
+        if (isLiPDefendant) {
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 respondent1Notification,
