@@ -22,8 +22,17 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
-    void shouldSuccessfullyCompleteRecordJudgmentNotificationMultiparty(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({
+        "true, true, true",
+        "true, true, false",
+        "true, false, true",
+        "true, false, false",
+        "false, true, true",
+        "false, true, false",
+        "false, false, true",
+        "false, false, false"
+    })
+    void shouldSuccessfullyCompleteRecordJudgmentNotificationMultiparty(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -35,7 +44,8 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -57,6 +67,18 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
                 "SendDJLetterLIPDefendant1",
                 variables
             );
+
+            if (dashboardServiceEnabled) {
+                //complete generate dashboard notification to defendant
+                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    respondent1DashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    "CREATE_DASHBOARD_NOTIFICATION_RECORD_JUDGMENT_DEFENDANT",
+                    "Generate Dashboard Notification Defendant1",
+                    variables
+                );
+            }
         }
 
         //complete the notification for respondent 1
