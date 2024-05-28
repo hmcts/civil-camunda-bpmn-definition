@@ -94,6 +94,14 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                                    "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1",
                                    "CreateIssueClaimDashboardNotificationsForApplicant1"
         );
+
+        //complete the case state update
+        ExternalTask notificationTaskForRespondentDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForRespondentDashboard,
+                                   PROCESS_CASE_EVENT,
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1",
+                                   "CreateIssueClaimDashboardNotificationsForDefendant1"
+        );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);

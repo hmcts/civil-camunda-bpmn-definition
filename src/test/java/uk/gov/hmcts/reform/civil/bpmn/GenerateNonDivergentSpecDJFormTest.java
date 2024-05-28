@@ -22,20 +22,33 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1 = "POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1";
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2 = "POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
     public static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT1_ACTIVITY_ID = "PostDjLetterDefendant1";
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2_ACTIVITY_ID = "PostDjLetterDefendant2";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentDefendant";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
 
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
-    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({
+        "true, true, true",
+        "true, true, false",
+        "true, false, true",
+        "true, false, false",
+        "false, true, true",
+        "false, true, false",
+        "false, false, true",
+        "false, false, false"
+    })
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -48,7 +61,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            UNREPRESENTED_DEFENDANT_TWO, false));
+            UNREPRESENTED_DEFENDANT_TWO, false,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -118,6 +132,28 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "PostPINInLetterLIPDefendant1",
                 variables
             );
+
+            if (dashboardServiceEnabled) {
+                //complete generate dashboard notification to defendant
+                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    respondent1DashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID,
+                    variables
+                );
+
+                //complete generate dashboard notification to claimant
+                ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    claimantDashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
+                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
+                    variables
+                );
+            }
         }
 
         //complete the notification to Claimant
