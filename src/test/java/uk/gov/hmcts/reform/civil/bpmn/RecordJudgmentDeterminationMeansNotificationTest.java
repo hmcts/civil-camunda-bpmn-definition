@@ -75,7 +75,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
                     respondent1DashboardNotification,
                     PROCESS_CASE_EVENT,
                     "CREATE_DASHBOARD_NOTIFICATION_RECORD_JUDGMENT_DEFENDANT",
-                    "Generate Dashboard Notification Defendant1",
+                    "GenerateDashboardNotificationRecordJudgmentDefendant",
                     variables
                 );
             }
