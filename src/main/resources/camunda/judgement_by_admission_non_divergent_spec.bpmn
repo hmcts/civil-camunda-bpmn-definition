@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iivus5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iivus5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID" name="Request judgement admission spec" isExecutable="true">
     <bpmn:startEvent id="Event_0y09tpb" name="Start">
       <bpmn:outgoing>Flow_07qelqa</bpmn:outgoing>
@@ -11,7 +11,7 @@
         <camunda:out variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_07qelqa</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ysog4b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1glyjdm</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1o998qy">
       <bpmn:incoming>Flow_0uk4gkm</bpmn:incoming>
@@ -33,17 +33,39 @@
       <bpmn:outgoing>Flow_1kj896s</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
-    <bpmn:sequenceFlow id="Flow_0ysog4b" sourceRef="Activity_1d3ska5" targetRef="GenerateJudgmentByAdmissionDoc" />
     <bpmn:serviceTask id="GenerateJudgmentByAdmissionDoc" name="Generate judgment by admission doc" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">GEN_JUDGMENT_BY_ADMISSION_DOC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ysog4b</bpmn:incoming>
+      <bpmn:incoming>Flow_0hypzcm</bpmn:incoming>
+      <bpmn:incoming>Flow_1lamj8i</bpmn:incoming>
       <bpmn:outgoing>Flow_0fdsr8w</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0fdsr8w" sourceRef="GenerateJudgmentByAdmissionDoc" targetRef="Activity_0g68wbz" />
+    <bpmn:exclusiveGateway id="Gateway_00bae9b">
+      <bpmn:incoming>Flow_1glyjdm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lu52n4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1lamj8i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="GenerateDashboardNotificationJudgementByAdmissionDefendant" name="Generate Dashboard Notification Defendant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lu52n4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hypzcm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1glyjdm" sourceRef="Activity_1d3ska5" targetRef="Gateway_00bae9b" />
+    <bpmn:sequenceFlow id="Flow_0hypzcm" sourceRef="GenerateDashboardNotificationJudgementByAdmissionDefendant" targetRef="GenerateJudgmentByAdmissionDoc" />
+    <bpmn:sequenceFlow id="Flow_1lu52n4" name="LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="GenerateDashboardNotificationJudgementByAdmissionDefendant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1lamj8i" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="GenerateJudgmentByAdmissionDoc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1osgsc5" name="JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -61,13 +83,23 @@
         <dc:Bounds x="252" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
-        <dc:Bounds x="732" y="212" width="36" height="36" />
+        <dc:Bounds x="902" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
-        <dc:Bounds x="590" y="190" width="100" height="80" />
+        <dc:Bounds x="750" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1orii9b" bpmnElement="GenerateJudgmentByAdmissionDoc">
-        <dc:Bounds x="420" y="190" width="100" height="80" />
+        <dc:Bounds x="590" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
+        <dc:Bounds x="375" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="412" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationDJSDODefendant_di" bpmnElement="GenerateDashboardNotificationJudgementByAdmissionDefendant">
+        <dc:Bounds x="470" y="300" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
@@ -84,17 +116,37 @@
         <di:waypoint x="270" y="172" />
         <di:waypoint x="270" y="138" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
-        <di:waypoint x="690" y="230" />
-        <di:waypoint x="732" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ysog4b_di" bpmnElement="Flow_0ysog4b">
+      <bpmndi:BPMNEdge id="Flow_1glyjdm_di" bpmnElement="Flow_1glyjdm">
         <di:waypoint x="320" y="230" />
-        <di:waypoint x="420" y="230" />
+        <di:waypoint x="375" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
+        <di:waypoint x="850" y="230" />
+        <di:waypoint x="902" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fdsr8w_di" bpmnElement="Flow_0fdsr8w">
-        <di:waypoint x="520" y="230" />
+        <di:waypoint x="690" y="230" />
+        <di:waypoint x="750" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hypzcm_di" bpmnElement="Flow_0hypzcm">
+        <di:waypoint x="570" y="340" />
+        <di:waypoint x="640" y="340" />
+        <di:waypoint x="640" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lamj8i_di" bpmnElement="Flow_1lamj8i">
+        <di:waypoint x="425" y="230" />
         <di:waypoint x="590" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="434" y="196" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lu52n4_di" bpmnElement="Flow_1lu52n4">
+        <di:waypoint x="400" y="255" />
+        <di:waypoint x="400" y="340" />
+        <di:waypoint x="470" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="364" y="353" width="71" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
