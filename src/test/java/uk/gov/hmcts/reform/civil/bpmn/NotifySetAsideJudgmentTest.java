@@ -17,8 +17,14 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "NOTIFY_SET_ASIDE_JUDGMENT";
     public static final String PROCESS_ID = "NOTIFY_SET_ASIDE_JUDGMENT";
 
+    //CCD CASE EVENT
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
+
+    //ACTIVITY IDs
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
+
     public NotifySetAsideJudgmentTest() {
-        super("notify_set_aside_judgment_request.bpmn", "NOTIFY_SET_ASIDE_JUDGMENT");
+        super("notify_set_aside_judgment_request.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
@@ -56,7 +62,37 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             "NotifyClaimSetAsideJudgmentClaimant"
         );
 
-        if (!isLiPDefendant) {
+        //complete generate dashboard notification to claimant
+        ExternalTask claimant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimant1DashboardNotification,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
+            variables
+        );
+
+        if (isLiPDefendant) {
+            //complete the notification to LiP respondent
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
+                "NotifyClaimSetAsideJudgmentDefendant1LiP",
+                variables
+            );
+
+            // should send letter to LiP respondent
+            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendLipLetter,
+                PROCESS_CASE_EVENT,
+                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
+                "SendSetAsideLiPLetterDef1",
+                variables
+            );
+        } else {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -78,26 +114,6 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                     variables
                 );
             }
-        } else if (isLiPDefendant) {
-            //complete the notification to LiP respondent
-            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1LIpNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
-                "NotifyClaimSetAsideJudgmentDefendant1LiP",
-                variables
-            );
-
-            // should send letter to LiP respondent
-            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendLipLetter,
-                PROCESS_CASE_EVENT,
-                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
-                "SendSetAsideLiPLetterDef1",
-                variables
-            );
         }
 
         //end business process
