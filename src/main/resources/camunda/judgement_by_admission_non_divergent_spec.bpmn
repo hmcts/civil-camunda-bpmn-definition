@@ -29,21 +29,31 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0fdsr8w</bpmn:incoming>
+      <bpmn:incoming>Flow_0ctffu4</bpmn:incoming>
       <bpmn:outgoing>Flow_1kj896s</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
-    <bpmn:sequenceFlow id="Flow_0ysog4b" sourceRef="Activity_1d3ska5" targetRef="GenerateJudgmentByAdmissionDoc" />
-    <bpmn:serviceTask id="GenerateJudgmentByAdmissionDoc" name="Generate judgment by admission doc" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_0ysog4b" sourceRef="Activity_1d3ska5" targetRef="GenerateJudgmentByAdmissionDocClaimant" />
+    <bpmn:serviceTask id="GenerateJudgmentByAdmissionDocClaimant" name="Generate judgment by admission doc claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">GEN_JUDGMENT_BY_ADMISSION_DOC</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ysog4b</bpmn:incoming>
       <bpmn:outgoing>Flow_0fdsr8w</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0fdsr8w" sourceRef="GenerateJudgmentByAdmissionDoc" targetRef="Activity_0g68wbz" />
+    <bpmn:sequenceFlow id="Flow_0fdsr8w" sourceRef="GenerateJudgmentByAdmissionDocClaimant" targetRef="GenerateJudgmentByAdmissionDocDefendant" />
+    <bpmn:serviceTask id="GenerateJudgmentByAdmissionDocDefendant" name="Generate judgment by admission doc defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fdsr8w</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ctffu4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ctffu4" sourceRef="GenerateJudgmentByAdmissionDocDefendant" targetRef="Activity_0g68wbz" />
   </bpmn:process>
   <bpmn:message id="Message_1osgsc5" name="JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -60,14 +70,18 @@
       <bpmndi:BPMNShape id="Event_1o998qy_di" bpmnElement="Event_1o998qy">
         <dc:Bounds x="252" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0qir5u2" bpmnElement="GenerateJudgmentByAdmissionDocDefendant">
+        <dc:Bounds x="510" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
-        <dc:Bounds x="732" y="212" width="36" height="36" />
+        <dc:Bounds x="802" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
-        <dc:Bounds x="590" y="190" width="100" height="80" />
+        <dc:Bounds x="660" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1orii9b" bpmnElement="GenerateJudgmentByAdmissionDoc">
-        <dc:Bounds x="420" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1orii9b" bpmnElement="GenerateJudgmentByAdmissionDocClaimant">
+        <dc:Bounds x="370" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
@@ -85,16 +99,20 @@
         <di:waypoint x="270" y="138" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
-        <di:waypoint x="690" y="230" />
-        <di:waypoint x="732" y="230" />
+        <di:waypoint x="760" y="230" />
+        <di:waypoint x="802" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ysog4b_di" bpmnElement="Flow_0ysog4b">
         <di:waypoint x="320" y="230" />
-        <di:waypoint x="420" y="230" />
+        <di:waypoint x="370" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fdsr8w_di" bpmnElement="Flow_0fdsr8w">
-        <di:waypoint x="520" y="230" />
-        <di:waypoint x="590" y="230" />
+        <di:waypoint x="470" y="230" />
+        <di:waypoint x="510" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ctffu4_di" bpmnElement="Flow_0ctffu4">
+        <di:waypoint x="610" y="230" />
+        <di:waypoint x="660" y="230" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
