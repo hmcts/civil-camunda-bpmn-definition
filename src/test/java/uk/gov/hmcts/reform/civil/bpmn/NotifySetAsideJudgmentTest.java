@@ -17,8 +17,14 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "NOTIFY_SET_ASIDE_JUDGMENT";
     public static final String PROCESS_ID = "NOTIFY_SET_ASIDE_JUDGMENT";
 
+    //CCD CASE EVENT
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
+
+    //ACTIVITY IDs
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
+
     public NotifySetAsideJudgmentTest() {
-        super("notify_set_aside_judgment_request.bpmn", "NOTIFY_SET_ASIDE_JUDGMENT");
+        super("notify_set_aside_judgment_request.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
@@ -64,6 +70,16 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
             "NotifyClaimSetAsideJudgmentClaimant"
+        );
+
+        //complete generate dashboard notification to claimant
+        ExternalTask claimant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimant1DashboardNotification,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
+            variables
         );
 
         if (!isLiPDefendant) {
