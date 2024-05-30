@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1mvdzjv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.3.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_0oe9xk7">
+    <bpmn:participant id="Participant_1st11o5" name="Transfer online case" processRef="GA_TRIGGER_TASK_RECONFIG" />
+  </bpmn:collaboration>
+  <bpmn:process id="GA_TRIGGER_TASK_RECONFIG" name="GA trigger task reconfig" isExecutable="true">
+    <bpmn:startEvent id="Event_TriggerTaskReconfig" name="Start">
+      <bpmn:outgoing>Flow_0f1dt36</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1vvatdq" messageRef="Message_0f9tsfp" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f1dt36</bpmn:incoming>
+      <bpmn:outgoing>Flow_0w9edp6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1l8ym4z</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0miwx8k">
+      <bpmn:incoming>Flow_0w9edp6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="TriggerAndUpdateGenAppLocation" name="Trigger and Update General Application Location" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">TRIGGER_TASK_RECONFIG_GA</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i7qse8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d1dliv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tspyrp</bpmn:incoming>
+      <bpmn:incoming>Flow_1d1dliv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_EndTransferCaseGA">
+      <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_11hktcj" name="Abort" attachedToRef="Activity_StartBusinessProcess">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1npe7kd" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0f1dt36" sourceRef="Event_TriggerTaskReconfig" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
+    <bpmn:sequenceFlow id="Flow_1i7qse8" name="General Application Enabled" sourceRef="Gateway_1pc8agd" targetRef="TriggerAndUpdateGenAppLocation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1tspyrp" name="General Application Disabled" sourceRef="Gateway_1pc8agd" targetRef="Activity_EndBusinessProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1d1dliv" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndTransferCaseGA" />
+    <bpmn:sequenceFlow id="Flow_1l8ym4z" sourceRef="Activity_StartBusinessProcess" targetRef="Gateway_1pc8agd" />
+    <bpmn:exclusiveGateway id="Gateway_1pc8agd">
+      <bpmn:incoming>Flow_1l8ym4z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i7qse8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1tspyrp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmn:message id="Message_0f9tsfp" name="TRIGGER_TASK_RECONFIG_GA" />
+  <bpmn:message id="Message_0xkueqz" name="Message_23b65ne" />
+  <bpmn:message id="Message_007m78j" name="Message_0a5d6m8" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0oe9xk7">
+      <bpmndi:BPMNShape id="Participant_1st11o5_di" bpmnElement="Participant_1st11o5" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="810" height="500" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_000hq7z_di" bpmnElement="Event_TriggerTaskReconfig">
+        <dc:Bounds x="203" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="275" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dtd5qq_di" bpmnElement="Activity_StartBusinessProcess">
+        <dc:Bounds x="291" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0miwx8k_di" bpmnElement="Event_0miwx8k">
+        <dc:Bounds x="323" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
+        <dc:Bounds x="510" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vef0vg_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="620" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndTransferCaseGA">
+        <dc:Bounds x="792" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1pc8agd_di" bpmnElement="Gateway_1pc8agd" isMarkerVisible="true">
+        <dc:Bounds x="455" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_178o507_di" bpmnElement="Event_11hktcj">
+        <dc:Bounds x="322" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="357" y="183" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0f1dt36_di" bpmnElement="Flow_0f1dt36">
+        <di:waypoint x="239" y="250" />
+        <di:waypoint x="291" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w9edp6_di" bpmnElement="Flow_0w9edp6">
+        <di:waypoint x="341" y="210" />
+        <di:waypoint x="341" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i7qse8_di" bpmnElement="Flow_1i7qse8">
+        <di:waypoint x="480" y="265" />
+        <di:waypoint x="480" y="380" />
+        <di:waypoint x="510" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="427" y="328" width="54" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tspyrp_di" bpmnElement="Flow_1tspyrp">
+        <di:waypoint x="505" y="240" />
+        <di:waypoint x="620" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="537" y="200" width="54" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d1dliv_di" bpmnElement="Flow_1d1dliv">
+        <di:waypoint x="610" y="380" />
+        <di:waypoint x="670" y="380" />
+        <di:waypoint x="670" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1huwtcs_di" bpmnElement="Flow_1huwtcs">
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="792" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l8ym4z_di" bpmnElement="Flow_1l8ym4z">
+        <di:waypoint x="391" y="240" />
+        <di:waypoint x="455" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

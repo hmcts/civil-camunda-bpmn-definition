@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.15.1">
+  <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_LIP_ID" name="Upload translated document lip" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1oxj7lg" messageRef="Message_0ttrrz3" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_07ek9xj">
+      <bpmn:incoming>Flow_0tgwl48</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0tgwl48" sourceRef="Activity_1cweuly" targetRef="Event_07ek9xj" />
+    <bpmn:callActivity id="Activity_1cweuly" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0e1towa</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tgwl48</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0gt1863" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0g2t112</bpmn:incoming>
+      <bpmn:outgoing>Flow_19mft34</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0nc34kd">
+      <bpmn:incoming>Flow_13dgz5v</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1p3emre" name="Abort" attachedToRef="Activity_0gt1863">
+      <bpmn:outgoing>Flow_13dgz5v</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0m9vye0" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_13dgz5v" sourceRef="Event_1p3emre" targetRef="Event_0nc34kd" />
+    <bpmn:sequenceFlow id="Flow_0g2t112" sourceRef="StartEvent_1" targetRef="Activity_0gt1863" />
+    <bpmn:sequenceFlow id="Flow_19mft34" sourceRef="Activity_0gt1863" targetRef="Respondent1Deadline" />
+    <bpmn:serviceTask id="IssueClaimForLip" name="Issue Claim (Unrepresented Solicitor)" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCESS_CLAIM_ISSUE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16v0483</bpmn:incoming>
+      <bpmn:outgoing>Flow_13no8ra</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13no8ra" sourceRef="IssueClaimForLip" targetRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" />
+    <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" name="Notify applicant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13no8ra</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n7fvbu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0n7fvbu" sourceRef="CreateClaimContinuingOnlineNotifyApplicant1ForSpec" targetRef="NotifyRespondent1ForClaimContinuingOnlineSpec" />
+    <bpmn:serviceTask id="NotifyRespondent1ForClaimContinuingOnlineSpec" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0n7fvbu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x0c9sg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0x0c9sg" sourceRef="NotifyRespondent1ForClaimContinuingOnlineSpec" targetRef="updateClaimStateAfterTranslateDocumentUploadedID" />
+    <bpmn:serviceTask id="Respondent1Deadline" name="Set Response Deadline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SET_LIP_RESPONDENT_RESPONSE_DEADLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19mft34</bpmn:incoming>
+      <bpmn:outgoing>Flow_16v0483</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16v0483" sourceRef="Respondent1Deadline" targetRef="IssueClaimForLip" />
+    <bpmn:serviceTask id="updateClaimStateAfterTranslateDocumentUploadedID" name="Update Claim State" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0x0c9sg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eym6t6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0eym6t6" sourceRef="updateClaimStateAfterTranslateDocumentUploadedID" targetRef="CreateIssueClaimDashboardNotificationsForApplicant1" />
+    <bpmn:serviceTask id="CreateIssueClaimDashboardNotificationsForApplicant1" name="Create applicant 1 dashboard notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0eym6t6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hmh5a1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0hmh5a1" sourceRef="CreateIssueClaimDashboardNotificationsForApplicant1" targetRef="CreateIssueClaimDashboardNotificationsForDefendant1" />
+    <bpmn:serviceTask id="CreateIssueClaimDashboardNotificationsForDefendant1" name="Create defendant 1 dashboard notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hmh5a1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0e1towa</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0e1towa" sourceRef="CreateIssueClaimDashboardNotificationsForDefendant1" targetRef="Activity_1cweuly" />
+  </bpmn:process>
+  <bpmn:message id="Message_0ttrrz3" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIM_ISSUE" />
+  <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="UPLOAD_TRANSLATED_DOCUMENT_LIP_ID">
+      <bpmndi:BPMNShape id="Event_1diii28_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="189" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="148" y="232" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0gt1863_di" bpmnElement="Activity_0gt1863">
+        <dc:Bounds x="230" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nc34kd_di" bpmnElement="Event_0nc34kd">
+        <dc:Bounds x="262" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1mmuzv3" bpmnElement="IssueClaimForLip">
+        <dc:Bounds x="530" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0mjqq0c" bpmnElement="CreateClaimContinuingOnlineNotifyApplicant1ForSpec">
+        <dc:Bounds x="680" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_15ltc4j" bpmnElement="NotifyRespondent1ForClaimContinuingOnlineSpec">
+        <dc:Bounds x="800" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16jpddo" bpmnElement="Respondent1Deadline">
+        <dc:Bounds x="380" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09r7cgd_di" bpmnElement="updateClaimStateAfterTranslateDocumentUploadedID">
+        <dc:Bounds x="940" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vvj1l6_di" bpmnElement="CreateIssueClaimDashboardNotificationsForApplicant1">
+        <dc:Bounds x="1080" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1e57njk" bpmnElement="CreateIssueClaimDashboardNotificationsForDefendant1">
+        <dc:Bounds x="1240" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14sbez9_di" bpmnElement="Activity_1cweuly">
+        <dc:Bounds x="1400" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
+        <dc:Bounds x="1602" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
+        <dc:Bounds x="262" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="297" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0tgwl48_di" bpmnElement="Flow_0tgwl48">
+        <di:waypoint x="1500" y="210" />
+        <di:waypoint x="1602" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13dgz5v_di" bpmnElement="Flow_13dgz5v">
+        <di:waypoint x="280" y="149" />
+        <di:waypoint x="280" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g2t112_di" bpmnElement="Flow_0g2t112">
+        <di:waypoint x="178" y="208" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19mft34_di" bpmnElement="Flow_19mft34">
+        <di:waypoint x="330" y="208" />
+        <di:waypoint x="380" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13no8ra_di" bpmnElement="Flow_13no8ra">
+        <di:waypoint x="630" y="207" />
+        <di:waypoint x="680" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n7fvbu_di" bpmnElement="Flow_0n7fvbu">
+        <di:waypoint x="780" y="207" />
+        <di:waypoint x="800" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x0c9sg_di" bpmnElement="Flow_0x0c9sg">
+        <di:waypoint x="900" y="207" />
+        <di:waypoint x="940" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16v0483_di" bpmnElement="Flow_16v0483">
+        <di:waypoint x="480" y="209" />
+        <di:waypoint x="530" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eym6t6_di" bpmnElement="Flow_0eym6t6">
+        <di:waypoint x="1040" y="207" />
+        <di:waypoint x="1080" y="206" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hmh5a1_di" bpmnElement="Flow_0hmh5a1">
+        <di:waypoint x="1180" y="210" />
+        <di:waypoint x="1240" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e1towa_di" bpmnElement="Flow_0e1towa">
+        <di:waypoint x="1340" y="210" />
+        <di:waypoint x="1400" y="210" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

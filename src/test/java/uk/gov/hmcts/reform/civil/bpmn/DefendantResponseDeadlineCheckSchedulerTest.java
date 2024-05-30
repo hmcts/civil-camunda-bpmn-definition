@@ -10,20 +10,19 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
+class DefendantResponseDeadlineCheckSchedulerTest extends BpmnBaseTest {
 
-    public static final String TOPIC_NAME = "GAFailedEventEmitterScheduler";
+    public static final String TOPIC_NAME = "DEFENDANT_RESPONSE_DEADLINE_CHECK";
 
-    public GeneralApplicationFailedEventEmitterSchedulerTest() {
-        super("general_application_failed_event_emitter_scheduler.bpmn",
-               "GAFailedEventEmitterScheduler");
+    public DefendantResponseDeadlineCheckSchedulerTest() {
+        super("defendant_response_deadline_check_scheduler.bpmn", "DEFENDANT_RESPONSE_DEADLINE_CHECK_SCHEDULER");
     }
 
     @Test
-    void pollingEventBmpnShouldFirePollingEventEmmiterExternalTask_whenStarted() throws ParseException {
+    void schedulerShouldRaiseResponseDeadlineExceededExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -37,12 +36,12 @@ class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0/30 * * * ?";
+        String cronString = "0 1 16 * * ? 2026";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 9, 0, 0, 0),
-            LocalDateTime.of(2020, 1, 9, 0, 30, 0)
+            LocalDateTime.of(2024, 11, 30, 0, 0, 0),
+            LocalDateTime.of(2026, 1, 1, 16, 1, 0)
         );
 
         //get external tasks
@@ -51,6 +50,7 @@ class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
 
         //fetch and complete task
         List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(TOPIC_NAME);
+
         assertThat(lockedExternalTasks).hasSize(1);
         completeTask(lockedExternalTasks.get(0).getId());
 
@@ -58,7 +58,7 @@ class GeneralApplicationFailedEventEmitterSchedulerTest extends BpmnBaseTest {
         List<ExternalTask> externalTasksAfter = getExternalTasks();
         assertThat(externalTasksAfter).isEmpty();
 
-        //assert process is still active - timer event so always running
+        //assert process is still active - timer event, so always running
         assertFalse(processInstance.isEnded());
     }
 }

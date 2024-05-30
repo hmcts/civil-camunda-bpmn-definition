@@ -24,6 +24,13 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
     private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
     private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
+    private static final String GENERATE_CLAIMANT_DASHBOARD
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE";
+
+    private static final String GENERATE_DEFENDANT_DASHBOARD
+        = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE_WELSH";
 
     //ACTIVITY IDs
     private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
@@ -34,6 +41,12 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "DefendantLipResponseNotifyDefendant";
     private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_ACTIVITY
+        = "GenerateClaimantDashboardNotificationDefendantResponse";
+    private static final String GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
+        = "GenerateDefendantDashboardNotificationDefendantResponse";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
+        = "GenerateClaimantDashboardNotificationDefendantResponseWelsh";
 
     public DefendantResponseCuiTest() {
         super(
@@ -54,13 +67,16 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false));
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
 
         verifyApplicantNotificationOfAddressChangeCompleted();
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifyGenerateDashboardNotificationClaimant();
+        verifyGenerateDashboardNotificationDefendant();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -79,11 +95,14 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", false));
+            "CONTACT_DETAILS_CHANGE", false,
+            "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifyGenerateDashboardNotificationClaimant();
+        verifyGenerateDashboardNotificationDefendant();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -106,6 +125,30 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotNotifyApplicant_whenDefendantResponseBilingualAndDashboardIsSet() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
+            "DASHBOARD_SERVICE_ENABLED", true));
+
+        assertBusinessProcessHasStarted(variables);
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -166,6 +209,27 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationClaimant() {
+        verifyTaskIsComplete(
+            GENERATE_CLAIMANT_DASHBOARD,
+            GENERATE_CLAIMANT_DASHBOARD_ACTIVITY
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationDefendant() {
+        verifyTaskIsComplete(
+            GENERATE_DEFENDANT_DASHBOARD,
+            GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationClaimantForWelsh() {
+        verifyTaskIsComplete(
+            GENERATE_CLAIMANT_DASHBOARD_WELSH,
+            GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
         );
     }
 

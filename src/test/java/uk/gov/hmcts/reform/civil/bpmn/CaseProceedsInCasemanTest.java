@@ -68,18 +68,29 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
         //complete the notification to respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        );
+
+        //complete the notification to respondent 2
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor2"
         );
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+        assertCompleteExternalTask(
+            applicantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyApplicantSolicitor1"
         );
 
         //end business process
@@ -148,18 +159,136 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
         //complete the notification to respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        );
+
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor2"
         );
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+        assertCompleteExternalTask(
+            applicantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteApplicationStatusChange_whenDashBoardServiceEnabled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, true,
+                DASHBOARD_SERVICE_ENABLED, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
+        );
+
+        //Take offline
+        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                takeOffline,
+                PROCESS_CASE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateApplicationStatus,
+                PROCESS_CASE_EVENT,
+                TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+                APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateClaimWithApplicationStatus,
+                PROCESS_CASE_EVENT,
+                APPLICATION_OFFLINE_UPDATE_CLAIM,
+                APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
+        );
+
+        //complete the RPA notification
+        ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                rpaNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+                "NotifyRoboticsOnCaseHandedOffline"
+        );
+
+        //complete the notification to respondent
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+                "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        );
+
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_PROCEEDS_IN_CASEMAN",
+                "CaseProceedsInCasemanNotifyRespondentSolicitor2"
+        );
+
+        //complete the notification to applicant
+        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                applicantNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+                "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+        );
+
+        //Dashboard notification
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateClaimantDashboardNotificationCaseProceedOffline"
+        );
+
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateDefendantDashboardNotificationCaseProceedOffline"
         );
 
         //end business process
@@ -213,21 +342,30 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
         );
 
         //complete the notification to respondent 1
-        if (!unrepresentedDefendant1) {
-            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondentNotification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                       "CaseProceedsInCasemanNotifyRespondentSolicitor1"
-            );
-        }
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor1"
+        );
+
+        //complete the notification to respondent 2
+        respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyRespondentSolicitor2"
+        );
 
         //complete the notification to applicant
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
-                                   "CaseProceedsInCasemanNotifyApplicantSolicitor1"
+        assertCompleteExternalTask(
+            applicantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN",
+            "CaseProceedsInCasemanNotifyApplicantSolicitor1"
         );
 
         //end business process

@@ -14,7 +14,7 @@ import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.UPDATE_FROM
 public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseGASpecTest {
 
     private static final String MESSAGE_NAME = "GENERATE_DIRECTIONS_ORDER";
-    private static final String PROCESS_ID = "GENERATE_DIRECTIONS_ORDER_ID";
+    private static final String PROCESS_ID = "GA_GENERATE_DIRECTIONS_ORDER_ID";
     //start
     public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
@@ -27,7 +27,7 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
-        super("general_application_judge_makes_order_after_hearing.bpmn", "GENERATE_DIRECTIONS_ORDER_ID");
+        super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
     }
 
     @BeforeEach
