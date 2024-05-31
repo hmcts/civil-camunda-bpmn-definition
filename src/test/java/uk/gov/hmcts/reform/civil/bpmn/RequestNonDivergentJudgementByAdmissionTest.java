@@ -56,14 +56,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             );
         }
 
-        ExternalTask dashboardNotificationRespondent1 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardNotificationRespondent1,
-            PROCESS_CASE_EVENT,
-            GENERATE_JUDGMENT_BY_ADMISSION_DOC_EVENT,
-            GENERATE_JUDGMENT_BY_ADMISSION_DOC_ACTIVITY_ID
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
