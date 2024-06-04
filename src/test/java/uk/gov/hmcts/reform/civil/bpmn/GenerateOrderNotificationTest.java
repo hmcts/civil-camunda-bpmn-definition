@@ -239,7 +239,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
             LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, false,
             CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
@@ -274,6 +273,21 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
@@ -368,10 +382,10 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_TWO, false,
-            UNREPRESENTED_DEFENDANT_ONE, true,
+            UNREPRESENTED_DEFENDANT_ONE, false,
             LIP_CASE, false,
             DASHBOARD_SERVICE_ENABLED, false,
-            CASE_PROGRESSION_ENABLED, false));
+            CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -393,6 +407,22 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
                                    NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
