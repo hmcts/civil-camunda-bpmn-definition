@@ -119,6 +119,7 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
             respondentOne, !twoRespondents,
             respondentTwo, twoRespondents,
             LIP_CASE, lipCase,
+            DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true));
 
         variables.put("caseState", caseState);
