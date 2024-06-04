@@ -17,6 +17,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
 
+
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
@@ -39,6 +40,22 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables);
+
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_JUDGMENT_BY_ADMISSION",
+            "Activity_0tla605"
+        );
+
+        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_JUDGMENT_BY_ADMISSION",
+            "Activity_0t1jh5l"
+        );
 
         ExternalTask generateDocClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
