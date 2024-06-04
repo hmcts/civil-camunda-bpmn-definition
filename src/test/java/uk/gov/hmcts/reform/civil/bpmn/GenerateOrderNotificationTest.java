@@ -239,7 +239,8 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
             LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, false));
+            DASHBOARD_SERVICE_ENABLED, false,
+            CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -379,12 +380,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-        //complete the bulk print
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   SEND_FINAL_ORDER_TO_LIP_DEFENDANT, SEND_FINAL_ORDER_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
-        );
-
         //complete the defendant1 notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
@@ -420,7 +415,8 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_TWO, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
-            LIP_CASE, false));
+            LIP_CASE, false,
+            CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
