@@ -369,7 +369,8 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
             LIP_CASE, false,
-            DASHBOARD_SERVICE_ENABLED, false));
+            DASHBOARD_SERVICE_ENABLED, false,
+            CASE_PROGRESSION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
