@@ -410,7 +410,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
-
         //complete the hearing form process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
