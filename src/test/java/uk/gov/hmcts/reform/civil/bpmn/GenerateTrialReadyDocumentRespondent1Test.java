@@ -42,8 +42,8 @@ class GenerateTrialReadyDocumentRespondent1Test extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
-        variables.putValue("flowFlags", Map.of("CASE_PROGRESSION_ENABLED", true));
+        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true,
+                                               "CASE_PROGRESSION_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
