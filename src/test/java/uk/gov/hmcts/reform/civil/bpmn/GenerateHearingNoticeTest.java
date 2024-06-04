@@ -42,6 +42,10 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         = "SEND_HEARING_TO_LIP_DEFENDANT";
     public static final String SEND_HEARING_TO_LIP_CLAIMANT
         = "SEND_HEARING_TO_LIP_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT";
 
     //ACTIVITY IDs
 
@@ -65,6 +69,10 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         = "SendAutomaticHearingToDefendantLIP";
     private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendAutomaticHearingToClaimantLIP";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationHearingScheduledClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationHearingScheduledDefendant";
 
     public GenerateHearingNoticeTest() {
         super("generate_hearing_notice.bpmn", PROCESS_ID);
