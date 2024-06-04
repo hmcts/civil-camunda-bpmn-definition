@@ -43,6 +43,7 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true));
+        variables.putValue("flowFlags", Map.of("CASE_PROGRESSION_ENABLED", true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
