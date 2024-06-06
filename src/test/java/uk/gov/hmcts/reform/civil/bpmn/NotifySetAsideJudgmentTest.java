@@ -17,13 +17,28 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "NOTIFY_SET_ASIDE_JUDGMENT";
     public static final String PROCESS_ID = "NOTIFY_SET_ASIDE_JUDGMENT";
 
+    //CCD CASE EVENT
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
+
+    //ACTIVITY IDs
+    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
+
     public NotifySetAsideJudgmentTest() {
-        super("notify_set_aside_judgment_request.bpmn", "NOTIFY_SET_ASIDE_JUDGMENT");
+        super("notify_set_aside_judgment_request.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({
+        "true, true, true",
+        "true, true, false",
+        "true, false, true",
+        "true, false, false",
+        "false, true, true",
+        "false, true, false",
+        "false, false, true",
+        "false, false, false"
+    })
+    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -35,7 +50,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -54,6 +70,16 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
             "NotifyClaimSetAsideJudgmentClaimant"
+        );
+
+        //complete generate dashboard notification to claimant
+        ExternalTask claimant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimant1DashboardNotification,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
+            variables
         );
 
         if (!isLiPDefendant) {
@@ -98,6 +124,17 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                 "SendSetAsideLiPLetterDef1",
                 variables
             );
+            if (dashboardServiceEnabled) {
+                //complete generate dashboard notification to defendant
+                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    respondent1DashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGMENT_DEFENDANT",
+                    "GenerateDashboardNotificationSetAsideDefendant",
+                    variables
+                );
+            }
         }
 
         //end business process
