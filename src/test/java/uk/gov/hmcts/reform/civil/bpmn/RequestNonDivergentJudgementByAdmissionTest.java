@@ -23,7 +23,6 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
 
-
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
