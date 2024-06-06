@@ -5,8 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
@@ -18,12 +16,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1_ACTIVITY_ID = "GenerateDashboardNotificationClaimantIntentCCJRequestedForApplicant1";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID = "GenerateDashboardNotificationClaimantIntentCCJRequestedForRespondent1";
-    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC";
-    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_ACTIVITY_ID = "GenerateJudgmentByAdmissionDoc";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
 
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -58,8 +52,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 respondent1Notification,
                 PROCESS_CASE_EVENT,
-                "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER",
-                "PostPINInLetterLIPDefendant",
+                JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID,
+                JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID,
                 variables
             );
 
