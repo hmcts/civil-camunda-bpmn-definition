@@ -4,6 +4,10 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,6 +16,8 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
@@ -22,8 +28,9 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteRequestJudgementByAdmission() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteRequestJudgementByAdmission(boolean isLiPDefendant) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -31,6 +38,10 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "LIP_CASE", false,
+            "DASHBOARD_SERVICE_ENABLED", true,
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -72,6 +83,27 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT,
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
         );
+
+        if (isLiPDefendant) {
+            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1Notification,
+                PROCESS_CASE_EVENT,
+                JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID,
+                JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID,
+                variables
+            );
+
+            //complete the notification dashboard
+            ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardDefendant,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT",
+                "GenerateDashboardNotificationJudgementByAdmissionDefendant",
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
