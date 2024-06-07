@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifySettleClaimMarkedPaidInFullTest extends BpmnBaseTest {
+class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_NOTIFICATION";
     public static final String PROCESS_ID = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_NOTIFICATION_ID";
@@ -21,7 +21,7 @@ class NotifySettleClaimMarkedPaidInFullTest extends BpmnBaseTest {
     public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2 = "NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
     public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull2";
 
-    public NotifySettleClaimMarkedPaidInFullTest() {
+    public SettleClaimPaidInFullNotificationTest() {
         super("settle_claim_paid_in_full_notification.bpmn", PROCESS_ID);
     }
 
