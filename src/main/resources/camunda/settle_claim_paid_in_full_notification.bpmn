@@ -51,11 +51,11 @@
       <bpmn:outgoing>Flow_Two_Respondent_Representatives</bpmn:outgoing>
       <bpmn:outgoing>Flow_06dicjn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_Two_Respondent_Representatives" name="LR Defendant 2" sourceRef="Gateway_19b5dvl" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_Two_Respondent_Representatives" name="LR Defendant2" sourceRef="Gateway_19b5dvl" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_06dicjn" name="LiP Defendant2" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; empty flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDefendantSettleClaimMarkedPaidInFull2" name="Notify Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -76,10 +76,10 @@
     <bpmn:sequenceFlow id="Flow_1sdjpfm" name="LR Defendant1" sourceRef="Gateway_1owdo9t" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_18lw9cr" name="LIP Defendant1" sourceRef="Gateway_1owdo9t" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_18lw9cr" sourceRef="Gateway_1owdo9t" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1903dbe" sourceRef="Gateway_1owdo9t" targetRef="Gateway_19b5dvl">
+    <bpmn:sequenceFlow id="Flow_1903dbe" name="LiP Defendant1" sourceRef="Gateway_1owdo9t" targetRef="Gateway_19b5dvl">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1v0m92k" sourceRef="NotifyDefendantSettleClaimMarkedPaidInFull2" targetRef="Activity_0wretog" />
@@ -157,7 +157,7 @@
         <di:waypoint x="810" y="130" />
         <di:waypoint x="914" y="130" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="731" y="183" width="78" height="14" />
+          <dc:Bounds x="733" y="183" width="74" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06dicjn_di" bpmnElement="Flow_06dicjn">
@@ -175,7 +175,7 @@
         <di:waypoint x="525" y="260" />
         <di:waypoint x="600" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="527" y="231" width="74" height="14" />
+          <dc:Bounds x="514" y="223" width="74" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18lw9cr_di" bpmnElement="Flow_18lw9cr">
@@ -190,6 +190,9 @@
         <di:waypoint x="500" y="380" />
         <di:waypoint x="810" y="380" />
         <di:waypoint x="810" y="285" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="619" y="362" width="76" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v0m92k_di" bpmnElement="Flow_1v0m92k">
         <di:waypoint x="1014" y="130" />
