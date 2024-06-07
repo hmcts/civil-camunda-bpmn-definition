@@ -46,9 +46,9 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives, //true
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives, //false
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant, //true
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2
         ));
 
