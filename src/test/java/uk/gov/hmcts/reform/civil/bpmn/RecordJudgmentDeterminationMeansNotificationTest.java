@@ -47,6 +47,22 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             variables
         );
 
+        ExternalTask claimantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantDoc,
+            PROCESS_CASE_EVENT,
+            "GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT",
+            "GenerateClaimantJudgmentByDeterminationDoc"
+        );
+
+        ExternalTask defendantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantDoc,
+            PROCESS_CASE_EVENT,
+            "GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT",
+            "GenerateDefendantJudgmentByDeterminationDoc"
+        );
+
         if (isLiPDefendant) {
             // should send letter to LiP respondent
             ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
