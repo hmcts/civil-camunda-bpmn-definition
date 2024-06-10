@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_NOTIFICATION";
-    public static final String PROCESS_ID = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_NOTIFICATION_ID";
+    public static final String MESSAGE_NAME = "SETTLE_CLAIM_MARKED_PAID_IN_FULL";
+    public static final String PROCESS_ID = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_ID";
     public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1 = "NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
     public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull1";
     public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2 = "NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
