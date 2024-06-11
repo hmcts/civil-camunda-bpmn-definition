@@ -28,8 +28,17 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "false,true", "true,true"})
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({
+        "true, true, true",
+        "true, true, false",
+        "true, false, true",
+        "true, false, false",
+        "false, true, true",
+        "false, true, false",
+        "false, false, true",
+        "false, false, false"
+    })
+    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -41,7 +50,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -72,7 +82,29 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             variables
         );
 
-        if (isLiPDefendant) {
+        if (!isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
+                "NotifyClaimSetAsideJudgmentDefendant1",
+                variables
+            );
+
+            if (twoRepresentatives) {
+                //complete the notification to Respondent2
+                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    respondent2Notification,
+                    PROCESS_CASE_EVENT,
+                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
+                    "NotifyClaimSetAsideJudgmentDefendant2",
+                    variables
+                );
+            }
+        } else if (isLiPDefendant) {
             //complete the notification to LiP respondent
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -92,25 +124,14 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
                 "SendSetAsideLiPLetterDef1",
                 variables
             );
-        } else {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
-                "NotifyClaimSetAsideJudgmentDefendant1",
-                variables
-            );
-
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            if (dashboardServiceEnabled) {
+                //complete generate dashboard notification to defendant
+                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
-                    respondent2Notification,
+                    respondent1DashboardNotification,
                     PROCESS_CASE_EVENT,
-                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
-                    "NotifyClaimSetAsideJudgmentDefendant2",
+                    "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGMENT_DEFENDANT",
+                    "GenerateDashboardNotificationSetAsideDefendant",
                     variables
                 );
             }
