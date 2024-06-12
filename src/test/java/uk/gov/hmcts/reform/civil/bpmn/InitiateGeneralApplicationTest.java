@@ -1,9 +1,12 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
+import java.util.Map;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,12 +43,21 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
+    public static final String LIP_APPLICANT = "LIP_APPLICANT";
+    //Update CUI dashboard
+    //Notifying respondents
+    private static final String UPDATE_DASHBOARD_GA_CREATED_EVENT = "UPDATE_TASK_LIST_GA_CREATED";
+    private static final String UPDATE_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_TASK_LIST_GA_COMPLETE";
+    private static final String GENERAL_APPLICATION_TASK_LIST_ID = "GeneralApplicationTaskList";
+
+
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled() {
+    @ParameterizedTest
+    @CsvSource({"false", "true"})
+    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(boolean isLipApplicant) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -53,6 +65,8 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            LIP_APPLICANT, isLipApplicant));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -132,9 +146,32 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
                 GENERAL_APPLICATION_NOTIYFYING_ID,
                 variables
         );
+        if (isLipApplicant) {
+            //update dashboard
+            ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_DASHBOARD_GA_CREATED_EVENT,
+                GENERAL_APPLICATION_TASK_LIST_ID,
+                variables
+            );
+        }
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+
+        if (isLipApplicant) {
+            //update dashboard
+            ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_DASHBOARD_GA_COMPLETE_EVENT,
+                GENERAL_APPLICATION_TASK_LIST_ID,
+                variables
+            );
+        }
 
         assertNoExternalTasksLeft();
     }
