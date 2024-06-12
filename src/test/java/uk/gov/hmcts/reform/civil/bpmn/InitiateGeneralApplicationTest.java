@@ -50,7 +50,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String UPDATE_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_TASK_LIST_GA_COMPLETE";
     private static final String GENERAL_APPLICATION_TASK_LIST_ID = "GeneralApplicationTaskList";
 
-
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
     }
