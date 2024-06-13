@@ -48,7 +48,7 @@
       <bpmn:incoming>Flow_1qe9fnl</bpmn:incoming>
       <bpmn:outgoing>Flow_0hypzcm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1glyjdm" sourceRef="Activity_1d3ska5" targetRef="Activity_0tk01mg" />
+    <bpmn:sequenceFlow id="Flow_1glyjdm" sourceRef="Activity_1d3ska5" targetRef="NotifyClaimantJudgmentByAdmission" />
     <bpmn:sequenceFlow id="Flow_0hypzcm" sourceRef="GenerateDashboardNotificationJudgementByAdmissionDefendant" targetRef="Activity_0g68wbz" />
     <bpmn:sequenceFlow id="Flow_1lamj8i" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="Activity_0g68wbz">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
@@ -86,7 +86,7 @@
       <bpmn:outgoing>Flow_075i2tt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_075i2tt" sourceRef="GenerateJudgmentByAdmissionDocDefendant" targetRef="Gateway_00bae9b" />
-    <bpmn:serviceTask id="Activity_0tk01mg" name="Notify  judgment by admission claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="NotifyClaimantJudgmentByAdmission" name="Notify  judgment by admission claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_JUDGMENT_BY_ADMISSION</camunda:inputParameter>
@@ -95,8 +95,8 @@
       <bpmn:incoming>Flow_1glyjdm</bpmn:incoming>
       <bpmn:outgoing>Flow_0wfvh31</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0wfvh31" sourceRef="Activity_0tk01mg" targetRef="Activity_1lbhhnq" />
-    <bpmn:serviceTask id="Activity_1lbhhnq" name="Notify judgment by admission Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_0wfvh31" sourceRef="NotifyClaimantJudgmentByAdmission" targetRef="NotifyDefendantJudgmentByAdmission" />
+    <bpmn:serviceTask id="NotifyDefendantJudgmentByAdmission" name="Notify judgment by admission Defendant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_JUDGMENT_BY_ADMISSION</camunda:inputParameter>
@@ -105,7 +105,7 @@
       <bpmn:incoming>Flow_0wfvh31</bpmn:incoming>
       <bpmn:outgoing>Flow_1o1rhx8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1o1rhx8" sourceRef="Activity_1lbhhnq" targetRef="GenerateJudgmentByAdmissionDocClaimant" />
+    <bpmn:sequenceFlow id="Flow_1o1rhx8" sourceRef="NotifyDefendantJudgmentByAdmission" targetRef="GenerateJudgmentByAdmissionDocClaimant" />
   </bpmn:process>
   <bpmn:message id="Message_1osgsc5" name="JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -150,12 +150,12 @@
         <dc:Bounds x="760" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1vsu8bw" bpmnElement="Activity_1lbhhnq">
-        <dc:Bounds x="480" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1yc07hy" bpmnElement="NotifyClaimantJudgmentByAdmission">
+        <dc:Bounds x="350" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1yc07hy" bpmnElement="Activity_0tk01mg">
-        <dc:Bounds x="350" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1vsu8bw" bpmnElement="NotifyDefendantJudgmentByAdmission">
+        <dc:Bounds x="480" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
@@ -173,13 +173,13 @@
         <di:waypoint x="260" y="130" />
         <di:waypoint x="292" y="130" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1glyjdm_di" bpmnElement="Flow_1glyjdm">
-        <di:waypoint x="310" y="230" />
-        <di:waypoint x="350" y="230" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
         <di:waypoint x="1380" y="230" />
         <di:waypoint x="1462" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1glyjdm_di" bpmnElement="Flow_1glyjdm">
+        <di:waypoint x="310" y="230" />
+        <di:waypoint x="350" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hypzcm_di" bpmnElement="Flow_0hypzcm">
         <di:waypoint x="1270" y="340" />
@@ -193,9 +193,9 @@
           <dc:Bounds x="961" y="196" width="52" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_075i2tt_di" bpmnElement="Flow_075i2tt">
-        <di:waypoint x="860" y="230" />
-        <di:waypoint x="885" y="230" />
+      <bpmndi:BPMNEdge id="Flow_1qe9fnl_di" bpmnElement="Flow_1qe9fnl">
+        <di:waypoint x="1100" y="340" />
+        <di:waypoint x="1170" y="340" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a58dzr_di" bpmnElement="Flow_1a58dzr">
         <di:waypoint x="910" y="255" />
@@ -205,13 +205,13 @@
           <dc:Bounds x="925" y="283" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qe9fnl_di" bpmnElement="Flow_1qe9fnl">
-        <di:waypoint x="1100" y="340" />
-        <di:waypoint x="1170" y="340" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_085619d_di" bpmnElement="Flow_085619d">
         <di:waypoint x="720" y="230" />
         <di:waypoint x="760" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_075i2tt_di" bpmnElement="Flow_075i2tt">
+        <di:waypoint x="860" y="230" />
+        <di:waypoint x="885" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wfvh31_di" bpmnElement="Flow_0wfvh31">
         <di:waypoint x="450" y="230" />
