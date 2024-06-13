@@ -43,7 +43,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
-    public static final String LIP_APPLICANT = "LIP_APPLICANT";
+    private static final String LIP_APPLICANT = "LIP_APPLICANT";
     //Update CUI dashboard
     //Notifying respondents
     private static final String UPDATE_DASHBOARD_GA_CREATED_EVENT = "UPDATE_TASK_LIST_GA_CREATED";

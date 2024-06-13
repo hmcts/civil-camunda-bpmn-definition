@@ -27,7 +27,7 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
-    public static final String LIP_APPLICANT = "LIP_APPLICANT";
+    private static final String LIP_APPLICANT = "LIP_APPLICANT";
 
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
         super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
