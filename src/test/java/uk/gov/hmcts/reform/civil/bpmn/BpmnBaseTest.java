@@ -51,6 +51,7 @@ public abstract class BpmnBaseTest {
     public static final String CLAIM_ISSUE_BILINGUAL = "CLAIM_ISSUE_BILINGUAL";
     public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
     public static final String MINTI_ENABLED = "MINTI_ENABLED";
+    public static final String CASE_PROGRESSION_ENABLED = "CASE_PROGRESSION_ENABLED";
 
     public final String bpmnFileName;
     public final String processId;
