@@ -74,7 +74,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
@@ -140,7 +141,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
             TWO_RESPONDENT_REPRESENTATIVES, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
@@ -213,7 +215,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
             LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
@@ -292,7 +295,8 @@ class HearingProcessTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, true,
             UNREPRESENTED_DEFENDANT_TWO, false,
             LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
@@ -370,7 +374,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
             UNREPRESENTED_DEFENDANT_TWO, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
@@ -442,7 +447,8 @@ class HearingProcessTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
             UNREPRESENTED_DEFENDANT_TWO, false,
-            DASHBOARD_SERVICE_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
         ));
 
         //complete the start business process
