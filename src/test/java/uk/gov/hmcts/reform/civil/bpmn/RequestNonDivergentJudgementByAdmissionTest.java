@@ -22,6 +22,10 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
+    public static final String NOTIFY_JUDGMENT_BY_ADMISSION_CLAIMANT_EVENT = "NOTIFY_JUDGMENT_BY_ADMISSION_CLAIMANT";
+    public static final String NOTIFY_JUDGMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "NotifyJudgmentByAdmissionClaimant";
+    public static final String NOTIFY_JUDGMENT_BY_ADMISSION_DEFENDANT_EVENT = "NOTIFY_JUDGMENT_BY_ADMISSION_DEFENDANT";
+    public static final String NOTIFY_JUDGMENT_BY_ADMISSION_DEFENDANT_ACTIVITY_ID = "NotifyJudgmentByAdmissionDefendant";
 
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -50,6 +54,22 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables);
+
+        ExternalTask notifyJudgmentByAdmissionClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyJudgmentByAdmissionClaimant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_JUDGMENT_BY_ADMISSION_CLAIMANT_EVENT,
+            NOTIFY_JUDGMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID
+        );
+
+        ExternalTask notifyJudgmentByAdmissionDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyJudgmentByAdmissionDefendant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_JUDGMENT_BY_ADMISSION_DEFENDANT_EVENT,
+            NOTIFY_JUDGMENT_BY_ADMISSION_DEFENDANT_ACTIVITY_ID
+        );
 
         ExternalTask generateDocClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
