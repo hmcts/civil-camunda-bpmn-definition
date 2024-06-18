@@ -19,6 +19,10 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM = "PROCEEDS_IN_HERITAGE_SYSTEM";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC";
+    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC_ACTIVITY_ID
+        = "CreateClaimantDashboardNotificationDefendantNoc";
 
     public ApplyNocDecisionDefendantLipTest() {
         super("apply_noc_decision_defendant_lip.bpmn", PROCESS_ID);
@@ -148,6 +152,15 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             PROCEEDS_IN_HERITAGE_SYSTEM,
             PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        //complete the Robotics notification
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC_ACTIVITY_ID
         );
 
         //complete the Robotics notification
