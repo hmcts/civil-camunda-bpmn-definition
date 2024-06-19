@@ -16,16 +16,16 @@ class RequestForReconsiderationCuiTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI";
 
     //CCD CASE EVENT
-    public static final String DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT
-        = "DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT";
-    public static final String DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT
-        = "DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT";
+    public static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT
+        = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT";
+    public static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT
+        = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT";
 
     //ACTIVITY IDs
-    private static final String DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID
-        = "DeleteNotificationRequestForReconsiderationClaimant";
-    private static final String DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID
-        = "DeleteNotificationRequestForReconsiderationDefendant";
+    private static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID
+        = "CreateNotificationRequestForReconsiderationClaimant";
+    private static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID
+        = "CreateNotificationRequestForReconsiderationDefendant";
 
     public RequestForReconsiderationCuiTest() {
         super("request_for_reconsideration_cui.bpmn", PROCESS_ID);
@@ -53,16 +53,16 @@ class RequestForReconsiderationCuiTest extends BpmnBaseTest {
         //complete the delete claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT,
-                                   DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID,
+                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT,
+                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID,
                                    variables
         );
 
         //complete the delete defendant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT,
-                                   DELETE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID,
+                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT,
+                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
