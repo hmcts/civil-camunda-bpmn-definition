@@ -10,25 +10,21 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RequestForReconsiderationCuiTest extends BpmnBaseTest {
+class RequestForReconsiderationCuiDefendantTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI";
-    public static final String PROCESS_ID = "REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI";
+    public static final String MESSAGE_NAME = "REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI_DEFENDANT";
+    public static final String PROCESS_ID = "REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI_DEFENDANT";
 
     //CCD CASE EVENT
     public static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT
         = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT";
-    public static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT
-        = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID
         = "CreateNotificationRequestForReconsiderationClaimant";
-    private static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID
-        = "CreateNotificationRequestForReconsiderationDefendant";
 
-    public RequestForReconsiderationCuiTest() {
-        super("request_for_reconsideration_cui.bpmn", PROCESS_ID);
+    public RequestForReconsiderationCuiDefendantTest() {
+        super("request_for_reconsideration_cui_defendant.bpmn", PROCESS_ID);
     }
 
     @Test
@@ -50,19 +46,11 @@ class RequestForReconsiderationCuiTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-        //complete the delete claimant notification
+        //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT,
                                    CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the delete defendant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT,
-                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
