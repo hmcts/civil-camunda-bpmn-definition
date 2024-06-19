@@ -46,7 +46,6 @@ class RequestForReconsiderationCuiClaimantTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-
         //complete the defendant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
