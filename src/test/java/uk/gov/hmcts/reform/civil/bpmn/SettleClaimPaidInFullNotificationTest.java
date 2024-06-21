@@ -12,13 +12,17 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
+class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "RECORD_JUDGMENT_NOTIFICATION";
-    public static final String PROCESS_ID = "RECORD_JUDGMENT_NOTIFICATION";
+    public static final String MESSAGE_NAME = "SETTLE_CLAIM_MARKED_PAID_IN_FULL";
+    public static final String PROCESS_ID = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_ID";
+    public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1 = "NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
+    public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull1";
+    public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2 = "NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
+    public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull2";
 
-    public RecordJudgmentDeterminationMeansNotificationTest() {
-        super("record_judgment_notification.bpmn", "RECORD_JUDGMENT_NOTIFICATION");
+    public SettleClaimPaidInFullNotificationTest() {
+        super("settle_claim_paid_in_full_notification.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
@@ -32,7 +36,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
         "false, false, true",
         "false, false, false"
     })
-    void shouldSuccessfullyCompleteRecordJudgmentNotificationMultiparty(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPDefendant2) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -45,7 +49,8 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
+            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -57,59 +62,31 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             variables
         );
 
-        if (isLiPDefendant) {
-            // should send letter to LiP respondent
-            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+        if (!isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                sendLipLetter,
+                dashboardDefendant,
                 PROCESS_CASE_EVENT,
-                "POST_JO_DEFENDANT1_PIN_IN_LETTER",
-                "SendDJLetterLIPDefendant1",
+                NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1,
+                NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
                 variables
             );
 
-            if (dashboardServiceEnabled) {
-                //complete generate dashboard notification to defendant
-                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent1DashboardNotification,
-                    PROCESS_CASE_EVENT,
-                    "CREATE_DASHBOARD_NOTIFICATION_RECORD_JUDGMENT_DEFENDANT",
-                    "GenerateDashboardNotificationRecordJudgmentDefendant",
-                    variables
-                );
-            }
         }
 
-        //complete the notification for respondent 1
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT1_FOR_RECORD_JUDGMENT",
-            "RecordJudgmentNotifyRespondent1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification for respondent 2
+        if (twoRepresentatives || (isLiPDefendant && !isLiPDefendant2)) {
+            //complete the notification to Respondent2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 respondent2Notification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT2_FOR_RECORD_JUDGMENT",
-                "RecordJudgmentNotifyRespondentSolicitor2"
+                NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2,
+                NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
+                variables
             );
         }
 
-        //complete the notification for applicant solicitor
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_FOR_RECORD_JUDGMENT",
-                                   "RecordJudgmentNotifyApplicantSolicitor1"
-        );
-
-        //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
