@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
+import java.util.Map;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +27,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
     private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
+    private static final String LIP_APPLICANT = "LIP_APPLICANT";
 
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
@@ -38,13 +42,18 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            LIP_APPLICANT, false));
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
         //assigne of roles
@@ -53,7 +62,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             assignRoles,
             APPLICATION_PROCESS_CASE_EVENT,
             ASSIGNIN_OF_ROLES_EVENT,
-            ASSIGNIN_OF_ROLES_ID
+            ASSIGNIN_OF_ROLES_ID,
+            variables
         );
 
         //complete the document generation
@@ -62,7 +72,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             documentGeneration,
             APPLICATION_PROCESS_CASE_EVENT,
             GENERATE_DRAFT_DOCUMENT,
-            GENERATE_DRAFT_DOCUMENT_ID
+            GENERATE_DRAFT_DOCUMENT_ID,
+            variables
         );
 
         //Complete add pdf to main case event
@@ -71,7 +82,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             addDocumentToMainCase,
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
-            ADD_PDF_ID
+            ADD_PDF_ID,
+            variables
         );
 
         //notify respondents
@@ -80,7 +92,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             notifyRespondents,
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTYFYING_RESPONDENTS_EVENT,
-            GENERAL_APPLICATION_NOTIYFYING_ID
+            GENERAL_APPLICATION_NOTIYFYING_ID,
+            variables
         );
 
         //end business process
