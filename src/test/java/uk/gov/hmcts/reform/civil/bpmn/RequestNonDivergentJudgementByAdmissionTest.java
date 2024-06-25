@@ -51,6 +51,22 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables);
 
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_JUDGMENT_BY_ADMISSION",
+            "NotifyClaimantJudgmentByAdmission"
+        );
+
+        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_JUDGMENT_BY_ADMISSION",
+            "NotifyDefendantJudgmentByAdmission"
+        );
+
         ExternalTask generateDocClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generateDocClaimant,
