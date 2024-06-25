@@ -10,16 +10,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class DecisionOutcomeTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "DECISION_OUTCOME";
-    public static final String PROCESS_ID = "DECISION_OUTCOME";
+    public static final String MESSAGE_NAME = "MOVE_TO_DECISION_OUTCOME";
+    public static final String PROCESS_ID = "MOVE_TO_DECISION_OUTCOME";
 
     //CCD CASE EVENT
-    public static final String CREATE_DASHBOARD_NOTIFICATION_DECISION_OUTCOME
-        = "CREATE_DASHBOARD_NOTIFICATION_DECISION_OUTCOME";
+    public static final String UPDATE_DASHBOARD_TASK_LIST_DEFENDANT_DECISION_OUTCOME
+        = "UPDATE_DASHBOARD_TASK_LIST_DEFENDANT_DECISION_OUTCOME";
+    public static final String UPDATE_DASHBOARD_TASK_LIST_CLAIMANT_DECISION_OUTCOME
+        = "UPDATE_DASHBOARD_TASK_LIST_CLAIMANT_DECISION_OUTCOME";
 
     //ACTIVITY IDs
-    private static final String CREATE_DASHBOARD_NOTIFICATION_DECISION_OUTCOME_ID
-        = "CreateDecisionOutcomeDashboard";
+    private static final String UPDATE_DASHBOARD_TASK_LIST_DEFENDANT_DECISION_OUTCOME_ID
+        = "GenerateDashboardDefendantDecisionOutcome";
+    private static final String UPDATE_DASHBOARD_TASK_LIST_CLAIMANT_DECISION_OUTCOME_ID
+        = "GenerateDashboardClaimantDecisionOutcome";
 
     public DecisionOutcomeTest() {
         super("decision_outcome.bpmn", PROCESS_ID);
@@ -40,10 +44,15 @@ class DecisionOutcomeTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
 
-        //complete the definition outcome form generation
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT, CREATE_DASHBOARD_NOTIFICATION_DECISION_OUTCOME,
-                                   CREATE_DASHBOARD_NOTIFICATION_DECISION_OUTCOME_ID, variables
+        //complete the definition outcome for defendant form generation
+        ExternalTask defendantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(defendantTask, PROCESS_CASE_EVENT, UPDATE_DASHBOARD_TASK_LIST_DEFENDANT_DECISION_OUTCOME,
+                                   UPDATE_DASHBOARD_TASK_LIST_DEFENDANT_DECISION_OUTCOME_ID, variables
+        );
+        //complete the definition outcome for claimant form generation
+        ExternalTask claimantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(claimantTask, PROCESS_CASE_EVENT, UPDATE_DASHBOARD_TASK_LIST_CLAIMANT_DECISION_OUTCOME,
+                                   UPDATE_DASHBOARD_TASK_LIST_CLAIMANT_DECISION_OUTCOME_ID, variables
         );
 
         //end business process
