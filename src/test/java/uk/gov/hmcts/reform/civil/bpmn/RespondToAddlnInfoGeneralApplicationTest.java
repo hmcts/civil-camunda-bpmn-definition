@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
+import java.util.Map;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +20,7 @@ class RespondToAddlnInfoGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
     private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
     private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
     private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
+    private static final String LIP_APPLICANT = "LIP_APPLICANT";
 
     public RespondToAddlnInfoGeneralApplicationTest() {
         super("respond_to_addln_info_general_application.bpmn",
@@ -31,13 +35,18 @@ class RespondToAddlnInfoGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            LIP_APPLICANT, false));
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
         //Complete add pdf to main case event
@@ -46,7 +55,8 @@ class RespondToAddlnInfoGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
             addDocumentToMainCase,
             UPDATE_FROM_GA_CASE_EVENT,
             ADD_PDF_EVENT,
-            ADD_PDF_ID
+            ADD_PDF_ID,
+            variables
         );
 
         //Complete add pdf to main case event
@@ -55,7 +65,8 @@ class RespondToAddlnInfoGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
                 waitMainCaseDocUpdated,
                 WAIT_PDF_UPDATE_TOPIC,
                 WAIT_PDF_UPDATE_EVENT,
-                WAIT_PDF_UPDATE_ID
+                WAIT_PDF_UPDATE_ID,
+                variables
         );
 
         //end business process

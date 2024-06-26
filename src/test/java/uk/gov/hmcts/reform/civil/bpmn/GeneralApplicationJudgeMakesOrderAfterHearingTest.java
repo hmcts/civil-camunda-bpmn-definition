@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
+import java.util.Map;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
@@ -25,6 +26,8 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     //Add PDF document to main case
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
+
+    private static final String LIP_APPLICANT = "LIP_APPLICANT";
 
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
         super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
@@ -58,6 +61,8 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            LIP_APPLICANT, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
