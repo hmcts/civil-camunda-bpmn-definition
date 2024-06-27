@@ -589,6 +589,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
 
         assertNoExternalTasksLeft();
     }
+
     @Test
     void shouldSuccessfullyCompleteGenerateOrderNotificationsAndBulkPrintLipAndDashboard() {
         //assert process has started
