@@ -9,7 +9,7 @@ token=$(az keyvault secret show --vault-name infra-vault-nonprod --name hmcts-gi
 
 latestAssetId=$(curl -H "Authorization: token ${token}" \
   https://api.github.com/repos/hmcts/${repoName}/releases/latest \
-  | docker run --rm --interactive mikefarah/yq ".assets[] | select(.name==\"${assetName}\") | .id")
+  | docker run --rm --interactive ghcr.io/jqlang/jq:latest ".assets[] | select(.name==\"${assetName}\") | .id")
 
 curl -L \
   -H "Accept: application/octet-stream" \
