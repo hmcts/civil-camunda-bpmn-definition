@@ -81,13 +81,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                                    variables
         );
 
-        if (isJudgeOrderVerificationRequired) {
-            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-            completeBusinessProcess(endBusinessProcess);
-
-            assertNoExternalTasksLeft();
-        } else {
-
+        if (!isJudgeOrderVerificationRequired) {
             //complete generate dashboard notification to defendant
             ExternalTask notifyDiscontinuanceDefendant1 = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -121,13 +115,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                 variables
             );
 
-            if (isLiPDefendant2) {
-                ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-                completeBusinessProcess(endBusinessProcess);
-
-                assertNoExternalTasksLeft();
-            } else {
-
+            if (!isLiPDefendant2) {
                 //complete the notification to claimant
                 ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
@@ -137,14 +125,15 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                     "NotifyDiscontinuanceDefendant2"
                 );
 
-                ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-                completeBusinessProcess(endBusinessProcess);
-
-                assertNoExternalTasksLeft();
             }
 
-
         }
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+
     }
 
     @Test
