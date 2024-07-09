@@ -51,7 +51,7 @@
       <bpmn:outgoing>Flow_1cagd2a</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1g00tur" name="Judges order vertification not rquired" sourceRef="Gateway_00bae9b" targetRef="NotifyDiscontinuancetDefendant1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DISCONTINUE_PERMISSION_GRANTED || flowFlags.DISCONTINUE_PERMISSION_GRANTED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED || !flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_19b5dvl">
       <bpmn:incoming>Flow_0bxssc2</bpmn:incoming>
@@ -68,7 +68,7 @@
       <bpmn:outgoing>Flow_19foubv</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0o1d6v6" name="LR Defendant2" sourceRef="Gateway_19b5dvl" targetRef="NotifyDiscontinuanceDefendant2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDiscontinuanceClaimant" name="Notify Discontinuance  Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -101,7 +101,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15io19y" name="Judges orders verification required" sourceRef="Gateway_00bae9b" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DISCONTINUE_PERMISSION_GRANTED &amp;&amp; !flowFlags.DISCONTINUE_PERMISSION_GRANTED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED &amp;&amp; flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="PostNoticeOfDiscontinuanceDefendant1LIP" name="Post notice of Discontinuance Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -118,7 +118,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || !flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0u26hre" name="NO LR defendant2 / Defendant2 unrepresented" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; !flowFlags.TWO_RESPONDENT_REPRESENTATIVES) ||  (empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp;  empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
@@ -212,14 +212,14 @@
         <di:waypoint x="640" y="285" />
         <di:waypoint x="640" y="340" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="643" y="292" width="75" height="40" />
+          <dc:Bounds x="653" y="292" width="74" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o1d6v6_di" bpmnElement="Flow_0o1d6v6">
         <di:waypoint x="1135" y="380" />
         <di:waypoint x="1220" y="380" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1133" y="393" width="74" height="14" />
+          <dc:Bounds x="1133" y="393" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bxssc2_di" bpmnElement="Flow_0bxssc2">
@@ -247,7 +247,7 @@
         <di:waypoint x="665" y="260" />
         <di:waypoint x="1340" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="675" y="220" width="70" height="40" />
+          <dc:Bounds x="675" y="220" width="71" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k3oglr_di" bpmnElement="Flow_0k3oglr">
@@ -271,7 +271,7 @@
         <di:waypoint x="1110" y="260" />
         <di:waypoint x="1340" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1125" y="285" width="72" height="53" />
+          <dc:Bounds x="1126" y="285" width="72" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

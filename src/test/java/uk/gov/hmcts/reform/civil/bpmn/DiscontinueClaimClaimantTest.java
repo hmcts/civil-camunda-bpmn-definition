@@ -41,12 +41,12 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
         "true, true, false",
         "true, false, true",
         "true, false, false",
-        "false, true, true",
         "false, true, false",
-        "false, false, true",
-        "false, false, false"
+        "false, false, false",
+        "false, true, true",
+        "false, false, true"
     })
-    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean judgeVerificationRequired) {
+    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean isLiPDefendant2) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -56,11 +56,10 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            UNREPRESENTED_DEFENDANT_TWO, true,
-            DISCONTINUE_PERMISSION_GRANTED, judgeVerificationRequired));
+            JUDGE_ORDER_VERIFICATION_REQUIRED, isJudgeOrderVerificationRequired,
+            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -78,10 +77,16 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
         noticeTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(noticeTask, PROCESS_CASE_EVENT,
                                    GEN_NOTICE_OF_DISCONTINUANCE,
-                                   GEN_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID
+                                   GEN_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID,
+                                   variables
         );
 
-        if (!judgeVerificationRequired) {
+        if (isJudgeOrderVerificationRequired) {
+            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+            completeBusinessProcess(endBusinessProcess);
+
+            assertNoExternalTasksLeft();
+        } else {
 
             //complete generate dashboard notification to defendant
             ExternalTask notifyDiscontinuanceDefendant1 = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -103,6 +108,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                     SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID,
                     variables
                 );
+
             }
 
             //complete the notification to claimant
@@ -115,23 +121,30 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                 variables
             );
 
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            if (isLiPDefendant2) {
+                ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+                completeBusinessProcess(endBusinessProcess);
+
+                assertNoExternalTasksLeft();
+            } else {
+
+                //complete the notification to claimant
+                ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
-                    respondent2Notification,
+                    defendant2LRNotification,
                     PROCESS_CASE_EVENT,
-                    NOTIFY_DISCONTINUANCE_DEFENDANT2,
-                    NOTIFY_DISCONTINUANCE_DEFENDANT2_ACTIVITY_ID,
-                    variables
+                    "NOTIFY_DISCONTINUANCE_DEFENDANT2",
+                    "NotifyDiscontinuanceDefendant2"
                 );
+
+                ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+                completeBusinessProcess(endBusinessProcess);
+
+                assertNoExternalTasksLeft();
             }
+
+
         }
-
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
     }
 
     @Test
