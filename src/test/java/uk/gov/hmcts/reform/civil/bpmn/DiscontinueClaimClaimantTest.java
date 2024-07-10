@@ -46,7 +46,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
         "false, true, true",
         "false, false, true"
     })
-    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean isLiPDefendant2) {
+    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean twoDefendants) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -58,7 +58,8 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             JUDGE_ORDER_VERIFICATION_REQUIRED, isJudgeOrderVerificationRequired,
-            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2
+            TWO_RESPONDENT_REPRESENTATIVES, twoDefendants,
+            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant
         ));
 
         //complete the start business process
@@ -115,7 +116,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                 variables
             );
 
-            if (!isLiPDefendant2) {
+            if (twoDefendants && !isLiPDefendant) {
                 //complete the notification to claimant
                 ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
@@ -124,7 +125,6 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                     "NOTIFY_DISCONTINUANCE_DEFENDANT2",
                     "NotifyDiscontinuanceDefendant2"
                 );
-
             }
 
         }
