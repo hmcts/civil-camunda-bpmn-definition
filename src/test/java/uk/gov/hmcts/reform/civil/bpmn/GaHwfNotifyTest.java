@@ -2,13 +2,8 @@ package uk.gov.hmcts.reform.civil.bpmn;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.MAKE_DECISION_CASE_EVENT;
-
-import java.util.Map;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
