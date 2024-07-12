@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE" name="Upload translated document order notice" isExecutable="true">
     <bpmn:callActivity id="UploadTranslatedDocumentOrderNotice" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -10,30 +10,25 @@
       <bpmn:outgoing>Flow_0nvdd4d</bpmn:outgoing>
       <bpmn:outgoing>Flow_1vs08o9</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:boundaryEvent id="Event_065sy6f" name="Abort" attachedToRef="UploadTranslatedDocumentOrderNotice">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_18nu2xn" />
-    </bpmn:boundaryEvent>
     <bpmn:endEvent id="Event_0a6upqc">
       <bpmn:incoming>Flow_0nvdd4d</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0nvdd4d" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="Event_0a6upqc" />
     <bpmn:startEvent id="Event_0x1sw6o" name="Start">
       <bpmn:outgoing>Flow_1x45kty</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1kwntce" messageRef="Message_1koptmo" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_012jki6" messageRef="Message_1koptmo" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1x45kty" sourceRef="Event_0x1sw6o" targetRef="UploadTranslatedDocumentOrderNotice" />
     <bpmn:callActivity id="Activity_0pqcpvc" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qjr8zn</bpmn:incoming>
+      <bpmn:incoming>Flow_0niosvp</bpmn:incoming>
+      <bpmn:incoming>Flow_0rr38hm</bpmn:incoming>
+      <bpmn:incoming>Flow_17vo15c</bpmn:incoming>
       <bpmn:outgoing>Flow_1og0z75</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_0jlhskg">
       <bpmn:incoming>Flow_1og0z75</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
-    <bpmn:sequenceFlow id="Flow_1vs08o9" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="NotifyClaimantOfUploadedOrderNotice" />
     <bpmn:serviceTask id="NotifyClaimantOfUploadedOrderNotice" name="Notify Claimant Uploaded Document" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -43,7 +38,6 @@
       <bpmn:incoming>Flow_1vs08o9</bpmn:incoming>
       <bpmn:outgoing>Flow_0posdss</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="NotifyClaimantOfUploadedOrderNotice" targetRef="NotifyDefendantOfUploadedOrderNotice" />
     <bpmn:serviceTask id="NotifyDefendantOfUploadedOrderNotice" name="Notify Defendant Uploaded Document" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -53,7 +47,55 @@
       <bpmn:incoming>Flow_0posdss</bpmn:incoming>
       <bpmn:outgoing>Flow_0qjr8zn</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="NotifyDefendantOfUploadedOrderNotice" targetRef="Activity_0pqcpvc" />
+    <bpmn:exclusiveGateway id="Gateway_1v0f8i4" name="LR or Lip Claim?">
+      <bpmn:incoming>Flow_0qjr8zn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0niosvp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1p76uwz</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_0yava77">
+      <bpmn:incoming>Flow_13wnkxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rr38hm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1uwqvn9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="BulkPrintOrderClaimant" name="Bulk print order Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1uwqvn9</bpmn:incoming>
+      <bpmn:outgoing>Flow_17vo15c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="BulkPrintOrderDefendant" name="Bulk print order defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1p76uwz</bpmn:incoming>
+      <bpmn:outgoing>Flow_13wnkxr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_065sy6f" name="Abort" attachedToRef="UploadTranslatedDocumentOrderNotice">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1k9fov3" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1x45kty" sourceRef="Event_0x1sw6o" targetRef="UploadTranslatedDocumentOrderNotice" />
+    <bpmn:sequenceFlow id="Flow_0nvdd4d" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="Event_0a6upqc" />
+    <bpmn:sequenceFlow id="Flow_1vs08o9" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="NotifyClaimantOfUploadedOrderNotice" />
+    <bpmn:sequenceFlow id="Flow_0niosvp" sourceRef="Gateway_1v0f8i4" targetRef="Activity_0pqcpvc" />
+    <bpmn:sequenceFlow id="Flow_0rr38hm" name="LR v Lip" sourceRef="Gateway_0yava77" targetRef="Activity_0pqcpvc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_17vo15c" sourceRef="BulkPrintOrderClaimant" targetRef="Activity_0pqcpvc" />
+    <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
+    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="NotifyClaimantOfUploadedOrderNotice" targetRef="NotifyDefendantOfUploadedOrderNotice" />
+    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="NotifyDefendantOfUploadedOrderNotice" targetRef="Gateway_1v0f8i4" />
+    <bpmn:sequenceFlow id="Flow_1p76uwz" name="Lip Claim" sourceRef="Gateway_1v0f8i4" targetRef="BulkPrintOrderDefendant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13wnkxr" sourceRef="BulkPrintOrderDefendant" targetRef="Gateway_0yava77" />
+    <bpmn:sequenceFlow id="Flow_1uwqvn9" name="Lip v Lip" sourceRef="Gateway_0yava77" targetRef="BulkPrintOrderClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -63,60 +105,108 @@
   <bpmn:message id="Message_1koptmo" name="UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE">
-      <bpmndi:BPMNEdge id="Flow_0qjr8zn_di" bpmnElement="Flow_0qjr8zn">
-        <di:waypoint x="690" y="220" />
-        <di:waypoint x="770" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0posdss_di" bpmnElement="Flow_0posdss">
-        <di:waypoint x="530" y="220" />
-        <di:waypoint x="590" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vs00o9_di" bpmnElement="Flow_1vs08o9">
-        <di:waypoint x="380" y="220" />
-        <di:waypoint x="430" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
-        <di:waypoint x="870" y="220" />
-        <di:waypoint x="952" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xqzkty_di" bpmnElement="Flow_1x45kty">
-        <di:waypoint x="208" y="220" />
-        <di:waypoint x="280" y="220" />
+      <bpmndi:BPMNEdge id="Flow_1x45kty_di" bpmnElement="Flow_1x45kty">
+        <di:waypoint x="188" y="180" />
+        <di:waypoint x="260" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nvdd4d_di" bpmnElement="Flow_0nvdd4d">
-        <di:waypoint x="330" y="180" />
-        <di:waypoint x="330" y="118" />
+        <di:waypoint x="310" y="140" />
+        <di:waypoint x="310" y="78" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0x0o0ha_di" bpmnElement="UploadTranslatedDocumentOrderNotice">
-        <dc:Bounds x="280" y="180" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0andzqc_di" bpmnElement="Event_0a6upqc">
-        <dc:Bounds x="312" y="82" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0x1swz2_di" bpmnElement="Event_0x1sw6o">
-        <dc:Bounds x="172" y="202" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_1vs08o9_di" bpmnElement="Flow_1vs08o9">
+        <di:waypoint x="360" y="180" />
+        <di:waypoint x="410" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0niosvp_di" bpmnElement="Flow_0niosvp">
+        <di:waypoint x="750" y="180" />
+        <di:waypoint x="1210" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rr38hm_di" bpmnElement="Flow_0rr38hm">
+        <di:waypoint x="940" y="355" />
+        <di:waypoint x="940" y="180" />
+        <di:waypoint x="1210" y="180" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="178" y="245" width="25" height="14" />
+          <dc:Bounds x="949" y="265" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17vo15c_di" bpmnElement="Flow_17vo15c">
+        <di:waypoint x="1260" y="320" />
+        <di:waypoint x="1260" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
+        <di:waypoint x="1310" y="180" />
+        <di:waypoint x="1362" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0posdss_di" bpmnElement="Flow_0posdss">
+        <di:waypoint x="510" y="180" />
+        <di:waypoint x="570" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qjr8zn_di" bpmnElement="Flow_0qjr8zn">
+        <di:waypoint x="670" y="180" />
+        <di:waypoint x="700" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p76uwz_di" bpmnElement="Flow_1p76uwz">
+        <di:waypoint x="725" y="205" />
+        <di:waypoint x="725" y="380" />
+        <di:waypoint x="760" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="667" y="293" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13wnkxr_di" bpmnElement="Flow_13wnkxr">
+        <di:waypoint x="860" y="380" />
+        <di:waypoint x="915" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uwqvn9_di" bpmnElement="Flow_1uwqvn9">
+        <di:waypoint x="965" y="380" />
+        <di:waypoint x="1210" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1067" y="362" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UploadTranslatedDocumentOrderNotice_di" bpmnElement="UploadTranslatedDocumentOrderNotice">
+        <dc:Bounds x="260" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0a6upqc_di" bpmnElement="Event_0a6upqc">
+        <dc:Bounds x="292" y="42" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x1sw6o_di" bpmnElement="Event_0x1sw6o">
+        <dc:Bounds x="152" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="205" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="770" y="180" width="100" height="80" />
+        <dc:Bounds x="1210" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="952" y="202" width="36" height="36" />
+        <dc:Bounds x="1362" y="162" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="NotifyClaimantOfUploadedOrderNotice">
-        <dc:Bounds x="430" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="NotifyClaimantOfUploadedOrderNotice_di" bpmnElement="NotifyClaimantOfUploadedOrderNotice">
+        <dc:Bounds x="410" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDefendantOfUploadedOrderNotice">
-        <dc:Bounds x="590" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="NotifyDefendantOfUploadedOrderNotice_di" bpmnElement="NotifyDefendantOfUploadedOrderNotice">
+        <dc:Bounds x="570" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1v0f8i4_di" bpmnElement="Gateway_1v0f8i4" isMarkerVisible="true">
+        <dc:Bounds x="700" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="125" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0yava77_di" bpmnElement="Gateway_0yava77" isMarkerVisible="true">
+        <dc:Bounds x="915" y="355" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BulkPrintOrderClaimant_di" bpmnElement="BulkPrintOrderClaimant">
+        <dc:Bounds x="1210" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BulkPrintOrderDefendant_di" bpmnElement="BulkPrintOrderDefendant">
+        <dc:Bounds x="760" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
-        <dc:Bounds x="312" y="162" width="36" height="36" />
+        <dc:Bounds x="292" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="347" y="143" width="27" height="14" />
+          <dc:Bounds x="327" y="103" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
