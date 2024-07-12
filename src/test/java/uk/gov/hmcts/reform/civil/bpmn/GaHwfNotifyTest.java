@@ -40,7 +40,7 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteNotifyClaimant_whenCalled() {
+    void shouldSuccessfullyCompleteNotifyApplicant_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
