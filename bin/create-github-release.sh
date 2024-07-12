@@ -23,7 +23,7 @@ createNewRelease() {
     -H "Authorization: token ${token}" \
     https://api.github.com/repos/hmcts/${repoName}/releases \
     -d "{\"tag_name\":\"${nextReleaseVersion}\",\"name\":\"${repoName}-v${nextReleaseVersion}\",\"body\":\"${BUILD_URL}\"}" \
-    | docker run --rm --interactive mikefarah/yq '.id'
+    | docker run --rm --interactive ghcr.io/jqlang/jq:latest '.id'
 }
 
 uploadReleaseAsset() {
