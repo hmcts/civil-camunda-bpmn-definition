@@ -40,7 +40,7 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled() {
+    void shouldSuccessfullyCompleteNotifyClaimant_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
