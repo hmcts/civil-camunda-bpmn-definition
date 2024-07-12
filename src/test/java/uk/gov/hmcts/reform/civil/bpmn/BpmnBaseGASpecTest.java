@@ -36,7 +36,7 @@ public abstract class BpmnBaseGASpecTest {
     public static final String CREATE_APPLICATION_CASE_EVENT = "createApplicationEventGASpec";
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
-    public static final String END_GA_BUSINESS_PROCESS = "END_GA_BUSINESS_PROCESS";
+    public static final String END_GA_HWF_NOTIFY_PROCESS = "END_GA_HWF_NOTIFY_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
 
     public final String bpmnFileName;
@@ -263,14 +263,14 @@ public abstract class BpmnBaseGASpecTest {
     }
 
     /**
-     * Completes the external task with topic name END_GA_BUSINESS_PROCESS.
+     * Completes the external task with topic name END_GA_HWF_NOTIFY_PROCESS.
      *
      * @param externalTask the id of the external task to complete.
      */
     public void completeGaBusinessProcess(ExternalTask externalTask) {
-        assertThat(externalTask.getTopicName()).isEqualTo("END_GA_BUSINESS_PROCESS");
+        assertThat(externalTask.getTopicName()).isEqualTo("END_GA_HWF_NOTIFY_PROCESS");
 
-        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_GA_BUSINESS_PROCESS");
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_GA_HWF_NOTIFY_PROCESS");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());

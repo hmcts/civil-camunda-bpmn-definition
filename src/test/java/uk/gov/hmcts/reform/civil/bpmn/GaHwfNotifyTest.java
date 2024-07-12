@@ -30,7 +30,7 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
                 .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
                 .createDeployment()
-                .addClasspathResource(String.format(DIAGRAM_PATH, "end_ga_business_process.bpmn"))
+                .addClasspathResource(String.format(DIAGRAM_PATH, "end_ga_hwf_notify_process.bpmn"))
                 .deploy();
         deployment = engine.getRepositoryService()
                 .createDeployment()
@@ -64,7 +64,7 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
         );
 
         //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_GA_BUSINESS_PROCESS);
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_GA_HWF_NOTIFY_PROCESS);
         completeGaBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
