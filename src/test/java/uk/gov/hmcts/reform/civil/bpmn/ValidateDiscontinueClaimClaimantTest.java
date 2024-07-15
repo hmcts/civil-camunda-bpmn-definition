@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -18,10 +16,12 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "VALIDATE_DISCONTINUE_CLAIM_CLAIMANT";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT = "NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT";
+    public static final String NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE
+        = "NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE";
 
     //ACTIVITY IDs
-    public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID = "NotifyValidationFailureClaimant";
+    public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID
+        = "NotifyValidationFailureClaimant";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
@@ -56,7 +56,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT,
+                NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE,
                 NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID,
                 variables
             );
