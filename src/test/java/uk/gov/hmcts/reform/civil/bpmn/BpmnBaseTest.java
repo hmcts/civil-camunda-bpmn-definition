@@ -52,7 +52,6 @@ public abstract class BpmnBaseTest {
     public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
     public static final String MINTI_ENABLED = "MINTI_ENABLED";
     public static final String CASE_PROGRESSION_ENABLED = "CASE_PROGRESSION_ENABLED";
-    public static final String DISCONTINUANCE_VALIDATION_SUCCESS = "DISCONTINUANCE_VALIDATION_SUCCESS";
 
     public final String bpmnFileName;
     public final String processId;

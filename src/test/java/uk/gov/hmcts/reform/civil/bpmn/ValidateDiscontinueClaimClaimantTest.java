@@ -28,7 +28,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false", "null"})
+    @CsvSource({"true", "false"})
     void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess) {
 
         //assert process has started
@@ -38,9 +38,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            DISCONTINUANCE_VALIDATION_SUCCESS, discontinuanceValidationSuccess
-        ));
+        variables.put("discontinuanceValidationSuccess", discontinuanceValidationSuccess);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
