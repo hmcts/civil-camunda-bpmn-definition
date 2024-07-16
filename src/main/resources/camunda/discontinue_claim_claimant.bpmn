@@ -16,7 +16,6 @@
       <bpmn:incoming>Flow_19foubv</bpmn:incoming>
       <bpmn:incoming>Flow_15io19y</bpmn:incoming>
       <bpmn:incoming>Flow_0u26hre</bpmn:incoming>
-      <bpmn:incoming>Flow_1f7an0n</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -54,12 +53,6 @@
     <bpmn:sequenceFlow id="Flow_1g00tur" name="Judges order vertification not rquired" sourceRef="Gateway_00bae9b" targetRef="NotifyDiscontinuancetDefendant1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED || !flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_19b5dvl">
-      <bpmn:incoming>Flow_0bxssc2</bpmn:incoming>
-      <bpmn:outgoing>Flow_0o1d6v6</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0u26hre</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1f7an0n</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="NotifyDiscontinuanceDefendant2" name="Notify Discontinuance Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -69,9 +62,6 @@
       <bpmn:incoming>Flow_0o1d6v6</bpmn:incoming>
       <bpmn:outgoing>Flow_19foubv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0o1d6v6" name="LR Defendant2" sourceRef="Gateway_19b5dvl" targetRef="NotifyDiscontinuanceDefendant2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDiscontinuanceClaimant" name="Notify Discontinuance  Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -82,7 +72,6 @@
       <bpmn:incoming>Flow_1sq8lia</bpmn:incoming>
       <bpmn:outgoing>Flow_0bxssc2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDiscontinuanceClaimant" targetRef="Gateway_19b5dvl" />
     <bpmn:serviceTask id="GenerateNoticeOfDiscontinuance" name="Generate Notice of Discontinuance" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -119,12 +108,18 @@
     <bpmn:sequenceFlow id="Flow_1sq8lia" name="LR Defendant1" sourceRef="Gateway_16v73ou" targetRef="NotifyDiscontinuanceClaimant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || !flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0u26hre" name="NO LR defendant2 / Defendant2 unrepresented" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
+    <bpmn:exclusiveGateway id="Gateway_19b5dvl">
+      <bpmn:incoming>Flow_0bxssc2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u26hre</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0o1d6v6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0u26hre" name=" Defendant2 LIP / Only 1 Defendant" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES  &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1f7an0n" name="Only 1 Defendant / Not Exits 2 Defendants" sourceRef="Gateway_19b5dvl" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES || !flowFlags.TWO_RESPONDENT_REPRESENTATIVES)}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_0o1d6v6" name="LR Defendant2" sourceRef="Gateway_19b5dvl" targetRef="NotifyDiscontinuanceDefendant2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDiscontinuanceClaimant" targetRef="Gateway_19b5dvl" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -276,16 +271,7 @@
         <di:waypoint x="1110" y="260" />
         <di:waypoint x="1340" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1124" y="285" width="72" height="53" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1f7an0n_di" bpmnElement="Flow_1f7an0n">
-        <di:waypoint x="1110" y="405" />
-        <di:waypoint x="1110" y="500" />
-        <di:waypoint x="1420" y="500" />
-        <di:waypoint x="1420" y="300" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1223" y="510" width="87" height="40" />
+          <dc:Bounds x="1120" y="285" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
