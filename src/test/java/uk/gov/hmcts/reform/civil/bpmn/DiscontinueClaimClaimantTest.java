@@ -57,10 +57,10 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            JUDGE_ORDER_VERIFICATION_REQUIRED, isJudgeOrderVerificationRequired,
             TWO_RESPONDENT_REPRESENTATIVES, twoDefendants,
             UNREPRESENTED_DEFENDANT_TWO, !twoDefendants
         ));
+        variables.put("JUDGE_ORDER_VERIFICATION_REQUIRED", isJudgeOrderVerificationRequired);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
