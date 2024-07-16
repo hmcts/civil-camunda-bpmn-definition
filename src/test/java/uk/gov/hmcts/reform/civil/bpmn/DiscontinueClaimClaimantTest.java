@@ -59,7 +59,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             JUDGE_ORDER_VERIFICATION_REQUIRED, isJudgeOrderVerificationRequired,
             TWO_RESPONDENT_REPRESENTATIVES, twoDefendants,
-            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant
+            UNREPRESENTED_DEFENDANT_TWO, !twoDefendants
         ));
 
         //complete the start business process
@@ -116,14 +116,15 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
                 variables
             );
 
-            if (twoDefendants && !isLiPDefendant) {
+            if (twoDefendants) {
                 //complete the notification to claimant
                 ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
                     defendant2LRNotification,
                     PROCESS_CASE_EVENT,
                     "NOTIFY_DISCONTINUANCE_DEFENDANT2",
-                    "NotifyDiscontinuanceDefendant2"
+                    "NotifyDiscontinuanceDefendant2",
+                    variables
                 );
             }
 
