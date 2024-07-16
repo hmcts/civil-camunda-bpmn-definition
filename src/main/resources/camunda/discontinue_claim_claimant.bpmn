@@ -51,7 +51,7 @@
       <bpmn:outgoing>Flow_1cagd2a</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1g00tur" name="Judges order vertification not rquired" sourceRef="Gateway_00bae9b" targetRef="NotifyDiscontinuancetDefendant1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED || !flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty JUDGE_ORDER_VERIFICATION_REQUIRED || JUDGE_ORDER_VERIFICATION_REQUIRED==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDiscontinuanceDefendant2" name="Notify Discontinuance Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -92,7 +92,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15io19y" name="Judges orders verification required" sourceRef="Gateway_00bae9b" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED &amp;&amp; flowFlags.JUDGE_ORDER_VERIFICATION_REQUIRED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${JUDGE_ORDER_VERIFICATION_REQUIRED==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="PostNoticeOfDiscontinuanceDefendant1LIP" name="Post notice of Discontinuance Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -161,9 +161,6 @@
         <dc:Bounds x="590" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
-        <dc:Bounds x="1085" y="355" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0e1o9i1" bpmnElement="NotifyDiscontinuanceDefendant2">
         <dc:Bounds x="1220" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -185,6 +182,9 @@
       <bpmndi:BPMNShape id="BPMNShape_0c5ievn" bpmnElement="PostNoticeOfDiscontinuanceDefendant1LIP">
         <dc:Bounds x="840" y="460" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
+        <dc:Bounds x="1085" y="355" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="262" y="202" width="36" height="36" />
@@ -214,17 +214,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="653" y="292" width="74" height="40" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o1d6v6_di" bpmnElement="Flow_0o1d6v6">
-        <di:waypoint x="1135" y="380" />
-        <di:waypoint x="1220" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1133" y="393" width="75" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bxssc2_di" bpmnElement="Flow_0bxssc2">
-        <di:waypoint x="1030" y="380" />
-        <di:waypoint x="1085" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lzj11s_di" bpmnElement="Flow_1lzj11s">
         <di:waypoint x="530" y="260" />
@@ -273,6 +262,17 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1120" y="285" width="87" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o1d6v6_di" bpmnElement="Flow_0o1d6v6">
+        <di:waypoint x="1135" y="380" />
+        <di:waypoint x="1220" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1133" y="393" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bxssc2_di" bpmnElement="Flow_0bxssc2">
+        <di:waypoint x="1030" y="380" />
+        <di:waypoint x="1085" y="380" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
