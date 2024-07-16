@@ -15,13 +15,17 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "VALIDATE_DISCONTINUE_CLAIM_CLAIMANT";
     public static final String PROCESS_ID = "VALIDATE_DISCONTINUE_CLAIM_CLAIMANT";
 
-    //CCD CASE EVENT
-    public static final String NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE
-        = "NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE";
+    //CCD CASE EVENTs
+    public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT
+        = "NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT";
+    public static final String UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE
+        = "UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE";
 
     //ACTIVITY IDs
     public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID
         = "NotifyValidationFailureClaimant";
+    public static final String UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID
+        = "UpdateVisibilityNoticeOfDiscontinuance";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
@@ -50,13 +54,23 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
             variables
         );
 
+        //complete update visibility notice of discontinuance
+        ExternalTask updateVisibilityTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateVisibilityTask,
+            PROCESS_CASE_EVENT,
+            UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE,
+            UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID,
+            variables
+        );
+
         if (!discontinuanceValidationSuccess) {
             //complete send email notification to claimant
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_CLAIMANT_LR_VALIDATION_DICONTINUANCE_FAILURE,
+                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT,
                 NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID,
                 variables
             );
