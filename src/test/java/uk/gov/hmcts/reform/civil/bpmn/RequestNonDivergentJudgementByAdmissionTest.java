@@ -18,6 +18,10 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
 
     public RequestNonDivergentJudgementByAdmissionTest() {
         super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -46,6 +50,38 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables);
+
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_JUDGMENT_BY_ADMISSION",
+            "NotifyClaimantJudgmentByAdmission"
+        );
+
+        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_JUDGMENT_BY_ADMISSION",
+            "NotifyDefendantJudgmentByAdmission"
+        );
+
+        ExternalTask generateDocClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDocClaimant,
+            PROCESS_CASE_EVENT,
+            GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT,
+            GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID
+        );
+
+        ExternalTask generateDocDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDocDefendant,
+            PROCESS_CASE_EVENT,
+            GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT,
+            GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
+        );
 
         if (isLiPDefendant) {
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);

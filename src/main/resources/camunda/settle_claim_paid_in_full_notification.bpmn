@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <bpmn:process id="SETTLE_CLAIM_MARKED_PAID_IN_FULL_ID" name="Settle Claim Marked As Paid In Full notification" isExecutable="true">
     <bpmn:startEvent id="Event_0t2zome" name="Start">
       <bpmn:outgoing>Flow_08myj65</bpmn:outgoing>
@@ -47,7 +47,7 @@
     <bpmn:sequenceFlow id="Flow_1dra5bz" sourceRef="NotifyDefendantSettleClaimMarkedPaidInFull1" targetRef="Gateway_19b5dvl" />
     <bpmn:exclusiveGateway id="Gateway_19b5dvl">
       <bpmn:incoming>Flow_1dra5bz</bpmn:incoming>
-      <bpmn:incoming>Flow_18998xq</bpmn:incoming>
+      <bpmn:incoming>Flow_1903dbe</bpmn:incoming>
       <bpmn:outgoing>Flow_Two_Respondent_Representatives</bpmn:outgoing>
       <bpmn:outgoing>Flow_06dicjn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -79,20 +79,10 @@
     <bpmn:sequenceFlow id="Flow_18lw9cr" sourceRef="Gateway_1owdo9t" targetRef="NotifyDefendantSettleClaimMarkedPaidInFull1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1903dbe" name="LiP Defendant1" sourceRef="Gateway_1owdo9t" targetRef="SendLetterSettleClaimMarkedPaidInFullDefendantLiP">
+    <bpmn:sequenceFlow id="Flow_1903dbe" name="LiP Defendant1" sourceRef="Gateway_1owdo9t" targetRef="Gateway_19b5dvl">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1v0m92k" sourceRef="NotifyDefendantSettleClaimMarkedPaidInFull2" targetRef="Activity_0wretog" />
-    <bpmn:serviceTask id="SendLetterSettleClaimMarkedPaidInFullDefendantLiP" name="Generate, print and post letter to Defendant LiP" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1903dbe</bpmn:incoming>
-      <bpmn:outgoing>Flow_18998xq</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_18998xq" sourceRef="SendLetterSettleClaimMarkedPaidInFullDefendantLiP" targetRef="Gateway_19b5dvl" />
     <bpmn:textAnnotation id="TextAnnotation_0i3yd0i">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -138,10 +128,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
         <dc:Bounds x="880" y="280" width="120" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ncrrnw" bpmnElement="SendLetterSettleClaimMarkedPaidInFullDefendantLiP">
-        <dc:Bounds x="600" y="340" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="292" y="202" width="36" height="36" />
@@ -202,9 +188,10 @@
       <bpmndi:BPMNEdge id="Flow_1903dbe_di" bpmnElement="Flow_1903dbe">
         <di:waypoint x="500" y="285" />
         <di:waypoint x="500" y="380" />
-        <di:waypoint x="600" y="380" />
+        <di:waypoint x="810" y="380" />
+        <di:waypoint x="810" y="285" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="513" y="353" width="76" height="14" />
+          <dc:Bounds x="619" y="362" width="76" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v0m92k_di" bpmnElement="Flow_1v0m92k">
@@ -216,11 +203,6 @@
       <bpmndi:BPMNEdge id="Association_0ycet74_di" bpmnElement="Association_0ycet74">
         <di:waypoint x="829" y="266" />
         <di:waypoint x="880" y="284" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18998xq_di" bpmnElement="Flow_18998xq">
-        <di:waypoint x="700" y="380" />
-        <di:waypoint x="810" y="380" />
-        <di:waypoint x="810" y="285" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
