@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -32,8 +34,11 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess) {
+    @CsvSource({"false, false, false"
+        , "true, false, false"
+        , "true, true, true"})
+    void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess, boolean unrepresentedDefendant1
+        , boolean unrepresentedDefendant2) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -43,6 +48,8 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("discontinuanceValidationSuccess", discontinuanceValidationSuccess);
+        variables.put(FLOW_FLAGS, Map.of(UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
+                                         UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -74,6 +81,31 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
                 NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID,
                 variables
             );
+        }
+
+        if (discontinuanceValidationSuccess) {
+            //complete Notify Discontinuance Defendant 1
+            ExternalTask notificationDiscontTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationDiscontTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT, // TODO replace with correct one
+                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID, // TODO replace with correct one
+                variables
+            );
+
+            if (unrepresentedDefendant1) {
+                //complete Post Notice of Discontinuance Defendant 1 LiP
+                // TODO complete
+            }
+
+            //complete Notify Discontinuance Claimant
+            // TODO complete
+
+            if (!unrepresentedDefendant2) {
+                //complete Notify Discontinuance Defendant 2
+                // TODO complete
+            }
         }
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
