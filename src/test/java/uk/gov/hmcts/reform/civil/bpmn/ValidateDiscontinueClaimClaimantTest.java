@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.NOTIFY_DISCONTINUANCE_CLAIMANT1;
+import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.NOTIFY_DISCONTINUANCE_DEFENDANT1;
 import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1;
 
 public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
@@ -32,6 +33,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "UpdateVisibilityNoticeOfDiscontinuance";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LIP";
     public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID = "NotifyDiscontinuanceClaimant";
+    public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1_ACTIVITY_ID = "NotifyDiscontinuanceDefendant1";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
@@ -93,8 +95,8 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notificationDiscontTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT, // TODO replace with correct one
-                NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID, // TODO replace with correct one
+                NOTIFY_DISCONTINUANCE_DEFENDANT1,
+                NOTIFY_DISCONTINUANCE_DEFENDANT1_ACTIVITY_ID,
                 variables
             );
 
