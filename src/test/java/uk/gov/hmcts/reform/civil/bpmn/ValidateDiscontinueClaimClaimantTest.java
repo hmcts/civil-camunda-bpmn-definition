@@ -11,6 +11,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.NOTIFY_DISCONTINUANCE_CLAIMANT1;
+import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1;
 
 public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
 
@@ -28,6 +30,8 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "NotifyValidationFailureClaimant";
     public static final String UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID
         = "UpdateVisibilityNoticeOfDiscontinuance";
+    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LIP";
+    public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID = "NotifyDiscontinuanceClaimant";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
@@ -96,15 +100,36 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
 
             if (unrepresentedDefendant1) {
                 //complete Post Notice of Discontinuance Defendant 1 LiP
-                // TODO complete
+                ExternalTask postNoticeDiscontinuanceTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    postNoticeDiscontinuanceTask,
+                    PROCESS_CASE_EVENT,
+                    SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1,
+                    SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID,
+                    variables
+                );
             }
 
             //complete Notify Discontinuance Claimant
-            // TODO complete
+            ExternalTask claimant1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimant1Notification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_DISCONTINUANCE_CLAIMANT1,
+                NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID,
+                variables
+            );
 
             if (!unrepresentedDefendant2) {
                 //complete Notify Discontinuance Defendant 2
-                // TODO complete
+                ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    defendant2LRNotification,
+                    PROCESS_CASE_EVENT,
+                    "NOTIFY_DISCONTINUANCE_DEFENDANT2",
+                    "NotifyDiscontinuanceDefendant2",
+                    variables
+                );
             }
         }
 
