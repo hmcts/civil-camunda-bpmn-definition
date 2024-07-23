@@ -111,7 +111,7 @@
       <bpmn:outgoing>Flow_02a1r9o</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_04nwyba" name="LR Defendant 2" sourceRef="Gateway_09rp7qh" targetRef="NotifyDiscontinuanceDefendant2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES)  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyDiscontinuanceDefendant2" name="Notify Discontinuance Defendant 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -124,7 +124,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0txpf2p" sourceRef="NotifyDiscontinuanceDefendant2" targetRef="Activity_0wretog" />
     <bpmn:sequenceFlow id="Flow_02a1r9o" name="No Defendant 2 / LiP Defendant 2" sourceRef="Gateway_09rp7qh" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE)  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; empty flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES  &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_12d1lyq" name="LiP Defendant 1" sourceRef="Gateway_1uwtxqc" targetRef="PostNoticeOfDiscontinuanceDefendant1LiP">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
@@ -274,7 +274,7 @@
         <di:waypoint x="1040" y="260" />
         <di:waypoint x="1270" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1048" y="335" width="84" height="27" />
+          <dc:Bounds x="1048" y="335" width="85" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12d1lyq_di" bpmnElement="Flow_12d1lyq">

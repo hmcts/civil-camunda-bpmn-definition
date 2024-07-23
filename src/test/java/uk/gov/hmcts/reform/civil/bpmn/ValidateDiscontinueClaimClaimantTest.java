@@ -31,7 +31,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "NotifyValidationFailureClaimant";
     public static final String UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID
         = "UpdateVisibilityNoticeOfDiscontinuance";
-    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LIP";
+    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LiP";
     public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID = "NotifyDiscontinuanceClaimant";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1_ACTIVITY_ID = "NotifyDiscontinuanceDefendant1";
 
@@ -40,11 +40,12 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"false, false, false"
-        , "true, false, false"
-        , "true, true, true"})
+    @CsvSource({"false, false, false, false"
+        , "true, false, false, false"
+        , "true, true, true, false"
+        , "true, true, true, true"})
     void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess, boolean unrepresentedDefendant1
-        , boolean unrepresentedDefendant2) {
+        , boolean twoDefendants, boolean unrepresentedDefendant2) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -55,6 +56,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("discontinuanceValidationSuccess", discontinuanceValidationSuccess);
         variables.put(FLOW_FLAGS, Map.of(UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
+                                         TWO_RESPONDENT_REPRESENTATIVES, twoDefendants,
                                          UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2));
 
         //complete the start business process
@@ -117,12 +119,12 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 claimant1Notification,
                 PROCESS_CASE_EVENT,
-                NOTIFY_DISCONTINUANCE_CLAIMANT1,
-                NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID,
+                "NOTIFY_DISCONTINUANCE_CLAIMANT1",
+                "NotifyDiscontinuanceClaimant",
                 variables
             );
 
-            if (!unrepresentedDefendant2) {
+            if (twoDefendants && !unrepresentedDefendant2) {
                 //complete Notify Discontinuance Defendant 2
                 ExternalTask defendant2LRNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
