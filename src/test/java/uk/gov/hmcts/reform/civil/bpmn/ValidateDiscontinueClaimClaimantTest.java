@@ -120,7 +120,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
                 claimant1Notification,
                 PROCESS_CASE_EVENT,
                 "NOTIFY_DISCONTINUANCE_CLAIMANT1",
-                "NotifyDiscontinuanceClaimant",
+                NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID,
                 variables
             );
 
