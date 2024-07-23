@@ -11,9 +11,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.NOTIFY_DISCONTINUANCE_CLAIMANT1;
-import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.NOTIFY_DISCONTINUANCE_DEFENDANT1;
-import static uk.gov.hmcts.reform.civil.bpmn.DiscontinueClaimClaimantTest.SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1;
 
 public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
 
@@ -25,6 +22,8 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT";
     public static final String UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE
         = "UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE";
+    public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1 = "NOTIFY_DISCONTINUANCE_DEFENDANT1";
+    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1 = "SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1";
 
     //ACTIVITY IDs
     public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID
