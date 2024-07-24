@@ -39,10 +39,12 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"false, false, false, false"
-        , "true, false, false, false"
-        , "true, true, true, false"
-        , "true, true, true, true"})
+    @CsvSource({
+        "false, false, false, false",
+        "true, false, false, false",
+        "true, true, true, false",
+        "true, true, true, true"
+    })
     void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess, boolean unrepresentedDefendant1
         , boolean twoDefendants, boolean unrepresentedDefendant2) {
 
