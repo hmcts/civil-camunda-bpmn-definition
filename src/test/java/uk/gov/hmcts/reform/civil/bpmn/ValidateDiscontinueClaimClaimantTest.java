@@ -45,8 +45,8 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         "true, true, true, false",
         "true, true, true, true"
     })
-    void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess, boolean unrepresentedDefendant1
-        , boolean twoDefendants, boolean unrepresentedDefendant2) {
+    void shouldSuccessfullyComplete(boolean discontinuanceValidationSuccess, boolean unrepresentedDefendant1,
+                                    boolean twoDefendants, boolean unrepresentedDefendant2) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
