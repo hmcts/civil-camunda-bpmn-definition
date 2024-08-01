@@ -97,8 +97,6 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
                                    variables
         );
 
-
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
