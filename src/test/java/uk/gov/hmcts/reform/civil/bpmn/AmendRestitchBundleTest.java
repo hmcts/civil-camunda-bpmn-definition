@@ -27,6 +27,17 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID
         = "NotifyDefendantAmendRestitchBundle";
 
+    public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT";
+
+    //ACTIVITY IDs
+    private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID
+        = "CreateAmendRestitchBundleDashboardNotificationsForClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID
+        = "CreateAmendRestitchBundleDashboardNotificationsForDefendant";
+
     public AmendRestitchBundleTest() {
         super("amend_restitch_bundle.bpmn", PROCESS_ID);
     }
@@ -67,6 +78,22 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE,
                                    NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the claimant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the defendant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
