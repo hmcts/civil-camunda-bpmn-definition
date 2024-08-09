@@ -302,7 +302,6 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the notification to respondent 1 solicitor
         ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -380,7 +379,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPVLRClaim() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -424,7 +423,6 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the notification to respondent 1 solicitor
         ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -502,7 +500,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLrVLrClaim() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLrvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
