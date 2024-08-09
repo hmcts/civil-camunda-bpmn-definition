@@ -32,12 +32,14 @@ public abstract class BpmnBaseGAAfterPaymentTest {
     public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
+    public static final String END_DOC_UPLOAD_BUSINESS_PROCESS = "END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
 
     public final String bpmnFileName;
     public final String processId;
     public Deployment deployment;
     public Deployment endBusinessProcessDeployment;
+    public Deployment endBusinessProcessDeploymentDocUpload;
     public Deployment startBusinessProcessDeployment;
     public static ProcessEngine engine;
 
@@ -67,6 +69,10 @@ public abstract class BpmnBaseGAAfterPaymentTest {
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
             .deploy();
+        endBusinessProcessDeploymentDocUpload = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_doc_upload_general_application_business_process.bpmn"))
+            .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
@@ -78,6 +84,7 @@ public abstract class BpmnBaseGAAfterPaymentTest {
     void tearDown() {
         engine.getRepositoryService().deleteDeployment(startBusinessProcessDeployment.getId());
         engine.getRepositoryService().deleteDeployment(endBusinessProcessDeployment.getId());
+        engine.getRepositoryService().deleteDeployment(endBusinessProcessDeploymentDocUpload.getId());
         engine.getRepositoryService().deleteDeployment(deployment.getId());
     }
 
@@ -252,6 +259,15 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS_GASPEC");
 
         List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS_GASPEC");
+
+        assertThat(lockedEndBusinessProcessTask).hasSize(1);
+        completeTask(lockedEndBusinessProcessTask.get(0).getId());
+    }
+
+    public void completeBusinessProcessDocUpload(ExternalTask externalTask) {
+        assertThat(externalTask.getTopicName()).isEqualTo("END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC");
+
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
