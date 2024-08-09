@@ -502,7 +502,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLRVLRClaim() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLrVLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
