@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.15.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
   <bpmn:collaboration id="InitiateGeneralApplication">
     <bpmn:extensionElements />
@@ -99,9 +99,17 @@
       <bpmn:incoming>Flow_1xd58c9</bpmn:incoming>
       <bpmn:outgoing>Flow_1f547ld</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1o7yyd2" sourceRef="GeneralApplicationTaskList" targetRef="Activity_18x7hxw" />
-    <bpmn:sequenceFlow id="Flow_0u0d8a8" name="Yes" sourceRef="Gateway_0j8ztot" targetRef="GeneralApplicationTaskList">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_APPLICANT&amp;&amp; flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_1o7yyd2" sourceRef="GeneralApplicationClaimantTaskList" targetRef="GeneralApplicationRespondentTaskList" />
+    <bpmn:sequenceFlow id="Flow_0u0d8a8" name="Yes" sourceRef="Gateway_0j8ztot" targetRef="GeneralApplicationClaimantTaskList">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT&amp;&amp; flowFlags.LIP_APPLICANT) || (!empty flowFlags.LIP_RESPONDENT&amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0j8ztot" name="Is LiP applicant or Lip respondent?">
+      <bpmn:incoming>Flow_1f547ld</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u0d8a8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xbphmg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1xbphmg" name="No" sourceRef="Gateway_0j8ztot" targetRef="Activity_18x7hxw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT) &amp;&amp; (empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_05yxbay">
       <bpmn:incoming>Flow_0nlz92w</bpmn:incoming>
@@ -110,32 +118,35 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1o7yyd2</bpmn:incoming>
       <bpmn:incoming>Flow_1xbphmg</bpmn:incoming>
+      <bpmn:incoming>Flow_0c7k3qn</bpmn:incoming>
       <bpmn:outgoing>Flow_0nlz92w</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="GeneralApplicationTaskList" name="Update CUI task list" camunda:type="external" camunda:topic="applicationEventGASpec">
+    <bpmn:serviceTask id="GeneralApplicationClaimantTaskList" name="Update Claimant CUI task list" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">UPDATE_TASK_LIST_GA_CREATED</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">UPDATE_CLAIMANT_TASK_LIST_GA_CREATED</camunda:inputParameter>
+          <camunda:outputParameter name="Output_0ugbdhe" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u0d8a8</bpmn:incoming>
       <bpmn:outgoing>Flow_1o7yyd2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_0j8ztot" name="Is LiP applicant?">
-      <bpmn:incoming>Flow_1f547ld</bpmn:incoming>
-      <bpmn:outgoing>Flow_0u0d8a8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1xbphmg</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1xbphmg" name="No" sourceRef="Gateway_0j8ztot" targetRef="Activity_18x7hxw">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_APPLICANT|| !flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="GeneralApplicationRespondentTaskList" name="Update Respondent CUI task list" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_RESPONDENT_TASK_LIST_GA_CREATED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1o7yyd2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c7k3qn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0c7k3qn" sourceRef="GeneralApplicationRespondentTaskList" targetRef="Activity_18x7hxw" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
       <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1830" height="630" />
+        <dc:Bounds x="160" y="80" width="1918" height="630" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
@@ -172,21 +183,25 @@
       <bpmndi:BPMNShape id="Activity_0whee0o_di" bpmnElement="GeneralApplicationNotifying">
         <dc:Bounds x="1330" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
-        <dc:Bounds x="1892" y="230" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
-        <dc:Bounds x="1750" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1feoz4m_di" bpmnElement="GeneralApplicationTaskList">
-        <dc:Bounds x="1600" y="208" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0j8ztot_di" bpmnElement="Gateway_0j8ztot" isMarkerVisible="true">
         <dc:Bounds x="1465" y="223" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1451" y="280" width="81" height="14" />
+          <dc:Bounds x="1455" y="280" width="75" height="40" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
+        <dc:Bounds x="1992" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
+        <dc:Bounds x="1840" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06ofyfc" bpmnElement="GeneralApplicationRespondentTaskList">
+        <dc:Bounds x="1690" y="208" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1feoz4m_di" bpmnElement="GeneralApplicationClaimantTaskList">
+        <dc:Bounds x="1560" y="208" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -219,8 +234,8 @@
         <di:waypoint x="1050" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nlz92w_di" bpmnElement="Flow_0nlz92w">
-        <di:waypoint x="1850" y="248" />
-        <di:waypoint x="1892" y="248" />
+        <di:waypoint x="1940" y="250" />
+        <di:waypoint x="1992" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xd58c9_di" bpmnElement="Flow_1xd58c9">
         <di:waypoint x="1290" y="248" />
@@ -239,24 +254,28 @@
         <di:waypoint x="1190" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1o7yyd2_di" bpmnElement="Flow_1o7yyd2">
-        <di:waypoint x="1700" y="248" />
-        <di:waypoint x="1750" y="248" />
+        <di:waypoint x="1660" y="248" />
+        <di:waypoint x="1690" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0u0d8a8_di" bpmnElement="Flow_0u0d8a8">
         <di:waypoint x="1515" y="248" />
-        <di:waypoint x="1600" y="248" />
+        <di:waypoint x="1560" y="248" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1549" y="230" width="19" height="14" />
+          <dc:Bounds x="1529" y="230" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xbphmg_di" bpmnElement="Flow_1xbphmg">
         <di:waypoint x="1490" y="223" />
         <di:waypoint x="1490" y="150" />
-        <di:waypoint x="1790" y="150" />
-        <di:waypoint x="1790" y="208" />
+        <di:waypoint x="1880" y="150" />
+        <di:waypoint x="1880" y="208" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1633" y="132" width="15" height="14" />
+          <dc:Bounds x="1678" y="132" width="15" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c7k3qn_di" bpmnElement="Flow_0c7k3qn">
+        <di:waypoint x="1790" y="248" />
+        <di:waypoint x="1840" y="248" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

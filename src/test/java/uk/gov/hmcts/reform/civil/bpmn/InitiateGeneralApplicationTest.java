@@ -44,19 +44,23 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
+    private static final String LIP_RESPONDENT= "LIP_RESPONDENT";
     //Update CUI dashboard
     //Notifying respondents
-    private static final String UPDATE_DASHBOARD_GA_CREATED_EVENT = "UPDATE_TASK_LIST_GA_CREATED";
-    private static final String UPDATE_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_TASK_LIST_GA_COMPLETE";
-    private static final String GENERAL_APPLICATION_TASK_LIST_ID = "GeneralApplicationTaskList";
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_CREATED_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_CREATED";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_CREATED_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_CREATED";
 
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_COMPLETE";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
     }
 
     @ParameterizedTest
-    @CsvSource({"false", "true"})
-    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(boolean isLipApplicant) {
+    @CsvSource({"false,false", "true,false","true,true","false,true"})
+    void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -65,7 +69,8 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, isLipApplicant));
+            LIP_APPLICANT, isLipApplicant,
+            LIP_RESPONDENT, isLipRespondent));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -145,29 +150,48 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
                 GENERAL_APPLICATION_NOTIYFYING_ID,
                 variables
         );
-        if (isLipApplicant) {
+        if (isLipApplicant || isLipRespondent) {
             //update dashboard
-            ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
-                updateCuiDashboard,
+                updateCuiClaimantDashboard,
                 APPLICATION_EVENT_GASPEC,
-                UPDATE_DASHBOARD_GA_CREATED_EVENT,
-                GENERAL_APPLICATION_TASK_LIST_ID,
+                UPDATE_CLAIMANT_DASHBOARD_GA_CREATED_EVENT,
+                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+                variables
+            );
+
+            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiDefendantDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_RESPONDENT_DASHBOARD_GA_CREATED_EVENT,
+                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
                 variables
             );
         }
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
-        if (isLipApplicant) {
+        if (isLipApplicant || isLipRespondent) {
             //update dashboard
-            ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
-                updateCuiDashboard,
+                updateCuiClaimantDashboard,
                 APPLICATION_EVENT_GASPEC,
-                UPDATE_DASHBOARD_GA_COMPLETE_EVENT,
-                GENERAL_APPLICATION_TASK_LIST_ID,
+                UPDATE_CLAIMANT_DASHBOARD_GA_COMPLETE_EVENT,
+                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+                variables
+            );
+
+            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiDefendantDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_RESPONDENT_DASHBOARD_GA_COMPLETE_EVENT,
+                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
                 variables
             );
         }
