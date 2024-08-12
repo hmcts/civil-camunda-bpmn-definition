@@ -332,6 +332,49 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the notification to LIP respondent
+        ExternalTask notifyLipRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLipRespondent,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
+        );
+        createDefendantDashboardNotification();
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteClaimantResponseToLip_WhenApplicantConfirmsNotToProceed_PreCUIR2() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
         //complete the take offline event
         ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -350,7 +393,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
-        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
