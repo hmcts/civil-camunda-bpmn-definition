@@ -1,12 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
-import java.util.Map;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,7 +45,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
-    private static final String LIP_RESPONDENT= "LIP_RESPONDENT";
+    private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     //Update CUI dashboard
     //Notifying respondents
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_CREATED_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_CREATED";
@@ -54,12 +55,13 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
+
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
     }
 
     @ParameterizedTest
-    @CsvSource({"false,false", "true,false","true,true","false,true"})
+    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
     void shouldSuccessfullyCompleteCreateGeneralApplication_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -70,7 +72,8 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             LIP_APPLICANT, isLipApplicant,
-            LIP_RESPONDENT, isLipRespondent));
+            LIP_RESPONDENT, isLipRespondent
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -115,11 +118,11 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         //validate fee
         ExternalTask validateFee = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
-                validateFee,
-                APPLICATION_EVENT_GASPEC,
-                VALIDATE_FEE_EVENT,
-                VALIDATE_FEE_ID,
-                variables
+            validateFee,
+            APPLICATION_EVENT_GASPEC,
+            VALIDATE_FEE_EVENT,
+            VALIDATE_FEE_ID,
+            variables
         );
         //make service request
         ExternalTask makeServiceRequest = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
@@ -144,11 +147,11 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         //notify respondents
         ExternalTask notifyRespondents = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
-                notifyRespondents,
-                APPLICATION_EVENT_GASPEC,
-                NOTYFYING_RESPONDENTS_EVENT,
-                GENERAL_APPLICATION_NOTIYFYING_ID,
-                variables
+            notifyRespondents,
+            APPLICATION_EVENT_GASPEC,
+            NOTYFYING_RESPONDENTS_EVENT,
+            GENERAL_APPLICATION_NOTIYFYING_ID,
+            variables
         );
         if (isLipApplicant || isLipRespondent) {
             //update dashboard
