@@ -27,7 +27,6 @@ public class StayCaseTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT_STAY_CASE_ACTIVITY_ID
         = "NotifyDefendantStayCase";
 
-
     public StayCaseTest() {
         super("stay_case.bpmn", PROCESS_ID);
     }
