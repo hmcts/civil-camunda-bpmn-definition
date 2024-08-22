@@ -36,6 +36,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+        variables.put("judgmentRecordedReason", true);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -45,6 +46,14 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+        //complete call to CJES for default Judgment
+        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentDetailsToCJES,
+            PROCESS_CASE_EVENT,
+            "SEND_JUDGMENT_DETAILS_CJES",
+            "SendJudgmentDetailsToCJES"
         );
 
         //complete the notification to Claimant
