@@ -20,12 +20,20 @@ public class StayCaseTest extends BpmnBaseTest {
         = "NOTIFY_CLAIMANT_STAY_CASE";
     public static final String NOTIFY_DEFENDANT_STAY_CASE
         = "NOTIFY_DEFENDANT_STAY_CASE";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_STAY_CASE_ACTIVITY_ID
         = "NotifyClaimantStayCase";
     private static final String NOTIFY_DEFENDANT_STAY_CASE_ACTIVITY_ID
         = "NotifyDefendantStayCase";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationStayCaseClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationStayCaseDefendant";
 
     public StayCaseTest() {
         super("stay_case.bpmn", PROCESS_ID);
@@ -67,6 +75,22 @@ public class StayCaseTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT_STAY_CASE,
                                    NOTIFY_DEFENDANT_STAY_CASE_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the claimant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the defendant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
