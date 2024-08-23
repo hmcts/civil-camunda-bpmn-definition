@@ -50,8 +50,6 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     @Test
     void shouldSuccessfullyCompleteAmendRestitchBundle() {
 
-        Date startTime = new Date();
-
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -75,17 +73,19 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("DURATION: PT5M");
 
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
-        );
 
+        Date startTime = new Date();
         ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((6 * 60 * 1000))));
 
         executeAllJobs();
 
         ExternalTask notificationTask;
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
+                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
+        );
 
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
