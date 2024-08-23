@@ -73,7 +73,6 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("DURATION: PT5M");
 
-
         Date startTime = new Date();
         ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((6 * 60 * 1000))));
 
