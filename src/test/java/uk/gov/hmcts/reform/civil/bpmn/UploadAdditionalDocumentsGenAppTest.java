@@ -61,8 +61,8 @@ public class UploadAdditionalDocumentsGenAppTest extends BpmnBaseGAAfterPaymentT
         );
 
         //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_DOC_UPLOAD_BUSINESS_PROCESS);
+        completeBusinessProcessDocUpload(endBusinessProcess);
 
         assertNoExternalTasksLeft();
     }
