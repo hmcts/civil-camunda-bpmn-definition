@@ -7,7 +7,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_78545522545</bpmn:incoming>
+      <bpmn:incoming>Flow_0z3wges</bpmn:incoming>
       <bpmn:outgoing>Flow_1fxs0vt25554</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:startEvent id="Event_191090" name="Start">
@@ -45,7 +45,7 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_778754554" sourceRef="Event_0kza4it" targetRef="Event_55878855778" />
     <bpmn:sequenceFlow id="Flow_87785545545" sourceRef="Event_191090" targetRef="Activity_7842144454" />
-    <bpmn:sequenceFlow id="Flow_78545522545" sourceRef="Activity_7842144454" targetRef="NotifyClaimantAmendRestitchBundle" />
+    <bpmn:sequenceFlow id="Flow_78545522545" sourceRef="Activity_7842144454" targetRef="AmendRestitchBundleDelay" />
     <bpmn:serviceTask id="NotifyDefendantAmendRestitchBundle" name="Notify Defendant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -77,82 +77,100 @@
       <bpmn:outgoing>Flow_0qh9s34</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0qh9s34" sourceRef="CreateAmendRestitchBundleDashboardNotificationsForDefendant" targetRef="Activity_120199855" />
+    <bpmn:intermediateCatchEvent id="AmendRestitchBundleDelay" name="Delay 5 Minutes">
+      <bpmn:incoming>Flow_78545522545</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z3wges</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0atjb6o">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0z3wges" sourceRef="AmendRestitchBundleDelay" targetRef="NotifyClaimantAmendRestitchBundle" />
   </bpmn:process>
   <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:message id="Message_07sm7e9" name="AMEND_RESTITCH_BUNDLE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="AMEND_RESTITCH_BUNDLE">
       <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="NotifyClaimantAmendRestitchBundle">
-        <dc:Bounds x="420" y="167" width="100" height="80" />
+        <dc:Bounds x="490" y="165" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="Event_191090">
-        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <dc:Bounds x="152" y="190" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="158" y="235" width="25" height="14" />
+          <dc:Bounds x="158" y="233" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_878884254">
+        <dc:Bounds x="1382" y="193" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_120199855">
+        <dc:Bounds x="1180" y="171" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_7842144454">
-        <dc:Bounds x="230" y="167" width="100" height="80" />
+        <dc:Bounds x="230" y="165" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_55878855778">
         <dc:Bounds x="262" y="79" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1smbj8l" bpmnElement="NotifyDefendantAmendRestitchBundle">
-        <dc:Bounds x="610" y="167" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_878884254">
-        <dc:Bounds x="1382" y="189" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0qwga33" bpmnElement="CreateAmendRestitchBundleDashboardNotificationsForDefendant">
-        <dc:Bounds x="990" y="167" width="100" height="80" />
+        <dc:Bounds x="670" y="165" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1qfub25" bpmnElement="CreateAmendRestitchBundleDashboardNotificationsForClaimant">
-        <dc:Bounds x="810" y="167" width="100" height="80" />
+        <dc:Bounds x="850" y="167" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_120199855">
-        <dc:Bounds x="1180" y="167" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0qwga33" bpmnElement="CreateAmendRestitchBundleDashboardNotificationsForDefendant">
+        <dc:Bounds x="1020" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07b6ap0_di" bpmnElement="AmendRestitchBundleDelay">
+        <dc:Bounds x="392" y="187" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="372" y="230" width="80" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
-        <dc:Bounds x="262" y="149" width="36" height="36" />
+        <dc:Bounds x="262" y="147" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="296" y="130" width="27" height="14" />
+          <dc:Bounds x="296" y="128" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_5845212254">
-        <di:waypoint x="1280" y="207" />
-        <di:waypoint x="1382" y="207" />
+        <di:waypoint x="1280" y="211" />
+        <di:waypoint x="1382" y="211" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_778754554">
-        <di:waypoint x="280" y="149" />
+        <di:waypoint x="280" y="147" />
         <di:waypoint x="280" y="115" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_87785545545">
-        <di:waypoint x="188" y="210" />
-        <di:waypoint x="230" y="210" />
+        <di:waypoint x="188" y="208" />
+        <di:waypoint x="230" y="208" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_78545522545">
-        <di:waypoint x="330" y="207" />
-        <di:waypoint x="420" y="207" />
+        <di:waypoint x="330" y="205" />
+        <di:waypoint x="392" y="205" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xckrvu_di" bpmnElement="Flow_1xckrvu544555">
-        <di:waypoint x="710" y="208" />
-        <di:waypoint x="810" y="207" />
+        <di:waypoint x="770" y="207" />
+        <di:waypoint x="850" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fxs0vt_di" bpmnElement="Flow_1fxs0vt25554">
-        <di:waypoint x="520" y="207" />
-        <di:waypoint x="610" y="207" />
+        <di:waypoint x="590" y="205" />
+        <di:waypoint x="670" y="205" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qw3fa2_di" bpmnElement="Flow_1qw3fa2545">
-        <di:waypoint x="910" y="207" />
-        <di:waypoint x="990" y="207" />
+        <di:waypoint x="950" y="207" />
+        <di:waypoint x="1020" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qh9s34_di" bpmnElement="Flow_0qh9s34">
-        <di:waypoint x="1090" y="205" />
-        <di:waypoint x="1180" y="203" />
+        <di:waypoint x="1120" y="206" />
+        <di:waypoint x="1180" y="206" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z3wges_di" bpmnElement="Flow_0z3wges">
+        <di:waypoint x="428" y="205" />
+        <di:waypoint x="490" y="205" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
