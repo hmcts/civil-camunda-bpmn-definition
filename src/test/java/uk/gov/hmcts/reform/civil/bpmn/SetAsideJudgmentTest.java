@@ -14,8 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class NotifySetAsideJudgmentTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "NOTIFY_SET_ASIDE_JUDGMENT";
-    public static final String PROCESS_ID = "NOTIFY_SET_ASIDE_JUDGMENT";
+    public static final String MESSAGE_NAME = "SET_ASIDE_JUDGMENT";
+    public static final String PROCESS_ID = "SET_ASIDE_JUDGMENT";
+    public static final String SEND_JUDGMENT_DETAILS_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
+    public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
     //CCD CASE EVENT
     public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
@@ -24,7 +26,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
 
     public NotifySetAsideJudgmentTest() {
-        super("notify_set_aside_judgment_request.bpmn", PROCESS_ID);
+        super("set_aside_judgment_request.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
@@ -61,6 +63,15 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables
+        );
+
+        //complete the call to CJES for Set Aside Judgment
+        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentDetailsToCJES,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_EVENT,
+            SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
 
         //complete the notification to Claimant
