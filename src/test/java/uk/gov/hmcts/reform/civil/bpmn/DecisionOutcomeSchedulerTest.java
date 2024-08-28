@@ -2,12 +2,10 @@ package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
-import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +34,7 @@ class DecisionOutcomeSchedulerTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 0 0 * * ?";
+        String cronString = "0 0/3 * * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         /*assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
