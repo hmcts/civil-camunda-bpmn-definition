@@ -19,6 +19,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     public static final String SEND_JUDGMENT_DETAILS_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
     public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
+    public static final String JUDGMENT_SET_ASIDE_ERROR = "JUDGMENT_SET_ASIDE_ERROR";
+
     //CCD CASE EVENT
     public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
 
@@ -31,16 +33,25 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true",
-        "true, true, false",
-        "true, false, true",
-        "true, false, false",
-        "false, true, true",
-        "false, true, false",
-        "false, false, true",
-        "false, false, false"
+        "true, true, true, true",
+        "true, true, true, false",
+        "true, true, false, true",
+        "true, true, false, false",
+        "true, false, true, true",
+        "true, false, true, false",
+        "true, false, false, true",
+        "true, false, false, false",
+        "false, true, true, true",
+        "false, true, true, false",
+        "false, true, false, true",
+        "false, true, false, false",
+        "false, false, true, true",
+        "false, false, true, false",
+        "false, false, false, true",
+        "false, false, false, false"
     })
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
+    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives
+        , boolean isLiPDefendant, boolean dashboardServiceEnabled, boolean judgmentSetAsideError) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -53,7 +64,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
+            JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -74,77 +86,79 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
 
-        //complete the notification to Claimant
-        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
-            "NotifyClaimSetAsideJudgmentClaimant"
-        );
-
-        //complete generate dashboard notification to claimant
-        ExternalTask claimant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimant1DashboardNotification,
-            PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
-            CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
-            variables
-        );
-
-        if (!isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        if (judgmentSetAsideError) {
+            //complete the notification to Claimant
+            ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                respondent1Notification,
+                claimantNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
-                "NotifyClaimSetAsideJudgmentDefendant1",
+                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
+                "NotifyClaimSetAsideJudgmentClaimant"
+            );
+
+            //complete generate dashboard notification to claimant
+            ExternalTask claimant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimant1DashboardNotification,
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
                 variables
             );
 
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            if (!isLiPDefendant) {
+                //complete the notification to Respondent
+                ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
-                    respondent2Notification,
+                    respondent1Notification,
                     PROCESS_CASE_EVENT,
-                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
-                    "NotifyClaimSetAsideJudgmentDefendant2",
+                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
+                    "NotifyClaimSetAsideJudgmentDefendant1",
                     variables
                 );
-            }
-        } else if (isLiPDefendant) {
-            //complete the notification to LiP respondent
-            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1LIpNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
-                "NotifyClaimSetAsideJudgmentDefendant1LiP",
-                variables
-            );
 
-            // should send letter to LiP respondent
-            ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendLipLetter,
-                PROCESS_CASE_EVENT,
-                "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
-                "SendSetAsideLiPLetterDef1",
-                variables
-            );
-            if (dashboardServiceEnabled) {
-                //complete generate dashboard notification to defendant
-                ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                if (twoRepresentatives) {
+                    //complete the notification to Respondent2
+                    ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                    assertCompleteExternalTask(
+                        respondent2Notification,
+                        PROCESS_CASE_EVENT,
+                        "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
+                        "NotifyClaimSetAsideJudgmentDefendant2",
+                        variables
+                    );
+                }
+            } else if (isLiPDefendant) {
+                //complete the notification to LiP respondent
+                ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
-                    respondent1DashboardNotification,
+                    respondent1LIpNotification,
                     PROCESS_CASE_EVENT,
-                    "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGMENT_DEFENDANT",
-                    "GenerateDashboardNotificationSetAsideDefendant",
+                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
+                    "NotifyClaimSetAsideJudgmentDefendant1LiP",
                     variables
                 );
+
+                // should send letter to LiP respondent
+                ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    sendLipLetter,
+                    PROCESS_CASE_EVENT,
+                    "SEND_SET_ASIDE_JUDGEMENT_IN_ERROR_LETTER_TO_LIP_DEFENDANT1",
+                    "SendSetAsideLiPLetterDef1",
+                    variables
+                );
+                if (dashboardServiceEnabled) {
+                    //complete generate dashboard notification to defendant
+                    ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                    assertCompleteExternalTask(
+                        respondent1DashboardNotification,
+                        PROCESS_CASE_EVENT,
+                        "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGMENT_DEFENDANT",
+                        "GenerateDashboardNotificationSetAsideDefendant",
+                        variables
+                    );
+                }
             }
         }
 
