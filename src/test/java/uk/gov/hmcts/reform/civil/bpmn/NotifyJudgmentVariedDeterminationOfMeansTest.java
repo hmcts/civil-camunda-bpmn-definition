@@ -110,6 +110,42 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("judgmentRecordedReason", "SOMETHING_ELSE");
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgement,
+            PROCESS_CASE_EVENT,
+            "SEND_JUDGMENT_DETAILS_CJES",
+            "SendJudgmentDetailsToCJES"
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
         assertFalse(processInstance.isEnded());
