@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_088uqzn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Process_1s0gndt" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="Event_JUDGMENT_PAID_IN_FULL" name="Start">
+      <bpmn:outgoing>Flow_00wvi7h</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1myesnu" messageRef="Message_0nrv2ho" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00wvi7h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u6uwon</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0we5mqz</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_0o3sg3o" name="Abort" attachedToRef="Activity_StartBusinessProcess">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0uj9pwb" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_00wvi7h" sourceRef="Event_JUDGMENT_PAID_IN_FULL" targetRef="Activity_StartBusinessProcess" />
+    <bpmn:endEvent id="Event_05lhuqf">
+      <bpmn:incoming>Flow_0u6uwon</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0u6uwon" sourceRef="Activity_StartBusinessProcess" targetRef="Event_05lhuqf" />
+    <bpmn:serviceTask id="SendJudgmentDetailsToCJES" name="Send Judgment Details To CJES">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0we5mqz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fali8g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0we5mqz" sourceRef="Activity_StartBusinessProcess" targetRef="SendJudgmentDetailsToCJES" />
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fali8g</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jpdn5y</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1fali8g" sourceRef="SendJudgmentDetailsToCJES" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:endEvent id="Event_009lp3i">
+      <bpmn:incoming>Flow_1jpdn5y</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1jpdn5y" sourceRef="Activity_EndBusinessProcess" targetRef="Event_009lp3i" />
+  </bpmn:process>
+  <bpmn:message id="Message_0nrv2ho" name="JUDGMENT_PAID_IN_FULL" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1s0gndt">
+      <bpmndi:BPMNShape id="Event_1kek3ur_di" bpmnElement="Event_JUDGMENT_PAID_IN_FULL">
+        <dc:Bounds x="179" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="275" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_StartBusinessProcess">
+        <dc:Bounds x="310" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05lhuqf_di" bpmnElement="Event_05lhuqf">
+        <dc:Bounds x="342" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uks9jd_di" bpmnElement="SendJudgmentDetailsToCJES">
+        <dc:Bounds x="490" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="670" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_009lp3i_di" bpmnElement="Event_009lp3i">
+        <dc:Bounds x="852" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
+        <dc:Bounds x="342" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="376" y="173" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00wvi7h_di" bpmnElement="Flow_00wvi7h">
+        <di:waypoint x="215" y="250" />
+        <di:waypoint x="310" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u6uwon_di" bpmnElement="Flow_0u6uwon">
+        <di:waypoint x="360" y="210" />
+        <di:waypoint x="360" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0we5mqz_di" bpmnElement="Flow_0we5mqz">
+        <di:waypoint x="410" y="250" />
+        <di:waypoint x="490" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="322" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fali8g_di" bpmnElement="Flow_1fali8g">
+        <di:waypoint x="590" y="250" />
+        <di:waypoint x="670" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jpdn5y_di" bpmnElement="Flow_1jpdn5y">
+        <di:waypoint x="770" y="250" />
+        <di:waypoint x="852" y="250" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
