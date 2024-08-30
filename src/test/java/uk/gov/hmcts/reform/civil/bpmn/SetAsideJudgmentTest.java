@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class NotifySetAsideJudgmentTest extends BpmnBaseTest {
+class SetAsideJudgmentTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "SET_ASIDE_JUDGMENT";
     public static final String PROCESS_ID = "SET_ASIDE_JUDGMENT";
@@ -27,7 +27,7 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
     //ACTIVITY IDs
     public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
 
-    public NotifySetAsideJudgmentTest() {
+    public SetAsideJudgmentTest() {
         super("set_aside_judgment_request.bpmn", PROCESS_ID);
     }
 
@@ -64,8 +64,8 @@ class NotifySetAsideJudgmentTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError));
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
+        variables.put(JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
