@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class JudgementPaidInFullTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "JUDGEMENT_PAID_IN_FULL";
-    public static final String PROCESS_ID = "JUDGEMENT_PAID_IN_FULL";
+    public static final String MESSAGE_NAME = "JUDGMENT_PAID_IN_FULL";
+    public static final String PROCESS_ID = "JUDGMENT_PAID_IN_FULL";
     private static final String SEND_JUDGMENT_DETAILS_CJES = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
