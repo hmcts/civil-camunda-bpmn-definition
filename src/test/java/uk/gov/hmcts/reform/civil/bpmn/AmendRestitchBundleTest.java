@@ -53,7 +53,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, true, 
             CASE_PROGRESSION_ENABLED, true
         ));
 
