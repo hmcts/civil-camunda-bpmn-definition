@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class AmendRestitchBundleTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "AMEND_RESTITCH_BUNDLE";
+    public static final String MESSAGE_NAME = "AMEND_RESTITCH_BUNDLE"; 
     public static final String PROCESS_ID = "AMEND_RESTITCH_BUNDLE";
 
     //CCD CASE EVENT
