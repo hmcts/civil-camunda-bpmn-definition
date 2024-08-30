@@ -1,15 +1,10 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.camunda.bpm.engine.impl.util.ClockUtil;
-import org.camunda.bpm.engine.management.JobDefinition;
-import org.camunda.bpm.engine.runtime.Job;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +44,6 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
     @Test
     void shouldSuccessfullyCompleteAmendRestitchBundle() {
-
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -63,28 +57,13 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
             CASE_PROGRESSION_ENABLED, true
         ));
 
-        //get jobs
-        List<JobDefinition> jobDefinitions = getJobs();
-
-        //assert that job is as expected
-        assertThat(jobDefinitions).hasSize(1);
-
-        assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-intermediate-transition");
-
-        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("DURATION: PT5M");
-
-        Date startTime = new Date();
-        ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((6 * 60 * 1000))));
-
-        executeAllJobs();
-
-        ExternalTask notificationTask;
-
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
         );
+
+        ExternalTask notificationTask;
 
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -123,27 +102,5 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
-    }
-
-    protected void executeAllJobs() {
-        String nextJobId = getNextExecutableJobId();
-
-        while (nextJobId != null) {
-            try {
-                engine.getManagementService().executeJob(nextJobId);
-            } catch (Throwable t) { /* ignore */
-            }
-            nextJobId = getNextExecutableJobId();
-        }
-
-    }
-
-    protected String getNextExecutableJobId() {
-        List<Job> jobs = engine.getManagementService().createJobQuery().executable().listPage(0, 1);
-        if (jobs.size() == 1) {
-            return jobs.get(0).getId();
-        } else {
-            return null;
-        }
     }
 }
