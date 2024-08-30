@@ -50,8 +50,10 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
         "false, false, false, true",
         "false, false, false, false"
     })
-    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives
-        , boolean isLiPDefendant, boolean dashboardServiceEnabled, boolean judgmentSetAsideError) {
+    void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives,
+                                                         boolean isLiPDefendant,
+                                                         boolean dashboardServiceEnabled,
+                                                         boolean judgmentSetAsideError) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
