@@ -16,7 +16,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "SET_ASIDE_JUDGMENT";
     public static final String PROCESS_ID = "SET_ASIDE_JUDGMENT";
-    public static final String SEND_JUDGMENT_DETAILS_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
+    public static final String SEND_JUDGMENT_DETAILS_SA_EVENT = "SEND_JUDGMENT_DETAILS_CJES_SA";
     public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
     public static final String JUDGMENT_SET_ASIDE_ERROR = "JUDGMENT_SET_ASIDE_ERROR";
@@ -84,7 +84,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             sendJudgmentDetailsToCJES,
             PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_EVENT,
+            SEND_JUDGMENT_DETAILS_SA_EVENT,
             SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
 
