@@ -25,6 +25,15 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT = "OBTAIN_ADDITIONAL_PAYMENT_REF";
     private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_ID = "ObtainAdditionalPaymentReference";
 
+    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
+    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
+        = "makeDecisionCreateDashboardNotificationForApplicant";
+
+    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
+    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
+        = "makeDecisionCreateDashboardNotificationForRespondent";
+
+
     public JudgeMakesDecisionGeneralApplicationTest() {
         super("judge_makes_decision_general_application.bpmn", "GA_MAKE_DECISION_PROCESS_ID");
     }
@@ -98,6 +107,24 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
             START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION,
             START_RESPONDENT_NOTIFICATION_PROCESS_ID
         );
+
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
+            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
+        );
+
+
+        dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
+            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
+        );
+
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
