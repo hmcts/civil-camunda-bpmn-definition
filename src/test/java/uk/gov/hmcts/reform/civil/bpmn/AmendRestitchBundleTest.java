@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class AmendRestitchBundleTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "AMEND_RESTITCH_BUNDLE";
+    public static final String MESSAGE_NAME = "AMEND_RESTITCH_BUNDLE"; 
     public static final String PROCESS_ID = "AMEND_RESTITCH_BUNDLE";
 
     //CCD CASE EVENT
@@ -53,7 +53,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, true, 
             CASE_PROGRESSION_ENABLED, true
         ));
 
