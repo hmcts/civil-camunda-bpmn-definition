@@ -73,6 +73,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByDeterminationPdf";
     private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT_ID = "SendJudgmentDetailsToCJES";
+    private static final String UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID = "updateClaimantClaimStateID";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
@@ -164,7 +167,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JBA_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -199,7 +203,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JBA_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -403,7 +408,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JBA_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
                 startBusiness,
@@ -418,6 +424,39 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JBA_ONLINE_LIVE_ENABLED, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        generateJudgmentByAdmissionPdf();
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -523,5 +562,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void proceedCaseOffline() {
         assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
+    }
+
+    private void sendJudgmentToCjesService() {
+        assertCompletedCaseEvent(SEND_JUDGMENT_DETAILS_CJES_EVENT, SEND_JUDGMENT_DETAILS_CJES_EVENT_ID);
+    }
+
+    private void updateClaimantClaimState() {
+        assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
     }
 }
