@@ -28,6 +28,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18gxrql</bpmn:incoming>
       <bpmn:incoming>Flow_1t08sfu</bpmn:incoming>
+      <bpmn:incoming>Flow_1llcs5z</bpmn:incoming>
       <bpmn:outgoing>Flow_0d2uvw4</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1eh2s0e">
@@ -79,6 +80,7 @@
       <bpmn:outgoing>Flow_0bl6z41</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ldqt2c</bpmn:outgoing>
       <bpmn:outgoing>Flow_0b2k6rr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0jtnss6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0kmhge4" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="Gateway_RPA_FLOW" />
     <bpmn:sequenceFlow id="Flow_0bl6z41" name="No" sourceRef="Gateway_RPA_FLOW" targetRef="UpdateClaimStateAfterTranslatedDocUploaded">
@@ -96,7 +98,7 @@
     <bpmn:sequenceFlow id="Flow_0z2obnu" sourceRef="ProceedOffline" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_1t08sfu" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19g768l" />
     <bpmn:sequenceFlow id="Flow_0ldqt2c" name="Applicant accepts or rejects repayment plan and request CCJ (full/part admit)" sourceRef="Gateway_RPA_FLOW" targetRef="ProceedOffline">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; !(!empty flowFlags.JBA_ONLINE_LIVE_ENABLED&amp;&amp; flowFlags.JBA_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0b2k6rr" name="Yes" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnContinuousFeed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
@@ -131,6 +133,29 @@
       <bpmn:outgoing>Flow_10ievy6</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_10ievy6" sourceRef="GenerateClaimantDashboardNotificationClaimantResponse" targetRef="GenerateDashboardNotificationRespondent1" />
+    <bpmn:sequenceFlow id="Flow_0jtnss6" name="Applicant accepts or rejects repayment plan, request CCJ (full/part admit) and JBA online live enabled" sourceRef="Gateway_RPA_FLOW" targetRef="UpdateClaimStateAfterTranslatedDocUpload">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; (!empty flowFlags.JBA_ONLINE_LIVE_ENABLED&amp;&amp; flowFlags.JBA_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="UpdateClaimStateAfterTranslatedDocUpload" name="Update Claim State" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jtnss6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ubgx2q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ubgx2q" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="SendJudgmentDetailsToCJES" />
+    <bpmn:serviceTask id="SendJudgmentDetailsToCJES" name="Send Judgment Details to CJES" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ubgx2q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1llcs5z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1llcs5z" sourceRef="SendJudgmentDetailsToCJES" targetRef="Activity_19g768l" />
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -190,6 +215,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ilo0tw" bpmnElement="GenerateClaimantDashboardNotificationClaimantResponse">
         <dc:Bounds x="1220" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0j4c0oy" bpmnElement="UpdateClaimStateAfterTranslatedDocUpload">
+        <dc:Bounds x="1010" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0aq0usx" bpmnElement="SendJudgmentDetailsToCJES">
+        <dc:Bounds x="1170" y="620" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
@@ -270,6 +303,23 @@
       <bpmndi:BPMNEdge id="Flow_10ievy6_di" bpmnElement="Flow_10ievy6">
         <di:waypoint x="1320" y="230" />
         <di:waypoint x="1380" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jtnss6_di" bpmnElement="Flow_0jtnss6">
+        <di:waypoint x="900" y="255" />
+        <di:waypoint x="900" y="660" />
+        <di:waypoint x="1010" y="660" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="909" y="563" width="86" height="93" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ubgx2q_di" bpmnElement="Flow_0ubgx2q">
+        <di:waypoint x="1110" y="660" />
+        <di:waypoint x="1170" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1llcs5z_di" bpmnElement="Flow_1llcs5z">
+        <di:waypoint x="1270" y="660" />
+        <di:waypoint x="1610" y="660" />
+        <di:waypoint x="1610" y="270" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
