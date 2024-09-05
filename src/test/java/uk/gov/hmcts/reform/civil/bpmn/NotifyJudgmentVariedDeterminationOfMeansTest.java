@@ -55,7 +55,22 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
             "SEND_JUDGMENT_DETAILS_CJES",
             "SendJudgmentDetailsToCJES"
         );
-
+        //generate judgment determination doc for claimant
+        ExternalTask claimantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantDoc,
+            PROCESS_CASE_EVENT,
+            "GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT",
+            "GenerateClaimantJudgmentByDeterminationDoc"
+        );
+        //generate judgment determination doc for defendant
+        ExternalTask defendantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantDoc,
+            PROCESS_CASE_EVENT,
+            "GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT",
+            "GenerateDefendantJudgmentByDeterminationDoc"
+        );
         //complete the notification to Claimant
         ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
