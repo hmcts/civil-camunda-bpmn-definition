@@ -28,6 +28,10 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
+    private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
+    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT = "CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT";
+    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID = "respondentApplicationSubmittedDashboardNotification";
+
 
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
@@ -44,7 +48,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, false));
+            LIP_APPLICANT, false,
+            LIP_RESPONDENT, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -93,6 +98,86 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             PROCESS_EXTERNAL_CASE_EVENT,
             NOTYFYING_RESPONDENTS_EVENT,
             GENERAL_APPLICATION_NOTIYFYING_ID,
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteCreateGeneralApplicationForLiPvLiP_whenCalled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            LIP_APPLICANT, true,
+            LIP_RESPONDENT, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //assigne of roles
+        ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignRoles,
+            APPLICATION_PROCESS_CASE_EVENT,
+            ASSIGNIN_OF_ROLES_EVENT,
+            ASSIGNIN_OF_ROLES_ID,
+            variables
+        );
+
+        //complete the document generation
+        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_DRAFT_DOCUMENT,
+            GENERATE_DRAFT_DOCUMENT_ID,
+            variables
+        );
+
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID,
+            variables
+        );
+
+        //notify respondents
+        ExternalTask notifyRespondents = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondents,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            NOTYFYING_RESPONDENTS_EVENT,
+            GENERAL_APPLICATION_NOTIYFYING_ID,
+            variables
+        );
+
+        //create dashboard notification
+        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotification,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT,
+            CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID,
             variables
         );
 
