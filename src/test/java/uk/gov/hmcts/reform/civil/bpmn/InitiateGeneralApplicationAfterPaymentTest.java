@@ -118,7 +118,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, true,
+            LIP_APPLICANT, false,
             LIP_RESPONDENT, true));
 
         //complete the start business process
@@ -172,7 +172,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
         );
 
         //create dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+       ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotification,
             PROCESS_EXTERNAL_CASE_EVENT,
