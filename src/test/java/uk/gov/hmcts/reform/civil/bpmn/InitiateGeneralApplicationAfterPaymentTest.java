@@ -37,8 +37,6 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     private static final String UPDATE_RESPONDENT_GA_TASK_LIST_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ACTIVITY_ID = "GeneralApplicationRespondentTaskList";
 
-
-
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
               "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
@@ -177,7 +175,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             variables
         );
 
-        //create dashboard notification
+       //create dashboard notification
        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotification,
