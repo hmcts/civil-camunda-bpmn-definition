@@ -175,8 +175,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             variables
         );
 
-       //create dashboard notification
-       ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //create dashboard notification
+        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotification,
             PROCESS_EXTERNAL_CASE_EVENT,
