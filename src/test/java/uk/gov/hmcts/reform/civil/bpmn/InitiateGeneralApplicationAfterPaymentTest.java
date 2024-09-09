@@ -31,6 +31,12 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT = "CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT";
     private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID = "respondentApplicationSubmittedDashboardNotification";
+    public static final String APPLICATION_EVENT = "applicationEventGASpec";
+    private static final String UPDATE_CLAIMANT_GA_TASK_LIST_GA_COMPLETE_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_COMPLETE";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ACTIVITY_ID = "GeneralApplicationClaimantTaskList";
+    private static final String UPDATE_RESPONDENT_GA_TASK_LIST_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ACTIVITY_ID = "GeneralApplicationRespondentTaskList";
+
 
 
     public InitiateGeneralApplicationAfterPaymentTest() {
@@ -184,6 +190,24 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+
+        ExternalTask claimantTaskListUpdate = assertNextExternalTask(APPLICATION_EVENT);
+        assertCompleteExternalTask(
+            claimantTaskListUpdate,
+            APPLICATION_EVENT,
+            UPDATE_CLAIMANT_GA_TASK_LIST_GA_COMPLETE_EVENT,
+            GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask respondentTaskListUpdate = assertNextExternalTask(APPLICATION_EVENT);
+        assertCompleteExternalTask(
+            respondentTaskListUpdate,
+            APPLICATION_EVENT,
+            UPDATE_RESPONDENT_GA_TASK_LIST_GA_COMPLETE_EVENT,
+            GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ACTIVITY_ID,
+            variables
+        );
 
         assertNoExternalTasksLeft();
     }
