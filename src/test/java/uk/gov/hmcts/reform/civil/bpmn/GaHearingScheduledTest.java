@@ -36,6 +36,7 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
+
     public GaHearingScheduledTest() {
         super("ga_hearing_scheduled_access.bpmn", PROCESS_ID);
     }
