@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
@@ -35,7 +34,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
     //Update CUI dashboard
     //Notifying respondents
-    public static final String APPLICATION_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
+    public static final String APPLICATION_PROCESS_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
+    public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS = "UPDATE_GA_DASHBOARD_NOTIFICATION";
 
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS_ID = "UpdateDashboardNotifications";
@@ -117,10 +117,10 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
         if (isLipApplicant) {
             //update dashboard
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
             assertCompleteExternalTask(
                 updateCuiClaimantDashboard,
-                APPLICATION_EVENT_GASPEC,
+                APPLICATION_PROCESS_EVENT_GASPEC,
                 UPDATE_DASHBOARD_NOTIFICATIONS,
                 UPDATE_DASHBOARD_NOTIFICATIONS_ID,
                 variables
