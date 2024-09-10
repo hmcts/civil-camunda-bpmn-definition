@@ -36,6 +36,9 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
             = "GenerateClaimantDashboardNotificationClaimantResponse";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT_ID = "SendJudgmentDetailsToCJES";
+    private static final String UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID = "UpdateClaimStateAfterTranslatedDocUpload";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -117,7 +120,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
-        variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true));
+        variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
+                                         "JBA_ONLINE_LIVE_ENABLED", false));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -235,6 +239,67 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                                    PROCESS_CASE_EVENT,
                                    CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
                                    CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcessWhenJudgementOnlineLiveEnabled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
+                                         "JBA_ONLINE_LIVE_ENABLED", true));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the claim issue
+        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimIssue,
+            PROCESS_CASE_EVENT,
+            SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT,
+            SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID
+        );
+
+        //complete the respondent notification
+        ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+
+        //complete the state change task
+        ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimStateTask,
+            PROCESS_CASE_EVENT,
+            UPDATE_CLAIM_STATE_EVENT,
+            UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        //Send judgement details to CJES service
+        ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentToCjesService,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_CJES_EVENT,
+            SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
         );
 
         //end business process
