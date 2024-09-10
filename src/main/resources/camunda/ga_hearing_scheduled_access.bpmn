@@ -106,12 +106,16 @@
     <bpmn:sequenceFlow id="Flow_1yg2hgc" sourceRef="LinkDocumentToParentCase" targetRef="NotifyHearingNoticeClaimant" />
     <bpmn:sequenceFlow id="Flow_0z35dfn" sourceRef="NotifyHearingNoticeClaimant" targetRef="NotifyHearingNoticeDefendant" />
     <bpmn:sequenceFlow id="Flow_1jro4pc" sourceRef="NotifyHearingNoticeDefendant" targetRef="Gateway_1lb6xgk" />
-    <bpmn:sequenceFlow id="Flow_0ixqpxj" sourceRef="Gateway_1lb6xgk" targetRef="hearingScheduledCreateDashboardNotificationForApplicant" />
+    <bpmn:sequenceFlow id="Flow_0ixqpxj" name="Yes" sourceRef="Gateway_1lb6xgk" targetRef="hearingScheduledCreateDashboardNotificationForApplicant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT&amp;&amp; flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0b8ejum" sourceRef="hearingScheduledCreateDashboardNotificationForApplicant" targetRef="Gateway_1rnu3t8" />
     <bpmn:sequenceFlow id="Flow_0q2fvfo" name="No" sourceRef="Gateway_1lb6xgk" targetRef="hearingScheduledCreateDashboardNotificationForRespondent">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1okvpzu" sourceRef="Gateway_1rnu3t8" targetRef="hearingScheduledCreateDashboardNotificationForRespondent" />
+    <bpmn:sequenceFlow id="Flow_1okvpzu" name="Yes" sourceRef="Gateway_1rnu3t8" targetRef="hearingScheduledCreateDashboardNotificationForRespondent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_RESPONDENT&amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_07ytclc" sourceRef="hearingScheduledCreateDashboardNotificationForRespondent" targetRef="Activity_0sa4hmt" />
     <bpmn:sequenceFlow id="Flow_16zt9hq" name="No" sourceRef="Gateway_1rnu3t8" targetRef="Activity_0sa4hmt">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
@@ -214,6 +218,9 @@
       <bpmndi:BPMNEdge id="Flow_0ixqpxj_di" bpmnElement="Flow_0ixqpxj">
         <di:waypoint x="1175" y="278" />
         <di:waypoint x="1240" y="278" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1199" y="260" width="18" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0b8ejum_di" bpmnElement="Flow_0b8ejum">
         <di:waypoint x="1340" y="278" />
@@ -231,6 +238,9 @@
       <bpmndi:BPMNEdge id="Flow_1okvpzu_di" bpmnElement="Flow_1okvpzu">
         <di:waypoint x="1435" y="278" />
         <di:waypoint x="1480" y="278" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1449" y="260" width="18" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07ytclc_di" bpmnElement="Flow_07ytclc">
         <di:waypoint x="1580" y="278" />
