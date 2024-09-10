@@ -168,7 +168,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
                 CLAIM_ISSUE_BILINGUAL, false,
-                JBA_ONLINE_LIVE_ENABLED, false
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -204,7 +204,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
                 CLAIM_ISSUE_BILINGUAL, false,
-                JBA_ONLINE_LIVE_ENABLED, false
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -409,7 +409,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
                 CLAIM_ISSUE_BILINGUAL, false,
-                JBA_ONLINE_LIVE_ENABLED, false
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
                 startBusiness,
@@ -442,7 +442,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
-            JBA_ONLINE_LIVE_ENABLED, true
+            JO_ONLINE_LIVE_ENABLED, true
         ));
         assertCompleteExternalTask(
             startBusiness,

@@ -49,7 +49,7 @@ public abstract class BpmnBaseTest {
     public static final String PIP_ENABLED = "PIP_ENABLED";
     public static final String LIP_JUDGMENT_ADMISSION = "LIP_JUDGMENT_ADMISSION";
     public static final String CLAIM_ISSUE_BILINGUAL = "CLAIM_ISSUE_BILINGUAL";
-    public static final String JBA_ONLINE_LIVE_ENABLED = "JBA_ONLINE_LIVE_ENABLED";
+    public static final String JO_ONLINE_LIVE_ENABLED = "JO_ONLINE_LIVE_ENABLED";
     public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
     public static final String MINTI_ENABLED = "MINTI_ENABLED";
     public static final String CASE_PROGRESSION_ENABLED = "CASE_PROGRESSION_ENABLED";
