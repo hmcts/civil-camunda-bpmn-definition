@@ -35,7 +35,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
 
     //Update CUI dashboard
     //Notifying respondents
-    public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    public static final String APPLICATION_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS = "UPDATE_GA_DASHBOARD_NOTIFICATION";
 
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS_ID = "UpdateDashboardNotifications";
@@ -115,7 +115,7 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             variables
         );
 
-        if (isLipApplicant || isLipRespondent) {
+        if (isLipApplicant) {
             //update dashboard
             ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
