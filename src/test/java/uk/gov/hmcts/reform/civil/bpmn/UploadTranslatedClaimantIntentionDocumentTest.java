@@ -121,7 +121,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
-                                         "JBA_ONLINE_LIVE_ENABLED", false));
+                                         "JO_ONLINE_LIVE_ENABLED", false));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
@@ -257,7 +257,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
-                                         "JBA_ONLINE_LIVE_ENABLED", true));
+                                         "JO_ONLINE_LIVE_ENABLED", true));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
