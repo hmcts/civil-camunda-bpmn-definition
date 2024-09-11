@@ -165,6 +165,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
+        //create dashboard notification
+        generateClaimantDashboardNotificationForCCJClaimantResponse();
+        generateDefendantDashboardNotificationForCCJClaimantResponse();
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -246,6 +250,24 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
+    }
+
+    private void generateClaimantDashboardNotificationForCCJClaimantResponse() {
+        assertCompletedCaseEvent("CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateClaimantCCJDashboardNotificationClaimantResponse");
+    }
+
+    private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
+        assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
+    }
+
+    private void    assertCompletedCaseEvent(String eventName, String activityId) {
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            eventName,
+            activityId
+        );
     }
 
     @Test
