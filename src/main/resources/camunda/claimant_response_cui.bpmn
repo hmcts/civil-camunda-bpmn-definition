@@ -54,6 +54,7 @@
       <bpmn:incoming>Flow_0axr7i4</bpmn:incoming>
       <bpmn:incoming>Flow_0fmipfu</bpmn:incoming>
       <bpmn:incoming>Flow_1daatex</bpmn:incoming>
+      <bpmn:incoming>Flow_17kbmjo</bpmn:incoming>
       <bpmn:outgoing>Flow_1utmlsv</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1utmlsv" sourceRef="END_BUSINESS_PROCESS" targetRef="CLRUI_End" />
@@ -330,13 +331,23 @@
       <bpmn:incoming>Flow_08src12</bpmn:incoming>
       <bpmn:outgoing>Flow_1daatex</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1daatex" sourceRef="SendJudgmentDetailsToCJES" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:sequenceFlow id="Flow_1daatex" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateDashboardNotificationRespondent1ForJO" />
     <bpmn:sequenceFlow id="Flow_0ia7tek" name="Applicant accept or reject repayment plan (full/part admit) and request CCJ" sourceRef="Gateway_RPA_FLOW" targetRef="ProceedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; !(!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1jcosxq" name="Applicant accept or reject repayment plan (full/part admit), request CCJ and judgment online enabled" sourceRef="Gateway_RPA_FLOW" targetRef="updateClaimantClaimStateID">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; (!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="GenerateDashboardNotificationRespondent1ForJO" name="Generate Dashboard Notification Respondent1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1daatex</bpmn:incoming>
+      <bpmn:outgoing>Flow_17kbmjo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_17kbmjo" sourceRef="GenerateDashboardNotificationRespondent1ForJO" targetRef="END_BUSINESS_PROCESS" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -464,6 +475,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0aq0usx" bpmnElement="SendJudgmentDetailsToCJES">
         <dc:Bounds x="1810" y="880" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_149txem" bpmnElement="GenerateDashboardNotificationRespondent1ForJO">
+        <dc:Bounds x="2060" y="880" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
@@ -696,6 +711,7 @@
         <di:waypoint x="1910" y="920" />
         <di:waypoint x="2230" y="920" />
         <di:waypoint x="2230" y="543" />
+        <di:waypoint x="2060" y="920" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ia7tek_di" bpmnElement="Flow_0ia7tek">
         <di:waypoint x="1530" y="528" />
@@ -712,6 +728,11 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1541" y="823" width="83" height="93" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17kbmjo_di" bpmnElement="Flow_17kbmjo">
+        <di:waypoint x="2160" y="920" />
+        <di:waypoint x="2230" y="920" />
+        <di:waypoint x="2230" y="543" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
