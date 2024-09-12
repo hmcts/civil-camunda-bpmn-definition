@@ -28,6 +28,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18gxrql</bpmn:incoming>
       <bpmn:incoming>Flow_11e3552</bpmn:incoming>
+      <bpmn:incoming>Flow_1d6nmfl</bpmn:incoming>
       <bpmn:outgoing>Flow_0d2uvw4</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1eh2s0e">
@@ -79,6 +80,7 @@
       <bpmn:outgoing>Flow_0bl6z41</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ldqt2c</bpmn:outgoing>
       <bpmn:outgoing>Flow_0b2k6rr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ycisro</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0kmhge4" sourceRef="NotifyLiPRespondentClaimantConfirmToProceed" targetRef="Gateway_RPA_FLOW" />
     <bpmn:sequenceFlow id="Flow_0bl6z41" name="No" sourceRef="Gateway_RPA_FLOW" targetRef="UpdateClaimStateAfterTranslatedDocUploaded">
@@ -96,7 +98,7 @@
     <bpmn:sequenceFlow id="Flow_0z2obnu" sourceRef="ProceedOffline" targetRef="NotifyRoboticsOnCaseHandedOffline" />
     <bpmn:sequenceFlow id="Flow_1t08sfu" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="GenerateClaimantCCJDashboardNotificationClaimantResponse" />
     <bpmn:sequenceFlow id="Flow_0ldqt2c" name="Applicant accepts or rejects repayment plan and request CCJ (full/part admit)" sourceRef="Gateway_RPA_FLOW" targetRef="ProceedOffline">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; !(!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0b2k6rr" name="Yes" sourceRef="Gateway_RPA_FLOW" targetRef="NotifyRoboticsOnContinuousFeed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.IN_MEDIATION"}</bpmn:conditionExpression>
@@ -151,6 +153,29 @@
       <bpmn:outgoing>Flow_11e3552</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_11e3552" sourceRef="GenerateDefendantCCJDashboardNotificationForClaimantResponse" targetRef="Activity_19g768l" />
+    <bpmn:sequenceFlow id="Flow_0ycisro" name="Applicant accepts or rejects repayment plan, request CCJ (full/part admit) and JBA online live enabled" sourceRef="Gateway_RPA_FLOW" targetRef="UpdateClaimStateAfterTranslatedDocUpload">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; (!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="UpdateClaimStateAfterTranslatedDocUpload" name="Update Claim State" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ycisro</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b03asg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0b03asg" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="SendJudgmentDetailsToCJES" />
+    <bpmn:serviceTask id="SendJudgmentDetailsToCJES" name="Send Judgment Details to CJES" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0b03asg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d6nmfl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1d6nmfl" sourceRef="SendJudgmentDetailsToCJES" targetRef="Activity_19g768l" />
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -187,11 +212,19 @@
         <dc:Bounds x="480" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="ProceedOffline">
+        <dc:Bounds x="1000" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_16ilbl0_di" bpmnElement="Gateway_RPA_FLOW" isMarkerVisible="true">
         <dc:Bounds x="875" y="205" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="907" y="186" width="46" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0l350c4" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1160" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fzi0zq_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
         <dc:Bounds x="980" y="320" width="100" height="80" />
@@ -204,20 +237,20 @@
         <dc:Bounds x="1220" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="ProceedOffline">
-        <dc:Bounds x="1000" y="480" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0l350c4" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="1160" y="480" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_08vq82u" bpmnElement="GenerateClaimantCCJDashboardNotificationClaimantResponse">
+        <dc:Bounds x="1310" y="480" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1a8hd7m" bpmnElement="GenerateDefendantCCJDashboardNotificationForClaimantResponse">
         <dc:Bounds x="1450" y="480" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_08vq82u" bpmnElement="GenerateClaimantCCJDashboardNotificationClaimantResponse">
-        <dc:Bounds x="1310" y="480" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_14x3962" bpmnElement="UpdateClaimStateAfterTranslatedDocUpload">
+        <dc:Bounds x="990" y="650" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0aq0usx" bpmnElement="SendJudgmentDetailsToCJES">
+        <dc:Bounds x="1140" y="650" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
@@ -306,6 +339,23 @@
         <di:waypoint x="1550" y="520" />
         <di:waypoint x="1590" y="520" />
         <di:waypoint x="1590" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ycisro_di" bpmnElement="Flow_0ycisro">
+        <di:waypoint x="900" y="255" />
+        <di:waypoint x="900" y="690" />
+        <di:waypoint x="990" y="690" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="899" y="595" width="86" height="93" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b03asg_di" bpmnElement="Flow_0b03asg">
+        <di:waypoint x="1090" y="690" />
+        <di:waypoint x="1140" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d6nmfl_di" bpmnElement="Flow_1d6nmfl">
+        <di:waypoint x="1240" y="690" />
+        <di:waypoint x="1620" y="690" />
+        <di:waypoint x="1620" y="270" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
