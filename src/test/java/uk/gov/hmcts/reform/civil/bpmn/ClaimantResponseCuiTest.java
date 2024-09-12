@@ -78,8 +78,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID = "updateClaimantClaimStateID";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDashboardNotificationRespondent1ForJO";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         = "GenerateClaimantDashboardNotificationClaimantResponse";
 
@@ -459,7 +457,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
-        createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -573,9 +570,5 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void updateClaimantClaimState() {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
-    }
-
-    private void createDefendantDashboardNotificationForJOIssued() {
-        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT, CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID);
     }
 }
