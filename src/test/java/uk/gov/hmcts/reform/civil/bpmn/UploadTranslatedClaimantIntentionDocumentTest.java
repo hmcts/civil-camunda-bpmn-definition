@@ -41,6 +41,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     private static final String UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID = "UpdateClaimStateAfterTranslatedDocUpload";
     private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDashboardNotificationRespondent1ForJO";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateDashboardNotificationClaimant1ForJO";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -324,6 +326,14 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             PROCESS_CASE_EVENT,
             SEND_JUDGMENT_DETAILS_CJES_EVENT,
             SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
+        );
+        //complete the Generate Dashboard Notification Respondent 1
+        ExternalTask notificationClaimantTaskJoIssued = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationClaimantTaskJoIssued,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID
         );
 
         //complete the Generate Dashboard Notification Respondent 1

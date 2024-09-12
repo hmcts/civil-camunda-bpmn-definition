@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0qdw8hu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0qdw8hu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" name="Upload translated document claimant intention" isExecutable="true">
     <bpmn:startEvent id="Event_Upload_Translated_Claimant_Intention_Doc" name="Start">
       <bpmn:outgoing>Flow_17h811r</bpmn:outgoing>
@@ -175,17 +175,27 @@
       <bpmn:incoming>Flow_0b03asg</bpmn:incoming>
       <bpmn:outgoing>Flow_1d6nmfl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1d6nmfl" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateDashboardNotificationRespondent1ForJO" />
+    <bpmn:sequenceFlow id="Flow_1d6nmfl" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateDashboardNotificationClaimant1ForJO" />
     <bpmn:serviceTask id="GenerateDashboardNotificationRespondent1ForJO" name="Generate Dashboard Notification Respondent1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1d6nmfl</bpmn:incoming>
+      <bpmn:incoming>Flow_1paqyp2</bpmn:incoming>
       <bpmn:outgoing>Flow_1jz45eh</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1jz45eh" sourceRef="GenerateDashboardNotificationRespondent1ForJO" targetRef="Activity_19g768l" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationClaimant1ForJO" name="Generate Dashboard Notification Claimant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d6nmfl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1paqyp2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1paqyp2" sourceRef="GenerateDashboardNotificationClaimant1ForJO" targetRef="GenerateDashboardNotificationRespondent1ForJO" />
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -264,7 +274,11 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_149txem" bpmnElement="GenerateDashboardNotificationRespondent1ForJO">
-        <dc:Bounds x="1400" y="650" width="100" height="80" />
+        <dc:Bounds x="1430" y="650" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_06fu5pu" bpmnElement="GenerateDashboardNotificationClaimant1ForJO">
+        <dc:Bounds x="1290" y="650" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
@@ -368,12 +382,16 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d6nmfl_di" bpmnElement="Flow_1d6nmfl">
         <di:waypoint x="1240" y="690" />
-        <di:waypoint x="1400" y="690" />
+        <di:waypoint x="1290" y="690" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jz45eh_di" bpmnElement="Flow_1jz45eh">
-        <di:waypoint x="1500" y="690" />
+        <di:waypoint x="1530" y="690" />
         <di:waypoint x="1620" y="690" />
         <di:waypoint x="1620" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1paqyp2_di" bpmnElement="Flow_1paqyp2">
+        <di:waypoint x="1390" y="690" />
+        <di:waypoint x="1430" y="690" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
