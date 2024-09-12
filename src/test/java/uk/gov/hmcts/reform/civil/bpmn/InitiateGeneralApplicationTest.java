@@ -56,6 +56,9 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
 
+    private static final String GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID = "GenerateGANotificationForApplicantFeeRequired";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT = "CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT";
+
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
     }
@@ -170,6 +173,15 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
                 APPLICATION_EVENT_GASPEC,
                 UPDATE_RESPONDENT_DASHBOARD_GA_CREATED_EVENT,
                 GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
+                variables
+            );
+
+            ExternalTask dashboardNotificationForGaApplicant = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                dashboardNotificationForGaApplicant,
+                APPLICATION_EVENT_GASPEC,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT,
+                GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID,
                 variables
             );
         }
