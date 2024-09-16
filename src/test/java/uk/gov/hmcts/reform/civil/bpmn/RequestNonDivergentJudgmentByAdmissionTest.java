@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
+class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
@@ -20,16 +20,18 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
+    public static final String SEND_JUDGMENT_DETAILS_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
+    public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
-    public RequestNonDivergentJudgementByAdmissionTest() {
-        super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
+    public RequestNonDivergentJudgmentByAdmissionTest() {
+        super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void shouldSuccessfullyCompleteRequestJudgementByAdmission(boolean isLiPDefendant) {
+    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -81,6 +83,14 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT,
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
+        );
+
+        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentDetailsToCJES,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_EVENT,
+            SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
 
         if (isLiPDefendant) {
