@@ -77,8 +77,8 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT , isLipApplicant,
-            LIP_RESPONDENT , isLipRespondent));
+            LIP_APPLICANT, isLipApplicant,
+            LIP_RESPONDENT, isLipRespondent));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
