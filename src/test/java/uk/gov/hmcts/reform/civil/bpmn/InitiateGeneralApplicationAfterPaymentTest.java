@@ -37,6 +37,8 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS = "UPDATE_GA_DASHBOARD_NOTIFICATION";
+    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT = "CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT";
+    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID = "respondentDashboardNotification";
 
     private static final String UPDATE_DASHBOARD_NOTIFICATIONS_ID = "UpdateDashboardNotifications";
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_COMPLETE";
@@ -123,6 +125,18 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 UPDATE_DASHBOARD_NOTIFICATIONS,
                 UPDATE_DASHBOARD_NOTIFICATIONS_ID,
+                variables
+            );
+        }
+
+        if (isLipRespondent) {
+            //update dashboard
+            ExternalTask updateCuiRespondentDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiRespondentDashboard,
+                APPLICATION_PROCESS_EVENT_GASPEC,
+                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT,
+                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID,
                 variables
             );
         }
