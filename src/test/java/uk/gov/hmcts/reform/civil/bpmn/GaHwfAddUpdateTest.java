@@ -1,25 +1,23 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-    private static final String FILE_NAME = "notify_ga_applicant_hwf_outcome.bpmn";
-    private static final String MESSAGE_NAME = "NOTIFY_APPLICANT_LIP_HWF";
-    private static final String PROCESS_ID = "GA_NOTIFY_HWF";
-    private static final String ACTIVITY_ID = "Notify_App_Lip_Hwf";
+public class GaHwfAddUpdateTest extends BpmnBaseGASpecTest {
+
+    private static final String FILE_NAME = "ga_hwf_add_update.bpmn";
+    private static final String MESSAGE_NAME = "UPDATE_GA_ADD_HWF";
+    private static final String PROCESS_ID = "GA_UPDATE_ADD_HWF";
+    private static final String ACTIVITY_ID = "Update_App_Add_Hwf";
     private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
-    public static final String NOTIFY_EVENT = "applicationProcessCaseEventGASpec";
-    private static final String CASE_EVENT_NAME_DASHBOARD = "APPLICANT_LIP_HWF_DASHBOARD_NOTIFICATION";
-    private static final String ACTIVITY_ID_DASHBOARD = "applicantLipHwFDashboardNotification";
-    public static final String NOTIFY_EVENT_DASHBOARD = "processExternalCaseEventGASpec";
+    public static final String UPDATE_TOPIC = "applicationProcessCaseEventGASpec";
+    public static final String UPDATE_EVENT = "MODIFY_STATE_AFTER_ADDITIONAL_FEE_PAID";
 
-    public GaHwfNotifyTest() {
+    public GaHwfAddUpdateTest() {
         super(FILE_NAME, PROCESS_ID);
     }
 
@@ -58,19 +56,12 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
                 START_GA_BUSINESS_EVENT,
                 START_GA_BUSINESS_ACTIVITY
         );
-        ExternalTask notifyTask = assertNextExternalTask(NOTIFY_EVENT);
+        ExternalTask notifyTask = assertNextExternalTask(UPDATE_TOPIC);
         assertCompleteExternalTask(
                 notifyTask,
-                NOTIFY_EVENT,
-                MESSAGE_NAME,
+                UPDATE_TOPIC,
+                UPDATE_EVENT,
                 ACTIVITY_ID
-        );
-        ExternalTask notifyTaskDashboard = assertNextExternalTask(NOTIFY_EVENT_DASHBOARD);
-        assertCompleteExternalTask(
-            notifyTaskDashboard,
-            NOTIFY_EVENT_DASHBOARD,
-            CASE_EVENT_NAME_DASHBOARD,
-            ACTIVITY_ID_DASHBOARD
         );
 
         //end business process
