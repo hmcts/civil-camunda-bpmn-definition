@@ -421,7 +421,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            DASHBOARD_SERVICE_ENABLED, true));
+            DASHBOARD_SERVICE_ENABLED, true,
+            GENERAL_APPLICATION_ENABLED, false));
 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
