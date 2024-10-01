@@ -43,5 +43,6 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseTest {
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+        assertNoExternalTasksLeft();
     }
 }
