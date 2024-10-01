@@ -23,5 +23,25 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
         );
+        //complete the applicant notification
+        ExternalTask notificationApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationApplicantTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_APPLICANT_TRANSLATED_DOCUMENT_UPLOADED_GA",
+            "NotifyTranslatedDocumentUploadedToApplicantGA"
+        );
+        //complete the respondent notification
+        ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_TRANSLATED_DOCUMENT_UPLOADED_GA",
+            "NotifyTranslatedDocumentUploadedToRespondentGA"
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
     }
 }
