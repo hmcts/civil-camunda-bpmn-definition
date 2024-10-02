@@ -16,7 +16,8 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
     private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
-    
+    public static final String END_BUSINESS_PROCESS = "END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC";
+
     public NotifyGATranslatedUploadedDocumentsTest() {
         super("upload_translated_document_ga_lip_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_LIP_ID");
     }
@@ -31,7 +32,7 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_doc_upload_general_application_business_process.bpmn"))
             .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
@@ -79,7 +80,7 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
+        completeBusinessProcessForGADocUpload(endBusinessProcess);
         assertNoExternalTasksLeft();
     }
 }
