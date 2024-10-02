@@ -3,7 +3,8 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -42,8 +43,9 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         super("amend_restitch_bundle.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteAmendRestitchBundle() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteAmendRestitchBundle(boolean caseProgressionEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -54,7 +56,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true, 
-            CASE_PROGRESSION_ENABLED, true
+            CASE_PROGRESSION_ENABLED, caseProgressionEnabled
         ));
 
         //complete the start business process
@@ -80,23 +82,25 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
                                    NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
                                    variables
         );
+        
+        if (caseProgressionEnabled) {
+            //complete the claimant dashboard notification
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
+                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
+                                       variables
+            );
 
-        //complete the claimant dashboard notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the defendant dashboard notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
-                                   variables
-        );
-
+            //complete the defendant dashboard notification
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
+                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
+                                       variables
+            );
+        }
+        
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
