@@ -10,7 +10,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class StayCaseTest extends BpmnBaseTest {
+public class StayLiftedTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "STAY_LIFTED";
     public static final String PROCESS_ID = "STAY_LIFTED";
