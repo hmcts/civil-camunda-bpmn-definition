@@ -268,9 +268,9 @@ public abstract class BpmnBaseGASpecTest {
      * @param externalTask the id of the external task to complete.
      */
     public void completeBusinessProcessForGADocUpload(ExternalTask externalTask) {
-        assertThat(externalTask.getTopicName()).isEqualTo("END_UPLOADED_TRANSLATED_DOC_BUSINESS_PROCESS_GASPEC");
+        assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK");
 
-        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_UPLOADED_TRANSLATED_DOC_BUSINESS_PROCESS_GASPEC");
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
