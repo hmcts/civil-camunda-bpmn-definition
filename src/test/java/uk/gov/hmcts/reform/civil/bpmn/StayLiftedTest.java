@@ -31,7 +31,7 @@ public class StayLiftedTest extends BpmnBaseTest {
     private static final String NOTIFY_DEFENDANT2_STAY_LIFTED_ACTIVITY_ID
         = "NotifyDefendant2StayLifted";
 
-    public StayCaseTest() {
+    public StayLiftedTest() {
         super("stay_lifted.bpmn", PROCESS_ID);
     }
 
