@@ -46,7 +46,8 @@ def secrets = [
     secret('postgres-password', 'POSTGRES_PASSWORD'),
     secret('default-password', 'DEFAULT_PASSWORD'),
     secret('judge-default-password', 'JUDGE_DEFAULT_PASSWORD'),
-    secret('iac-default-password', 'IAC_DEFAULT_PASSWORD')
+    secret('iac-default-password', 'IAC_DEFAULT_PASSWORD'),
+    secret('system-update-user-password', 'SYSTEM_USER_PASSWORD'),
   ],
   'civil-prod': [
     secret('microservicekey-civil-service', 'S2S_SECRET_PROD')
@@ -150,6 +151,7 @@ withPipeline(type, product, component) {
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.WIREMOCK_URL="https://wiremock-civil-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
