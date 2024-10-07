@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.26.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:message id="Message_0yl8iuc" name="INITIATE_COSC_APPLICATION_AFTER_PAYMENT" />
+  <bpmn:collaboration id="InitiateGeneralApplicationAfterPayment">
+    <bpmn:extensionElements />
+    <bpmn:participant id="Participant_11shrki" name="Initiate Cosc Application After Payment" processRef="COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID" />
+  </bpmn:collaboration>
+  <bpmn:process id="COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID" name="COSC initiate after payment process" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
+    <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
+    <bpmn:sequenceFlow id="Flow_0n6ts4r" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
+    <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_0pltq59">
+      <bpmn:incoming>Flow_0nufgia</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_099a8bs" name="Start Business Process" calledElement="GA_StartGeneralApplicationBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lowlui</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nufgia</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ewf3pg</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:startEvent id="Event_19ttrus" name="Start">
+      <bpmn:outgoing>Flow_1lowlui</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_024hrqa" messageRef="Message_0yl8iuc" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1013vtg" sourceRef="Activity_1i03xpu" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_1oiacct" sourceRef="Activity_0ep5mzo" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_1yazfxr" sourceRef="Activity_1gudbos" targetRef="Gateway_127lz9h" />
+    <bpmn:sequenceFlow id="Flow_0g1jtv9" name="Yes" sourceRef="Gateway_127lz9h" targetRef="Activity_0o9ye53">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_118lozf" name="No" sourceRef="Gateway_127lz9h" targetRef="Activity_09z7mqc" />
+    <bpmn:sequenceFlow id="Flow_0oritvw" sourceRef="Activity_0o9ye53" targetRef="Activity_0ep5mzo" />
+    <bpmn:sequenceFlow id="Flow_1e7ebbq" sourceRef="Activity_09z7mqc" targetRef="Activity_1i03xpu" />
+    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1013vtg</bpmn:incoming>
+      <bpmn:incoming>Flow_1oiacct</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n6ts4r</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0ii7uzg">
+      <bpmn:incoming>Flow_0n6ts4r</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ewf3pg" sourceRef="Activity_099a8bs" targetRef="Activity_1gudbos" />
+    <bpmn:exclusiveGateway id="Gateway_127lz9h">
+      <bpmn:incoming>Flow_1yazfxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_118lozf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0g1jtv9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_0ep5mzo" name="Defendant Dashboard notification Certificate generated">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_GENERATED_FOR_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0oritvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oiacct</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1i03xpu" name="Defendant Dashboard notification CoSC processed">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_APP_IN_PROCESS_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1e7ebbq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1013vtg</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0o9ye53" name="Generate Cosc Document">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GEN_COSC_DOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0g1jtv9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oritvw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_09z7mqc" name="Claimant Dashboard Notification Mark paid in full">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_MARK_PAID_FULL_FOR_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_118lozf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e7ebbq</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Activity_1gudbos" name="Check Mark paid in full and add scheduler deadline" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CHECK_PAID_IN_FULL_SCHED_DEADLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ewf3pg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yazfxr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_13pmqfl">
+      <bpmn:text>Is Claimant confirmed the Paid in full?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1rfm6wk" sourceRef="TextAnnotation_13pmqfl" targetRef="Gateway_127lz9h" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplicationAfterPayment">
+      <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
+        <dc:Bounds x="160" y="120" width="1520" height="390" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
+        <dc:Bounds x="322" y="140" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_099a8bs_di" bpmnElement="Activity_099a8bs">
+        <dc:Bounds x="290" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19ttrus_di" bpmnElement="Event_19ttrus">
+        <dc:Bounds x="212" y="270" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="218" y="313" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="1470" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
+        <dc:Bounds x="1622" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_127lz9h_di" bpmnElement="Gateway_127lz9h" isMarkerVisible="true">
+        <dc:Bounds x="725" y="263" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ep5mzo_di" bpmnElement="Activity_0ep5mzo">
+        <dc:Bounds x="1110" y="181" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1yxeizd" bpmnElement="Activity_1i03xpu">
+        <dc:Bounds x="1120" y="331" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0o9ye53_di" bpmnElement="Activity_0o9ye53">
+        <dc:Bounds x="870" y="181" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09z7mqc_di" bpmnElement="Activity_09z7mqc">
+        <dc:Bounds x="850" y="331" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1905nhf_di" bpmnElement="Activity_1gudbos">
+        <dc:Bounds x="490" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1v3ad0i" bpmnElement="TextAnnotation_13pmqfl">
+        <dc:Bounds x="660" y="142" width="100" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
+        <dc:Bounds x="322" y="230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="200" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
+        <di:waypoint x="248" y="288" />
+        <di:waypoint x="290" y="288" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
+        <di:waypoint x="340" y="248" />
+        <di:waypoint x="340" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n6ts4r_di" bpmnElement="Flow_0n6ts4r">
+        <di:waypoint x="1570" y="290" />
+        <di:waypoint x="1622" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1013vtg_di" bpmnElement="Flow_1013vtg">
+        <di:waypoint x="1220" y="371" />
+        <di:waypoint x="1490" y="371" />
+        <di:waypoint x="1490" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oiacct_di" bpmnElement="Flow_1oiacct">
+        <di:waypoint x="1210" y="221" />
+        <di:waypoint x="1490" y="221" />
+        <di:waypoint x="1490" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yazfxr_di" bpmnElement="Flow_1yazfxr">
+        <di:waypoint x="590" y="288" />
+        <di:waypoint x="725" y="288" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g1jtv9_di" bpmnElement="Flow_0g1jtv9">
+        <di:waypoint x="750" y="263" />
+        <di:waypoint x="750" y="221" />
+        <di:waypoint x="870" y="221" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="773" y="203" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_118lozf_di" bpmnElement="Flow_118lozf">
+        <di:waypoint x="750" y="313" />
+        <di:waypoint x="750" y="371" />
+        <di:waypoint x="850" y="371" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="755" y="353" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oritvw_di" bpmnElement="Flow_0oritvw">
+        <di:waypoint x="970" y="221" />
+        <di:waypoint x="1110" y="221" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e7ebbq_di" bpmnElement="Flow_1e7ebbq">
+        <di:waypoint x="950" y="371" />
+        <di:waypoint x="1120" y="371" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ewf3pg_di" bpmnElement="Flow_0ewf3pg">
+        <di:waypoint x="390" y="288" />
+        <di:waypoint x="490" y="288" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1rfm6wk_di" bpmnElement="Association_1rfm6wk">
+        <di:waypoint x="721" y="197" />
+        <di:waypoint x="744" y="269" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
