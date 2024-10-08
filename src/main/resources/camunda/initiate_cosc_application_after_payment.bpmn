@@ -31,10 +31,10 @@
     <bpmn:sequenceFlow id="Flow_1013vtg" sourceRef="Activity_1i03xpu" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_1oiacct" sourceRef="Activity_0ep5mzo" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_1yazfxr" sourceRef="Activity_1gudbos" targetRef="Gateway_127lz9h" />
-    <bpmn:sequenceFlow id="Flow_0g1jtv9" name="Yes" sourceRef="Gateway_127lz9h" targetRef="Activity_0o9ye53">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+    <bpmn:sequenceFlow id="Flow_0g1jtv9" name="Yes" sourceRef="Gateway_127lz9h" targetRef="Activity_0o9ye53" />
+    <bpmn:sequenceFlow id="Flow_118lozf" name="No" sourceRef="Gateway_127lz9h" targetRef="Activity_09z7mqc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_118lozf" name="No" sourceRef="Gateway_127lz9h" targetRef="Activity_09z7mqc" />
     <bpmn:sequenceFlow id="Flow_0oritvw" sourceRef="Activity_0o9ye53" targetRef="Activity_0ep5mzo" />
     <bpmn:sequenceFlow id="Flow_1e7ebbq" sourceRef="Activity_09z7mqc" targetRef="Activity_1i03xpu" />
     <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
@@ -63,15 +63,6 @@
       <bpmn:incoming>Flow_0oritvw</bpmn:incoming>
       <bpmn:outgoing>Flow_1oiacct</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_1i03xpu" name="Defendant Dashboard notification CoSC processed">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_APP_IN_PROCESS_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1e7ebbq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1013vtg</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:task id="Activity_0o9ye53" name="Generate Cosc Document">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -80,15 +71,6 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g1jtv9</bpmn:incoming>
       <bpmn:outgoing>Flow_0oritvw</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="Activity_09z7mqc" name="Claimant Dashboard Notification Mark paid in full">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_MARK_PAID_FULL_FOR_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_118lozf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1e7ebbq</bpmn:outgoing>
     </bpmn:task>
     <bpmn:serviceTask id="Activity_1gudbos" name="Check Mark paid in full and add scheduler deadline" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
       <bpmn:extensionElements>
@@ -99,6 +81,24 @@
       <bpmn:incoming>Flow_0ewf3pg</bpmn:incoming>
       <bpmn:outgoing>Flow_1yazfxr</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:task id="Activity_09z7mqc" name="Claimant Dashboard Notification Mark paid in full">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_MARK_PAID_FULL_FOR_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_118lozf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e7ebbq</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1i03xpu" name="Defendant Dashboard notification CoSC processed">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFY_COSC_APP_IN_PROCESS_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1e7ebbq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1013vtg</bpmn:outgoing>
+    </bpmn:task>
     <bpmn:textAnnotation id="TextAnnotation_13pmqfl">
       <bpmn:text>Is Claimant confirmed the Paid in full?</bpmn:text>
     </bpmn:textAnnotation>
@@ -135,20 +135,20 @@
         <dc:Bounds x="1110" y="181" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1yxeizd" bpmnElement="Activity_1i03xpu">
-        <dc:Bounds x="1120" y="331" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0o9ye53_di" bpmnElement="Activity_0o9ye53">
         <dc:Bounds x="870" y="181" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_09z7mqc_di" bpmnElement="Activity_09z7mqc">
-        <dc:Bounds x="850" y="331" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1905nhf_di" bpmnElement="Activity_1gudbos">
         <dc:Bounds x="490" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09z7mqc_di" bpmnElement="Activity_09z7mqc">
+        <dc:Bounds x="880" y="331" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1yxeizd" bpmnElement="Activity_1i03xpu">
+        <dc:Bounds x="1110" y="331" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1v3ad0i" bpmnElement="TextAnnotation_13pmqfl">
         <dc:Bounds x="660" y="142" width="100" height="55" />
@@ -173,7 +173,7 @@
         <di:waypoint x="1622" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1013vtg_di" bpmnElement="Flow_1013vtg">
-        <di:waypoint x="1220" y="371" />
+        <di:waypoint x="1210" y="371" />
         <di:waypoint x="1490" y="371" />
         <di:waypoint x="1490" y="330" />
       </bpmndi:BPMNEdge>
@@ -197,9 +197,9 @@
       <bpmndi:BPMNEdge id="Flow_118lozf_di" bpmnElement="Flow_118lozf">
         <di:waypoint x="750" y="313" />
         <di:waypoint x="750" y="371" />
-        <di:waypoint x="850" y="371" />
+        <di:waypoint x="880" y="371" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="755" y="353" width="15" height="14" />
+          <dc:Bounds x="759" y="353" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0oritvw_di" bpmnElement="Flow_0oritvw">
@@ -207,8 +207,8 @@
         <di:waypoint x="1110" y="221" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1e7ebbq_di" bpmnElement="Flow_1e7ebbq">
-        <di:waypoint x="950" y="371" />
-        <di:waypoint x="1120" y="371" />
+        <di:waypoint x="980" y="371" />
+        <di:waypoint x="1110" y="371" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ewf3pg_di" bpmnElement="Flow_0ewf3pg">
         <di:waypoint x="390" y="288" />
