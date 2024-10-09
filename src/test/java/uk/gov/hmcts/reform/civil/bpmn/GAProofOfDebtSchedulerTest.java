@@ -17,8 +17,10 @@ class GAProofOfDebtSchedulerTest extends BpmnBaseTest {
 
     public static final String TOPIC_NAME = "CoscApplicationProcessor";
 
+    public static final String PROCESS_ID = "GA_PROOF_OF_DEBT_SCHEDULER";
+
     public GAProofOfDebtSchedulerTest() {
-        super("ga_proof_of_debt_scheduler.bpmn", "GA_PROOF_OF_DEBT_SCHEDULER");
+        super("ga_proof_of_debt_scheduler.bpmn", PROCESS_ID);
     }
 
     @Test
