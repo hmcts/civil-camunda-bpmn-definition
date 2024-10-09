@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class ProcessCOSCApplicationTest extends BpmnBaseTest {
+class ProcessCoscApplicationTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "PROCESS_COSC_APPLICATION";
     private static final String PROCESS_ID = "PROCESS_COSC_APPLICATION_PROCESS_ID";
 
-    public ProcessCOSCApplicationTest() {
+    public ProcessCoscApplicationTest() {
         super("process_cosc_application.bpmn", PROCESS_ID);
     }
 
