@@ -15,6 +15,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationCoSCProcessedDefendant";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
@@ -49,6 +51,16 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             CHECK_PAID_IN_FULL_SCHED_DEADLINE,
             CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID,
             variables
+        );
+
+        ExternalTask notificationTask;
+
+        //complete the defendant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT_ACTIVITY_ID,
+                                   variables
         );
 
         //end business process
