@@ -1,7 +1,14 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -11,18 +18,25 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
+    public static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoscDocument";
+    public static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteAddNotes_whenCalled() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteInitiateCOSCApplication_whenCalled(
+        Boolean isJudgmentMarkedPaidInFull) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -30,10 +44,11 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
-        //complete the Robotics notification
+        //complete the notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             forRobotics,
@@ -41,6 +56,19 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseTest {
             CHECK_PAID_IN_FULL_SCHED_DEADLINE,
             CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID
         );
+
+        //complete the CC notification
+        if (isJudgmentMarkedPaidInFull) {
+            //complete generate Document
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                GENERATE_COSC_DOCUMENT,
+                GENERATE_COSC_DOCUMENT_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
