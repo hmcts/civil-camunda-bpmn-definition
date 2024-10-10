@@ -55,14 +55,6 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
 
         ExternalTask notificationTask;
 
-        //complete the defendant dashboard notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT_ACTIVITY_ID,
-                                   variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
