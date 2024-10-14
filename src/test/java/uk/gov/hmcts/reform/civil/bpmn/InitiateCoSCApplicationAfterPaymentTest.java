@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,15 +17,16 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_PROCESSED_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationCoSCProcessedDefendant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationMarkNotPaidInFull";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyComplete_whenCalled() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyComplete_whenCalled(Boolean isJudgmentMarkedPaidInFull) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -32,6 +35,7 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of());
+        variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -43,17 +47,27 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             variables
         );
 
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+        //complete Check Mark paid in full and add scheduler deadline
+        ExternalTask checkMarkPaidInFull = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
         assertCompleteExternalTask(
-            forRobotics,
+            checkMarkPaidInFull,
             APPLICATION_PROCESS_EVENT_GASPEC,
             CHECK_PAID_IN_FULL_SCHED_DEADLINE,
             CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID,
             variables
         );
 
-        ExternalTask notificationTask;
+        //complete the Defendant notification
+        if (!isJudgmentMarkedPaidInFull) {
+            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                notificationTask,
+                APPLICATION_PROCESS_EVENT_GASPEC,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
