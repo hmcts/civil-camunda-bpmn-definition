@@ -80,6 +80,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
     private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDefendantCCJDashboardNotification";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateClaimantCCJDashboardNotification";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         = "GenerateClaimantDashboardNotificationClaimantResponse";
 
@@ -459,6 +461,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
+        createClaimantDashboardNotificationForJOIssued();
         createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -577,5 +580,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void createDefendantDashboardNotificationForJOIssued() {
         assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT, CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID);
+    }
+
+    private void createClaimantDashboardNotificationForJOIssued() {
+        assertCompletedCaseEvent(DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT, DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID);
     }
 }
