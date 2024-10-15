@@ -16,6 +16,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     public static final String PROCESS_ID = "COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID = "ClaimantDashboardNotificationMarkNotPaidInFull";
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationMarkNotPaidInFull";
@@ -56,6 +58,18 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID,
             variables
         );
+
+        //complete the Claimant notification
+        if (!isJudgmentMarkedPaidInFull) {
+            ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                claimantNotificationTask,
+                APPLICATION_PROCESS_EVENT_GASPEC,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //complete the Defendant notification
         if (!isJudgmentMarkedPaidInFull) {

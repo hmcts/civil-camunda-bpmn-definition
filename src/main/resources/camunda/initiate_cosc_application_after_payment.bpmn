@@ -58,7 +58,7 @@
     <bpmn:sequenceFlow id="Flow_0h4yfkt" name="YES" sourceRef="Gateway_0mtvw8c" targetRef="Activity_0eo8p2p">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isJudgmentMarkedPaidInFull==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1uur8y5" name="NO" sourceRef="Gateway_0mtvw8c" targetRef="DefendantDashboardNotificationMarkNotPaidInFull">
+    <bpmn:sequenceFlow id="Flow_1uur8y5" name="NO" sourceRef="Gateway_0mtvw8c" targetRef="ClaimantDashboardNotificationMarkNotPaidInFull">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isJudgmentMarkedPaidInFull==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="DefendantDashboardNotificationMarkNotPaidInFull" name="Defendant Dashboard Notification mark not paid in full" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
@@ -67,10 +67,20 @@
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1uur8y5</bpmn:incoming>
+      <bpmn:incoming>Flow_0ssurpk</bpmn:incoming>
       <bpmn:outgoing>Flow_1ucazsq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ucazsq" sourceRef="DefendantDashboardNotificationMarkNotPaidInFull" targetRef="Activity_0eo8p2p" />
+    <bpmn:serviceTask id="ClaimantDashboardNotificationMarkNotPaidInFull" name="Claimant Dashboard Notification mark not paid in full" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1uur8y5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ssurpk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ssurpk" sourceRef="ClaimantDashboardNotificationMarkNotPaidInFull" targetRef="DefendantDashboardNotificationMarkNotPaidInFull" />
     <bpmn:textAnnotation id="TextAnnotation_085fw3j">
       <bpmn:text>Has claimant confirmed they paid in full?</bpmn:text>
     </bpmn:textAnnotation>
@@ -108,6 +118,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0zyn626" bpmnElement="DefendantDashboardNotificationMarkNotPaidInFull">
         <dc:Bounds x="1180" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0evdlkm" bpmnElement="ClaimantDashboardNotificationMarkNotPaidInFull">
+        <dc:Bounds x="950" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_085fw3j_di" bpmnElement="TextAnnotation_085fw3j">
@@ -152,7 +166,7 @@
       <bpmndi:BPMNEdge id="Flow_1uur8y5_di" bpmnElement="Flow_1uur8y5">
         <di:waypoint x="790" y="313" />
         <di:waypoint x="790" y="410" />
-        <di:waypoint x="1180" y="410" />
+        <di:waypoint x="950" y="410" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="801" y="353" width="17" height="14" />
         </bpmndi:BPMNLabel>
@@ -161,6 +175,10 @@
         <di:waypoint x="1280" y="410" />
         <di:waypoint x="1530" y="410" />
         <di:waypoint x="1530" y="328" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ssurpk_di" bpmnElement="Flow_0ssurpk">
+        <di:waypoint x="1050" y="410" />
+        <di:waypoint x="1180" y="410" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0j2lab9_di" bpmnElement="Association_0j2lab9">
         <di:waypoint x="778" y="275" />
