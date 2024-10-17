@@ -19,7 +19,8 @@
         </camunda:properties>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1a5jsca</bpmn:incoming>
+      <bpmn:incoming>Flow_0xb4xrg</bpmn:incoming>
+      <bpmn:incoming>Flow_1nmu5oo</bpmn:incoming>
       <bpmn:outgoing>Flow_0x2wz2</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_0x2wz2" sourceRef="Activity_0471ljz" targetRef="Event_1h61h5a" />
@@ -31,40 +32,97 @@
       <bpmn:incoming>Flow_116h4jr</bpmn:incoming>
       <bpmn:outgoing>Flow_1a5jsca</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_1a5jsca" sourceRef="Activity_15x2r20" targetRef="Activity_0471ljz" />
+    <bpmn:sequenceFlow id="Flow_1a5jsca" sourceRef="Activity_15x2r20" targetRef="CheckAndMarkDefendantPaidInFull" />
     <bpmn:boundaryEvent id="Event_0kza4it" name="Abort" attachedToRef="Activity_15x2r20">
       <bpmn:outgoing>Flow_1y0ic2q</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_09jmy6o" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1y0ic2q" sourceRef="Event_0kza4it" targetRef="Event_1n2x832" />
+    <bpmn:serviceTask id="CheckAndMarkDefendantPaidInFull" name="Check and Mark Paid in Full" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CHECK_AND_MARK_PAID_IN_FULL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1a5jsca</bpmn:incoming>
+      <bpmn:outgoing>Flow_18kikyy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_18kikyy" sourceRef="CheckAndMarkDefendantPaidInFull" targetRef="Gateway_0pc8yx4" />
+    <bpmn:exclusiveGateway id="Gateway_0pc8yx4">
+      <bpmn:incoming>Flow_18kikyy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xb4xrg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xfttkv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0xb4xrg" name="No" sourceRef="Gateway_0pc8yx4" targetRef="Activity_0471ljz">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!sendDetailsToCJES}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xfttkv" name="Yes" sourceRef="Gateway_0pc8yx4" targetRef="SendJudgmentDetailsCJES">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendDetailsToCJES}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="SendJudgmentDetailsCJES" name="Send Judgment Details to CJES" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xfttkv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nmu5oo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1nmu5oo" sourceRef="SendJudgmentDetailsCJES" targetRef="Activity_0471ljz" />
     <bpmn:textAnnotation id="TextAnnotation_1jdkgsi">
       <bpmn:text>PROCESS_COSC_APPLICATION</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0ct49aq" sourceRef="Event_0vk0w88" targetRef="TextAnnotation_1jdkgsi" />
+    <bpmn:textAnnotation id="TextAnnotation_05s03a1">
+      <bpmn:text>Send judgment to CJES?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1b5e6or" sourceRef="Gateway_0pc8yx4" targetRef="TextAnnotation_05s03a1" />
   </bpmn:process>
   <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:message id="Message_07sm7e9" name="PROCESS_COSC_APPLICATION" />
   <bpmn:message id="Message_1ysab1l" name="Message_19rb2d5" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PROCESS_COSC_APPLICATION_PROCESS_ID">
-      <bpmndi:BPMNShape id="TextAnnotation_1jdkgsi_di" bpmnElement="TextAnnotation_1jdkgsi">
-        <dc:Bounds x="160" y="82" width="213" height="33" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1nmu5oo_di" bpmnElement="Flow_1nmu5oo">
+        <di:waypoint x="880" y="310" />
+        <di:waypoint x="930" y="310" />
+        <di:waypoint x="930" y="210" />
+        <di:waypoint x="1010" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xfttkv_di" bpmnElement="Flow_1xfttkv">
+        <di:waypoint x="730" y="235" />
+        <di:waypoint x="730" y="310" />
+        <di:waypoint x="780" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="737" y="272" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xb4xrg_di" bpmnElement="Flow_0xb4xrg">
+        <di:waypoint x="755" y="210" />
+        <di:waypoint x="1010" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="774" y="192" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18kikyy_di" bpmnElement="Flow_18kikyy">
+        <di:waypoint x="660" y="210" />
+        <di:waypoint x="705" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
+        <di:waypoint x="440" y="149" />
+        <di:waypoint x="440" y="117" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_1a5jsca">
-        <di:waypoint x="480" y="207" />
-        <di:waypoint x="540" y="207" />
+        <di:waypoint x="490" y="210" />
+        <di:waypoint x="560" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_0x2wz2">
+        <di:waypoint x="1110" y="210" />
+        <di:waypoint x="1162" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_116h4jr">
         <di:waypoint x="338" y="210" />
-        <di:waypoint x="380" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
-        <di:waypoint x="430" y="149" />
-        <di:waypoint x="430" y="115" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_0x2wz2">
-        <di:waypoint x="640" y="207" />
-        <di:waypoint x="692" y="207" />
+        <di:waypoint x="390" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="Event_0vk0w88">
         <dc:Bounds x="302" y="192" width="36" height="36" />
@@ -72,28 +130,47 @@
           <dc:Bounds x="308" y="235" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_15x2r20">
-        <dc:Bounds x="380" y="167" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_1n2x832">
-        <dc:Bounds x="412" y="79" width="36" height="36" />
+        <dc:Bounds x="422" y="81" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_1h61h5a">
-        <dc:Bounds x="692" y="189" width="36" height="36" />
+        <dc:Bounds x="1162" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_0471ljz">
-        <dc:Bounds x="540" y="167" width="100" height="80" />
+        <dc:Bounds x="1010" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_15x2r20">
+        <dc:Bounds x="390" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CheckAndMarkDefendantPaidInFull_di" bpmnElement="CheckAndMarkDefendantPaidInFull">
+        <dc:Bounds x="560" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0pc8yx4_di" bpmnElement="Gateway_0pc8yx4" isMarkerVisible="true">
+        <dc:Bounds x="705" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06kis6x_di" bpmnElement="SendJudgmentDetailsCJES">
+        <dc:Bounds x="780" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1jdkgsi_di" bpmnElement="TextAnnotation_1jdkgsi">
+        <dc:Bounds x="160" y="82" width="213" height="33" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_05s03a1_di" bpmnElement="TextAnnotation_05s03a1">
+        <dc:Bounds x="760" y="100" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
+        <dc:Bounds x="422" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="130" width="27" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0ct49aq_di" bpmnElement="Association_0ct49aq">
         <di:waypoint x="308" y="197" />
         <di:waypoint x="228" y="115" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
-        <dc:Bounds x="412" y="149" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="446" y="130" width="27" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1b5e6or_di" bpmnElement="Association_1b5e6or">
+        <di:waypoint x="741" y="196" />
+        <di:waypoint x="789" y="140" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
