@@ -23,6 +23,11 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_ID = "SendLetterSettleClaimMarkedPaidInFullDefendantLiP";
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_EVENT = "SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1";
 
+    public static final String TRIGGER_APPLICATION_CLOSURE = "TRIGGER_APPLICATION_CLOSURE";
+    private static final String APPLICATION_CLOSURE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
+    public static final String APPLICATION_CLOSED_UPDATE_CLAIM = "APPLICATION_CLOSED_UPDATE_CLAIM";
+    private static final String APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID = "UpdateClaimWithApplicationStatus";
+
     public SettleClaimPaidInFullNotificationTest() {
         super("settle_claim_paid_in_full_notification.bpmn", PROCESS_ID);
     }
@@ -51,7 +56,8 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2
+            UNREPRESENTED_DEFENDANT_TWO, isLiPDefendant2,
+            GENERAL_APPLICATION_ENABLED, false
         ));
 
         //complete the start business process
@@ -115,6 +121,61 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
         //fail the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertFailExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotify_Ga() {
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            UNREPRESENTED_DEFENDANT_TWO, false,
+            GENERAL_APPLICATION_ENABLED, true
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_CLOSURE,
+            APPLICATION_CLOSURE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_CLOSED_UPDATE_CLAIM,
+            APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID
+        );
+
+        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to Respondent
+        assertCompleteExternalTask(
+            dashboardDefendant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1,
+            NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
     }
