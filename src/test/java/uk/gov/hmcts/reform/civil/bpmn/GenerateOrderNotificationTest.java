@@ -117,6 +117,25 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
+        //complete the notification to respondent 1 dashboard
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
+            "Activity_Notice_Hearing_Claimant",
+            variables
+        );
+        //complete the notification to defendant 1 dashboard
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT",
+            "Activity_Notice_Hearing_Defendant",
+            variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
