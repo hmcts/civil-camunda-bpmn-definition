@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -58,12 +57,11 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             variables
         );
 
-        //complete the CC notification
+        //complete the Claimant notification
         if (!isJudgmentMarkedPaidInFull) {
-            //complete generate Document
-            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
             assertCompleteExternalTask(
-                notificationTask,
+                claimantNotificationTask,
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID,
