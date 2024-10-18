@@ -257,7 +257,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
             variables
         );
 
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
