@@ -21,6 +21,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationMarkNotPaidInFull";
+    private static final String DB_NOTIFY_COSC_GEN_FOR_DEFENDANT = "DB_NOTIFY_COSC_GEN_FOR_DEFENDANT";
+    private static final String DB_NOTIFY_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationCertificateGenerated";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
@@ -79,6 +81,18 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID,
+                variables
+            );
+        }
+
+        //complete the Defendant notification for certification generated
+        if (isJudgmentMarkedPaidInFull) {
+            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                notificationTask,
+                APPLICATION_PROCESS_EVENT_GASPEC,
+                DB_NOTIFY_COSC_GEN_FOR_DEFENDANT,
+                DB_NOTIFY_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID,
                 variables
             );
         }
