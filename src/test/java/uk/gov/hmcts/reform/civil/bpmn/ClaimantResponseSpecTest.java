@@ -335,6 +335,15 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
         );
+
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
+        );
+
         createDefendantDashboardNotification();
 
         //end business process
@@ -450,7 +459,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            DASHBOARD_SERVICE_ENABLED, true));
+            DASHBOARD_SERVICE_ENABLED, true,
+            GENERAL_APPLICATION_ENABLED, false));
 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
