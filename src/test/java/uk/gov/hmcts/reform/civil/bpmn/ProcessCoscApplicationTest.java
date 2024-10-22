@@ -64,7 +64,7 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyCertGenerated,
             PROCESS_CASE_EVENT,
-            "DB_NOTIFY_COSC_GEN_FOR_DEFENDANT",
+            "CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT",
             "DefendantDashboardNotificationCertificateGenerated"
         );
 
