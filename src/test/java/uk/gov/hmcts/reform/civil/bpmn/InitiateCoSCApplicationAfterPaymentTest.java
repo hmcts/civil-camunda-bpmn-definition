@@ -84,7 +84,6 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 variables
             );
         }
-
         //complete the CC notification
         if (isJudgmentMarkedPaidInFull) {
             //complete generate Document
