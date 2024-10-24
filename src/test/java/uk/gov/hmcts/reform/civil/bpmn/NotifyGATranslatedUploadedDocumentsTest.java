@@ -17,7 +17,7 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
-    public static final String MAIN_CASE_TOPIC="updateFromGACaseEvent";
+    public static final String MAIN_CASE_TOPIC = "updateFromGACaseEvent";
 
     public NotifyGATranslatedUploadedDocumentsTest() {
         super("upload_translated_document_ga_lip_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_LIP_ID");
