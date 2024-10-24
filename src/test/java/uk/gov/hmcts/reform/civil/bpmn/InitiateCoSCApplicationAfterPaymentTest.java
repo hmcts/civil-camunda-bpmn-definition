@@ -21,8 +21,10 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationMarkNotPaidInFull";
-    private static final String  GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
+    private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoscDocument";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationCertificateGenerated";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
@@ -93,6 +95,18 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 GENERATE_COSC_DOCUMENT,
                 GENERATE_COSC_DOCUMENT_ACTIVITY_ID,
+                variables
+            );
+        }
+
+        //complete the Defendant notification for certification generated
+        if (isJudgmentMarkedPaidInFull) {
+            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                notificationTask,
+                APPLICATION_PROCESS_EVENT_GASPEC,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID,
                 variables
             );
         }
