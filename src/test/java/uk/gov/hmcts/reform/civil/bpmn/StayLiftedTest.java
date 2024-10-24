@@ -22,6 +22,14 @@ public class StayLiftedTest extends BpmnBaseTest {
         = "NOTIFY_DEFENDANT_STAY_LIFTED";
     public static final String NOTIFY_DEFENDANT2_STAY_LIFTED
         = "NOTIFY_DEFENDANT2_STAY_LIFTED";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_STAY_LIFTED_ACTIVITY_ID
@@ -30,6 +38,14 @@ public class StayLiftedTest extends BpmnBaseTest {
         = "NotifyDefendantStayLifted";
     private static final String NOTIFY_DEFENDANT2_STAY_LIFTED_ACTIVITY_ID
         = "NotifyDefendant2StayLifted";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT_ACTIVITY_ID
+        = "DashboardNotificationHearingDocumentsClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT_ACTIVITY_ID
+        = "DashboardNotificationHearingDocumentsDefendant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT_ACTIVITY_ID
+        = "DashboardNotificationStayLiftedClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT_ACTIVITY_ID
+        = "DashboardNotificationStayLiftedDefendant";
 
     public StayLiftedTest() {
         super("stay_lifted.bpmn", PROCESS_ID);
@@ -77,6 +93,38 @@ public class StayLiftedTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_DEFENDANT_STAY_LIFTED,
                                    NOTIFY_DEFENDANT_STAY_LIFTED_ACTIVITY_ID,
+                                   variables
+        );
+
+        //dashboard notification hearing documents claimant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //dashboard notification hearing documents defendant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //dashboard notification stay lifted claimant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+
+        //dashboard notification stay lifted defendant
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
