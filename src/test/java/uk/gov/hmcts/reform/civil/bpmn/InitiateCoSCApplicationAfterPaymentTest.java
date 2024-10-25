@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,14 +26,16 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoscDocument";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationCertificateGenerated";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC = "NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC_ACTIVITY_ID = "NotifyApplicantSolicitorCoscApplication";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyComplete_whenCalled(Boolean isJudgmentMarkedPaidInFull) {
+    @CsvSource({"false,false", "false,true", "true,null"})
+    void shouldSuccessfullyComplete_whenCalled(Boolean isJudgmentMarkedPaidInFull, Boolean isClaimantLR) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -42,6 +45,7 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of());
         variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
+        variables.put("isClaimantLR", isClaimantLR);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -63,20 +67,30 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             variables
         );
 
-        //complete the Claimant notification
-        if (!isJudgmentMarkedPaidInFull) {
-            ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                claimantNotificationTask,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID,
-                variables
-            );
-        }
-
         //complete the Defendant notification
         if (!isJudgmentMarkedPaidInFull) {
+            if (isClaimantLR) {
+                // email notification for claimant
+                ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+                assertCompleteExternalTask(
+                    claimantNotificationTask,
+                    APPLICATION_PROCESS_EVENT_GASPEC,
+                    NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC,
+                    NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC_ACTIVITY_ID,
+                    variables
+                );
+            } else {
+                // dashboard notification for claimant
+                ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+                assertCompleteExternalTask(
+                    claimantNotificationTask,
+                    APPLICATION_PROCESS_EVENT_GASPEC,
+                    CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT,
+                    CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID,
+                    variables
+                );
+            }
+
             ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
             assertCompleteExternalTask(
                 notificationTask,
@@ -86,24 +100,23 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 variables
             );
         }
+
         //complete the CC notification
         if (isJudgmentMarkedPaidInFull) {
             //complete generate Document
-            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            ExternalTask generateDoc = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
             assertCompleteExternalTask(
-                notificationTask,
+                generateDoc,
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 GENERATE_COSC_DOCUMENT,
                 GENERATE_COSC_DOCUMENT_ACTIVITY_ID,
                 variables
             );
-        }
 
-        //complete the Defendant notification for certification generated
-        if (isJudgmentMarkedPaidInFull) {
-            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+            //complete the Defendant notification for certification generated
+            ExternalTask generateDocNotification = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
             assertCompleteExternalTask(
-                notificationTask,
+                generateDocNotification,
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID,
