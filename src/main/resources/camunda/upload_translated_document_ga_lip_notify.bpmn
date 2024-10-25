@@ -12,7 +12,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17t7elc</bpmn:incoming>
+      <bpmn:incoming>Flow_0hg3qpe</bpmn:incoming>
       <bpmn:outgoing>Flow_0qmsc9o</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0gt1863" name="Start Ga Business Process" calledElement="GA_StartGeneralApplicationBusinessProcess">
@@ -54,6 +54,15 @@
     <bpmn:sequenceFlow id="Flow_02cu20h" sourceRef="NotifyTranslatedDocumentUploadedToApplicantGA" targetRef="NotifyTranslatedDocumentUploadedToRespondentGA" />
     <bpmn:sequenceFlow id="Flow_0qmsc9o" sourceRef="Activity_1cweuly" targetRef="Event_07ek9xj" />
     <bpmn:sequenceFlow id="Flow_1r0joyl" sourceRef="NotifyTranslatedDocumentUploadedToRespondentGA" targetRef="ApplicantDashboardTranslatedDocUploadedGA" />
+    <bpmn:serviceTask id="RespondentDashboardTranslatedDocUploadedGA" name="Create respondent dashboard notification" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_TRANSLATED_DOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fnx7yv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hg3qpe</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:serviceTask id="ApplicantDashboardTranslatedDocUploadedGA" name="Create applicant dashboard notification" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -61,19 +70,10 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1r0joyl</bpmn:incoming>
-      <bpmn:outgoing>Flow_0zx99wj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0fnx7yv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="RespondentDashboardTranslatedDocUploadedGA" name="Create respondent dashboard notification" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_TRANSLATED_DOC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0zx99wj</bpmn:incoming>
-      <bpmn:outgoing>Flow_17t7elc</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0zx99wj" sourceRef="ApplicantDashboardTranslatedDocUploadedGA" targetRef="RespondentDashboardTranslatedDocUploadedGA" />
-    <bpmn:sequenceFlow id="Flow_17t7elc" sourceRef="RespondentDashboardTranslatedDocUploadedGA" targetRef="Activity_1cweuly" />
+    <bpmn:sequenceFlow id="Flow_0fnx7yv" sourceRef="ApplicantDashboardTranslatedDocUploadedGA" targetRef="RespondentDashboardTranslatedDocUploadedGA" />
+    <bpmn:sequenceFlow id="Flow_0hg3qpe" sourceRef="RespondentDashboardTranslatedDocUploadedGA" targetRef="Activity_1cweuly" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="UPLOAD_TRANSLATED_DOCUMENT_GA_LIP" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -99,19 +99,19 @@
         <dc:Bounds x="380" y="168" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nqcsz6_di" bpmnElement="ApplicantDashboardTranslatedDocUploadedGA">
-        <dc:Bounds x="690" y="167" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
-        <dc:Bounds x="1192" y="189" width="36" height="36" />
+        <dc:Bounds x="1152" y="189" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_14sbez9_di" bpmnElement="Activity_1cweuly">
-        <dc:Bounds x="1030" y="167" width="100" height="80" />
+        <dc:Bounds x="1000" y="167" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1733p8l_di" bpmnElement="RespondentDashboardTranslatedDocUploadedGA">
-        <dc:Bounds x="860" y="167" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1h5dfeq_di" bpmnElement="RespondentDashboardTranslatedDocUploadedGA">
+        <dc:Bounds x="850" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fr8sra_di" bpmnElement="ApplicantDashboardTranslatedDocUploadedGA">
+        <dc:Bounds x="690" y="167" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
@@ -137,20 +137,20 @@
         <di:waypoint x="530" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qmsc9o_di" bpmnElement="Flow_0qmsc9o">
-        <di:waypoint x="1130" y="207" />
-        <di:waypoint x="1192" y="207" />
+        <di:waypoint x="1100" y="207" />
+        <di:waypoint x="1152" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r0joyl_di" bpmnElement="Flow_1r0joyl">
-        <di:waypoint x="630" y="208" />
-        <di:waypoint x="690" y="208" />
+        <di:waypoint x="630" y="207" />
+        <di:waypoint x="690" y="207" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zx99wj_di" bpmnElement="Flow_0zx99wj">
+      <bpmndi:BPMNEdge id="Flow_0fnx7yv_di" bpmnElement="Flow_0fnx7yv">
         <di:waypoint x="790" y="207" />
-        <di:waypoint x="860" y="207" />
+        <di:waypoint x="850" y="208" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17t7elc_di" bpmnElement="Flow_17t7elc">
-        <di:waypoint x="960" y="210" />
-        <di:waypoint x="1030" y="210" />
+      <bpmndi:BPMNEdge id="Flow_0hg3qpe_di" bpmnElement="Flow_0hg3qpe">
+        <di:waypoint x="950" y="207" />
+        <di:waypoint x="1000" y="207" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
