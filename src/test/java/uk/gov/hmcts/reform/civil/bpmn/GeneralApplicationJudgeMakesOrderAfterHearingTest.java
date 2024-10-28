@@ -38,11 +38,10 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
 
-    private static final String UPDATE_CLAIMANT_GA_TASK_LIST_GA_COMPLETE_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_COMPLETE";
-    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ACTIVITY_ID = "GeneralApplicationClaimantTaskList";
-    private static final String UPDATE_RESPONDENT_GA_TASK_LIST_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
-    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ACTIVITY_ID = "GeneralApplicationRespondentTaskList";
-
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
         super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
     }
@@ -137,21 +136,21 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
         completeBusinessProcess(endBusinessProcess);
 
         if (isLipApplicant || isLipRespondent) {
-            ExternalTask claimantTaskListUpdate = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
             assertCompleteExternalTask(
-                claimantTaskListUpdate,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_CLAIMANT_GA_TASK_LIST_GA_COMPLETE_EVENT,
-                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ACTIVITY_ID,
+                updateCuiClaimantDashboard,
+                END_BUSINESS_PROCESS,
+                UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
+                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
                 variables
             );
 
-            ExternalTask respondentTaskListUpdate = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
             assertCompleteExternalTask(
-                respondentTaskListUpdate,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_RESPONDENT_GA_TASK_LIST_GA_COMPLETE_EVENT,
-                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ACTIVITY_ID,
+                updateCuiDefendantDashboard,
+                END_BUSINESS_PROCESS,
+                UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
+                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
                 variables
             );
         }
