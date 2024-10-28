@@ -37,6 +37,11 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
         = "makeDecisionCreateDashboardNotificationForRespondent";
 
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
+
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
 
@@ -149,6 +154,24 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
+        ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+        assertCompleteExternalTask(
+            updateCuiClaimantDashboard,
+            END_BUSINESS_PROCESS,
+            UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+            variables
+        );
+
+        ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+        assertCompleteExternalTask(
+            updateCuiDefendantDashboard,
+            END_BUSINESS_PROCESS,
+            UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
+            variables
+        );
+
         assertNoExternalTasksLeft();
     }
 
@@ -247,6 +270,24 @@ class JudgeMakesDecisionGeneralApplicationTest extends BpmnBaseJudgeGASpecTest {
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+
+        ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+        assertCompleteExternalTask(
+            updateCuiClaimantDashboard,
+            END_BUSINESS_PROCESS,
+            UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+            variables
+        );
+
+        ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+        assertCompleteExternalTask(
+            updateCuiDefendantDashboard,
+            END_BUSINESS_PROCESS,
+            UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
+            variables
+        );
 
         assertNoExternalTasksLeft();
     }
