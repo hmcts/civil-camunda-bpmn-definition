@@ -67,7 +67,7 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
             mainCaseDocumentUpdateTask,
             MAIN_CASE_TOPIC,
             "ADD_PDF_TO_MAIN_CASE",
-            "AddGADocumentsToMainCaseID",
+            "AddDocumentsToMainCaseID",
             variables
         );
         //complete the applicant notification
