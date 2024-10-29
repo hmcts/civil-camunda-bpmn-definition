@@ -171,19 +171,19 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
 
         if (isLipApplicant || isLipRespondent) {
             //update dashboard
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
                 updateCuiClaimantDashboard,
-                END_BUSINESS_PROCESS,
+                APPLICATION_EVENT_GASPEC,
                 UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
                 GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
                 variables
             );
 
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(END_BUSINESS_PROCESS);
+            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
                 updateCuiDefendantDashboard,
-                END_BUSINESS_PROCESS,
+                APPLICATION_EVENT_GASPEC,
                 UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
                 GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
                 variables
