@@ -60,6 +60,14 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
             );
         }
 
+        ExternalTask generateCoSCDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateCoSCDocument,
+            PROCESS_CASE_EVENT,
+            "GENERATE_COSC_DOCUMENT",
+            "GenerateCoSCDocument"
+        );
+
         ExternalTask notifyCertGenerated = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyCertGenerated,
