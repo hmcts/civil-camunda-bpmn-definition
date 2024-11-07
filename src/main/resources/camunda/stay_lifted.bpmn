@@ -25,7 +25,7 @@
         </camunda:properties>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1xckrvu54455522188</bpmn:incoming>
+      <bpmn:incoming>Flow_0faw3q1</bpmn:incoming>
       <bpmn:outgoing>Flow_5845212254322</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_7842144454545" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -56,7 +56,7 @@
       <bpmn:incoming>Flow_1v2px67</bpmn:incoming>
       <bpmn:outgoing>Flow_1xckrvu54455522188</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1xckrvu54455522188" sourceRef="NotifyDefendantStayLifted" targetRef="Activity_120199855233" />
+    <bpmn:sequenceFlow id="Flow_1xckrvu54455522188" sourceRef="NotifyDefendantStayLifted" targetRef="DashboardNotificationHearingDocumentsClaimant" />
     <bpmn:sequenceFlow id="Flow_1fxs0vt2555454745" sourceRef="NotifyClaimantStayLifted" targetRef="Gateway_030oovp" />
     <bpmn:exclusiveGateway id="Gateway_030oovp">
       <bpmn:incoming>Flow_1fxs0vt2555454745</bpmn:incoming>
@@ -79,6 +79,46 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1v2px67" sourceRef="NotifyDefendant2StayLifted" targetRef="NotifyDefendantStayLifted" />
+    <bpmn:serviceTask id="DashboardNotificationHearingDocumentsClaimant" name="Dashboard CUI notification upload hearing docs claim" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xckrvu54455522188</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ulmpph</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ulmpph" sourceRef="DashboardNotificationHearingDocumentsClaimant" targetRef="DashboardNotificationHearingDocumentsDefendant" />
+    <bpmn:serviceTask id="DashboardNotificationHearingDocumentsDefendant" name="Dashboard CUI notification upload hearing docs def" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ulmpph</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wojotw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wojotw" sourceRef="DashboardNotificationHearingDocumentsDefendant" targetRef="DashboardNotificationStayLiftedClaimant" />
+    <bpmn:serviceTask id="DashboardNotificationStayLiftedClaimant" name="Generate Dashboard Notification Claimant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wojotw</bpmn:incoming>
+      <bpmn:outgoing>Flow_19tkldo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19tkldo" sourceRef="DashboardNotificationStayLiftedClaimant" targetRef="DashboardNotificationStayLiftedDefendant" />
+    <bpmn:serviceTask id="DashboardNotificationStayLiftedDefendant" name="Generate Dashboard Notification Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19tkldo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0faw3q1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0faw3q1" sourceRef="DashboardNotificationStayLiftedDefendant" targetRef="Activity_120199855233" />
     <bpmn:textAnnotation id="TextAnnotation_0tzn7kc">
       <bpmn:text>Two respondent representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -113,7 +153,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xckrvu_di" bpmnElement="Flow_1xckrvu54455522188">
         <di:waypoint x="810" y="269" />
-        <di:waypoint x="900" y="269" />
+        <di:waypoint x="880" y="269" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_78545522598879">
         <di:waypoint x="330" y="267" />
@@ -128,8 +168,24 @@
         <di:waypoint x="280" y="175" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_5845212254322">
-        <di:waypoint x="1000" y="270" />
-        <di:waypoint x="1112" y="270" />
+        <di:waypoint x="1690" y="270" />
+        <di:waypoint x="1792" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ulmpph_di" bpmnElement="Flow_1ulmpph">
+        <di:waypoint x="980" y="269" />
+        <di:waypoint x="1030" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wojotw_di" bpmnElement="Flow_0wojotw">
+        <di:waypoint x="1130" y="269" />
+        <di:waypoint x="1220" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19tkldo_di" bpmnElement="Flow_19tkldo">
+        <di:waypoint x="1320" y="269" />
+        <di:waypoint x="1400" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0faw3q1_di" bpmnElement="Flow_0faw3q1">
+        <di:waypoint x="1500" y="269" />
+        <di:waypoint x="1590" y="269" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="NotifyClaimantStayLifted">
         <dc:Bounds x="390" y="227" width="100" height="80" />
@@ -140,12 +196,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="295" width="25" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_878884254666">
-        <dc:Bounds x="1112" y="252" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_120199855233">
-        <dc:Bounds x="900" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_7842144454545">
         <dc:Bounds x="230" y="227" width="100" height="80" />
@@ -165,6 +215,24 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0tzn7kc_di" bpmnElement="TextAnnotation_0tzn7kc">
         <dc:Bounds x="550" y="320" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_878884254666">
+        <dc:Bounds x="1792" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_120199855233">
+        <dc:Bounds x="1590" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationHearingDocumentsDefendant_di" bpmnElement="DashboardNotificationHearingDocumentsDefendant">
+        <dc:Bounds x="1030" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationStayLiftedClaimant_di" bpmnElement="DashboardNotificationStayLiftedClaimant">
+        <dc:Bounds x="1220" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationStayLiftedDefendant_di" bpmnElement="DashboardNotificationStayLiftedDefendant">
+        <dc:Bounds x="1400" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationHearingDocumentsClaimant_di" bpmnElement="DashboardNotificationHearingDocumentsClaimant">
+        <dc:Bounds x="880" y="229" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it444">
         <dc:Bounds x="262" y="209" width="36" height="36" />

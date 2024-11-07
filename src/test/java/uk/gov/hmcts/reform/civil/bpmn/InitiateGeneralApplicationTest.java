@@ -48,11 +48,8 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     //Update CUI dashboard
     //Notifying respondents
-    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_CREATED_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_CREATED";
-    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_CREATED_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_CREATED";
-
-    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA_COMPLETE";
-    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_COMPLETE_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA_COMPLETE";
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
 
@@ -158,24 +155,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
         );
         if (isLipApplicant || isLipRespondent) {
             //update dashboard
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_CLAIMANT_DASHBOARD_GA_CREATED_EVENT,
-                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
-                variables
-            );
-
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_RESPONDENT_DASHBOARD_GA_CREATED_EVENT,
-                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
-                variables
-            );
-
             ExternalTask dashboardNotificationForGaApplicant = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
                 dashboardNotificationForGaApplicant,
@@ -196,7 +175,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             assertCompleteExternalTask(
                 updateCuiClaimantDashboard,
                 APPLICATION_EVENT_GASPEC,
-                UPDATE_CLAIMANT_DASHBOARD_GA_COMPLETE_EVENT,
+                UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
                 GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
                 variables
             );
@@ -205,7 +184,7 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             assertCompleteExternalTask(
                 updateCuiDefendantDashboard,
                 APPLICATION_EVENT_GASPEC,
-                UPDATE_RESPONDENT_DASHBOARD_GA_COMPLETE_EVENT,
+                UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
                 GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
                 variables
             );
