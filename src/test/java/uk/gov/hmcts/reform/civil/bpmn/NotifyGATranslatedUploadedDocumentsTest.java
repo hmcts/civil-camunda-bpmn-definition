@@ -5,6 +5,8 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -42,12 +44,13 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
         processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
-    @Test
-    void shouldNotifyTranslatedDocumentUploaded() {
+    @ParameterizedTest
+    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
+    void shouldNotifyTranslatedDocumentUploaded(boolean lipApplicant, boolean lipRespondent) {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, false,
-            LIP_RESPONDENT, false));
+            LIP_APPLICANT, lipApplicant,
+            LIP_RESPONDENT, lipRespondent));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -106,6 +109,28 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
             "RespondentDashboardTranslatedDocUploadedGA",
             variables
         );
+        if (lipApplicant) {
+            //post translated document to LiP applicant
+            ExternalTask bulkPrintApplicantTask = assertNextExternalTask(NOTIFY_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintApplicantTask,
+                NOTIFY_EVENT,
+                "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT",
+                "BulkPrintOrderApplicant",
+                variables
+            );
+        }
+        if (lipRespondent) {
+            //post translated document to LiP respondent
+            ExternalTask bulkPrintRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintRespondentTask,
+                NOTIFY_EVENT,
+                "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT",
+                "BulkPrintOrderRespondent",
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
