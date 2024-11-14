@@ -39,7 +39,7 @@ class FullAdmitPayImmediatelyNoPaymentSchedulerTest extends BpmnBaseTest {
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
             LocalDateTime.of(2024, 11, 30, 0, 0, 0),
-            LocalDateTime.of(2026, 1, 1, 0, 0, 0)
+            LocalDateTime.of(2024, 12, 1, 0, 0, 0)
         );
 
         //get external tasks
