@@ -25,51 +25,7 @@ public class GenerateAndTransferMediationFilesSchedulerTest extends BpmnBaseTest
     }
 
     @Test
-    void shouldSuccessfullyCompleteCSVEvent_whenCalledCarmToggleOff() throws ParseException {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert first topic names
-        assertThat(getTopics()).hasSize(1);
-        assertThat(getTopics()).containsOnly(GENERATE_CSV_SCHEDULER_TOPIC);
-
-        //get jobs
-        List<JobDefinition> jobDefinitions = getJobs();
-
-        //assert that job is as expected
-        assertThat(jobDefinitions).hasSize(1);
-        assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
-
-        String cronString = "0 0 1 ? * * *";
-        assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
-        assertCronTriggerFiresAtExpectedTime(
-            new CronExpression(cronString),
-            LocalDateTime.of(2020, 1, 1, 1, 0, 0),
-            LocalDateTime.of(2020, 1, 2, 1, 0, 0)
-        );
-
-        //get external tasks
-        List<ExternalTask> externalTasks = getExternalTasks();
-        assertThat(externalTasks).hasSize(1);
-
-        //fetch and complete first task
-        List<LockedExternalTask> lockedExternalTasks = fetchAndLockTask(GENERATE_CSV_SCHEDULER_TOPIC);
-        assertThat(lockedExternalTasks).hasSize(1);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("carmFeatureEnabled", false);
-        completeTask(lockedExternalTasks.get(0).getId(), variables);
-
-        //assert no external tasks left
-        List<ExternalTask> externalTasksAfter = getExternalTasks();
-        assertThat(externalTasksAfter).isEmpty();
-
-        //assert process is still active - timer event so always running
-        assertFalse(processInstance.isEnded());
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteCSVAndJsonEvents_whenCalledCarmToggleOn() throws ParseException {
+    void shouldSuccessfullyCompleteCSVAndJsonEvents_whenCalled() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
