@@ -57,7 +57,6 @@ public class GenerateAndTransferMediationFilesSchedulerTest extends BpmnBaseTest
         assertThat(lockedExternalTasks).hasSize(1);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("carmFeatureEnabled", true);
         completeTask(lockedExternalTasks.get(0).getId(), variables);
 
         //assert second task
