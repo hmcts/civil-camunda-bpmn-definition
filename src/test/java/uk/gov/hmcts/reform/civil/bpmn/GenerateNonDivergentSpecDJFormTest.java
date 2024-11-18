@@ -25,6 +25,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2 = "POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT";
+    public static final String NOTIFY_RPA_DJ_SPEC = "NOTIFY_RPA_DJ_SPEC";
 
     //ACTIVITY IDs
     public static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
@@ -34,6 +35,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String POST_DJ_NON_DIVERGENT_LETTER_DEFENDANT2_ACTIVITY_ID = "PostDjLetterDefendant2";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentDefendant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
+    public static final String NOTIFY_RPA_FEED_ACTIVITY_ID = "NotifyRPADJSPECID";
+
 
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
@@ -196,6 +199,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        //Notify RPA
+        ExternalTask postDjLetter2 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            postDjLetter2,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_DJ_SPEC,
+            NOTIFY_RPA_FEED_ACTIVITY_ID,
+            variables
+        );
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
