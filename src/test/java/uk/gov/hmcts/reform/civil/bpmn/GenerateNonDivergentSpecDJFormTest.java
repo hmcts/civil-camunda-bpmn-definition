@@ -37,23 +37,23 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
     public static final String NOTIFY_RPA_FEED_ACTIVITY_ID = "NotifyRPADJSPECID";
 
+
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true",
-        "true, true, false, false",
-        "true, false, true, false",
-        "true, false, false, true",
-        "false, true, true, true",
-        "false, true, false, true",
-        "false, false, true, true",
-        "false, false, false, false"
+        "true, true, true",
+        "true, true, false",
+        "true, false, true",
+        "true, false, false",
+        "false, true, true",
+        "false, true, false",
+        "false, false, true",
+        "false, false, false"
     })
-    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled,
-                                    boolean joLiveEnabled) {
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -67,8 +67,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             UNREPRESENTED_DEFENDANT_TWO, false,
-            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            JO_ONLINE_LIVE_ENABLED, joLiveEnabled));
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -201,17 +200,15 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             );
         }
 
-        if (joLiveEnabled) {
-            //Notify RPA
-            ExternalTask notifyRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notifyRPA,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_DJ_SPEC,
-                NOTIFY_RPA_FEED_ACTIVITY_ID,
-                variables
-            );
-        }
+        //Notify RPA
+        ExternalTask postDjLetter2 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            postDjLetter2,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_DJ_SPEC,
+            NOTIFY_RPA_FEED_ACTIVITY_ID,
+            variables
+        );
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
