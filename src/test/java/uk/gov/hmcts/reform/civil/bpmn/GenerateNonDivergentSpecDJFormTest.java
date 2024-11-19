@@ -37,7 +37,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     public static final String CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationDJNonDivergentClaimant";
     public static final String NOTIFY_RPA_FEED_ACTIVITY_ID = "NotifyRPADJSPECID";
 
-
     public GenerateNonDivergentSpecDJFormTest() {
         super("generate_non_divergent_spec_DJ_form.bpmn", PROCESS_ID);
     }
