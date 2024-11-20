@@ -26,6 +26,8 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationJudgementByAdmissionClaimant";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public RequestNonDivergentJudgmentByAdmissionTest() {
         super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -93,6 +95,15 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             SEND_JUDGMENT_DETAILS_EVENT,
             SEND_JUDGMENT_DETAILS_ACTIVITY_ID
+        );
+
+        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardDefendant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
         );
 
         if (isLiPDefendant) {
