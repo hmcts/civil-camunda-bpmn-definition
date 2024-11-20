@@ -97,9 +97,9 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
 
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyRPAFeed = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            dashboardDefendant,
+            notifyRPAFeed,
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
