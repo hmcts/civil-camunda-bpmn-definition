@@ -3,7 +3,8 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -18,8 +19,9 @@ public class DismissCaseTest extends BpmnBaseTest {
         super("dismiss_case.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteDismissCase() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteDismissCase(boolean twoRespondents) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -28,9 +30,10 @@ public class DismissCaseTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
+            ONE_RESPONDENT_REPRESENTATIVE, !twoRespondents,
             DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true
+            CASE_PROGRESSION_ENABLED, true,
+            TWO_RESPONDENT_REPRESENTATIVES, twoRespondents
         ));
 
         //complete the start business process
@@ -48,6 +51,16 @@ public class DismissCaseTest extends BpmnBaseTest {
                                    "NotifyClaimant",
                                    variables
         );
+
+        if (twoRespondents) {
+            //complete the defendant notification
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       "NOTIFY_DEFENDANT_TWO_DISMISS_CASE",
+                                       "NotifyDefendant2",
+                                       variables
+            );
+        }
 
         //complete the defendant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
