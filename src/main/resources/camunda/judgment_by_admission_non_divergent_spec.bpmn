@@ -36,6 +36,7 @@
     <bpmn:sequenceFlow id="Flow_1kj896s" sourceRef="Activity_0g68wbz" targetRef="Event_1g0kcde" />
     <bpmn:exclusiveGateway id="Gateway_00bae9b">
       <bpmn:incoming>Flow_1e8qg53</bpmn:incoming>
+      <bpmn:incoming>Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED</bpmn:incoming>
       <bpmn:outgoing>Flow_1a58dzr</bpmn:outgoing>
       <bpmn:outgoing>Flow_1lamj8i</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -118,7 +119,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0nk6y2d</bpmn:incoming>
+      <bpmn:incoming>Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED</bpmn:incoming>
       <bpmn:outgoing>Flow_1e8qg53</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1lamj8i" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="Activity_0g68wbz">
@@ -134,8 +135,19 @@
       <bpmn:incoming>Flow_075i2tt</bpmn:incoming>
       <bpmn:outgoing>Flow_0nk6y2d</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0nk6y2d" sourceRef="SendJudgmentDetailsToCJES" targetRef="Gateway_08rlyk5" />
+    <bpmn:exclusiveGateway id="Gateway_08rlyk5">
+      <bpmn:incoming>Flow_0nk6y2d</bpmn:incoming>
+      <bpmn:outgoing>Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED</bpmn:outgoing>
+      <bpmn:outgoing>Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED" name="JO live feed active enabled" sourceRef="Gateway_08rlyk5" targetRef="NotifyRoboticsOnContinuousFeed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1e8qg53" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Gateway_00bae9b" />
-    <bpmn:sequenceFlow id="Flow_0nk6y2d" sourceRef="SendJudgmentDetailsToCJES" targetRef="NotifyRoboticsOnContinuousFeed" />
+    <bpmn:sequenceFlow id="Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED" name="JO live feed active disabled" sourceRef="Gateway_08rlyk5" targetRef="Gateway_00bae9b">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1osgsc5" name="JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -155,23 +167,6 @@
       <bpmndi:BPMNShape id="Event_1g0kcde_di" bpmnElement="Event_1g0kcde">
         <dc:Bounds x="2012" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
-        <dc:Bounds x="1810" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
-        <dc:Bounds x="1225" y="205" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="738" y="412" width="87" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GenerateDashboardNotificationDJSDODefendant_di" bpmnElement="GenerateDashboardNotificationJudgementByAdmissionDefendant">
-        <dc:Bounds x="1620" y="320" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0g3p0gx" bpmnElement="PostPINInLetterLIPDefendant">
-        <dc:Bounds x="1310" y="320" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1orii9b" bpmnElement="GenerateJudgmentByAdmissionDocClaimant">
         <dc:Bounds x="620" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -188,16 +183,39 @@
         <dc:Bounds x="490" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1pmarl0" bpmnElement="GenerateDashboardNotificationJudgementByAdmissionClaimant">
-        <dc:Bounds x="1460" y="320" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_072bzew" bpmnElement="NotifyRoboticsOnContinuousFeed">
-        <dc:Bounds x="1060" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_01qxvfx" bpmnElement="SendJudgmentDetailsToCJES">
         <dc:Bounds x="910" y="190" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g68wbz_di" bpmnElement="Activity_0g68wbz">
+        <dc:Bounds x="1860" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationDJSDODefendant_di" bpmnElement="GenerateDashboardNotificationJudgementByAdmissionDefendant">
+        <dc:Bounds x="1760" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pmarl0" bpmnElement="GenerateDashboardNotificationJudgementByAdmissionClaimant">
+        <dc:Bounds x="1610" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
+        <dc:Bounds x="1435" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="412" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0g3p0gx" bpmnElement="PostPINInLetterLIPDefendant">
+        <dc:Bounds x="1410" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ux7g49" bpmnElement="Gateway_08rlyk5" isMarkerVisible="true">
+        <dc:Bounds x="1055" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="412" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_072bzew" bpmnElement="NotifyRoboticsOnContinuousFeed">
+        <dc:Bounds x="1220" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0371z1y_di" bpmnElement="Event_0371z1y">
         <dc:Bounds x="252" y="172" width="36" height="36" />
@@ -215,7 +233,7 @@
         <di:waypoint x="292" y="130" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kj896s_di" bpmnElement="Flow_1kj896s">
-        <di:waypoint x="1910" y="230" />
+        <di:waypoint x="1960" y="230" />
         <di:waypoint x="2012" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1glyjdm_di" bpmnElement="Flow_1glyjdm">
@@ -223,11 +241,10 @@
         <di:waypoint x="360" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a58dzr_di" bpmnElement="Flow_1a58dzr">
-        <di:waypoint x="1250" y="255" />
-        <di:waypoint x="1250" y="360" />
-        <di:waypoint x="1310" y="360" />
+        <di:waypoint x="1460" y="255" />
+        <di:waypoint x="1460" y="320" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1174" y="320" width="71" height="14" />
+          <dc:Bounds x="1384" y="293" width="71" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_085619d_di" bpmnElement="Flow_085619d">
@@ -247,32 +264,48 @@
         <di:waypoint x="620" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qe9fnl_di" bpmnElement="Flow_1qe9fnl">
-        <di:waypoint x="1410" y="360" />
-        <di:waypoint x="1460" y="360" />
+        <di:waypoint x="1510" y="360" />
+        <di:waypoint x="1610" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gr1zzh_di" bpmnElement="Flow_0gr1zzh">
-        <di:waypoint x="1560" y="360" />
-        <di:waypoint x="1620" y="360" />
+        <di:waypoint x="1710" y="360" />
+        <di:waypoint x="1760" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lamj8i_di" bpmnElement="Flow_1lamj8i">
-        <di:waypoint x="1275" y="230" />
-        <di:waypoint x="1810" y="230" />
+        <di:waypoint x="1485" y="230" />
+        <di:waypoint x="1860" y="230" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1344" y="198" width="52" height="27" />
+          <dc:Bounds x="1526" y="198" width="52" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hypzcm_di" bpmnElement="Flow_0hypzcm">
-        <di:waypoint x="1720" y="360" />
-        <di:waypoint x="1849" y="360" />
-        <di:waypoint x="1849" y="280" />
+        <di:waypoint x="1860" y="360" />
+        <di:waypoint x="1899" y="360" />
+        <di:waypoint x="1899" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1e8qg53_di" bpmnElement="Flow_1e8qg53">
-        <di:waypoint x="1160" y="230" />
-        <di:waypoint x="1225" y="230" />
+        <di:waypoint x="1320" y="230" />
+        <di:waypoint x="1435" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nk6y2d_di" bpmnElement="Flow_0nk6y2d">
         <di:waypoint x="1010" y="230" />
-        <di:waypoint x="1060" y="230" />
+        <di:waypoint x="1055" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ymdzjr_di" bpmnElement="Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED">
+        <di:waypoint x="1105" y="230" />
+        <di:waypoint x="1220" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1104" y="236" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_172e2im_di" bpmnElement="Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED">
+        <di:waypoint x="1080" y="205" />
+        <di:waypoint x="1080" y="110" />
+        <di:waypoint x="1460" y="110" />
+        <di:waypoint x="1460" y="205" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1103" y="76" width="73" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
