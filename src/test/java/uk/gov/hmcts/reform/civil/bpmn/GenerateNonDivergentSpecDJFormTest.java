@@ -53,7 +53,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         "false, false, false, true"
     })
     void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled,
-                                    boolean isJoLive) {
+                                    boolean isJoFeedLive) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -68,7 +68,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            JO_ONLINE_LIVE_ENABLED, isJoLive
+            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive
             ));
 
         //complete the start business process
@@ -202,7 +202,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             );
         }
 
-        if (isJoLive) {
+        if (isJoFeedLive) {
             //Notify RPA
             ExternalTask notifyRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

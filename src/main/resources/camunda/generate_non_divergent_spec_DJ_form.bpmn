@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>JOLiveDisabled</bpmn:incoming>
+      <bpmn:incoming>JOLiveFeedDisabled</bpmn:incoming>
       <bpmn:incoming>Flow_0y28arg</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
@@ -196,20 +196,20 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_DJ_SPEC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>JoLiveEnabled</bpmn:incoming>
+      <bpmn:incoming>JoLiveFeedEnabled</bpmn:incoming>
       <bpmn:outgoing>Flow_0y28arg</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0kd68ii">
       <bpmn:incoming>Flow_10ujgz7</bpmn:incoming>
       <bpmn:incoming>Flow_1t6n1ei</bpmn:incoming>
-      <bpmn:outgoing>JoLiveEnabled</bpmn:outgoing>
-      <bpmn:outgoing>JOLiveDisabled</bpmn:outgoing>
+      <bpmn:outgoing>JoLiveFeedEnabled</bpmn:outgoing>
+      <bpmn:outgoing>JOLiveFeedDisabled</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="JoLiveEnabled" name="JO Live is Enabled" sourceRef="Gateway_0kd68ii" targetRef="NotifyRPADJSPECID">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="JoLiveFeedEnabled" name="JO Live Feed is Enabled" sourceRef="Gateway_0kd68ii" targetRef="NotifyRPADJSPECID">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE&amp;&amp; flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="JOLiveDisabled" name="JO Live is Disabled" sourceRef="Gateway_0kd68ii" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.JO_ONLINE_LIVE_ENABLED || !flowFlags.JO_ONLINE_LIVE_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="JOLiveFeedDisabled" name="JO Live Feed is Disabled" sourceRef="Gateway_0kd68ii" targetRef="Activity_0wretog">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE|| !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0y28arg" sourceRef="NotifyRPADJSPECID" targetRef="Activity_0wretog" />
   </bpmn:process>
@@ -226,6 +226,15 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="285" width="25" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
+        <dc:Bounds x="2082" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1307" y="285" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
+        <dc:Bounds x="1800" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_0y089q8">
         <dc:Bounds x="240" y="220" width="100" height="80" />
@@ -296,20 +305,11 @@
         <dc:Bounds x="620" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
-        <dc:Bounds x="2082" y="242" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1307" y="285" width="86" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0kd68ii_di" bpmnElement="Gateway_0kd68ii" isMarkerVisible="true">
-        <dc:Bounds x="1595" y="235" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0a8h8j0" bpmnElement="NotifyRPADJSPECID">
         <dc:Bounds x="1570" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
-        <dc:Bounds x="1800" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_0kd68ii_di" bpmnElement="Gateway_0kd68ii" isMarkerVisible="true">
+        <dc:Bounds x="1595" y="235" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="272" y="202" width="36" height="36" />
@@ -427,18 +427,18 @@
         <di:waypoint x="720" y="260" />
         <di:waypoint x="755" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sxuzs0_di" bpmnElement="JoLiveEnabled">
+      <bpmndi:BPMNEdge id="Flow_1sxuzs0_di" bpmnElement="JoLiveFeedEnabled">
         <di:waypoint x="1620" y="285" />
         <di:waypoint x="1620" y="360" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1625" y="306" width="49" height="27" />
+          <dc:Bounds x="1612" y="306" width="77" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0r1sszd_di" bpmnElement="JOLiveDisabled">
+      <bpmndi:BPMNEdge id="Flow_0r1sszd_di" bpmnElement="JOLiveFeedDisabled">
         <di:waypoint x="1645" y="260" />
         <di:waypoint x="1800" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1699" y="223" width="49" height="27" />
+          <dc:Bounds x="1686" y="223" width="77" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0y28arg_di" bpmnElement="Flow_0y28arg">
