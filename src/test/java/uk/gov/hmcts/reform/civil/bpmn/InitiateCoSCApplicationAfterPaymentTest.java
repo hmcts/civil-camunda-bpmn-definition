@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.JO_ONLINE_LIVE_ENABLED;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.IS_JO_LIVE_FEED_ACTIVE;
 
 class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -51,7 +51,7 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            JO_ONLINE_LIVE_ENABLED, joFlag
+            IS_JO_LIVE_FEED_ACTIVE, joFlag
         ));
         variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
         variables.put("isClaimantLR", isClaimantLR);
