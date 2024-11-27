@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0">
   <bpmn:process id="TAKE_CASE_OFFLINE" name="Take case offline" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Event_StartClaimTakenOffline" name="Start">
       <bpmn:outgoing>Flow_NextStartBusinessProcess</bpmn:outgoing>
@@ -177,7 +177,7 @@ When case:
       <bpmn:outgoing>Flow_GA_Enabled</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_GA_Not_Enabled" name="GA Not Enabled" sourceRef="Gateway_0u9dq41" targetRef="Activity_EndBusinessProcess">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED) || (empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="claimantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -199,7 +199,7 @@ When case:
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1il0ipa" sourceRef="defendantLipApplicationOfflineDashboardNotification" targetRef="Activity_EndBusinessProcess" />
     <bpmn:sequenceFlow id="Flow_GA_Enabled" name="GA Enabled" sourceRef="Gateway_0u9dq41" targetRef="claimantLipApplicationOfflineDashboardNotification">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED) &amp;&amp; (!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_165e6ly" sourceRef="claimantLipApplicationOfflineDashboardNotification" targetRef="defendantLipApplicationOfflineDashboardNotification" />
   </bpmn:process>
@@ -212,6 +212,12 @@ When case:
         <bpmndi:BPMNLabel>
           <dc:Bounds x="164" y="235" width="24" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
+        <dc:Bounds x="1952" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1820" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_StartBusinessProcess">
         <dc:Bounds x="226" y="170" width="100" height="80" />
@@ -246,21 +252,15 @@ When case:
       <bpmndi:BPMNShape id="Activity_12h8f4v_di" bpmnElement="UpdateClaimWithApplicationStatus">
         <dc:Bounds x="637" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
-        <dc:Bounds x="1952" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="1820" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0u9dq41_di" bpmnElement="Gateway_0u9dq41" isMarkerVisible="true">
         <dc:Bounds x="1495" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="1720" y="60" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1rtq8df" bpmnElement="claimantLipApplicationOfflineDashboardNotification">
         <dc:Bounds x="1590" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
+        <dc:Bounds x="1720" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
