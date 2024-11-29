@@ -18,17 +18,16 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "COURT_OFFICER_ORDER";
     public static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_GENERATE_ORDER
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_GENERATE_ORDER";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER
         = "NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER
+        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER";
     private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyRespondentSolicitor2";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
-        = "GenerateOrderNotifyRespondentSolicitor1";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyApplicantCourtOfficerOrderSolicitor1";
-
+    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
+        = "GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1";
     public CourtOfficerOrderTest() {
         super("court_officer_order.bpmn", PROCESS_ID);
     }
@@ -77,8 +76,8 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         }
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER,
+                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
                                    variables
         );
 
