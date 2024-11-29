@@ -181,7 +181,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, false,
-            GENERAL_APPLICATION_ENABLED, true));
+            GENERAL_APPLICATION_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -283,7 +284,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
             UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-            GENERAL_APPLICATION_ENABLED, true
+            GENERAL_APPLICATION_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
