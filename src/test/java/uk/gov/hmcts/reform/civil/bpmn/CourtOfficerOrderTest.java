@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -37,7 +36,6 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         = "GenerateOrderNotifyRespondentSolicitor1";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyApplicantSolicitor1";
-
     public CourtOfficerOrderTest() {
         super("court_officer_order.bpmn", PROCESS_ID);
     }
@@ -71,8 +69,8 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER,
-                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_GENERATE_ORDER_ACTIVITY_ID,
+                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER,
+                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
                                    variables
         );
         if (twoRepresentatives) {
@@ -135,15 +133,8 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         //complete the hearing form process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID,
+                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_GENERATE_ORDER",
+                                   "GenerateOrderNotifyRespondentSolicitor1",
                                    variables
         );
 
