@@ -46,8 +46,8 @@ public class ConfirmOrderReviewTest extends BpmnBaseTest {
         ExternalTask notificationTask;
 
         //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW,
                                    UPDATE_CONFIRM_REVIEW_ORDER_EVENT,
                                    UPDATE_CONFIRM_REVIEW_ORDER_EVENT_ACTIVITY_ID,
                                    variables
