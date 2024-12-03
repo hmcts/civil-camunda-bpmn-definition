@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.IS_JO_LIVE_FEED_ACTIVE;
 
 class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -28,21 +27,14 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationCertificateGenerated";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC = "NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC_ACTIVITY_ID = "NotifyApplicantSolicitorCoscApplication";
-    private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
-    private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "false,false,null",
-        "false,true,null",
-        "true,null,true",
-        "true,null,false",
-    })
-    void shouldSuccessfullyComplete_whenCalled(Boolean isJudgmentMarkedPaidInFull, Boolean isClaimantLR, Boolean joFlag) {
+    @CsvSource({"false,false", "false,true", "true,null"})
+    void shouldSuccessfullyComplete_whenCalled(Boolean isJudgmentMarkedPaidInFull, Boolean isClaimantLR) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -50,9 +42,7 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            IS_JO_LIVE_FEED_ACTIVE, joFlag
-        ));
+        variables.put("flowFlags", Map.of());
         variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
         variables.put("isClaimantLR", isClaimantLR);
 
@@ -129,17 +119,6 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT,
                 CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID,
-                variables
-            );
-        }
-
-        if (joFlag) {
-            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                notificationTask,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                NOTIFY_RPA,
-                NOTIFY_RPA_ACTIVITY_ID,
                 variables
             );
         }
