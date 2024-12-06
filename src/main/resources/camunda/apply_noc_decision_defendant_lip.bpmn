@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_0lkiw1g">
     <bpmn:participant id="Participant_1nspjir" name="Apply NoC Decision for Defendant Lip" processRef="APPLY_NOC_DECISION_DEFENDANT_LIP" />
   </bpmn:collaboration>
-  <bpmn:process id="APPLY_NOC_DECISION_DEFENDANT_LIP" name="Apply noc decision lip" isExecutable="true" camunda:historyTimeToLive="P90D">
+  <bpmn:process id="APPLY_NOC_DECISION_DEFENDANT_LIP" name="Apply noc decision defendant lip" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:endEvent id="Event_0l4t4tn">
       <bpmn:incoming>Flow_1s0jw89</bpmn:incoming>
     </bpmn:endEvent>
@@ -68,7 +68,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_165r3xc" sourceRef="NotifyDefendant1SolicitorRepresented" targetRef="NotifyClaimantLipDefendantRepresented" />
     <bpmn:sequenceFlow id="Flow_0lzi8gi" name="Yes" sourceRef="Gateway_02x3bwe" targetRef="Activity_EndBusinessProcess">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE) || (!empty flowFlags.DEFENDANT_NOC_ONLINE &amp;&amp; flowFlags.DEFENDANT_NOC_ONLINE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_02x3bwe" name="Claimant Represented?">
       <bpmn:incoming>Flow_0djf8zx</bpmn:incoming>
@@ -76,7 +76,7 @@
       <bpmn:outgoing>Flow_1yk0wbv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1yk0wbv" name="No" sourceRef="Gateway_02x3bwe" targetRef="ProceedOffline">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE) &amp;&amp; (empty flowFlags.DEFENDANT_NOC_ONLINE || !flowFlags.DEFENDANT_NOC_ONLINE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_14idif2" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_EndBusinessProcess" />
     <bpmn:serviceTask id="ProceedOffline" name="Proceed offline" camunda:type="external" camunda:topic="processCaseEvent">
