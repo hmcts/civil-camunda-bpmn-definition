@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -51,6 +53,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyJoRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
@@ -432,8 +435,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -446,7 +450,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
-            JO_ONLINE_LIVE_ENABLED, true
+            JO_ONLINE_LIVE_ENABLED, true,
+            IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -461,6 +466,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
+        if (isRpaLiveFeed) {
+            generateJoRPAContinuousFeed();
+        }
         createClaimantDashboardNotificationForJOIssued();
         createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
@@ -511,7 +519,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID);
     }
 
-    private void    assertCompletedCaseEvent(String eventName, String activityId) {
+    private void assertCompletedCaseEvent(String eventName, String activityId) {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -584,5 +592,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void createClaimantDashboardNotificationForJOIssued() {
         assertCompletedCaseEvent(DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT, DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID);
+    }
+
+    private void generateJoRPAContinuousFeed() {
+        assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
     }
 }
