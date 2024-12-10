@@ -29,7 +29,6 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ID = "NotifyRoboticsOnContinuousFeed";
 
-
     public SetAsideJudgmentTest() {
         super("set_aside_judgment_request.bpmn", PROCESS_ID);
     }
@@ -169,7 +168,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             }
         }
 
-        if(isJoFeedLive) {
+        if (isJoFeedLive) {
             //Notify RPA
             ExternalTask notifyRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
