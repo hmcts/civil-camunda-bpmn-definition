@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -26,14 +26,16 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationJudgementByAdmissionClaimant";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public RequestNonDivergentJudgmentByAdmissionTest() {
         super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant) {
+    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
+    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -44,6 +46,7 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             "LIP_CASE", false,
             "DASHBOARD_SERVICE_ENABLED", true,
+            "IS_JO_LIVE_FEED_ACTIVE", isJOLiveFeedActiveEnabled,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
 
         //complete the start business process
@@ -94,6 +97,17 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             SEND_JUDGMENT_DETAILS_EVENT,
             SEND_JUDGMENT_DETAILS_ACTIVITY_ID
         );
+
+        if (isJOLiveFeedActiveEnabled) {
+            ExternalTask notifyRPAFeed = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notifyRPAFeed,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
+        }
 
         if (isLiPDefendant) {
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
