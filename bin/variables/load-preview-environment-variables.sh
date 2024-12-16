@@ -15,3 +15,4 @@ echo "export CAMUNDA_BASE_URL=https://camunda-civil-camunda-pr-${pr}.preview.pla
 
 # definition placeholders
 echo "export CCD_DEF_CASE_SERVICE_BASE_URL=http://civil-camunda-pr-${pr}-java"
+echo "export CCD_DEF_GEN_APP_SERVICE_BASE_URL=http://ga-civil-camunda-pr-${pr}.preview.platform.hmcts.net"
