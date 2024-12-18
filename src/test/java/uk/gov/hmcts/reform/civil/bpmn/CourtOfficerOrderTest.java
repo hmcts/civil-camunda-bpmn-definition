@@ -28,6 +28,7 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         = "GenerateOrderNotifyApplicantCourtOfficerOrderSolicitor1";
     public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1";
+        
     public CourtOfficerOrderTest() {
         super("court_officer_order.bpmn", PROCESS_ID);
     }
