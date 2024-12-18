@@ -24,6 +24,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1 = "NOTIFY_DISCONTINUANCE_DEFENDANT1";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1 = "SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1";
+    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE";
 
     //ACTIVITY IDs
     public static final String NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT_ACTIVITY_ID
@@ -33,6 +34,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LiP";
     public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID = "NotifyDiscontinuanceClaimant";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1_ACTIVITY_ID = "NotifyDiscontinuanceDefendant1";
+    public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID = "CreateDefendantDashboardNotificationsForDiscontinuance";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
@@ -111,6 +113,16 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
                     PROCESS_CASE_EVENT,
                     SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1,
                     SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID,
+                    variables
+                );
+
+                //complete the dashboard notification to Defendant 1 LIP
+                ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    dashboardNotification,
+                    PROCESS_CASE_EVENT,
+                    CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE,
+                    DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID,
                     variables
                 );
             }
