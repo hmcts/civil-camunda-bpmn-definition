@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class TrialReadyCheckTest extends BpmnBaseTest {
+    
     private static final String MESSAGE_NAME = "TRIAL_READY_CHECK";
     private static final String PROCESS_ID = "TRIAL_READY_CHECK_PROCESS_ID";
     private static final String CLAIMANT_DASHBOARD_CHANGES = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_READY_CHECK_CLAIMANT1";
