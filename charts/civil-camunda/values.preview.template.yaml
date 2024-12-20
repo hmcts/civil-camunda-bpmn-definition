@@ -146,6 +146,71 @@ idam-pr:
     XUI:
       - https://xui-${SERVICE_NAME}.preview.platform.hmcts.net/oauth2/callback
 
+civil-general-applications:
+  enabled: true
+  java:
+    image: 'hmctspublic.azurecr.io/civil/general-applications:latest'
+    imagePullPolicy: Always
+    ingressHost: ga-${SERVICE_FQDN}
+    releaseNameOverride: ${SERVICE_NAME}-ga
+    keyVaults:
+      civil:
+        resourceGroup: civil
+        secrets:
+          - name: civil-idam-client-secret
+            alias: idam.client.secret
+          - name: microservicekey-civil-service
+            alias: idam.s2s-auth.totp_secret
+          - name: system-update-user-username
+            alias: CIVIL_SYSTEM_UPDATE_USERNAME
+          - name: system-update-user-password
+            alias: CIVIL_SYSTEM_UPDATE_PASSWORD
+          - name: cross-access-user-username
+            alias: CIVIL_CROSS_ACCESS_USERNAME
+          - name: cross-access-user-password
+            alias: CIVIL_CROSS_ACCESS_PASSWORD
+          - name: prd-admin-user-username
+            alias: CIVIL_PRD_ADMIN_USERNAME
+          - name: prd-admin-user-password
+            alias: CIVIL_PRD_ADMIN_PASSWORD
+          - name: docmosis-api-key
+            alias: docmosis.tornado.key
+          - name: gov-notify-api-key
+            alias: GOV_NOTIFY_API_KEY
+          - name: sendgrid-api-key
+            alias: SENDGRID_API_KEY
+          - name: robotics-notification-sender
+            alias: robotics.notification.sender
+          - name: robotics-notification-recipient
+            alias: robotics.notification.recipient
+          - name: launch-darkly-sdk-key-non-prod
+            alias: launch-darkly-sdk-key
+          - name: robotics-notification-multipartyrecipient
+            alias: robotics.notification.multipartyrecipient
+      civil-gen-apps:
+        resourceGroup: civil
+        secrets:
+          - name: microservicekey-civil-general-applications
+            alias: idam.s2s-auth.totp_secret
+    environment:
+      CORE_CASE_DATA_API_URL: http://${SERVICE_NAME}-ccd-data-store-api
+      OIDC_ISSUER: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
+      REFERENCE_DATABASE_MIGRATION: false
+      FEIGN_CLIENT_CONFIG_REMOTERUNTIMESERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+      FEIGN_CLIENT_CONFIG_REMOTEEXTERNALTASKSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+      FEIGN_CLIENT_CONFIG_REMOTEREPOSITORYSERVICE_URL: http://${SERVICE_NAME}-camunda/engine-rest/
+      LAUNCH_DARKLY_ENV: ${SERVICE_FQDN}
+      GENAPP_LRD_URL: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+      PAY_CALLBACK_URL: https://${SERVICE_NAME}.preview.platform.hmcts.net/service-request-update
+      TESTING_SUPPORT_ENABLED: true
+      POLLING_EVENT_EMITTER_ENABLED: false
+      CASE_DOCUMENT_AM_URL: http://ccd-case-document-am-api-aat.service.core-compute-aat.internal
+      DOCUMENT_MANAGEMENT_SECURED: true
+      RD_PROFESSIONAL_API_URL: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+      RD_COMMONDATA_API_URL: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+      SEND_LETTER_URL: http://rpe-send-letter-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+
+
 xui-webapp:
   enabled: true
   nodejs:
