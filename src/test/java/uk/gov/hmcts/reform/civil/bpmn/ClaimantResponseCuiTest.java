@@ -44,6 +44,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE
         = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
 
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
+
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -87,6 +91,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateClaimantCCJDashboardNotification";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         = "GenerateClaimantDashboardNotificationClaimantResponse";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -466,6 +472,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
@@ -581,6 +589,15 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private void sendJudgmentToCjesService() {
         assertCompletedCaseEvent(SEND_JUDGMENT_DETAILS_CJES_EVENT, SEND_JUDGMENT_DETAILS_CJES_EVENT_ID);
     }
+
+    private void generateJudgmentByAdmissionClaimantDocument() {
+        assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID);
+    }
+
+    private void generateJudgmentByAdmissionDefendantDocument() {
+        assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID);
+    }
+
 
     private void updateClaimantClaimState() {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
