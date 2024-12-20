@@ -47,7 +47,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
 
-
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
@@ -597,7 +596,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private void generateJudgmentByAdmissionDefendantDocument() {
         assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID);
     }
-
 
     private void updateClaimantClaimState() {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
