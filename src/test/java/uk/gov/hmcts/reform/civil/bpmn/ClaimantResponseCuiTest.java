@@ -92,6 +92,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateClaimantDashboardNotificationClaimantResponse";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -473,6 +475,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         sendJudgmentToCjesService();
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
@@ -595,6 +598,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateJudgmentByAdmissionDefendantDocument() {
         assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID);
+    }
+
+    private void sendPinInPOstLetterForJudgmentByAdmission() {
+        assertCompletedCaseEvent(JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID, JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID);
     }
 
     private void updateClaimantClaimState() {
