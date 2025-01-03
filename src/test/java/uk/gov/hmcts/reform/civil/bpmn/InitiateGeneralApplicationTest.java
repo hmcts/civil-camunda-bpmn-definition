@@ -54,7 +54,9 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
 
     private static final String GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID = "GenerateGANotificationForApplicantFeeRequired";
+    private static final String GA_NOTIFICATION_RESPONDENT_FREE_APPLICATION_TASK_LIST_ID = "GenerateGANotificationForRespondentFreeApplication";
     private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT = "CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT = "CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT";
 
     public InitiateGeneralApplicationTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
@@ -153,14 +155,26 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
             GENERAL_APPLICATION_NOTIYFYING_ID,
             variables
         );
-        if (isLipApplicant || isLipRespondent) {
-            //update dashboard
+        if (isLipApplicant) {
+            //applicant notification
             ExternalTask dashboardNotificationForGaApplicant = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
                 dashboardNotificationForGaApplicant,
                 APPLICATION_EVENT_GASPEC,
                 CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT,
                 GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID,
+                variables
+            );
+        }
+
+        if (isLipRespondent) {
+            //respondent notification
+            ExternalTask dashboardNotificationForGaRespondent = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                dashboardNotificationForGaRespondent,
+                APPLICATION_EVENT_GASPEC,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT,
+                GA_NOTIFICATION_RESPONDENT_FREE_APPLICATION_TASK_LIST_ID,
                 variables
             );
         }
