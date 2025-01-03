@@ -26,6 +26,8 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
 
     //ACTIVITY IDs
     public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
+    public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ID = "NotifyRoboticsOnContinuousFeed";
 
     public SetAsideJudgmentTest() {
         super("set_aside_judgment_request.bpmn", PROCESS_ID);
@@ -33,27 +35,28 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true",
-        "true, true, true, false",
-        "true, true, false, true",
-        "true, true, false, false",
-        "true, false, true, true",
-        "true, false, true, false",
-        "true, false, false, true",
-        "true, false, false, false",
-        "false, true, true, true",
-        "false, true, true, false",
-        "false, true, false, true",
-        "false, true, false, false",
-        "false, false, true, true",
-        "false, false, true, false",
-        "false, false, false, true",
-        "false, false, false, false"
+        "true, true, true, true, true",
+        "true, true, true, false, true",
+        "true, true, false, true, false",
+        "true, true, false, false, false",
+        "true, false, true, true, true",
+        "true, false, true, false, false",
+        "true, false, false, true, true",
+        "true, false, false, false, false",
+        "false, true, true, true, true",
+        "false, true, true, false, false",
+        "false, true, false, true, true",
+        "false, true, false, false, false",
+        "false, false, true, true,true",
+        "false, false, true, false, false",
+        "false, false, false, true, true",
+        "false, false, false, false, false"
     })
     void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives,
                                                          boolean isLiPDefendant,
                                                          boolean dashboardServiceEnabled,
-                                                         boolean judgmentSetAsideError) {
+                                                         boolean judgmentSetAsideError,
+                                                         boolean isJoFeedLive) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -66,7 +69,8 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
+            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive));
         variables.put(JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError);
 
         //complete the start business process
@@ -162,6 +166,18 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
                     );
                 }
             }
+        }
+
+        if (isJoFeedLive) {
+            //Notify RPA
+            ExternalTask notifyRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notifyRPA,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ID,
+                variables
+            );
         }
 
         //end business process
