@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -496,5 +498,60 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE",
             "GenerateClaimantDashboardNotificationDefendantResponse"
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION"})
+    void shouldMoveCaseOfflineForLiPvLrClaim(String responseType) {
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", responseType);
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, true,
+            DASHBOARD_SERVICE_ENABLED, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusinessTask,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //proceed offline
+        ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            fullDefenceResponse,
+            PROCESS_CASE_EVENT,
+            "PROCEEDS_IN_HERITAGE_SYSTEM",
+            "ProceedOffline"
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "Activity_0ncmkab"
+        );
+
+        //complete the notification to LR respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1,
+            "Notify",
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
     }
 }
