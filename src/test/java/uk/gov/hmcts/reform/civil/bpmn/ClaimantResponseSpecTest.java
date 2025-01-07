@@ -624,6 +624,113 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
+    void shouldCompletePartAdmitPayImmediately_WhenApplicantConfirmsNotToProceed_JoFlagDisabled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.putValue("flowFlags", Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            DASHBOARD_SERVICE_ENABLED, false,
+            JO_ONLINE_LIVE_ENABLED, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the Robotics notification
+        ExternalTask proccedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proccedOffline,
+            PROCESS_CASE_EVENT,
+            PROCEED_OFFLINE_EVENT,
+            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
+            variables
+        );
+        //complete the Respondent1 notification
+        ExternalTask notifyRespondentSolicitor1= assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondentSolicitor1,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
+            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1",
+            variables
+        );
+        //complete the Applicant1 notification
+        ExternalTask notifyApplicantSolicitor1= assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantSolicitor1,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC",
+            "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC",
+            variables
+        );
+
+        //complete the Robotics notification
+        ExternalTask moveCaseToOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            moveCaseToOffline,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteWhenPartPayImmediately_JoFlagEnabled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.putValue("flowFlags", Map.of(
+            DASHBOARD_SERVICE_ENABLED, true,
+            JO_ONLINE_LIVE_ENABLED, true
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        createDefendantDashboardNotification();
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
     private void createDefendantDashboardNotification() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
