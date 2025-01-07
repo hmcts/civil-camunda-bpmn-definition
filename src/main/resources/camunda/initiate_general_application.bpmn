@@ -88,22 +88,11 @@
       <bpmn:outgoing>Flow_1f547ld</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0u0d8a8" name="Yes" sourceRef="Gateway_0j8ztot" targetRef="GenerateGANotificationForApplicantFeeRequired">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT&amp;&amp; flowFlags.LIP_APPLICANT) || (!empty flowFlags.LIP_RESPONDENT&amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1xbphmg" name="No" sourceRef="Gateway_0j8ztot" targetRef="Activity_18x7hxw">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT) &amp;&amp; (empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_05yxbay">
       <bpmn:incoming>Flow_0nlz92w</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="GA_EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1xbphmg</bpmn:incoming>
-      <bpmn:incoming>Flow_1iafhlg</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nlz92w</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
     </bpmn:boundaryEvent>
@@ -116,21 +105,54 @@
       <bpmn:outgoing>Flow_0nufgia</bpmn:outgoing>
       <bpmn:outgoing>Flow_0wc0u17</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:exclusiveGateway id="Gateway_0j8ztot" name="Is LiP applicant or Lip respondent?">
+    <bpmn:exclusiveGateway id="Gateway_0j8ztot" name="Is LiP applicant?">
       <bpmn:incoming>Flow_1f547ld</bpmn:incoming>
       <bpmn:outgoing>Flow_0u0d8a8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1xbphmg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15n4u1m</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1iafhlg" sourceRef="GenerateGANotificationForApplicantFeeRequired" targetRef="Activity_18x7hxw" />
-    <bpmn:serviceTask id="GenerateGANotificationForApplicantFeeRequired" name="Create Dashboard notification" camunda:type="external" camunda:topic="applicationEventGASpec">
+    <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0g8jl6c</bpmn:incoming>
+      <bpmn:incoming>Flow_1n9cu6x</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nlz92w</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="GenerateGANotificationForRespondentFreeApplication" name="Create Dashboard notification respondent" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0d3uw5r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g8jl6c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0g8jl6c" sourceRef="GenerateGANotificationForRespondentFreeApplication" targetRef="Activity_18x7hxw" />
+    <bpmn:serviceTask id="GenerateGANotificationForApplicantFeeRequired" name="Create Dashboard notification applicant" camunda:type="external" camunda:topic="applicationEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u0d8a8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1iafhlg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wr5xbv</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_15n4u1m" name="No" sourceRef="Gateway_0j8ztot" targetRef="Gateway_086z4cx">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1wr5xbv" sourceRef="GenerateGANotificationForApplicantFeeRequired" targetRef="Gateway_086z4cx" />
+    <bpmn:exclusiveGateway id="Gateway_086z4cx" name="Is LiP respondent?">
+      <bpmn:incoming>Flow_15n4u1m</bpmn:incoming>
+      <bpmn:incoming>Flow_1wr5xbv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n9cu6x</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0d3uw5r</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1n9cu6x" name="No" sourceRef="Gateway_086z4cx" targetRef="Activity_18x7hxw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0d3uw5r" name="Yes" sourceRef="Gateway_086z4cx" targetRef="GenerateGANotificationForRespondentFreeApplication">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_RESPONDENT&amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplication">
@@ -172,21 +194,31 @@
       <bpmndi:BPMNShape id="Event_05yxbay_di" bpmnElement="Event_05yxbay">
         <dc:Bounds x="1992" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
-        <dc:Bounds x="1840" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_099a8bs_di" bpmnElement="Activity_099a8bs">
         <dc:Bounds x="290" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0j8ztot_di" bpmnElement="Gateway_0j8ztot" isMarkerVisible="true">
         <dc:Bounds x="1465" y="223" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1502" y="280" width="76" height="40" />
+          <dc:Bounds x="1489" y="203" width="81" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_08jonl1_di" bpmnElement="GenerateGANotificationForApplicantFeeRequired">
-        <dc:Bounds x="1640" y="420" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0ofpcry" bpmnElement="Activity_18x7hxw">
+        <dc:Bounds x="1860" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e5q9wp_di" bpmnElement="GenerateGANotificationForRespondentFreeApplication">
+        <dc:Bounds x="1720" y="350" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08jonl1_di" bpmnElement="GenerateGANotificationForApplicantFeeRequired">
+        <dc:Bounds x="1540" y="350" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_086z4cx_di" bpmnElement="Gateway_086z4cx" isMarkerVisible="true">
+        <dc:Bounds x="1655" y="223" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1649" y="185.5" width="62" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
@@ -219,7 +251,7 @@
         <di:waypoint x="1050" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nlz92w_di" bpmnElement="Flow_0nlz92w">
-        <di:waypoint x="1940" y="250" />
+        <di:waypoint x="1960" y="250" />
         <di:waypoint x="1992" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xd58c9_di" bpmnElement="Flow_1xd58c9">
@@ -240,25 +272,44 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0u0d8a8_di" bpmnElement="Flow_0u0d8a8">
         <di:waypoint x="1490" y="273" />
-        <di:waypoint x="1490" y="460" />
-        <di:waypoint x="1640" y="460" />
+        <di:waypoint x="1490" y="390" />
+        <di:waypoint x="1540" y="390" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1510" y="388" width="19" height="14" />
+          <dc:Bounds x="1500" y="317" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xbphmg_di" bpmnElement="Flow_1xbphmg">
-        <di:waypoint x="1490" y="223" />
-        <di:waypoint x="1490" y="150" />
-        <di:waypoint x="1880" y="150" />
-        <di:waypoint x="1880" y="208" />
+      <bpmndi:BPMNEdge id="Flow_0g8jl6c_di" bpmnElement="Flow_0g8jl6c">
+        <di:waypoint x="1820" y="390" />
+        <di:waypoint x="1840" y="390" />
+        <di:waypoint x="1840" y="268" />
+        <di:waypoint x="1860" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15n4u1m_di" bpmnElement="Flow_15n4u1m">
+        <di:waypoint x="1515" y="248" />
+        <di:waypoint x="1655" y="248" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1678" y="132" width="15" height="14" />
+          <dc:Bounds x="1578" y="230" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1iafhlg_di" bpmnElement="Flow_1iafhlg">
-        <di:waypoint x="1740" y="460" />
-        <di:waypoint x="1890" y="460" />
-        <di:waypoint x="1890" y="288" />
+      <bpmndi:BPMNEdge id="Flow_1wr5xbv_di" bpmnElement="Flow_1wr5xbv">
+        <di:waypoint x="1640" y="390" />
+        <di:waypoint x="1680" y="390" />
+        <di:waypoint x="1680" y="273" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n9cu6x_di" bpmnElement="Flow_1n9cu6x">
+        <di:waypoint x="1705" y="248" />
+        <di:waypoint x="1860" y="248" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1775" y="230" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d3uw5r_di" bpmnElement="Flow_0d3uw5r">
+        <di:waypoint x="1680" y="273" />
+        <di:waypoint x="1680" y="390" />
+        <di:waypoint x="1720" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1686" y="329" width="19" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
