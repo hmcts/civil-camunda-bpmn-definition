@@ -661,7 +661,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
         //complete the Respondent1 notification
-        ExternalTask notifyRespondentSolicitor1= assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyRespondentSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyRespondentSolicitor1,
             PROCESS_CASE_EVENT,
@@ -670,7 +670,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
         //complete the Applicant1 notification
-        ExternalTask notifyApplicantSolicitor1= assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyApplicantSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicantSolicitor1,
             PROCESS_CASE_EVENT,
