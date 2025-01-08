@@ -39,6 +39,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantAgreedSettledPartAdmitNotifyLip";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -665,8 +669,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondentSolicitor1,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
-            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1",
+            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID,
             variables
         );
         //complete the Applicant1 notification
@@ -674,8 +678,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyApplicantSolicitor1,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC",
-            "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC",
+            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC,
+            NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID,
             variables
         );
 
