@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.21.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0">
   <bpmn:process id="COURT_OFFICER_ORDER_ID" name="Court Officer order" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Start" name="Start">
       <bpmn:outgoing>Flow_116h4jn</bpmn:outgoing>
@@ -55,9 +55,9 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1gasse3</bpmn:incoming>
       <bpmn:incoming>Flow_1tezvmj</bpmn:incoming>
-      <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qkoa5a</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1" targetRef="EndProcess" />
+    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="GenerateDashboardNotificationCOODefendant" targetRef="EndProcess" />
     <bpmn:serviceTask id="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor2" name="Notify defendant 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -77,6 +77,26 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1gasse3" name="No" sourceRef="Gateway_19b5dvl" targetRef="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1" />
     <bpmn:sequenceFlow id="Flow_1tezvmj" sourceRef="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor2" targetRef="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationCOODefendant" name="Generate Dashboard Notification Defendant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lxh7yz</bpmn:incoming>
+      <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GenerateDashboardNotificationCOOClaimant" name="Generate Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qkoa5a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lxh7yz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1lxh7yz" sourceRef="GenerateDashboardNotificationCOOClaimant" targetRef="GenerateDashboardNotificationCOODefendant" />
+    <bpmn:sequenceFlow id="Flow_0qkoa5a" sourceRef="GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1" targetRef="GenerateDashboardNotificationCOOClaimant" />
     <bpmn:textAnnotation id="TextAnnotation_0i3yd0i">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
     </bpmn:textAnnotation>
@@ -91,12 +111,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="159" y="295" width="24" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_1h61h5s">
-        <dc:Bounds x="952" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="EndProcess">
-        <dc:Bounds x="770" y="227" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="StartProcess">
         <dc:Bounds x="230" y="227" width="100" height="80" />
@@ -119,6 +133,20 @@
       <bpmndi:BPMNShape id="Gateway_19b5dvl_di" bpmnElement="Gateway_19b5dvl" isMarkerVisible="true">
         <dc:Bounds x="547" y="242" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_1h61h5s">
+        <dc:Bounds x="1282" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="EndProcess">
+        <dc:Bounds x="1140" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0l1vl8w" bpmnElement="GenerateDashboardNotificationCOODefendant">
+        <dc:Bounds x="1000" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0gawqxv" bpmnElement="GenerateDashboardNotificationCOOClaimant">
+        <dc:Bounds x="810" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0i3yd0i_di" bpmnElement="TextAnnotation_0i3yd0i">
         <dc:Bounds x="512" y="320" width="120" height="40" />
         <bpmndi:BPMNLabel />
@@ -130,8 +158,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_0x2wz2v">
-        <di:waypoint x="870" y="267" />
-        <di:waypoint x="952" y="267" />
+        <di:waypoint x="1240" y="267" />
+        <di:waypoint x="1282" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
         <di:waypoint x="280" y="209" />
@@ -150,8 +178,8 @@
         <di:waypoint x="547" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wl2kxy_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
-        <di:waypoint x="730" y="267" />
-        <di:waypoint x="770" y="267" />
+        <di:waypoint x="1100" y="267" />
+        <di:waypoint x="1140" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09daomk_di" bpmnElement="Flow_Two_Respondent_Representatives">
         <di:waypoint x="572" y="242" />
@@ -175,6 +203,14 @@
       <bpmndi:BPMNEdge id="Association_0996wnt_di" bpmnElement="Association_0996wnt">
         <di:waypoint x="572" y="320" />
         <di:waypoint x="572" y="292" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lxh7yz_di" bpmnElement="Flow_1lxh7yz">
+        <di:waypoint x="910" y="267" />
+        <di:waypoint x="1000" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qkoa5a_di" bpmnElement="Flow_0qkoa5a">
+        <di:waypoint x="730" y="267" />
+        <di:waypoint x="810" y="267" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
