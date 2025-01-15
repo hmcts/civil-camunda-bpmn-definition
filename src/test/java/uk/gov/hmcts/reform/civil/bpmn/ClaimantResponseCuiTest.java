@@ -47,6 +47,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
+    private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
+    private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
@@ -120,6 +122,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -334,6 +341,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
