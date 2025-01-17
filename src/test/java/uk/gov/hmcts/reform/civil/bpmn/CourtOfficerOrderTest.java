@@ -16,6 +16,14 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "COURT_OFFICER_ORDER_ID";
 
     public static final String MESSAGE_NAME = "COURT_OFFICER_ORDER";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT
+        = "CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationCOOClaimant";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID
+        = "GenerateDashboardNotificationCOODefendant";
     public static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER
         = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER";
     public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER
@@ -28,7 +36,7 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         = "GenerateOrderNotifyApplicantCourtOfficerOrderSolicitor1";
     public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
         = "GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1";
-        
+
     public CourtOfficerOrderTest() {
         super("court_officer_order.bpmn", PROCESS_ID);
     }
@@ -79,6 +87,21 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER,
                                    NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
+                                   variables
+        );
+
+        //complete the dashboard form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID,
+                                   variables
+        );
+        //complete the hearing form process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID,
                                    variables
         );
 
