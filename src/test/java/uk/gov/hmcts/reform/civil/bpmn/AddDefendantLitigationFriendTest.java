@@ -52,11 +52,11 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_LITIGATION_FRIEND_ADDED",
-            "LitigationFriendAddedNotifyApplicantSolicitor1",
+            "NOTIFY_EVENT",
+            "LitigationFriendAddedNotifyRelevantParties",
             variables
         );
-
+/*
         //complete the CC notification to respondent solicitor 1
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -78,7 +78,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
                 variables
             );
         }
-
+*/
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
