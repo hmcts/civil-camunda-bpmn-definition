@@ -34,27 +34,27 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            "TWO_RESPONDENT_REPRESENTATIVES", twoRespondents)
+                "TWO_RESPONDENT_REPRESENTATIVES", twoRespondents)
         );
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_EVENT",
-            "LitigationFriendAddedNotifyRelevantParties",
-            variables
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_EVENT",
+                "LitigationFriendAddedNotifyApplicantSolicitor1",
+                variables
         );
 
         //complete the Robotics notification
