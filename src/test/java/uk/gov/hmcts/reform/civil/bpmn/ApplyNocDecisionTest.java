@@ -168,8 +168,8 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
         //assert process has started
         assertFalse(processInstance.isEnded());
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of("DEFENDANT_NOC_ONLINE",true,
-                                              ONE_RESPONDENT_REPRESENTATIVE,true));
+        variables.putValue(FLOW_FLAGS, Map.of("DEFENDANT_NOC_ONLINE", true,
+                                              ONE_RESPONDENT_REPRESENTATIVE, true));
         variables.putValue(FLOW_STATE, FlowState.IN_HEARING_READINESS.fullName());
 
         //complete the start business process
