@@ -202,20 +202,22 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    UPDATE_PARTIES_NOTIFIED_HMC_ACTIVITY_ID,
                                    variables
         );
+        
+        if (caseProgressionFlag) {
+            //complete the dashboard notification process
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
+                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
+            );
 
-        //complete the dashboard notification process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
-        );
-
-        //complete the dashboard notification process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
-        );
+            //complete the dashboard notification process
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
+                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
+            );
+        }
 
         if (caseState.equals("CASE_PROGRESSION")) {
             //complete update case progress
