@@ -39,9 +39,9 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
     public static final String UPDATE_CASE_PROGRESS_HMC
         = "UPDATE_CASE_PROGRESS_HMC";
     public static final String SEND_HEARING_TO_LIP_DEFENDANT
-        = "SEND_HEARING_TO_LIP_DEFENDANT";
+        = "SEND_HEARING_TO_LIP_DEFENDANT_HMC";
     public static final String SEND_HEARING_TO_LIP_CLAIMANT
-        = "SEND_HEARING_TO_LIP_CLAIMANT";
+        = "SEND_HEARING_TO_LIP_CLAIMANT_HMC";
     public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT
         = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_HMC";
     public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT
@@ -97,17 +97,17 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"CASE_PROGRESSION, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false, true",
-        "CASE_PROGRESSION, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false, false",
-        "JUDICIAL_REFERRAL, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false, false",
-        "JUDICIAL_REFERRAL, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false, false",
-        "CASE_PROGRESSION, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false, false",
-        "CASE_PROGRESSION, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, true, false",
-        "JUDICIAL_REFERRAL, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false, true",
-        "JUDICIAL_REFERRAL, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false, false"})
+    @CsvSource({"CASE_PROGRESSION, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "CASE_PROGRESSION, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "JUDICIAL_REFERRAL, true, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "JUDICIAL_REFERRAL, false, ONE_RESPONDENT_REPRESENTATIVE, TWO_RESPONDENT_REPRESENTATIVES, false",
+        "CASE_PROGRESSION, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false",
+        "CASE_PROGRESSION, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, true",
+        "JUDICIAL_REFERRAL, true, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false",
+        "JUDICIAL_REFERRAL, false, UNREPRESENTED_DEFENDANT_ONE, UNREPRESENTED_DEFENDANT_TWO, false"})
     void shouldSuccessfullyCompleteGenerateHearingNotice(String caseState, boolean twoRespondents,
                                                          String respondentOne, String respondentTwo,
-                                                         boolean lipCase, boolean caseProgressionFlag) {
+                                                         boolean lipCase) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -120,7 +120,7 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
             respondentTwo, twoRespondents,
             LIP_CASE, lipCase,
             DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, caseProgressionFlag));
+            CASE_PROGRESSION_ENABLED, true));
 
         variables.put("caseState", caseState);
 
@@ -140,7 +140,7 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    variables
         );
 
-        if (caseProgressionFlag) {
+        if (respondentOne.equals("UNREPRESENTED_DEFENDANT_ONE") && !twoRespondents) {
             //complete the bulk print
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
@@ -148,12 +148,14 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                        variables
             );
 
-            //complete the bulk print
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
-                                       variables
-            );
+            if (lipCase) {
+                //complete the bulk print
+                notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                           SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
+                                           variables
+                );
+            }
         }
 
         //complete notify claimant solicitor hearing
@@ -202,22 +204,20 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    UPDATE_PARTIES_NOTIFIED_HMC_ACTIVITY_ID,
                                    variables
         );
-        
-        if (caseProgressionFlag) {
-            //complete the dashboard notification process
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
-                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
-            );
 
-            //complete the dashboard notification process
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
-                                       CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
-            );
-        }
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
+        );
+
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
+        );
 
         if (caseState.equals("CASE_PROGRESSION")) {
             //complete update case progress
