@@ -33,10 +33,10 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0yvpi10" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
     <bpmn:sequenceFlow id="Flow_08myj65" sourceRef="Event_0t2zome" targetRef="Activity_0emdthr" />
-    <bpmn:serviceTask id="ClaimDismissedNotify1V2Parties" name="Notify relevant parties" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ClaimDismissedNotifyParties" name="Notify relevant parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_1V2_PARTIES_FOR_CLAIM_DISMISSED</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_PARTIES_FOR_CLAIM_DISMISSED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0bca286</bpmn:incoming>
@@ -81,11 +81,11 @@
       <bpmn:outgoing>Flow_0o65a0g</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1im5p4o" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
-    <bpmn:sequenceFlow id="Flow_0urkbiq" sourceRef="ClaimDismissedNotify1V2Parties" targetRef="NotifyRoboticsOnCaseHandedOffline" />
-    <bpmn:sequenceFlow id="Flow_0bca286" name="Case does not have General Application(s)" sourceRef="Gateway_14yvrwf" targetRef="ClaimDismissedNotify1V2Parties">
+    <bpmn:sequenceFlow id="Flow_0urkbiq" sourceRef="ClaimDismissedNotifyParties" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_0bca286" name="Case does not have General Application(s)" sourceRef="Gateway_14yvrwf" targetRef="ClaimDismissedNotifyParties">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0o65a0g" sourceRef="UpdateClaimWithApplicationStatus" targetRef="ClaimDismissedNotify1V2Parties" />
+    <bpmn:sequenceFlow id="Flow_0o65a0g" sourceRef="UpdateClaimWithApplicationStatus" targetRef="ClaimDismissedNotifyParties" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -112,7 +112,7 @@
       <bpmndi:BPMNShape id="Activity_0m7yww1_di" bpmnElement="UpdateClaimWithApplicationStatus">
         <dc:Bounds x="790" y="90" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="ClaimDismissedNotify1V2Parties">
+      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="ClaimDismissedNotifyParties">
         <dc:Bounds x="1040" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -179,6 +179,9 @@
         <di:waypoint x="890" y="130" />
         <di:waypoint x="1090" y="130" />
         <di:waypoint x="1090" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="947" y="96" width="89" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
