@@ -13,6 +13,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+/**
+ * Should notify Respondent Solicitors and Applicant Solicitor (i.e. all parties) only if
+ * CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE, otherwise only notify Applicant Solicitor (i.e. relevant parties)
+ */
 class ClaimDismissedTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DISMISS_CLAIM";
@@ -30,7 +34,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenPastClaimNotificationDeadline() {
+    void shouldNotifyRelevantParties_whenPastClaimNotificationDeadline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
