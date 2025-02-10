@@ -43,7 +43,7 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";;
+        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
     public DefendantResponseSpecTest() {
         super("defendant_response_spec.bpmn", "DEFENDANT_RESPONSE_PROCESS_ID_SPEC");
@@ -573,7 +573,7 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         );
 
         //complete the notification to LIP applicant
-          ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
