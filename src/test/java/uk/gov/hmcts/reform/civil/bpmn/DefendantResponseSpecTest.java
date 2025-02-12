@@ -520,6 +520,26 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        if (responseType.equals("MAIN.PART_ADMISSION")) {
+            //generate DQ
+            ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateDQ,
+                PROCESS_CASE_EVENT,
+                "GENERATE_DIRECTIONS_QUESTIONNAIRE",
+                "DefendantResponsePartAdmitGenerateDirectionsQuestionnaire"
+            );
+        }
+
+        //proceed offline
+        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateSealedForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_RESPONSE_SEALED",
+            "DefendantResponseFullOrPartAdmitGenerateSealedForm"
+        );
+
         //proceed offline
         ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
