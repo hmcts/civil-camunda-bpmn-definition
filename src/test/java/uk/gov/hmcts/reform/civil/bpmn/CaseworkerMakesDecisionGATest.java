@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
@@ -30,13 +31,31 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
         "START_RESPONDENT_NOTIFICATION_PROCESS_MAKE_DECISION";
     private static final String NOTIFY_CONSENT_ORDER_DEFENDANT_ACTIVITY_ID = "NotifyConsentOrderDefendant";
 
+    private static final String DASHBOARD_NOTIFICATION_APPLICANT_EVENT =
+        "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
+    private static final String DASHBOARD_NOTIFICATION_APPLICANT_ACTIVITY_ID = "consentOrderCreateDashboardNotificationForApplicant";
+    private static final String DASHBOARD_NOTIFICATION_RESPONDENT_EVENT =
+        "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
+    private static final String DASHBOARD_NOTIFICATION_RESPONDENT_ACTIVITY_ID = "consentOrderCreateDashboardNotificationForRespondent";
+
+    private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
+
     public CaseworkerMakesDecisionGATest() {
         super("caseworker_makes_decision_general_application.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(Boolean rpaContinuousFeed) {
+    @CsvSource({
+        "true, true",
+        "true, false",
+        "false, true",
+        "false, false"
+    })
+    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(Boolean lipApplicant, Boolean lipRespondent) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -44,7 +63,10 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of("RPA_CONTINUOUS_FEED", rpaContinuousFeed));
+        variables.put("flowFlags",
+                      Map.of("LIP_APPLICANT", lipApplicant,
+                             "LIP_RESPONDENT", lipRespondent
+                      ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -95,9 +117,50 @@ public class CaseworkerMakesDecisionGATest extends BpmnBaseJudgeGASpecTest {
             variables
         );
 
+        if (lipApplicant) {
+            ExternalTask dashboardNotificationApplicant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardNotificationApplicant,
+                PROCESS_EXTERNAL_CASE_EVENT,
+                DASHBOARD_NOTIFICATION_APPLICANT_EVENT,
+                DASHBOARD_NOTIFICATION_APPLICANT_ACTIVITY_ID,
+                variables
+            );
+        }
+        if (lipRespondent) {
+            ExternalTask dashboardNotificationRespondent = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardNotificationRespondent,
+                PROCESS_EXTERNAL_CASE_EVENT,
+                DASHBOARD_NOTIFICATION_RESPONDENT_EVENT,
+                DASHBOARD_NOTIFICATION_RESPONDENT_ACTIVITY_ID,
+                variables
+            );
+        }
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+
+        if (lipApplicant || lipRespondent) {
+            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiClaimantDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
+                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+                variables
+            );
+
+            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            assertCompleteExternalTask(
+                updateCuiDefendantDashboard,
+                APPLICATION_EVENT_GASPEC,
+                UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
+                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
+                variables
+            );
+        }
 
         assertNoExternalTasksLeft();
     }
