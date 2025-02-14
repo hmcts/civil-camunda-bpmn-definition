@@ -10,8 +10,8 @@ class RaiseQueryTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "RAISE_QUERY";
     public static final String PROCESS_ID = "RAISE_QUERY";
-    private static final String NOTIFY_LR = "NOTIFY_LR_FOR_RAISED_QUERY";
-    private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotifySolicitor";
+    private static final String NOTIFY_LR = "NOTIFY_RAISED_QUERY";
+    private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotify";
 
     public RaiseQueryTest() {
         super("raise_query.bpmn", PROCESS_ID);
