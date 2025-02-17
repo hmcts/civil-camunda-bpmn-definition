@@ -574,7 +574,7 @@ class DefendantResponseTest extends BpmnBaseTest {
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
 
             VariableMap variables = Variables.createVariables();
-            variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_NOT_FULL_DEFENCE_RECEIVED");
+            variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_NOT_FULL_DEFENCE_OR_FULL_ADMIT_RECEIVED");
             variables.put(FLOW_FLAGS, Map.of(
                     ONE_RESPONDENT_REPRESENTATIVE, false,
                     TWO_RESPONDENT_REPRESENTATIVES, true,
