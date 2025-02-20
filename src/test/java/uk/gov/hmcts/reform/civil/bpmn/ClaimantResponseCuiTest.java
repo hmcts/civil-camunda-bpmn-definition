@@ -586,7 +586,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     private void generateJudgmentByAdmissionPdf() {
         assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID);
     }
