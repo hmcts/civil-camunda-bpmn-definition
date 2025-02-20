@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0">
   <bpmn:process id="CLAIMANT_RESPONSE_CUI_PROCESS_ID" name="Claimant response cui process" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="CLRCUI_StartEvent_1" name="start">
       <bpmn:outgoing>Flow_0uwkh9v</bpmn:outgoing>
@@ -18,6 +18,8 @@
       <bpmn:outgoing>Flow_0slswz6</bpmn:outgoing>
       <bpmn:outgoing>Flow_Full_PartAdmit</bpmn:outgoing>
       <bpmn:outgoing>Flow_15z0dwe</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ylt8a2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ogn4r0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="JudicialReferral" name="Proceed to judicial referral (Response to defence)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -106,7 +108,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0beyd6n" sourceRef="Generate_LIP_Claimant_DQ" targetRef="Gateway_0btqyj3" />
     <bpmn:sequenceFlow id="Flow_187wcee" name="Applicant proposes new repayment plan (Respondent is LTD company or organization)" sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT") &amp;&amp; (empty flowFlags.JO_ONLINE_LIVE_ENABLED || !flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_RPA_FLOW">
       <bpmn:incoming>Flow_0pcu8vp</bpmn:incoming>
@@ -163,6 +165,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_187wcee</bpmn:incoming>
+      <bpmn:incoming>Flow_0ogn4r0</bpmn:incoming>
       <bpmn:outgoing>Flow_192ex4z</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_192ex4z" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" />
@@ -235,6 +238,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Full_PartAdmit</bpmn:incoming>
+      <bpmn:incoming>Flow_1ylt8a2</bpmn:incoming>
       <bpmn:outgoing>Flow_0xb2qk0</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0xb2qk0" sourceRef="GenerateJudgmentByAdmissionPdf" targetRef="NotifyLiPRespondentClaimantConfirmToProceed" />
@@ -463,6 +467,12 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1msvhgp" sourceRef="GenerateJudgmentByDeterminationPdf" targetRef="Gateway_12dmvul" />
     <bpmn:sequenceFlow id="Flow_0h4qr2u" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:sequenceFlow id="Flow_1ylt8a2" name="Applicant Reject Repayment JBA Jo Enabled" sourceRef="Gateway_RESPONSE_FLOW" targetRef="GenerateJudgmentByAdmissionPdf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT") &amp;&amp; ((!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED) &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION))}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ogn4r0" name="JO Enabled Applicant proposes new repayment plan (Respondent is LTD company or organization) " sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT") &amp;&amp; ((!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED) &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; !flowFlags.LIP_JUDGMENT_ADMISSION))}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -483,10 +493,6 @@
           <dc:Bounds x="377" y="466" width="46" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
-        <dc:Bounds x="610" y="660" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1iyxejm_di" bpmnElement="Event_1iyxejm">
         <dc:Bounds x="272" y="362" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -504,6 +510,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="NotifyLiPApplicantClaimantConfirmToProceed">
         <dc:Bounds x="1070" y="463" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0anwp1i" bpmnElement="Generate_LIP_Claimant_DQ">
+        <dc:Bounds x="1210" y="463" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0us1dhc_di" bpmnElement="Gateway_RPA_FLOW" isMarkerVisible="true">
@@ -548,10 +558,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1qn5wbf" bpmnElement="GenerateJudgmentByDeterminationPdf">
         <dc:Bounds x="1190" y="960" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1irg6vc" bpmnElement="GenerateJudgmentByAdmissionPdf">
-        <dc:Bounds x="610" y="750" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0l350c4" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
@@ -635,8 +641,12 @@
         <dc:Bounds x="1060" y="700" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0anwp1i" bpmnElement="Generate_LIP_Claimant_DQ">
-        <dc:Bounds x="1210" y="463" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1xj9809" bpmnElement="JudicialReferral">
+        <dc:Bounds x="610" y="630" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1irg6vc" bpmnElement="GenerateJudgmentByAdmissionPdf">
+        <dc:Bounds x="610" y="730" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
@@ -671,15 +681,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fz18qx_di" bpmnElement="CLRCUI_PART_ADMISSION_NOT_SETTLED_NO_MEDIATION">
         <di:waypoint x="440" y="528" />
-        <di:waypoint x="440" y="700" />
-        <di:waypoint x="610" y="700" />
+        <di:waypoint x="440" y="670" />
+        <di:waypoint x="610" y="670" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="446" y="660" width="69" height="40" />
+          <dc:Bounds x="446" y="630" width="69" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0usnw79_di" bpmnElement="Flow_0usnw79">
-        <di:waypoint x="710" y="700" />
-        <di:waypoint x="970" y="700" />
+        <di:waypoint x="710" y="670" />
+        <di:waypoint x="970" y="670" />
         <di:waypoint x="970" y="543" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02ja65l_di" bpmnElement="IN_MEDIATION_FLOW">
@@ -782,16 +792,16 @@
         <di:waypoint x="1190" y="1000" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xb2qk0_di" bpmnElement="Flow_0xb2qk0">
-        <di:waypoint x="710" y="790" />
-        <di:waypoint x="970" y="790" />
+        <di:waypoint x="710" y="770" />
+        <di:waypoint x="970" y="770" />
         <di:waypoint x="970" y="543" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vdp7ur_di" bpmnElement="Flow_Full_PartAdmit">
         <di:waypoint x="440" y="528" />
-        <di:waypoint x="440" y="790" />
-        <di:waypoint x="610" y="790" />
+        <di:waypoint x="440" y="760" />
+        <di:waypoint x="610" y="760" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="438" y="742" width="84" height="53" />
+          <dc:Bounds x="451" y="703" width="84" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xrpi43_di" bpmnElement="Flow_0xrpi43">
@@ -970,6 +980,24 @@
         <di:waypoint x="1160" y="740" />
         <di:waypoint x="1300" y="740" />
         <di:waypoint x="1300" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ylt8a2_di" bpmnElement="Flow_1ylt8a2">
+        <di:waypoint x="440" y="528" />
+        <di:waypoint x="440" y="830" />
+        <di:waypoint x="660" y="830" />
+        <di:waypoint x="660" y="810" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="452" y="790" width="81" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ogn4r0_di" bpmnElement="Flow_0ogn4r0">
+        <di:waypoint x="440" y="528" />
+        <di:waypoint x="440" y="1080" />
+        <di:waypoint x="600" y="1080" />
+        <di:waypoint x="600" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="471" y="1040" width="82" height="93" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
