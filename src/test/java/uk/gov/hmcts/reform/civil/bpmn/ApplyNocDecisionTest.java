@@ -164,6 +164,68 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldSucessfullyTriggerNotificationForNewDefendantLRForApplicantLip() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of("DEFENDANT_NOC_ONLINE", true,
+                                              ONE_RESPONDENT_REPRESENTATIVE, true));
+        variables.putValue(FLOW_STATE, FlowState.IN_HEARING_READINESS.fullName());
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        //complete updating case details
+        ExternalTask updateCaseDetails = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateCaseDetails,
+            PROCESS_CASE_EVENT,
+            "UPDATE_CASE_DETAILS_AFTER_NOC",
+            "UpdateCaseDetailsAfterNoC"
+        );
+
+        //complete notify former solicitor
+        ExternalTask notifyFormerSol = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyFormerSol,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_FORMER_SOLICITOR,
+                                   TASK_ID_NOTIFY_FORMER_SOLICITOR,
+                                   variables);
+
+        //complete notify other solicitor 1
+        ExternalTask notifyOtherSol1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyOtherSol1,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_OTHER_SOLICITOR_1,
+                                   TASK_ID_NOTIFY_OTHER_SOLICITOR_1,
+                                   variables);
+
+        //complete notify other solicitor 1
+        ExternalTask notifyNewDefendantSol = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyNewDefendantSol,
+                                   PROCESS_CASE_EVENT,
+                                   "NOTIFY_NEW_DEFENDANT_SOLICITOR",
+                                   "NotifyNewDefendantSolicitor1",
+                                   variables);
+
+        //complete  notify claimant fee unpaid process
+        ExternalTask notifyUnpaid = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyUnpaid,
+                                   PROCESS_CASE_EVENT,
+                                   NOTIFY_APPLICANT_SOLICITOR_FOR_HEARING_FEE_AFTER_NOC,
+                                   TASK_ID_NOTIFY_CLAIMANT_UNPAID_FEE,
+                                   variables);
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+
+    }
+
+    @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
         assertFalse(processInstance.isEnded());
