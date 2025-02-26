@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -42,15 +44,21 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE
         = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
 
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
+    public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
+
     //Activity IDs
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPRespondentClaimantConfirmToProceed";
+    private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
+    private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyJoRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
@@ -73,10 +81,21 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         = "GenerateJudgmentByDeterminationPdf";
     private static final String PROCEED_OFFLINE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEED_OFFLINE_EVENT_ACTIVITY_ID = "ProceedOffline";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
+    private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT_ID = "SendJudgmentDetailsToCJES";
+    private static final String UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID = "updateClaimantClaimStateID";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDefendantCCJDashboardNotification";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateClaimantCCJDashboardNotification";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         = "GenerateClaimantDashboardNotificationClaimantResponse";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
+    public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
+    public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -110,6 +129,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -164,7 +188,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -199,7 +224,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -322,6 +348,11 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         notifyRespondentClaimantConfirmsToProceed();
         notifyApplicantClaimantConfirmsToProceed();
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -403,7 +434,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JO_ONLINE_LIVE_ENABLED, false
         ));
         assertCompleteExternalTask(
                 startBusiness,
@@ -418,6 +450,49 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, true,
+            IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        generateJudgmentByAdmissionPdf();
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
+        if (isRpaLiveFeed) {
+            generateJoRPAContinuousFeed();
+        }
+        createClaimantDashboardNotificationForJOIssued();
+        createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -466,7 +541,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID);
     }
 
-    private void    assertCompletedCaseEvent(String eventName, String activityId) {
+    private void assertCompletedCaseEvent(String eventName, String activityId) {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
@@ -523,5 +598,37 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void proceedCaseOffline() {
         assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
+    }
+
+    private void sendJudgmentToCjesService() {
+        assertCompletedCaseEvent(SEND_JUDGMENT_DETAILS_CJES_EVENT, SEND_JUDGMENT_DETAILS_CJES_EVENT_ID);
+    }
+
+    private void generateJudgmentByAdmissionClaimantDocument() {
+        assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID);
+    }
+
+    private void generateJudgmentByAdmissionDefendantDocument() {
+        assertCompletedCaseEvent(GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT, GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID);
+    }
+
+    private void sendPinInPOstLetterForJudgmentByAdmission() {
+        assertCompletedCaseEvent(JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID, JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID);
+    }
+
+    private void updateClaimantClaimState() {
+        assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
+    }
+
+    private void createDefendantDashboardNotificationForJOIssued() {
+        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT, CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID);
+    }
+
+    private void createClaimantDashboardNotificationForJOIssued() {
+        assertCompletedCaseEvent(DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT, DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID);
+    }
+
+    private void generateJoRPAContinuousFeed() {
+        assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
     }
 }

@@ -25,6 +25,9 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
             = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "updateClaimStateAfterTranslateDocumentUploadedID";
+    //notify RPA
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
     public UploadTranslatedClaimIssueDocumentTest() {
         super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
@@ -102,6 +105,16 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                                    "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1",
                                    "CreateIssueClaimDashboardNotificationsForDefendant1"
         );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);

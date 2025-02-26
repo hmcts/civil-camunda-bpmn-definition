@@ -17,6 +17,7 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
 
     public static final String GA_RESPONSE_DEADLINE_TOPIC = "GAResponseDeadlineProcessor";
     public static final String GA_JUDGE_REVISIT_TOPIC = "GAJudgeRevisitProcessor";
+    public static final String GA_DEADLINE_CHECK_TOPIC = "GARespondentResponseCheckScheduler";
 
     public GAResponseDeadlineProcessorTest() {
         super("general_application_response_deadline_processor.bpmn", "GA_RESPONSE_DEADLINE_PROCESSOR");
@@ -38,7 +39,7 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
         assertThat(jobDefinitions).hasSize(1);
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
-        String cronString = "0 15 17 ? * * *";
+        String cronString = "0 15 17 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
                 new CronExpression(cronString),
@@ -63,6 +64,11 @@ class GAResponseDeadlineProcessorTest extends BpmnBaseTest {
         List<LockedExternalTask> lockedExternalGaJudgeTasks = fetchAndLockTask(GA_JUDGE_REVISIT_TOPIC);
         assertThat(lockedExternalGaJudgeTasks).hasSize(1);
         completeTask(lockedExternalGaJudgeTasks.get(0).getId());
+
+        //fetch and complete third task
+        List<LockedExternalTask> respondentResponseDeadlineCheck = fetchAndLockTask(GA_DEADLINE_CHECK_TOPIC);
+        assertThat(respondentResponseDeadlineCheck).hasSize(1);
+        completeTask(respondentResponseDeadlineCheck.get(0).getId());
 
         //assert no external tasks left
         List<ExternalTask> externalTasksAfter = getExternalTasks();

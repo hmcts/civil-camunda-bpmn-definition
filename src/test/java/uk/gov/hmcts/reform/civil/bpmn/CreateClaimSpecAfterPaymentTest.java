@@ -476,6 +476,15 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_ACTIVITY_ID
             );
 
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
+
             //end business process
             ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
             completeBusinessProcess(endBusinessProcess);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
-  <bpmn:process id="CASE_PROCEEDS_IN_CASEMAN" name="Case proceeds in caseman" isExecutable="true">
+  <bpmn:process id="CASE_PROCEEDS_IN_CASEMAN" name="Case proceeds in caseman" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Event_StartClaimTakenOffline" name="Start">
       <bpmn:outgoing>Flow_NextStartBusinessProcess</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_0slk3de" />
@@ -13,8 +13,9 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ixumtp</bpmn:incoming>
       <bpmn:incoming>Flow_1ozvyhu</bpmn:incoming>
+      <bpmn:incoming>Flow_GA_Not_Enabled</bpmn:incoming>
+      <bpmn:incoming>Flow_0n61xqe</bpmn:incoming>
       <bpmn:outgoing>Flow_NextEndEvent</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -149,10 +150,41 @@
       <bpmn:incoming>Flow_1xenm35</bpmn:incoming>
       <bpmn:outgoing>Flow_0ixumtp</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ixumtp" sourceRef="GenerateDefendantDashboardNotificationCaseProceedOffline" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_0ixumtp" sourceRef="GenerateDefendantDashboardNotificationCaseProceedOffline" targetRef="Gateway_1ynrdtq" />
     <bpmn:sequenceFlow id="Flow_1ozvyhu" name="Dashboard Service Disabled" sourceRef="Gateway_0sx9s0b" targetRef="Activity_EndBusinessProcess">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="claimantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ow1g6s</bpmn:incoming>
+      <bpmn:outgoing>Flow_17716q5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="defendantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17716q5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n61xqe</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1ynrdtq">
+      <bpmn:incoming>Flow_0ixumtp</bpmn:incoming>
+      <bpmn:outgoing>Flow_GA_Not_Enabled</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ow1g6s</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_GA_Not_Enabled" name="GA Not Enabled" sourceRef="Gateway_1ynrdtq" targetRef="Activity_EndBusinessProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ow1g6s" name="GA Enabled" sourceRef="Gateway_1ynrdtq" targetRef="claimantLipApplicationOfflineDashboardNotification">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_17716q5" sourceRef="claimantLipApplicationOfflineDashboardNotification" targetRef="defendantLipApplicationOfflineDashboardNotification" />
+    <bpmn:sequenceFlow id="Flow_0n61xqe" sourceRef="defendantLipApplicationOfflineDashboardNotification" targetRef="Activity_EndBusinessProcess" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="CASE_PROCEEDS_IN_CASEMAN" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -163,6 +195,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="235" width="24" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
+        <dc:Bounds x="2392" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_StartBusinessProcess">
         <dc:Bounds x="230" y="170" width="100" height="80" />
@@ -201,18 +236,26 @@
       <bpmndi:BPMNShape id="Gateway_0sx9s0b_di" bpmnElement="Gateway_0sx9s0b" isMarkerVisible="true">
         <dc:Bounds x="1605" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
-        <dc:Bounds x="2192" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="2020" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01op09a_di" bpmnElement="GenerateClaimantDashboardNotificationCaseProceedOffline">
-        <dc:Bounds x="1730" y="320" width="100" height="80" />
+        <dc:Bounds x="1670" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
+        <dc:Bounds x="2160" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="2240" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1rtq8df" bpmnElement="claimantLipApplicationOfflineDashboardNotification">
+        <dc:Bounds x="2030" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ynrdtq_di" bpmnElement="Gateway_1ynrdtq" isMarkerVisible="true">
+        <dc:Bounds x="1975" y="335" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_15vvbke" bpmnElement="GenerateDefendantDashboardNotificationCaseProceedOffline">
-        <dc:Bounds x="1870" y="320" width="100" height="80" />
+        <dc:Bounds x="1810" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
@@ -222,8 +265,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_NextEndEvent">
-        <di:waypoint x="2120" y="210" />
-        <di:waypoint x="2192" y="210" />
+        <di:waypoint x="2340" y="210" />
+        <di:waypoint x="2392" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_StartBusinessProcessAbort">
         <di:waypoint x="280" y="152" />
@@ -285,27 +328,51 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rfdl2o_di" bpmnElement="Flow_0rfdl2o">
         <di:waypoint x="1630" y="235" />
-        <di:waypoint x="1630" y="360" />
-        <di:waypoint x="1730" y="360" />
+        <di:waypoint x="1630" y="350" />
+        <di:waypoint x="1670" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1639" y="303" width="81" height="27" />
+          <dc:Bounds x="1539" y="266" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xenm35_di" bpmnElement="Flow_1xenm35">
-        <di:waypoint x="1830" y="360" />
-        <di:waypoint x="1870" y="360" />
+        <di:waypoint x="1770" y="360" />
+        <di:waypoint x="1810" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ixumtp_di" bpmnElement="Flow_0ixumtp">
-        <di:waypoint x="1970" y="360" />
-        <di:waypoint x="2070" y="360" />
-        <di:waypoint x="2070" y="250" />
+        <di:waypoint x="1910" y="360" />
+        <di:waypoint x="1975" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ozvyhu_di" bpmnElement="Flow_1ozvyhu">
         <di:waypoint x="1655" y="210" />
-        <di:waypoint x="2020" y="210" />
+        <di:waypoint x="2240" y="210" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1668" y="176" width="83" height="27" />
+          <dc:Bounds x="1701" y="176" width="83" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_020sxtm_di" bpmnElement="Flow_GA_Not_Enabled">
+        <di:waypoint x="2025" y="360" />
+        <di:waypoint x="2290" y="360" />
+        <di:waypoint x="2290" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2067" y="343" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ow1g6s_di" bpmnElement="Flow_0ow1g6s">
+        <di:waypoint x="2000" y="385" />
+        <di:waypoint x="2000" y="490" />
+        <di:waypoint x="2030" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2010" y="423" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17716q5_di" bpmnElement="Flow_17716q5">
+        <di:waypoint x="2130" y="490" />
+        <di:waypoint x="2160" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n61xqe_di" bpmnElement="Flow_0n61xqe">
+        <di:waypoint x="2260" y="490" />
+        <di:waypoint x="2290" y="490" />
+        <di:waypoint x="2290" y="250" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

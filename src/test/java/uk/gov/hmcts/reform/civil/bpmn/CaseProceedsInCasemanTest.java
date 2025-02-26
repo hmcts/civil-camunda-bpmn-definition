@@ -291,6 +291,22 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
                 "GenerateDefendantDashboardNotificationCaseProceedOffline"
         );
 
+        ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantGaDashboard,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
+            "claimantLipApplicationOfflineDashboardNotification"
+        );
+
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);

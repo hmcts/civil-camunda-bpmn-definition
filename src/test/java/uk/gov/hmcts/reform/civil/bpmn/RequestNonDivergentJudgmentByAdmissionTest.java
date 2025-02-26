@@ -5,14 +5,14 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
+class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC";
     public static final String PROCESS_ID = "JUDGEMENT_BY_ADMISSION_NON_DIVERGENT_SPEC_ID";
@@ -20,16 +20,22 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
+    public static final String SEND_JUDGMENT_DETAILS_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
+    public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
+    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationJudgementByAdmissionClaimant";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
+    private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
-    public RequestNonDivergentJudgementByAdmissionTest() {
-        super("judgement_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
+    public RequestNonDivergentJudgmentByAdmissionTest() {
+        super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void shouldSuccessfullyCompleteRequestJudgementByAdmission(boolean isLiPDefendant) {
+    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
+    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -40,6 +46,7 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             "LIP_CASE", false,
             "DASHBOARD_SERVICE_ENABLED", true,
+            "IS_JO_LIVE_FEED_ACTIVE", isJOLiveFeedActiveEnabled,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
 
         //complete the start business process
@@ -50,6 +57,22 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY,
             variables);
+
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIMANT_JUDGMENT_BY_ADMISSION",
+            "NotifyClaimantJudgmentByAdmission"
+        );
+
+        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_DEFENDANT_JUDGMENT_BY_ADMISSION",
+            "NotifyDefendantJudgmentByAdmission"
+        );
 
         ExternalTask generateDocClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -67,6 +90,25 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
         );
 
+        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentDetailsToCJES,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_EVENT,
+            SEND_JUDGMENT_DETAILS_ACTIVITY_ID
+        );
+
+        if (isJOLiveFeedActiveEnabled) {
+            ExternalTask notifyRPAFeed = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notifyRPAFeed,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
+            );
+        }
+
         if (isLiPDefendant) {
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -74,6 +116,16 @@ class RequestNonDivergentJudgementByAdmissionTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID,
                 JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID,
+                variables
+            );
+
+            //complete the notification dashboard
+            ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardClaimant,
+                PROCESS_CASE_EVENT,
+                DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID,
+                DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID,
                 variables
             );
 

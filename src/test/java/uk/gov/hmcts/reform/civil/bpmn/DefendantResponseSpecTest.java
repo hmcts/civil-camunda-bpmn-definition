@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -38,6 +40,10 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
     private static final String FULL_DEFENCE_GENERATE_SEALED_FORM_ACTIVITY_ID
         = "Activity_1ga6w9n";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPApplicantClaimantConfirmToProceed";
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
+        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
     public DefendantResponseSpecTest() {
         super("defendant_response_spec.bpmn", "DEFENDANT_RESPONSE_PROCESS_ID_SPEC");
@@ -496,5 +502,89 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE",
             "GenerateClaimantDashboardNotificationDefendantResponse"
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION"})
+    void shouldMoveCaseOfflineForLiPvLrClaim(String responseType) {
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", responseType);
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, true,
+            DASHBOARD_SERVICE_ENABLED, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusinessTask,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        if (responseType.equals("MAIN.PART_ADMISSION")) {
+            //generate DQ
+            ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateDQ,
+                PROCESS_CASE_EVENT,
+                "GENERATE_DIRECTIONS_QUESTIONNAIRE",
+                "DefendantResponsePartAdmitGenerateDirectionsQuestionnaire"
+            );
+        }
+
+        //proceed offline
+        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateSealedForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_RESPONSE_SEALED",
+            "DefendantResponseFullOrPartAdmitGenerateSealedForm"
+        );
+
+        //proceed offline
+        ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            fullDefenceResponse,
+            PROCESS_CASE_EVENT,
+            "PROCEEDS_IN_HERITAGE_SYSTEM",
+            "ProceedOffline"
+        );
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "Activity_0ncmkab"
+        );
+
+        //complete the notification to LR respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1,
+            "Notify",
+            variables
+        );
+
+        //complete the notification to LIP applicant
+        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
     }
 }

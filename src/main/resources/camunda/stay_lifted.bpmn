@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <bpmn:process id="STAY_LIFTED" name="Stay Lifted" isExecutable="true" camunda:historyTimeToLive="P90D">
+    <bpmn:serviceTask id="NotifyClaimantStayLifted" name="Notify Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_STAY_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_78545522598879</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fxs0vt2555454745</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="stay_case_event" name="Start">
+      <bpmn:outgoing>Flow_87785545545544</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1dvrj2w" messageRef="Message_07sm7e9" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_878884254666">
+      <bpmn:incoming>Flow_5845212254322</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_5845212254322" sourceRef="Activity_120199855233" targetRef="Event_878884254666" />
+    <bpmn:callActivity id="Activity_120199855233" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="variables" value="all" />
+        </camunda:properties>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0faw3q1</bpmn:incoming>
+      <bpmn:outgoing>Flow_5845212254322</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_7842144454545" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_87785545545544</bpmn:incoming>
+      <bpmn:outgoing>Flow_78545522598879</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_55878855778">
+      <bpmn:incoming>Flow_77875455488</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0kza4it444" name="Abort" attachedToRef="Activity_7842144454545">
+      <bpmn:outgoing>Flow_77875455488</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_09jmy6o" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_77875455488" sourceRef="Event_0kza4it444" targetRef="Event_55878855778" />
+    <bpmn:sequenceFlow id="Flow_87785545545544" sourceRef="stay_case_event" targetRef="Activity_7842144454545" />
+    <bpmn:sequenceFlow id="Flow_78545522598879" sourceRef="Activity_7842144454545" targetRef="NotifyClaimantStayLifted" />
+    <bpmn:serviceTask id="NotifyDefendantStayLifted" name="Notify Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_STAY_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s8cobk</bpmn:incoming>
+      <bpmn:incoming>Flow_1v2px67</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xckrvu54455522188</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1xckrvu54455522188" sourceRef="NotifyDefendantStayLifted" targetRef="DashboardNotificationHearingDocumentsClaimant" />
+    <bpmn:sequenceFlow id="Flow_1fxs0vt2555454745" sourceRef="NotifyClaimantStayLifted" targetRef="Gateway_030oovp" />
+    <bpmn:exclusiveGateway id="Gateway_030oovp">
+      <bpmn:incoming>Flow_1fxs0vt2555454745</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s8cobk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z093jw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0s8cobk" name="No" sourceRef="Gateway_030oovp" targetRef="NotifyDefendantStayLifted">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="NotifyDefendant2StayLifted" name="Notify Defendant 2" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT2_STAY_LIFTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z093jw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v2px67</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0z093jw" name="Yes" sourceRef="Gateway_030oovp" targetRef="NotifyDefendant2StayLifted">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1v2px67" sourceRef="NotifyDefendant2StayLifted" targetRef="NotifyDefendantStayLifted" />
+    <bpmn:serviceTask id="DashboardNotificationHearingDocumentsClaimant" name="Dashboard CUI notification upload hearing docs claim" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xckrvu54455522188</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ulmpph</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ulmpph" sourceRef="DashboardNotificationHearingDocumentsClaimant" targetRef="DashboardNotificationHearingDocumentsDefendant" />
+    <bpmn:serviceTask id="DashboardNotificationHearingDocumentsDefendant" name="Dashboard CUI notification upload hearing docs def" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ulmpph</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wojotw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wojotw" sourceRef="DashboardNotificationHearingDocumentsDefendant" targetRef="DashboardNotificationStayLiftedClaimant" />
+    <bpmn:serviceTask id="DashboardNotificationStayLiftedClaimant" name="Generate Dashboard Notification Claimant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wojotw</bpmn:incoming>
+      <bpmn:outgoing>Flow_19tkldo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19tkldo" sourceRef="DashboardNotificationStayLiftedClaimant" targetRef="DashboardNotificationStayLiftedDefendant" />
+    <bpmn:serviceTask id="DashboardNotificationStayLiftedDefendant" name="Generate Dashboard Notification Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_STAY_LIFTED_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19tkldo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0faw3q1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0faw3q1" sourceRef="DashboardNotificationStayLiftedDefendant" targetRef="Activity_120199855233" />
+    <bpmn:textAnnotation id="TextAnnotation_0tzn7kc">
+      <bpmn:text>Two respondent representatives?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0gcnkmh" sourceRef="Gateway_030oovp" targetRef="TextAnnotation_0tzn7kc" />
+  </bpmn:process>
+  <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
+  <bpmn:message id="Message_07sm7e9" name="STAY_LIFTED" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="STAY_LIFTED">
+      <bpmndi:BPMNEdge id="Flow_1v2px67_di" bpmnElement="Flow_1v2px67">
+        <di:waypoint x="760" y="160" />
+        <di:waypoint x="760" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z093jw_di" bpmnElement="Flow_0z093jw">
+        <di:waypoint x="570" y="242" />
+        <di:waypoint x="570" y="120" />
+        <di:waypoint x="710" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="178" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s8cobk_di" bpmnElement="Flow_0s8cobk">
+        <di:waypoint x="595" y="267" />
+        <di:waypoint x="710" y="267" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="645" y="249" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fxs0vt_di" bpmnElement="Flow_1fxs0vt2555454745">
+        <di:waypoint x="490" y="267" />
+        <di:waypoint x="545" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xckrvu_di" bpmnElement="Flow_1xckrvu54455522188">
+        <di:waypoint x="810" y="269" />
+        <di:waypoint x="880" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_78545522598879">
+        <di:waypoint x="330" y="267" />
+        <di:waypoint x="390" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_87785545545544">
+        <di:waypoint x="188" y="270" />
+        <di:waypoint x="230" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_77875455488">
+        <di:waypoint x="280" y="209" />
+        <di:waypoint x="280" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_5845212254322">
+        <di:waypoint x="1690" y="270" />
+        <di:waypoint x="1792" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ulmpph_di" bpmnElement="Flow_1ulmpph">
+        <di:waypoint x="980" y="269" />
+        <di:waypoint x="1030" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wojotw_di" bpmnElement="Flow_0wojotw">
+        <di:waypoint x="1130" y="269" />
+        <di:waypoint x="1220" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19tkldo_di" bpmnElement="Flow_19tkldo">
+        <di:waypoint x="1320" y="269" />
+        <di:waypoint x="1400" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0faw3q1_di" bpmnElement="Flow_0faw3q1">
+        <di:waypoint x="1500" y="269" />
+        <di:waypoint x="1590" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="NotifyClaimantStayLifted">
+        <dc:Bounds x="390" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="stay_case_event">
+        <dc:Bounds x="152" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="295" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15x2r24_di" bpmnElement="Activity_7842144454545">
+        <dc:Bounds x="230" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_55878855778">
+        <dc:Bounds x="262" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1smbj8l" bpmnElement="NotifyDefendantStayLifted">
+        <dc:Bounds x="710" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_030oovp_di" bpmnElement="Gateway_030oovp" isMarkerVisible="true">
+        <dc:Bounds x="545" y="242" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OtherTrialReadyNotifyRespondentSolicitor2_di" bpmnElement="NotifyDefendant2StayLifted">
+        <dc:Bounds x="710" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0tzn7kc_di" bpmnElement="TextAnnotation_0tzn7kc">
+        <dc:Bounds x="550" y="320" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h61h5s_di" bpmnElement="Event_878884254666">
+        <dc:Bounds x="1792" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j68eid_di" bpmnElement="Activity_120199855233">
+        <dc:Bounds x="1590" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationHearingDocumentsDefendant_di" bpmnElement="DashboardNotificationHearingDocumentsDefendant">
+        <dc:Bounds x="1030" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationStayLiftedClaimant_di" bpmnElement="DashboardNotificationStayLiftedClaimant">
+        <dc:Bounds x="1220" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationStayLiftedDefendant_di" bpmnElement="DashboardNotificationStayLiftedDefendant">
+        <dc:Bounds x="1400" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DashboardNotificationHearingDocumentsClaimant_di" bpmnElement="DashboardNotificationHearingDocumentsClaimant">
+        <dc:Bounds x="880" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it444">
+        <dc:Bounds x="262" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="190" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0gcnkmh_di" bpmnElement="Association_0gcnkmh">
+        <di:waypoint x="578" y="284" />
+        <di:waypoint x="593" y="320" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
