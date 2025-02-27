@@ -12,18 +12,14 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "RESPONDENT2_TRIAL_READY_NOTIFY_OTHERS";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY";
-    public static final String NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY
-        = "NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY";
+    public static final String RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY
+        = "RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT2
         = "GENERATE_TRIAL_READY_FORM_RESPONDENT2";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
-        = "OtherTrialReadyNotifyRespondentSolicitor1";
-    private static final String NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
-        = "OtherTrialReadyNotifyApplicantSolicitor1";
+    public static final String RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
+        = "RespondentSolicitor2TrialReadyNotifierOthers";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT2_ACTIVITY_ID
         = "GenerateTrialReadyFormRespondent2";
 
@@ -46,18 +42,11 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-        //complete the defendant2 notification
+        //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
-        );
-
-        //complete the applicant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY,
-                                   NOTIFY_APPLICANT_SOLICITOR_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
+                                   RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY,
+                                   RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
         );
 
         //complete the hearing form process
