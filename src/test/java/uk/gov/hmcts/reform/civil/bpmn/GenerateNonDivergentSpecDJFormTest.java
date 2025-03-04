@@ -39,16 +39,24 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true",
-        "true, true, false, false",
-        "true, false, true, false",
-        "true, false, false, true",
-        "false, true, true, true",
-        "false, true, false, true",
-        "false, false, true, true",
-        "false, false, false, true"
+        "true, true, true, true, true",
+        "true, true, true, false, false",
+        "true, false, true, true, false",
+        "true, false, true, false, true",
+        "false, true, true, true, true",
+        "false, true, true, false, true",
+        "false, false, true, true, true",
+        "false, false, true, false, true",
+        "true, true, false, true, true",
+        "true, true, false, false, false",
+        "true, false, false, true, false",
+        "true, false, false, false, true",
+        "false, true, false, true, true",
+        "false, true, false, false, true",
+        "false, false, false, true, true",
+        "false, false, false, false, true"
     })
-    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled,
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPClaimant, boolean dashboardServiceEnabled,
                                     boolean isJoFeedLive) {
 
         //assert process has started
@@ -64,7 +72,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive
+            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
+            LIP_CASE, isLiPClaimant
             ));
 
         //complete the start business process
@@ -144,17 +153,19 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                     CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID,
                     variables
                 );
-
-                //complete generate dashboard notification to claimant
-                ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    claimantDashboardNotification,
-                    PROCESS_CASE_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
-                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
-                    variables
-                );
             }
+        }
+
+        if (dashboardServiceEnabled && isLiPClaimant) {
+            //complete generate dashboard notification to claimant
+            ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
+                variables
+            );
         }
 
         //complete the notification to Claimant
