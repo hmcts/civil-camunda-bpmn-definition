@@ -36,8 +36,13 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(boolean twoRepresentatives) {
+    @CsvSource({
+        "true, true",
+        "true, false",
+        "false, true",
+        "false, false"
+    })
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(boolean lipClaimant, boolean twoRepresentatives) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -45,6 +50,7 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, lipClaimant,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives)
         );
         variables.putValue(FLOW_STATE,
@@ -60,18 +66,38 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to applicant
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_FOR_SPEC",
-            "AgreedExtensionDateNotifyApplicantSolicitor1ForSpec",
-            variables
-        );
+        //complete the notifications to applicant
+        if (lipClaimant) {
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_LIP_APPLICANT_FOR_AGREED_EXTENSION_DATE_FOR_SPEC",
+                "AgreedExtensionDateNotifyApplicantLipForSpec",
+                variables
+            );
+
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_DEFENDANT_RESPONSE_DATE",
+                "GenerateClaimantDashboardNotificationClaimantNewResponseDeadlineLiPvLR",
+                variables
+            );
+        } else {
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_FOR_SPEC",
+                "AgreedExtensionDateNotifyApplicantSolicitor1ForSpec",
+                variables
+            );
+        }
 
         //complete the CC notification to respondent solicitor 1
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,

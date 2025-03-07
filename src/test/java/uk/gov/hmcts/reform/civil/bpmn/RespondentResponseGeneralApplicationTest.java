@@ -5,6 +5,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,15 +25,20 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
     private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
     private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
     private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
-    private static final String LIP_APPLICANT = "LIP_APPLICANT";
+    private static final String TRIGGER_MAIN_CASE_ID = "TriggerMainCaseToMoveOfflineId";
+    private static final String TRIGGER_MAIN_CASE_TOPIC = "processGaCaseEvent";
+    private static final String TRIGGER_MAIN_CASE_EVENT = "TRIGGER_MAIN_CASE_FROM_GA";
+    private static final String VARY_JUDGE_GA_BY_RESP = "VARY_JUDGE_GA_BY_RESP";
 
     public RespondentResponseGeneralApplicationTest() {
         super("respondent_response_general_application.bpmn",
               "GA_RESPONDENT_RESPONSE_PROCESS_ID");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteRespondToApplication_whenCalled() {
+    @ParameterizedTest
+    @CsvSource({"false", "true"})
+    void shouldSuccessfullyCompleteRespondToApplication_whenCalled(boolean isVaryJudgementAppTakenOffline) {
+
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -40,7 +47,7 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, false));
+            VARY_JUDGE_GA_BY_RESP, isVaryJudgementAppTakenOffline));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -81,6 +88,18 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
                 WAIT_PDF_UPDATE_ID,
                 variables
         );
+
+        if (isVaryJudgementAppTakenOffline) {
+            ExternalTask triggerMainCase = assertNextExternalTask(TRIGGER_MAIN_CASE_TOPIC);
+            assertCompleteExternalTask(
+                triggerMainCase,
+                TRIGGER_MAIN_CASE_TOPIC,
+                TRIGGER_MAIN_CASE_EVENT,
+                TRIGGER_MAIN_CASE_ID,
+                variables
+            );
+
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
