@@ -8,7 +8,6 @@ def type = "java"
 def product = "civil"
 def component = "camunda"
 def ccdBranch = "master"
-def dmnBranch = "master"
 def branchesToSync = ['demo', 'perftest','ithc']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -143,7 +142,6 @@ withPipeline(type, product, component) {
         ./bin/wait-for.sh definition-store
         ./bin/add-roles.sh
         ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-        ./bin/pull-latest-dmn-files.sh ${dmnBranch}
         ./bin/import-ccd-definition.sh "-e *-prod.json,*HNL-nonprod.json,*-shuttered.json"
       """
     }
@@ -181,7 +179,6 @@ withPipeline(type, product, component) {
       eval \$(./bin/variables/load-staging-environment-variables.sh)
       ./bin/add-roles.sh
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
-      ./bin/pull-latest-dmn-files.sh ${dmnBranch}
       ./bin/import-ccd-definition.sh "-e *-nonprod.json,*-COS-nonprod.json,*-shuttered.json"
     """
     env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
