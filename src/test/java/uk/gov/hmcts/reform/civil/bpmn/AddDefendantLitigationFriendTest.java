@@ -48,7 +48,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
                 notificationTask,
                 PROCESS_CASE_EVENT,
                 "NOTIFY_EVENT",
-                "LitigationFriendAddedNotifyRelevantParties",
+                "LitigationFriendAddedNotifier",
                 variables
         );
 
