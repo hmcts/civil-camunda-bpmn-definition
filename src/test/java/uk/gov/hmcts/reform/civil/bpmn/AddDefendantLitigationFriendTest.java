@@ -47,7 +47,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_EVENT",
+                "NOTIFY_EVENT_FOR_LITIGATION_FRIEND_ADDED",
                 "LitigationFriendAddedNotifier",
                 variables
         );
