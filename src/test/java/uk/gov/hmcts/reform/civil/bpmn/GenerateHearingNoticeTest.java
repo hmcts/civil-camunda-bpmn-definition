@@ -140,6 +140,15 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                    variables
         );
 
+        if (lipCase) {
+            //complete the bulk print
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                       SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
+                                       variables
+            );
+        }
+
         if (respondentOne.equals("UNREPRESENTED_DEFENDANT_ONE") && !twoRespondents) {
             //complete the bulk print
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -147,15 +156,6 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
                                        SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID,
                                        variables
             );
-
-            if (lipCase) {
-                //complete the bulk print
-                notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                           SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID,
-                                           variables
-                );
-            }
         }
 
         //complete notify claimant solicitor hearing
