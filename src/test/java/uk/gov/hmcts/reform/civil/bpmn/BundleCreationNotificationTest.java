@@ -4,8 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -21,9 +19,8 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
         super("bundle_creation_notification.bpmn", "BUNDLE_CREATION_NOTIFICATION");
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteBundleCreatedMultiparty(boolean twoRepresentatives) {
+    @Test
+    void shouldSuccessfullyCompleteBundleCreatedMultiparty() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -33,8 +30,6 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true));
@@ -49,30 +44,12 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification for respondent 1
+        //complete the notification for all parties
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_BUNDLE_CREATED",
-                                   "BundleCreationNotifyRespondentSolicitor1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification for respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_BUNDLE_CREATED",
-                                       "BundleCreationNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification for applicant solicitor
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_BUNDLE_CREATED",
-                                   "BundleCreationNotifyApplicantSolicitor1"
+                                   "NOTIFY_BUNDLE_CREATION",
+                                   "BundleCreationNotifier"
         );
 
         //complete the Dashboard creation for defendant
