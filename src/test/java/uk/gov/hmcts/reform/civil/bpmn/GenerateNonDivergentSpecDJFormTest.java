@@ -112,7 +112,6 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         );
 
         // Continue with the rest of the process as before
-
         if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
