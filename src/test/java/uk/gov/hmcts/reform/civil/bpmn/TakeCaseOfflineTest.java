@@ -247,6 +247,22 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         );
 
         //Dashboard notification
+        ExternalTask mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            mainCaseNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+            "GenerateClaimantDashboardNotificationCaseProceedOffline"
+        );
+
+        mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            mainCaseNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+            "GenerateDefendantDashboardNotificationCaseProceedOffline"
+        );
+
         ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             claimantGaDashboard,
@@ -354,6 +370,22 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         );
 
         //Dashboard notification
+        ExternalTask mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            mainCaseNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+            "GenerateClaimantDashboardNotificationCaseProceedOffline"
+        );
+
+        mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            mainCaseNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+            "GenerateDefendantDashboardNotificationCaseProceedOffline"
+        );
+
         ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             claimantGaDashboard,
