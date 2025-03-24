@@ -88,18 +88,19 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
         ExternalTask docmosisTask;
 
-        //complete generate dj form claimant spec activity
-        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
-                                   GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
-        );
-        //complete generate dj form claimant spec activity
-        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
-                                   GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
-        );
+        // If the case is NOT Lip v Lip then complete the generation tasks
+        if (!(isLiPClaimant && isLiPDefendant)) {
+            docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
+                    GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
+            );
+            docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
+                    GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
+            );
+        }
 
         //complete call to CJES for default Judgment
         ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -109,8 +110,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             SEND_JUDGMENT_DETAILS_TO_CJES,
             SEND_JUDGMENT_DETAILS_TO_CJES_ACTIVITY_ID
         );
-        //end business process
 
+        // Continue with the rest of the process as before
         if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -121,9 +122,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
-
-        } else if (isLiPDefendant) {
-            //complete the notification to LiP respondent
+        } else { // Lip v Lip: different notification
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 respondent1LIpNotification,
