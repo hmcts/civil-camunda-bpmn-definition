@@ -60,7 +60,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
@@ -107,7 +107,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
@@ -155,7 +155,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             relevantPartiesNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
@@ -219,7 +219,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
@@ -284,7 +284,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
@@ -332,7 +332,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             oneVTwoPartiesNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
         );
 
