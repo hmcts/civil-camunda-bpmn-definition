@@ -7,11 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+/**
+ * Should notify Respondent Solicitors and Applicant Solicitor (i.e. all parties) only if
+ * CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE, otherwise only notify Applicant Solicitor (i.e. relevant parties)
+ */
 class ClaimDismissedTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DISMISS_CLAIM";
@@ -29,7 +34,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenPastClaimNotificationDeadline() {
+    void shouldNotifyRelevantParties_whenPastClaimNotificationDeadline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -55,8 +60,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //complete the RPA notification
@@ -76,7 +81,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenPastClaimDetailsNotificationDeadline() {
+    void shouldNotifyRelevantParties_whenPastClaimDetailsNotificationDeadline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -102,8 +107,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //Notify RPA - Handed Offline
@@ -124,7 +129,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldNotifyAllParties_whenPastClaimDismissedDeadline(boolean has2RespondentSolicitors) {
+    void shouldNotifyAllParties_whenPastClaimDismissedDeadline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -133,10 +138,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE");
-        variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !has2RespondentSolicitors,
-            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors,
-            GENERAL_APPLICATION_ENABLED, false));
+        variables.put("flowFlags", new HashMap<>());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -148,33 +150,13 @@ class ClaimDismissedTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to relevant parties
+        ExternalTask relevantPartiesNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
+            relevantPartiesNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyRespondentSolicitor1"
-        );
-
-        if (has2RespondentSolicitors) {
-            //complete the notification to respondent 2
-            ExternalTask respondentTwoNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondentTwoNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DISMISSED",
-                "ClaimDismissedNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //complete the RPA notification
@@ -194,7 +176,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenPastClaimNotificationDeadline_GAEnabled() {
+    void shouldNotifyRelevantParties_whenPastClaimNotificationDeadline_GAEnabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -202,7 +184,6 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_NOTIFICATION_DEADLINE");
         variables.putValue("flowFlags", Map.of("GENERAL_APPLICATION_ENABLED", true));
 
         //complete the start business process
@@ -238,8 +219,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //complete the RPA notification
@@ -259,7 +240,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotifyApplicantSolicitor_whenPastClaimDetailsNotificationDeadline_GAEnabled() {
+    void shouldNotifyRelevantParties_whenPastClaimDetailsNotificationDeadline_GAEnabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -303,8 +284,8 @@ class ClaimDismissedTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             applicantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //complete the RPA notification
@@ -325,7 +306,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldNotifyAllParties_whenPastClaimDismissedDeadline_GAEnabled(boolean has2RespondentSolicitors) {
+    void shouldNotifyAllParties_whenPastClaimDismissedDeadline_GAEnabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -334,10 +315,7 @@ class ClaimDismissedTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.CLAIM_DISMISSED_PAST_CLAIM_DISMISSED_DEADLINE");
-        variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !has2RespondentSolicitors,
-            TWO_RESPONDENT_REPRESENTATIVES, has2RespondentSolicitors,
-            GENERAL_APPLICATION_ENABLED, true));
+        variables.put("flowFlags", new HashMap<>());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -349,51 +327,13 @@ class ClaimDismissedTest extends BpmnBaseTest {
             variables
         );
 
-        //Update General Application Status
-        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to relevant parties
+        ExternalTask oneVTwoPartiesNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                updateApplicationStatus,
-                PROCESS_CASE_EVENT,
-                TRIGGER_APPLICATION_CLOSURE,
-                APPLICATION_CLOSURE_ACTIVITY_ID
-        );
-
-        //Update Claim Details with General Application Status
-        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                updateClaimWithApplicationStatus,
-                PROCESS_CASE_EVENT,
-                APPLICATION_CLOSED_UPDATE_CLAIM,
-                APPLICATION_CLOSED_UPDATE_CLAIM_ACTIVITY_ID
-        );
-
-        //complete the notification to respondent
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentNotification,
+            oneVTwoPartiesNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyRespondentSolicitor1"
-        );
-
-        if (has2RespondentSolicitors) {
-            //complete the notification to respondent 2
-            ExternalTask respondentTwoNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondentTwoNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DISMISSED",
-                "ClaimDismissedNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_DISMISSED",
-            "ClaimDismissedNotifyApplicantSolicitor1"
+            "NOTIFY_PARTIES_FOR_CLAIM_DISMISSED",
+            "ClaimDismissedNotifyParties"
         );
 
         //complete the RPA notification
