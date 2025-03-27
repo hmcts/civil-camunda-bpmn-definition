@@ -10,6 +10,8 @@ class RaiseQueryTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "queryManagementRaiseQuery";
     public static final String PROCESS_ID = "queryManagementRaiseQuery";
+    private static final String GENERATE_QUERY_DOCUMENT = "GENERATE_QUERY_DOCUMENT";
+    private static final String GENERATE_QUERY_DOCUMENT_ACTIVITY_ID = "GenerateQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RAISED_QUERY";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotify";
 
@@ -18,7 +20,7 @@ class RaiseQueryTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteAddNotes_whenCalled() {
+    void shouldSuccessfullyCompleteRaiseQueryProcess_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -34,10 +36,19 @@ class RaiseQueryTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        //complete the email notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //generate the query document
+        ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forRobotics,
+            generateQueryDocumentTask,
+            PROCESS_CASE_EVENT,
+            GENERATE_QUERY_DOCUMENT,
+            GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
+        );
+
+        //complete the email notification
+        ExternalTask notifyLrTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyLrTask,
             PROCESS_CASE_EVENT,
             NOTIFY_LR,
             NOTIFY_LR_ACTIVITY_ID

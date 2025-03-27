@@ -10,6 +10,8 @@ class RespondToQueryTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "queryManagementRespondQuery";
     public static final String PROCESS_ID = "queryManagementRespondQuery";
+    private static final String GENERATE_QUERY_DOCUMENT = "GENERATE_QUERY_DOCUMENT";
+    private static final String GENERATE_QUERY_DOCUMENT_ACTIVITY_ID = "GenerateQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RESPONSE_TO_QUERY";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
 
@@ -18,7 +20,7 @@ class RespondToQueryTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteAddNotes_whenCalled() {
+    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -32,6 +34,15 @@ class RespondToQueryTest extends BpmnBaseTest {
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
             START_BUSINESS_ACTIVITY
+        );
+
+        //generate the query document
+        ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateQueryDocumentTask,
+            PROCESS_CASE_EVENT,
+            GENERATE_QUERY_DOCUMENT,
+            GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
         );
 
         //complete the email notification
