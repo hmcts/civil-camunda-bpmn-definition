@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,13 +25,18 @@ class RespondToQueryTest extends BpmnBaseTest {
         super("respond_to_query.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled(boolean lipClaim) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, lipClaim));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -33,17 +44,20 @@ class RespondToQueryTest extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
-        //generate the query document
-        ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            generateQueryDocumentTask,
-            PROCESS_CASE_EVENT,
-            GENERATE_QUERY_DOCUMENT,
-            GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
-        );
+        if (!lipClaim) {
+            //generate the query document
+            ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                generateQueryDocumentTask,
+                PROCESS_CASE_EVENT,
+                GENERATE_QUERY_DOCUMENT,
+                GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
+            );
+        }
 
         //complete the email notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);

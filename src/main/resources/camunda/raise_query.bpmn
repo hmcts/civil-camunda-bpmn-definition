@@ -33,7 +33,7 @@
     <bpmn:sequenceFlow id="Flow_07f4qur" sourceRef="Event_RAISE_QUERY" targetRef="Activity_13251ij" />
     <bpmn:sequenceFlow id="Flow_1bdms5y" sourceRef="Activity_06hw69k" targetRef="Event_08cqexo" />
     <bpmn:sequenceFlow id="Flow_1tmwfcu" sourceRef="Event_0qd0ffr" targetRef="Event_08vk6sg" />
-    <bpmn:sequenceFlow id="Flow_0z7ne1a" sourceRef="Activity_13251ij" targetRef="GenerateQueryDocument" />
+    <bpmn:sequenceFlow id="Flow_0z7ne1a" sourceRef="Activity_13251ij" targetRef="Gateway_0rwxzjt" />
     <bpmn:serviceTask id="QueryRaisedNotify" name="Notify for raised query" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -41,6 +41,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0v7r9wp</bpmn:incoming>
+      <bpmn:incoming>Flow_06zppkn</bpmn:incoming>
       <bpmn:outgoing>Flow_1ikpa6q</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ikpa6q" sourceRef="QueryRaisedNotify" targetRef="Activity_06hw69k" />
@@ -50,25 +51,36 @@
           <camunda:inputParameter name="caseEvent">GENERATE_QUERY_DOCUMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0z7ne1a</bpmn:incoming>
+      <bpmn:incoming>Flow_06jx08k</bpmn:incoming>
       <bpmn:outgoing>Flow_0v7r9wp</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v7r9wp" sourceRef="GenerateQueryDocument" targetRef="QueryRaisedNotify" />
+    <bpmn:exclusiveGateway id="Gateway_0rwxzjt">
+      <bpmn:incoming>Flow_0z7ne1a</bpmn:incoming>
+      <bpmn:outgoing>Flow_06jx08k</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06zppkn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_06jx08k" sourceRef="Gateway_0rwxzjt" targetRef="GenerateQueryDocument">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06zppkn" name="Lip Claim" sourceRef="Gateway_0rwxzjt" targetRef="QueryRaisedNotify">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0rowsbk" name="queryManagementRaiseQuery" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="queryManagementRaiseQuery">
       <bpmndi:BPMNEdge id="Flow_0v7r9wp_di" bpmnElement="Flow_0v7r9wp">
-        <di:waypoint x="490" y="210" />
-        <di:waypoint x="550" y="210" />
+        <di:waypoint x="580" y="210" />
+        <di:waypoint x="640" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ikpa6q_di" bpmnElement="Flow_1ikpa6q">
-        <di:waypoint x="650" y="210" />
-        <di:waypoint x="710" y="210" />
+        <di:waypoint x="740" y="210" />
+        <di:waypoint x="790" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z7ne1a_di" bpmnElement="Flow_0z7ne1a">
         <di:waypoint x="330" y="210" />
-        <di:waypoint x="390" y="210" />
+        <di:waypoint x="385" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tmwfcu_di" bpmnElement="Flow_1tmwfcu">
         <di:waypoint x="280" y="152" />
@@ -76,12 +88,25 @@
         <di:waypoint x="322" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bdms5y_di" bpmnElement="Flow_1bdms5y">
-        <di:waypoint x="810" y="210" />
-        <di:waypoint x="872" y="210" />
+        <di:waypoint x="890" y="210" />
+        <di:waypoint x="942" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07f4qur_di" bpmnElement="Flow_07f4qur">
         <di:waypoint x="178" y="210" />
         <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06jx08k_di" bpmnElement="Flow_06jx08k">
+        <di:waypoint x="435" y="210" />
+        <di:waypoint x="480" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06zppkn_di" bpmnElement="Flow_06zppkn">
+        <di:waypoint x="410" y="185" />
+        <di:waypoint x="410" y="100" />
+        <di:waypoint x="690" y="100" />
+        <di:waypoint x="690" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="527" y="82" width="46" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1ncp11o_di" bpmnElement="Event_RAISE_QUERY">
         <dc:Bounds x="142" y="192" width="36" height="36" />
@@ -95,17 +120,20 @@
       <bpmndi:BPMNShape id="Event_08vk6sg_di" bpmnElement="Event_08vk6sg">
         <dc:Bounds x="322" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1r0l8yd_di" bpmnElement="GenerateQueryDocument">
-        <dc:Bounds x="390" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jojnh6_di" bpmnElement="QueryRaisedNotify">
-        <dc:Bounds x="550" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_08cqexo_di" bpmnElement="Event_08cqexo">
+        <dc:Bounds x="942" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_06hw69k_di" bpmnElement="Activity_06hw69k">
-        <dc:Bounds x="710" y="170" width="100" height="80" />
+        <dc:Bounds x="790" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_08cqexo_di" bpmnElement="Event_08cqexo">
-        <dc:Bounds x="872" y="192" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_1jojnh6_di" bpmnElement="QueryRaisedNotify">
+        <dc:Bounds x="640" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rwxzjt_di" bpmnElement="Gateway_0rwxzjt" isMarkerVisible="true">
+        <dc:Bounds x="385" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r0l8yd_di" bpmnElement="GenerateQueryDocument">
+        <dc:Bounds x="480" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qd0ffr_di" bpmnElement="Event_0qd0ffr">
         <dc:Bounds x="262" y="152" width="36" height="36" />
