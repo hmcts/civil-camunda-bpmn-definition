@@ -19,11 +19,10 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "AMEND_RESTITCH_BUNDLE";
 
     //CCD CASE EVENT
-    private static final String NOTIFY_AMEND_RESTITCH_BUNDLE
-        = "NOTIFY_AMEND_RESTITCH_BUNDLE";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID = "AmendRestitchBundleNotifier";
+    private static final String NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID = "AmendRestitchBundleNotify";
 
     public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT
         = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
@@ -86,7 +85,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_AMEND_RESTITCH_BUNDLE,
+                                   NOTIFY_EVENT,
                                    NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
                                    variables
         );

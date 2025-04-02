@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0">
   <bpmn:process id="AMEND_RESTITCH_BUNDLE" name="Amend Restitch Bundle" isExecutable="true" camunda:historyTimeToLive="P90D">
-    <bpmn:serviceTask id="AmendRestitchBundleNotifier" name="Notify parties" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="AmendRestitchBundleNotify" name="Notify parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_AMEND_RESTITCH_BUNDLE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_78545522545</bpmn:incoming>
@@ -46,7 +46,7 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_778754554" sourceRef="Event_0kza4it" targetRef="Event_55878855778" />
     <bpmn:sequenceFlow id="Flow_87785545545" sourceRef="Event_191090" targetRef="Activity_7842144454" />
-    <bpmn:sequenceFlow id="Flow_78545522545" sourceRef="Activity_7842144454" targetRef="AmendRestitchBundleNotifier" />
+    <bpmn:sequenceFlow id="Flow_78545522545" sourceRef="Activity_7842144454" targetRef="AmendRestitchBundleNotify" />
     <bpmn:serviceTask id="CreateAmendRestitchBundleDashboardNotificationsForClaimant" name="Create Dashboard Notification For Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -78,12 +78,16 @@
     <bpmn:sequenceFlow id="Flow_1fo8l9v" name="CUI Case Progression Disabled" sourceRef="Gateway_1ara2em" targetRef="Activity_120199855">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01eyfpm" sourceRef="AmendRestitchBundleNotifier" targetRef="Gateway_1ara2em" />
+    <bpmn:sequenceFlow id="Flow_01eyfpm" sourceRef="AmendRestitchBundleNotify" targetRef="Gateway_1ara2em" />
   </bpmn:process>
   <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:message id="Message_07sm7e9" name="AMEND_RESTITCH_BUNDLE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="AMEND_RESTITCH_BUNDLE">
+      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="AmendRestitchBundleNotify">
+        <dc:Bounds x="520" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="Event_191090">
         <dc:Bounds x="152" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -112,10 +116,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ara2em_di" bpmnElement="Gateway_1ara2em" isMarkerVisible="true">
         <dc:Bounds x="865" y="182" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="AmendRestitchBundleNotifier">
-        <dc:Bounds x="520" y="167" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
         <dc:Bounds x="262" y="149" width="36" height="36" />
