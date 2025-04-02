@@ -17,16 +17,16 @@
       <bpmn:incoming>Flow_1ui9efm</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="ApplicantTrialReadyNotifierOthers" name="Notify Respondent solicitors" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ApplicantNotifyOthersTrialReady" name="Notify Respondent solicitors" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">APPLICANT_NOTIFY_OTHERS_TRIAL_READY</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cs65bm</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsn98m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="ApplicantTrialReadyNotifierOthers" targetRef="GenerateTrialReadyFormApplicant" />
+    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="ApplicantNotifyOthersTrialReady" targetRef="GenerateTrialReadyFormApplicant" />
     <bpmn:callActivity id="TrialReadyProcess" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -75,7 +75,7 @@
     <bpmn:sequenceFlow id="Flow_1ui9efm" name="Case Progression CUI Disabled" sourceRef="Gateway_01l4u29" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0cs65bm" sourceRef="TrialReadyProcess" targetRef="ApplicantTrialReadyNotifierOthers" />
+    <bpmn:sequenceFlow id="Flow_0cs65bm" sourceRef="TrialReadyProcess" targetRef="ApplicantNotifyOthersTrialReady" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -94,6 +94,10 @@
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
         <dc:Bounds x="1230" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="ApplicantNotifyOthersTrialReady">
+        <dc:Bounds x="480" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="TrialReadyProcess">
         <dc:Bounds x="230" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -110,27 +114,42 @@
       <bpmndi:BPMNShape id="Gateway_01l4u29_di" bpmnElement="Gateway_01l4u29" isMarkerVisible="true">
         <dc:Bounds x="905" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="ApplicantTrialReadyNotifierOthers">
-        <dc:Bounds x="480" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="262" y="152" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="297" y="133" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_08myj65">
-        <di:waypoint x="188" y="210" />
-        <di:waypoint x="230" y="210" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_1hce35l">
         <di:waypoint x="1330" y="210" />
         <di:waypoint x="1392" y="210" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
+        <di:waypoint x="580" y="210" />
+        <di:waypoint x="770" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_0yvpi10">
+        <di:waypoint x="280" y="152" />
+        <di:waypoint x="280" y="128" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08myj65_di" bpmnElement="Flow_08myj65">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g0jkyp_di" bpmnElement="Flow_0g0jkyp">
+        <di:waypoint x="870" y="210" />
+        <di:waypoint x="905" y="210" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mcw97n_di" bpmnElement="Flow_1mcw97n">
         <di:waypoint x="1150" y="210" />
         <di:waypoint x="1230" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lr6m8a_di" bpmnElement="Flow_1lr6m8a">
+        <di:waypoint x="955" y="210" />
+        <di:waypoint x="1050" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="946" y="216" width="88" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ui9efm_di" bpmnElement="Flow_1ui9efm">
         <di:waypoint x="930" y="185" />
@@ -144,25 +163,6 @@
       <bpmndi:BPMNEdge id="Flow_0cs65bm_di" bpmnElement="Flow_0cs65bm">
         <di:waypoint x="330" y="210" />
         <di:waypoint x="480" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_0yvpi10">
-        <di:waypoint x="280" y="152" />
-        <di:waypoint x="280" y="128" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
-        <di:waypoint x="580" y="210" />
-        <di:waypoint x="770" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g0jkyp_di" bpmnElement="Flow_0g0jkyp">
-        <di:waypoint x="870" y="210" />
-        <di:waypoint x="905" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lr6m8a_di" bpmnElement="Flow_1lr6m8a">
-        <di:waypoint x="955" y="210" />
-        <di:waypoint x="1050" y="210" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="946" y="216" width="88" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

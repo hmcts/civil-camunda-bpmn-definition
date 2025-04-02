@@ -17,16 +17,16 @@
       <bpmn:incoming>Flow_1yoifpb</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="RespondentSolicitor1TrialReadyNotifierOthers" name="Notify applicant solicitor 1 and respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="Respondent1NotifyOthersTrialReady" name="Notify applicant solicitor 1 and respondent solicitor 2" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">RESPONDENT1_NOTIFY_OTHERS_TRIAL_READY</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vdlgs2</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsn98m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="RespondentSolicitor1TrialReadyNotifierOthers" targetRef="GenerateTrialReadyFormRespondent1" />
+    <bpmn:sequenceFlow id="Flow_1gsn98m" sourceRef="Respondent1NotifyOthersTrialReady" targetRef="GenerateTrialReadyFormRespondent1" />
     <bpmn:callActivity id="TrialReadyProcess" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -75,7 +75,7 @@
     <bpmn:sequenceFlow id="Flow_1yoifpb" name="Case Progression CUI Disabled" sourceRef="Gateway_1wa68wu" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0vdlgs2" sourceRef="TrialReadyProcess" targetRef="RespondentSolicitor1TrialReadyNotifierOthers" />
+    <bpmn:sequenceFlow id="Flow_0vdlgs2" sourceRef="TrialReadyProcess" targetRef="Respondent1NotifyOthersTrialReady" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -94,6 +94,10 @@
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
         <dc:Bounds x="1180" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="Respondent1NotifyOthersTrialReady">
+        <dc:Bounds x="480" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="TrialReadyProcess">
         <dc:Bounds x="230" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -109,10 +113,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wa68wu_di" bpmnElement="Gateway_1wa68wu" isMarkerVisible="true">
         <dc:Bounds x="905" y="235" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03lhz3m_di" bpmnElement="RespondentSolicitor1TrialReadyNotifierOthers">
-        <dc:Bounds x="480" y="220" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="262" y="202" width="36" height="36" />

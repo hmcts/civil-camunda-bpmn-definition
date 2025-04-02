@@ -16,8 +16,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "APPLICANT_TRIAL_READY_NOTIFY_OTHERS";
 
     //CCD CASE EVENT
-    public static final String APPLICANT_NOTIFY_OTHERS_TRIAL_READY
-        = "APPLICANT_NOTIFY_OTHERS_TRIAL_READY";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
         = "GENERATE_TRIAL_READY_FORM_APPLICANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
@@ -25,7 +24,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
 
     //ACTIVITY IDs
     private static final String APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
-        = "ApplicantTrialReadyNotifierOthers";
+        = "ApplicantNotifyOthersTrialReady";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
         = "GenerateTrialReadyFormApplicant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
@@ -59,7 +58,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY,
+                                   NOTIFY_EVENT,
                                    APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
                                    variables
         );
@@ -110,7 +109,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY,
+                                   NOTIFY_EVENT,
                                    APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
                                    variables
         );

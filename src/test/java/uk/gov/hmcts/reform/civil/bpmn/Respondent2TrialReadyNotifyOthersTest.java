@@ -12,14 +12,13 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "RESPONDENT2_TRIAL_READY_NOTIFY_OTHERS";
 
     //CCD CASE EVENT
-    public static final String RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY
-        = "RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT2
         = "GENERATE_TRIAL_READY_FORM_RESPONDENT2";
 
     //ACTIVITY IDs
     public static final String RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
-        = "RespondentSolicitor2TrialReadyNotifierOthers";
+        = "Respondent2NotifyOthersTrialReady";
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT2_ACTIVITY_ID
         = "GenerateTrialReadyFormRespondent2";
 
@@ -45,7 +44,7 @@ class Respondent2TrialReadyNotifyOthersTest extends BpmnBaseTest {
         //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY,
+                                   NOTIFY_EVENT,
                                    RESPONDENT2_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
         );
 
