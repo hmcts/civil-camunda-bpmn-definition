@@ -11,7 +11,7 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "ACKNOWLEDGE_CLAIM";
     private static final String PROCESS_ID = "ACKNOWLEDGE_CLAIM_PROCESS_ID";
 
-    private static final String NOTIFY_PARTIES= "NOTIFY_EVENT";
+    private static final String NOTIFY_PARTIES = "NOTIFY_EVENT";
     private static final String GENERATE_ACKNOWLEDGEMENT_OF_CLAIM = "GENERATE_ACKNOWLEDGEMENT_OF_CLAIM";
     private static final String NOTIFICATION_ACTIVITY_ID = "AcknowledgeClaimUnspecNotifyParties";
     private static final String GENERATE_CERTIFICATE_ACTIVITY_ID = "AcknowledgeClaimGenerateAcknowledgementOfClaim";
