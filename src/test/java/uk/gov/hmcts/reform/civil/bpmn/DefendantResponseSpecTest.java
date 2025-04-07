@@ -515,7 +515,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", responseType);
         variables.put(FLOW_FLAGS, Map.of(
             LIP_CASE, true,
-            GENERAL_APPLICATION_ENABLED, true,
             DASHBOARD_SERVICE_ENABLED, false
         ));
 
@@ -558,6 +557,15 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "ProceedOffline"
         );
 
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
+            "Activity_0ncmkab"
+        );
+
         //Update General Application Status
         ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -574,15 +582,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             APPLICATION_OFFLINE_UPDATE_CLAIM,
             APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE",
-            "Activity_0ncmkab"
         );
 
         //complete the notification to LR respondent

@@ -347,18 +347,17 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1xottjt</bpmn:incoming>
-      <bpmn:incoming>Flow_1cx66tg</bpmn:incoming>
+      <bpmn:incoming>Flow_02q8ica</bpmn:incoming>
       <bpmn:outgoing>Flow_0r10vje</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0r10vje" sourceRef="Activity_0ncmkab" targetRef="Notify" />
+    <bpmn:sequenceFlow id="Flow_0r10vje" sourceRef="Activity_0ncmkab" targetRef="UpdateGeneralApplicationStatus" />
     <bpmn:serviceTask id="Notify" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0r10vje</bpmn:incoming>
+      <bpmn:incoming>Flow_0ovtavo</bpmn:incoming>
       <bpmn:outgoing>Flow_1fhxfos</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1fhxfos" sourceRef="Notify" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
@@ -381,9 +380,8 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0suhw6d</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hmho5q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02q8ica</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0hmho5q" sourceRef="ProceedOffline" targetRef="Gateway_1qrbrxg" />
     <bpmn:serviceTask id="DefendantResponsePartAdmitGenerateDirectionsQuestionnaire" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -433,22 +431,14 @@
       <bpmn:outgoing>Flow_0q8xawj</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0q8xawj" sourceRef="NotifyLiPApplicantClaimantConfirmToProceed" targetRef="Gateway_094xg0v" />
-    <bpmn:exclusiveGateway id="Gateway_1qrbrxg">
-      <bpmn:incoming>Flow_0hmho5q</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xottjt</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0h62nv3</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1xottjt" sourceRef="Gateway_1qrbrxg" targetRef="Activity_0ncmkab">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="UpdateGeneralApplicationStatus" name="Update General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0h62nv3</bpmn:incoming>
-      <bpmn:outgoing>Flow_01kywuf</bpmn:outgoing>
+      <bpmn:incoming>Flow_0r10vje</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bu11hh</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="UpdateClaimWithApplicationStatus" name="Update Claim with General Application Status" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -456,14 +446,12 @@
           <camunda:inputParameter name="caseEvent">APPLICATION_OFFLINE_UPDATE_CLAIM</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_01kywuf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cx66tg</bpmn:outgoing>
+      <bpmn:incoming>Flow_1bu11hh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ovtavo</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0h62nv3" sourceRef="Gateway_1qrbrxg" targetRef="UpdateGeneralApplicationStatus">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01kywuf" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
-    <bpmn:sequenceFlow id="Flow_1cx66tg" sourceRef="UpdateClaimWithApplicationStatus" targetRef="Activity_0ncmkab" />
+    <bpmn:sequenceFlow id="Flow_1bu11hh" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
+    <bpmn:sequenceFlow id="Flow_02q8ica" sourceRef="ProceedOffline" targetRef="Activity_0ncmkab" />
+    <bpmn:sequenceFlow id="Flow_0ovtavo" sourceRef="UpdateClaimWithApplicationStatus" targetRef="Notify" />
     <bpmn:textAnnotation id="TextAnnotation_0yaoqdd">
       <bpmn:text>Full Defence, Part Admission Responses</bpmn:text>
     </bpmn:textAnnotation>
@@ -601,9 +589,6 @@
           <dc:Bounds x="347" y="496" width="65" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0d29bxu" bpmnElement="Notify">
-        <dc:Bounds x="1350" y="880" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0cfbno0_di" bpmnElement="Gateway_0cfbno0" isMarkerVisible="true">
         <dc:Bounds x="355" y="685" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -614,35 +599,35 @@
         <dc:Bounds x="580" y="980" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1j7yzer_di" bpmnElement="DefendantResponseFullOrPartAdmitGenerateSealedForm">
-        <dc:Bounds x="770" y="880" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0f0iy1j_di" bpmnElement="Gateway_0f0iy1j" isMarkerVisible="true">
         <dc:Bounds x="1475" y="532" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1395" y="569" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="NotifyLiPApplicantClaimantConfirmToProceed">
-        <dc:Bounds x="1540" y="880" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1j7yzer_di" bpmnElement="DefendantResponseFullOrPartAdmitGenerateSealedForm">
+        <dc:Bounds x="740" y="880" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1kdqyo6_di" bpmnElement="Activity_0ncmkab">
-        <dc:Bounds x="1190" y="880" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="ProceedOffline">
-        <dc:Bounds x="930" y="880" width="100" height="80" />
+        <dc:Bounds x="910" y="880" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1qrbrxg_di" bpmnElement="Gateway_1qrbrxg" isMarkerVisible="true">
-        <dc:Bounds x="1055" y="895" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="NotifyLiPApplicantClaimantConfirmToProceed">
+        <dc:Bounds x="1640" y="880" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0d29bxu" bpmnElement="Notify">
+        <dc:Bounds x="1487" y="880" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12h8f4v_di" bpmnElement="UpdateClaimWithApplicationStatus">
-        <dc:Bounds x="1190" y="1010" width="100" height="80" />
+        <dc:Bounds x="1340" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kdqyo6_di" bpmnElement="Activity_0ncmkab">
+        <dc:Bounds x="1050" y="880" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15h8kzh_di" bpmnElement="UpdateGeneralApplicationStatus">
-        <dc:Bounds x="1030" y="1010" width="100" height="80" />
+        <dc:Bounds x="1200" y="880" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yaoqdd_di" bpmnElement="TextAnnotation_0yaoqdd">
         <dc:Bounds x="710" y="500" width="100" height="53" />
@@ -874,12 +859,12 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0r10vje_di" bpmnElement="Flow_0r10vje">
-        <di:waypoint x="1290" y="920" />
-        <di:waypoint x="1350" y="920" />
+        <di:waypoint x="1150" y="920" />
+        <di:waypoint x="1200" y="920" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fhxfos_di" bpmnElement="Flow_1fhxfos">
-        <di:waypoint x="1450" y="920" />
-        <di:waypoint x="1540" y="920" />
+        <di:waypoint x="1587" y="920" />
+        <di:waypoint x="1640" y="920" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04wphu9_di" bpmnElement="Flow_04wphu9">
         <di:waypoint x="355" y="710" />
@@ -898,25 +883,21 @@
           <dc:Bounds x="412" y="693" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hmho5q_di" bpmnElement="Flow_0hmho5q">
-        <di:waypoint x="1030" y="920" />
-        <di:waypoint x="1055" y="920" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10lgiqg_di" bpmnElement="Flow_10lgiqg">
         <di:waypoint x="680" y="1020" />
-        <di:waypoint x="820" y="1020" />
-        <di:waypoint x="820" y="960" />
+        <di:waypoint x="790" y="1020" />
+        <di:waypoint x="790" y="960" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0suhw6d_di" bpmnElement="Flow_0suhw6d">
-        <di:waypoint x="870" y="920" />
-        <di:waypoint x="930" y="920" />
+        <di:waypoint x="840" y="920" />
+        <di:waypoint x="910" y="920" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_176na9f_di" bpmnElement="Flow_176na9f">
         <di:waypoint x="380" y="735" />
         <di:waypoint x="380" y="920" />
-        <di:waypoint x="770" y="920" />
+        <di:waypoint x="740" y="920" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="386" y="825" width="48" height="14" />
+          <dc:Bounds x="386" y="825" width="49" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16dgfw4_di" bpmnElement="Flow_16dgfw4">
@@ -945,7 +926,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0q8xawj_di" bpmnElement="Flow_0q8xawj">
-        <di:waypoint x="1640" y="920" />
+        <di:waypoint x="1740" y="920" />
         <di:waypoint x="2090" y="920" />
         <di:waypoint x="2090" y="582" />
       </bpmndi:BPMNEdge>
@@ -965,21 +946,17 @@
         <di:waypoint x="671" y="571" />
         <di:waypoint x="709" y="620" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xottjt_di" bpmnElement="Flow_1xottjt">
-        <di:waypoint x="1105" y="920" />
-        <di:waypoint x="1190" y="920" />
+      <bpmndi:BPMNEdge id="Flow_1bu11hh_di" bpmnElement="Flow_1bu11hh">
+        <di:waypoint x="1300" y="920" />
+        <di:waypoint x="1340" y="920" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0h62nv3_di" bpmnElement="Flow_0h62nv3">
-        <di:waypoint x="1080" y="945" />
-        <di:waypoint x="1080" y="1010" />
+      <bpmndi:BPMNEdge id="Flow_02q8ica_di" bpmnElement="Flow_02q8ica">
+        <di:waypoint x="1010" y="920" />
+        <di:waypoint x="1050" y="920" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01kywuf_di" bpmnElement="Flow_01kywuf">
-        <di:waypoint x="1130" y="1050" />
-        <di:waypoint x="1190" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cx66tg_di" bpmnElement="Flow_1cx66tg">
-        <di:waypoint x="1240" y="1010" />
-        <di:waypoint x="1240" y="960" />
+      <bpmndi:BPMNEdge id="Flow_0ovtavo_di" bpmnElement="Flow_0ovtavo">
+        <di:waypoint x="1440" y="920" />
+        <di:waypoint x="1487" y="920" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
