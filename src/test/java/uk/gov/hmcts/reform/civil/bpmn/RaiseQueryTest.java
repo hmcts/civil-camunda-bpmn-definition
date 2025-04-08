@@ -12,6 +12,7 @@ class RaiseQueryTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "queryManagementRaiseQuery";
     private static final String NOTIFY_LR = "NOTIFY_RAISED_QUERY";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotify";
+    public static final String UPDATE_DASHBOARD_STATUS_ID = "UpdateDashboardNotificationsRaisedQm";
 
     public RaiseQueryTest() {
         super("raise_query.bpmn", PROCESS_ID);
@@ -41,6 +42,14 @@ class RaiseQueryTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LR,
             NOTIFY_LR_ACTIVITY_ID
+        );
+
+        ExternalTask dashboardStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardStatus,
+            PROCESS_CASE_EVENT,
+            "UPDATE_DASHBOARD_NOTIFICATIONS_RAISED_QUERY",
+            UPDATE_DASHBOARD_STATUS_ID
         );
 
         //end business process
