@@ -46,14 +46,6 @@ class RaiseQueryTest extends BpmnBaseTest {
             NOTIFY_LR_ACTIVITY_ID
         );
 
-        ExternalTask dashboardStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardStatus,
-            PROCESS_CASE_EVENT,
-            "UPDATE_DASHBOARD_NOTIFICATIONS_RAISED_QUERY",
-            UPDATE_DASHBOARD_STATUS_ID
-        );
-
         //complete the email notification
         ExternalTask notifyOtherParty = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -61,6 +53,14 @@ class RaiseQueryTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_OTHER_PARTY,
             NOTIFY_OTHER_PARTY_ACTIVITY_ID
+        );
+
+        ExternalTask dashboardStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardStatus,
+            PROCESS_CASE_EVENT,
+            "UPDATE_DASHBOARD_NOTIFICATIONS_RAISED_QUERY",
+            UPDATE_DASHBOARD_STATUS_ID
         );
 
         //end business process
