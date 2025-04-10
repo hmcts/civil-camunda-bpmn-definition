@@ -4,8 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -18,20 +16,15 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "APPLICANT_TRIAL_READY_NOTIFY_OTHERS";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY
-        = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
         = "GENERATE_TRIAL_READY_FORM_APPLICANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
         = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
-        = "OtherTrialReadyNotifyRespondentSolicitor2";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID
-        = "OtherTrialReadyNotifyRespondentSolicitor1";
+    private static final String APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
+        = "ApplicantNotifyOthersTrialReady";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
         = "GenerateTrialReadyFormApplicant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
@@ -41,9 +34,8 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         super("applicant_trial_ready_notify_others.bpmn", PROCESS_ID);
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteTrialReadyFormAndNotifyDefendantsHearing(boolean twoRepresentatives) {
+    @Test
+    void shouldSuccessfullyCompleteTrialReadyFormAndNotifyDefendantsHearing() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -52,8 +44,6 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true));
@@ -64,21 +54,12 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
-        if (twoRepresentatives) {
-            //complete the defendant2 notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
-                                       variables
-            );
-        }
 
-        //complete the applicant notification
+        //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
+                                   NOTIFY_EVENT,
+                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
                                    variables
         );
 
@@ -104,9 +85,8 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteTrialReadyFormAndNotifyDefendantsHearingLiP(boolean twoRepresentatives) {
+    @Test
+    void shouldSuccessfullyCompleteTrialReadyFormAndNotifyDefendantsHearingLiP() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -115,9 +95,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, true,
-            UNREPRESENTED_DEFENDANT_TWO, twoRepresentatives,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true));
 
@@ -127,21 +105,12 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
-        if (twoRepresentatives) {
-            //complete the defendant2 notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
-                                       variables
-            );
-        }
 
-        //complete the applicant notification
+        //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_OTHER_TRIAL_READY_ACTIVITY_ID,
+                                   NOTIFY_EVENT,
+                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
                                    variables
         );
 
