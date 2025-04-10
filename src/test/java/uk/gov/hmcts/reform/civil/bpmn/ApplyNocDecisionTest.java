@@ -14,11 +14,13 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
     //CCD CASE EVENTS
     private static final String NOTIFY_PARTIES = "NOTIFY_EVENT";
     private static final String UPDATE_CASE_DETAILS_AFTER_NOC = "UPDATE_CASE_DETAILS_AFTER_NOC";
+    private static final String CLEAR_FORMER_SOLICITOR_INFO = "CLEAR_FORMER_SOLICITOR_INFO_AFTER_NOTIFY_NOC";
 
     //ACTIVITY IDs
     private static final String TASK_ID_NOTIFY_SOLICITORS = "ChangeOfRepresentationNotifyParties";
     private static final String TASK_ID_UPDATE_CASE_DETAILS = "UpdateCaseDetailsAfterNoC";
-    
+    private static final String TASK_ID_CLEAR_FORMER_SOLICITOR_INFO = "ClearFormerSolicitorInfoAfterNotifyNoC";
+
     public ApplyNocDecisionTest() {
         super("apply_noc_decision.bpmn", PROCESS_ID);
     }
@@ -53,6 +55,14 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
                                    PROCESS_CASE_EVENT,
                                    NOTIFY_PARTIES,
                                    TASK_ID_NOTIFY_SOLICITORS);
+
+
+        //complete clear former solicitor email from case data
+        ExternalTask clearFormerSolicitorInfo = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(clearFormerSolicitorInfo,
+                                   PROCESS_CASE_EVENT,
+                                   CLEAR_FORMER_SOLICITOR_INFO,
+                                   TASK_ID_CLEAR_FORMER_SOLICITOR_INFO);
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

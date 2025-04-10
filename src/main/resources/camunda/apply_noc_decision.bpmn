@@ -28,94 +28,111 @@
       <bpmn:outgoing>Flow_0dm1zjw</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_15b4bh3" messageRef="Message_14dl5pe" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="ChangeOfRepresentationNotifyParties" name="Notify relevant Unspec / Spec Solicitors" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:boundaryEvent id="Event_0rh0701" name="Abort" attachedToRef="Activity_0czttms">
+      <bpmn:outgoing>Flow_1s0jw89</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1wb1sxi" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_01bt3ig" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="ChangeOfRepresentationNotifyParties" />
+    <bpmn:sequenceFlow id="Flow_1x9k7i6" sourceRef="Activity_EndBusinessProcess" targetRef="Event_1ryj0ug" />
+    <bpmn:sequenceFlow id="Flow_00ec3ti" sourceRef="Activity_0czttms" targetRef="UpdateCaseDetailsAfterNoC" />
+    <bpmn:sequenceFlow id="Flow_1s0jw89" sourceRef="Event_0rh0701" targetRef="Event_0l4t4tn" />
+    <bpmn:sequenceFlow id="Flow_0dm1zjw" sourceRef="Event_Apply_NoC_Decision" targetRef="Activity_0czttms" />
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18s4rcb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Activity_1lcfz1c" name="Clear former solicitor info" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CLEAR_FORMER_SOLICITOR_INFO_AFTER_NOTIFY_NOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hu9vye</bpmn:incoming>
+      <bpmn:outgoing>Flow_18s4rcb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0hu9vye" sourceRef="ChangeOfRepresentationNotifyParties" targetRef="Activity_1lcfz1c" />
+    <bpmn:sequenceFlow id="Flow_18s4rcb" sourceRef="Activity_1lcfz1c" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:endEvent id="Event_1ryj0ug">
+      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ChangeOfRepresentationNotifyParties" name="Notify relevant parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_01bt3ig</bpmn:incoming>
-      <bpmn:outgoing>Flow_0u9pwzi</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hu9vye</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0u9pwzi</bpmn:incoming>
-      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_1ryj0ug">
-      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:boundaryEvent id="Event_0rh0701" name="Abort" attachedToRef="Activity_0czttms">
-      <bpmn:outgoing>Flow_1s0jw89</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1wb1sxi" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0dm1zjw" sourceRef="Event_Apply_NoC_Decision" targetRef="Activity_0czttms" />
-    <bpmn:sequenceFlow id="Flow_1s0jw89" sourceRef="Event_0rh0701" targetRef="Event_0l4t4tn" />
-    <bpmn:sequenceFlow id="Flow_00ec3ti" sourceRef="Activity_0czttms" targetRef="UpdateCaseDetailsAfterNoC" />
-    <bpmn:sequenceFlow id="Flow_1x9k7i6" sourceRef="Activity_EndBusinessProcess" targetRef="Event_1ryj0ug" />
-    <bpmn:sequenceFlow id="Flow_01bt3ig" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="ChangeOfRepresentationNotifyParties" />
-    <bpmn:sequenceFlow id="Flow_0u9pwzi" sourceRef="ChangeOfRepresentationNotifyParties" targetRef="Activity_EndBusinessProcess" />
   </bpmn:process>
   <bpmn:message id="Message_14dl5pe" name="APPLY_NOC_DECISION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_095slo0">
       <bpmndi:BPMNShape id="Participant_1nspjir_di" bpmnElement="Participant_1nspjir" isHorizontal="true">
-        <dc:Bounds x="160" y="120" width="1020" height="398" />
+        <dc:Bounds x="150" y="100" width="1190" height="400" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0dm1zjw_di" bpmnElement="Flow_0dm1zjw">
-        <di:waypoint x="278" y="298" />
-        <di:waypoint x="340" y="298" />
+        <di:waypoint x="268" y="280" />
+        <di:waypoint x="330" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s0jw89_di" bpmnElement="Flow_1s0jw89">
-        <di:waypoint x="390" y="240" />
-        <di:waypoint x="390" y="186" />
+        <di:waypoint x="380" y="222" />
+        <di:waypoint x="380" y="168" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00ec3ti_di" bpmnElement="Flow_00ec3ti">
-        <di:waypoint x="440" y="298" />
-        <di:waypoint x="510" y="298" />
+        <di:waypoint x="430" y="280" />
+        <di:waypoint x="500" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x9k7i6_di" bpmnElement="Flow_1x9k7i6">
-        <di:waypoint x="980" y="298" />
-        <di:waypoint x="1082" y="298" />
+        <di:waypoint x="1120" y="280" />
+        <di:waypoint x="1202" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01bt3ig_di" bpmnElement="Flow_01bt3ig">
-        <di:waypoint x="610" y="298" />
-        <di:waypoint x="700" y="298" />
+        <di:waypoint x="600" y="280" />
+        <di:waypoint x="670" y="280" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0u9pwzi_di" bpmnElement="Flow_0u9pwzi">
-        <di:waypoint x="800" y="298" />
-        <di:waypoint x="880" y="298" />
+      <bpmndi:BPMNEdge id="Flow_0hu9vye_di" bpmnElement="Flow_0hu9vye">
+        <di:waypoint x="770" y="280" />
+        <di:waypoint x="850" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18s4rcb_di" bpmnElement="Flow_18s4rcb">
+        <di:waypoint x="950" y="280" />
+        <di:waypoint x="1020" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_18sb1hi_di" bpmnElement="UpdateCaseDetailsAfterNoC">
-        <dc:Bounds x="510" y="258" width="100" height="80" />
+        <dc:Bounds x="500" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0l4t4tn_di" bpmnElement="Event_0l4t4tn">
-        <dc:Bounds x="372" y="150" width="36" height="36" />
+        <dc:Bounds x="362" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1o27yhv_di" bpmnElement="Activity_0czttms">
-        <dc:Bounds x="340" y="258" width="100" height="80" />
+        <dc:Bounds x="330" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0rioham_di" bpmnElement="Event_Apply_NoC_Decision">
-        <dc:Bounds x="242" y="280" width="36" height="36" />
+        <dc:Bounds x="232" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="249" y="323" width="24" height="14" />
+          <dc:Bounds x="238" y="305" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="CaseAssignmentToApplicantSolicitor1_di" bpmnElement="ChangeOfRepresentationNotifyParties">
-        <dc:Bounds x="700" y="258" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="880" y="258" width="100" height="80" />
+        <dc:Bounds x="1020" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lcfz1c_di" bpmnElement="Activity_1lcfz1c">
+        <dc:Bounds x="850" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
-        <dc:Bounds x="1082" y="280" width="36" height="36" />
+        <dc:Bounds x="1202" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CaseAssignmentToApplicantSolicitor1_di" bpmnElement="ChangeOfRepresentationNotifyParties">
+        <dc:Bounds x="670" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_056imgr_di" bpmnElement="Event_0rh0701">
-        <dc:Bounds x="372" y="240" width="36" height="36" />
+        <dc:Bounds x="362" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="377" y="210" width="27" height="14" />
+          <dc:Bounds x="367" y="192" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
