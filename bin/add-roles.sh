@@ -43,6 +43,8 @@
 ./bin/utils/ccd-add-role.sh "ctsc-team-leader"
 ./bin/utils/ccd-add-role.sh "caseworker-civil-doc-removal"
 ./bin/utils/ccd-add-role.sh "caseworker-civil-system-field-reader"
+./bin/utils/ccd-add-role.sh "caseworker-civil-rparobot"
+
 
 roles=("solicitor" "systemupdate" "admin" "staff")
 for role in "${roles[@]}"
