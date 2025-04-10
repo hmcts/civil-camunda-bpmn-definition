@@ -57,6 +57,7 @@ public abstract class BpmnBaseTest {
     public static final String DEFENDANT_NOC_ONLINE = "DEFENDANT_NOC_ONLINE";
     public static final String CLAIM_STATE_DURING_NOC = "CLAIM_STATE_DURING_NOC";
     public static final String PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW = "processConfirmOrderReview";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public final String bpmnFileName;
     public final String processId;
