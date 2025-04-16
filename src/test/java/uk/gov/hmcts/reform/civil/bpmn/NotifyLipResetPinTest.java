@@ -17,6 +17,7 @@ class NotifyLipResetPinTest extends BpmnBaseTest {
 
     public static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN = "NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN";
     private static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN_ACTIVITY_ID = "NotifyRespondent1ForResetPin";
+
     public NotifyLipResetPinTest() {
         super("notify_lip_reset_pin.bpmn", PROCESS_ID);
     }
@@ -31,7 +32,7 @@ class NotifyLipResetPinTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE , true
+            UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
         //complete the start business process
@@ -70,7 +71,7 @@ class NotifyLipResetPinTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE , false
+            UNREPRESENTED_DEFENDANT_ONE, false
         ));
 
         //complete the start business process
