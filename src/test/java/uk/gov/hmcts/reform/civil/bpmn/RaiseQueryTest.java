@@ -21,7 +21,10 @@ class RaiseQueryTest extends BpmnBaseTest {
     private static final String DELETE_QUERY_DOCUMENT = "DELETE_QUERY_DOCUMENT";
     private static final String DELETE_QUERY_DOCUMENT_ACTIVITY_ID = "DeleteQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RAISED_QUERY";
+    private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_FOR_RAISED_QUERY";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotify";
+    private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "NotifyOtherPartyQueryRaised";
+    public static final String UPDATE_DASHBOARD_STATUS_ID = "UpdateDashboardNotificationsRaisedQm";
 
     public RaiseQueryTest() {
         super("raise_query.bpmn", PROCESS_ID);
@@ -80,6 +83,23 @@ class RaiseQueryTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LR,
             NOTIFY_LR_ACTIVITY_ID
+        );
+
+        //complete the email notification
+        ExternalTask notifyOtherParty = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyOtherParty,
+            PROCESS_CASE_EVENT,
+            NOTIFY_OTHER_PARTY,
+            NOTIFY_OTHER_PARTY_ACTIVITY_ID
+        );
+
+        ExternalTask dashboardStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardStatus,
+            PROCESS_CASE_EVENT,
+            "UPDATE_DASHBOARD_NOTIFICATIONS_RAISED_QUERY",
+            UPDATE_DASHBOARD_STATUS_ID
         );
 
         //end business process

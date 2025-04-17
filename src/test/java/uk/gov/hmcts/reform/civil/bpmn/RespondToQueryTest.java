@@ -21,7 +21,9 @@ class RespondToQueryTest extends BpmnBaseTest {
     private static final String DELETE_QUERY_DOCUMENT = "DELETE_QUERY_DOCUMENT";
     private static final String DELETE_QUERY_DOCUMENT_ACTIVITY_ID = "DeleteQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RESPONSE_TO_QUERY";
+    private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_QUERY_HAS_RESPONSE";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
+    private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "NotifyOtherPartyQueryHasResponse";
 
     public RespondToQueryTest() {
         super("respond_to_query.bpmn", PROCESS_ID);
@@ -80,6 +82,15 @@ class RespondToQueryTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_LR,
             NOTIFY_LR_ACTIVITY_ID
+        );
+
+        //complete the email notification
+        ExternalTask notifyOtherParty = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyOtherParty,
+            PROCESS_CASE_EVENT,
+            NOTIFY_OTHER_PARTY,
+            NOTIFY_OTHER_PARTY_ACTIVITY_ID
         );
 
         //end business process
