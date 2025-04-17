@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -18,6 +18,8 @@ class RespondToQueryTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "queryManagementRespondQuery";
     private static final String GENERATE_QUERY_DOCUMENT = "GENERATE_QUERY_DOCUMENT";
     private static final String GENERATE_QUERY_DOCUMENT_ACTIVITY_ID = "GenerateQueryDocument";
+    private static final String DELETE_QUERY_DOCUMENT = "DELETE_QUERY_DOCUMENT";
+    private static final String DELETE_QUERY_DOCUMENT_ACTIVITY_ID = "DeleteQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RESPONSE_TO_QUERY";
     private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_QUERY_HAS_RESPONSE";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
@@ -28,8 +30,8 @@ class RespondToQueryTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled(boolean lipClaim) {
+    @CsvSource({"true,false", "false,false", "false,true"})
+    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled(boolean lipClaim, boolean removeDocument) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -39,6 +41,7 @@ class RespondToQueryTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             LIP_CASE, lipClaim));
+        variables.put("removeDocument", removeDocument);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -59,6 +62,17 @@ class RespondToQueryTest extends BpmnBaseTest {
                 GENERATE_QUERY_DOCUMENT,
                 GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
             );
+
+            if (removeDocument) {
+                //delete the query document
+                ExternalTask deleteQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+                assertCompleteExternalTask(
+                    deleteQueryDocumentTask,
+                    PROCESS_CASE_EVENT,
+                    DELETE_QUERY_DOCUMENT,
+                    DELETE_QUERY_DOCUMENT_ACTIVITY_ID
+                );
+            }
         }
 
         //complete the email notification
