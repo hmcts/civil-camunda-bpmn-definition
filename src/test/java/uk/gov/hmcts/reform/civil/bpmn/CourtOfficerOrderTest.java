@@ -59,7 +59,7 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         //complete all the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_PARTIES_FOR_COURT_OFFICER_ORDER,
+                                   NOTIFY_EVENT,
                                    NOTIFY_PARTIES_FOR_COURT_OFFICER_ORDER_TASK_ID
         );
 
