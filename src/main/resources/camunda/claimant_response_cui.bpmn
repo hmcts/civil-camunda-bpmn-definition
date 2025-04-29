@@ -102,8 +102,7 @@
           <camunda:inputParameter name="caseEvent">GENERATE_RESPONSE_DQ_LIP_SEALED</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qomvto</bpmn:incoming>
-      <bpmn:incoming>Flow_0h4qr2u</bpmn:incoming>
+      <bpmn:incoming>Flow_1rtn7sw</bpmn:incoming>
       <bpmn:outgoing>Flow_0beyd6n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0beyd6n" sourceRef="Generate_LIP_Claimant_DQ" targetRef="Gateway_0btqyj3" />
@@ -258,6 +257,7 @@
     <bpmn:sequenceFlow id="Flow_1osir9u" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Gateway_074cub0" />
     <bpmn:exclusiveGateway id="Gateway_0btqyj3" name="Claim Bilingual?">
       <bpmn:incoming>Flow_0beyd6n</bpmn:incoming>
+      <bpmn:incoming>Flow_19cet4s</bpmn:incoming>
       <bpmn:outgoing>Flow_0pcu8vp</bpmn:outgoing>
       <bpmn:outgoing>Flow_0axr7i4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -290,7 +290,7 @@
     <bpmn:sequenceFlow id="Flow_0axr7i4" name="Welsh" sourceRef="Gateway_0btqyj3" targetRef="END_BUSINESS_PROCESS">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.CLAIM_ISSUE_BILINGUAL &amp;&amp; flowFlags.CLAIM_ISSUE_BILINGUAL) || (!empty flowFlags.CLAIMANT_ENGLISH_TO_WELSH &amp;&amp; flowFlags.CLAIMANT_ENGLISH_TO_WELSH)} </bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_15z0dwe" name="Full Defence not procced" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
+    <bpmn:sequenceFlow id="Flow_15z0dwe" name="Full Defence not proceed" sourceRef="Gateway_RESPONSE_FLOW" targetRef="NotifyLiPRespondentClaimantConfirmToProceed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="GenerateClaimantCCJDashboardNotificationClaimantResponse" name="Generate Dashboard Notification for CCJ Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
@@ -444,8 +444,8 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1d396po" sourceRef="PostPINInLetterLIPDefendant" targetRef="Gateway_08rlyk5" />
     <bpmn:exclusiveGateway id="Gateway_12dmvul">
-      <bpmn:incoming>Flow_0vcdfve</bpmn:incoming>
       <bpmn:incoming>Flow_1msvhgp</bpmn:incoming>
+      <bpmn:incoming>Flow_0vcdfve</bpmn:incoming>
       <bpmn:outgoing>Flow_0x1cuga</bpmn:outgoing>
       <bpmn:outgoing>Flow_0qomvto</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -462,16 +462,28 @@
     <bpmn:sequenceFlow id="Flow_0x1cuga" name="general applications enabled" sourceRef="Gateway_12dmvul" targetRef="TriggerAndUpdateGenAppLocation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0qomvto" name="general application disabled" sourceRef="Gateway_12dmvul" targetRef="Generate_LIP_Claimant_DQ">
+    <bpmn:sequenceFlow id="Flow_0qomvto" name="general application disabled" sourceRef="Gateway_12dmvul" targetRef="Gateway_1e1bap6">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1msvhgp" sourceRef="GenerateJudgmentByDeterminationPdf" targetRef="Gateway_12dmvul" />
-    <bpmn:sequenceFlow id="Flow_0h4qr2u" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Generate_LIP_Claimant_DQ" />
+    <bpmn:sequenceFlow id="Flow_0h4qr2u" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Gateway_1e1bap6" />
     <bpmn:sequenceFlow id="Flow_1ylt8a2" name="Applicant Reject Repayment And accepts Court Calculator JO Enabled" sourceRef="Gateway_RESPONSE_FLOW" targetRef="GenerateJudgmentByAdmissionPdf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT") &amp;&amp; ((!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED) &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ogn4r0" name="Applicant proposes new repayment plan (Respondent is LTD company or organization) JO Enabled " sourceRef="Gateway_RESPONSE_FLOW" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_ADMIT_REJECT_REPAYMENT" || flowState == "MAIN.PART_ADMIT_REJECT_REPAYMENT") &amp;&amp; ((!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED) &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; !flowFlags.LIP_JUDGMENT_ADMISSION))}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1e1bap6">
+      <bpmn:incoming>Flow_0qomvto</bpmn:incoming>
+      <bpmn:incoming>Flow_0h4qr2u</bpmn:incoming>
+      <bpmn:outgoing>Flow_19cet4s</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1rtn7sw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_19cet4s" name="Full Defence not proceed and defendant noc enabled" sourceRef="Gateway_1e1bap6" targetRef="Gateway_0btqyj3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED" &amp;&amp; !empty flowFlags.DEFENDANT_NOC_ONLINE &amp;&amp; flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1rtn7sw" name="Not full defence or proceed or defendant noc disabled" sourceRef="Gateway_1e1bap6" targetRef="Generate_LIP_Claimant_DQ">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.FULL_DEFENCE_NOT_PROCEED" || empty flowFlags.DEFENDANT_NOC_ONLINE || !flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_CUI" />
@@ -648,6 +660,9 @@
       <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
         <dc:Bounds x="1060" y="700" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1e1bap6_di" bpmnElement="Gateway_1e1bap6" isMarkerVisible="true">
+        <dc:Bounds x="1235" y="605" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0yhzfu9_di" bpmnElement="Event_0yhzfu9">
         <dc:Bounds x="272" y="445" width="36" height="36" />
@@ -963,10 +978,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qomvto_di" bpmnElement="Flow_0qomvto">
         <di:waypoint x="1135" y="630" />
-        <di:waypoint x="1230" y="630" />
-        <di:waypoint x="1230" y="543" />
+        <di:waypoint x="1235" y="630" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1156" y="590" width="53" height="40" />
+          <dc:Bounds x="1159" y="590" width="53" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1msvhgp_di" bpmnElement="Flow_1msvhgp">
@@ -978,8 +992,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0h4qr2u_di" bpmnElement="Flow_0h4qr2u">
         <di:waypoint x="1160" y="740" />
-        <di:waypoint x="1300" y="740" />
-        <di:waypoint x="1300" y="543" />
+        <di:waypoint x="1260" y="740" />
+        <di:waypoint x="1260" y="655" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ylt8a2_di" bpmnElement="Flow_1ylt8a2">
         <di:waypoint x="440" y="528" />
@@ -997,6 +1011,21 @@
         <di:waypoint x="600" y="1040" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="471" y="1040" width="82" height="93" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19cet4s_di" bpmnElement="Flow_19cet4s">
+        <di:waypoint x="1285" y="630" />
+        <di:waypoint x="1370" y="630" />
+        <di:waypoint x="1370" y="528" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1299" y="636" width="81" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rtn7sw_di" bpmnElement="Flow_1rtn7sw">
+        <di:waypoint x="1260" y="605" />
+        <di:waypoint x="1260" y="543" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1261" y="553" width="77" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
