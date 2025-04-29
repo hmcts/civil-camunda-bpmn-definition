@@ -457,6 +457,39 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
+    void shouldRunProcess_whenFullDefenceNotProceedAndDefendantNocOnlineEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, false,
+            DEFENDANT_NOC_ONLINE, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
