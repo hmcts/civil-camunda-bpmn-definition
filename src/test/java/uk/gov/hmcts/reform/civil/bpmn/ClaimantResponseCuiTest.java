@@ -442,9 +442,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true,
+            BILINGUAL_DOCS, false,
             CLAIM_ISSUE_BILINGUAL, false,
-            RESPONDENT_BILINGUAL, true,
-            CLAIMANT_ENGLISH_TO_WELSH_ENABLED, true
+            WELSH_ENABLED, true
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -473,9 +474,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, false,
+            BILINGUAL_DOCS, false,
             CLAIM_ISSUE_BILINGUAL, true,
-            RESPONDENT_BILINGUAL, true,
-            CLAIMANT_ENGLISH_TO_WELSH_ENABLED, true
+            WELSH_ENABLED, false
         ));
         assertCompleteExternalTask(
             startBusiness,

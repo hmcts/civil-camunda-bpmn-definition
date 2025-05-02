@@ -99,7 +99,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "CONTACT_DETAILS_CHANGE", true,
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
             "CLAIM_ISSUE_BILINGUAL", false,
-            "DEFENDANT_ENGLISH_TO_WELSH", true,
+            "WELSH_ENABLED", true,
+            "BILINGUAL_DOCS", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
@@ -128,7 +129,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "CONTACT_DETAILS_CHANGE", true,
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
             "CLAIM_ISSUE_BILINGUAL", true,
-            "DEFENDANT_ENGLISH_TO_WELSH", true,
+            "WELSH_ENABLED", true,
+            "BILINGUAL_DOCS", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
