@@ -4,27 +4,23 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class CreateSDOTest extends BpmnBaseTest {
+class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "CREATE_SDO";
-    public static final String PROCESS_ID = "CREATE_SDO";
-    private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
-    private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
+    public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_SDO";
+    public static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_SDO";
 
-    public CreateSDOTest() {
-        super("create_sdo.bpmn", PROCESS_ID);
+    public UploadTranslatedDocumentSDOTest() {
+        super("upload_translated_document_sdo.bpmn", PROCESS_ID);
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationDisabled() {
+    void shouldSuccessfullyCompleteUploadTranslatedSDO() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,7 +29,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true
         ));
@@ -123,7 +118,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationDisabledDashboardDisabled() {
+    void shouldSuccessfullyCompleteUploadTranslatedSDOWhenDashboardDisabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -132,7 +127,7 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false
+            DASHBOARD_SERVICE_ENABLED, false
         ));
 
         //complete the start business process
@@ -181,7 +176,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabled() {
+    void shouldSuccessfullyCompleteUploadTranslatedSDOForLiPDefendant() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -190,77 +185,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
-            DASHBOARD_SERVICE_ENABLED, false,
-            CASE_PROGRESSION_ENABLED, false
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness,
-                                   START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT,
-                                   START_BUSINESS_ACTIVITY,
-                                   variables);
-
-        //complete the notification to applicant(s) solicitor
-        ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantsNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-            "CreateSDONotifyApplicantsSolicitor",
-            variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondent1Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-            "CreateSDONotifyRespondentSolicitor1",
-            variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-            "CreateSDONotifyRespondentSolicitor2",
-            variables
-        );
-
-        //complete the Trigger and Update GA Location event
-        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            triggerAndUpdateGenAppLocation,
-            PROCESS_CASE_EVENT,
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPDefendant() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, true,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, true,
@@ -363,16 +287,6 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Trigger and Update GA Location event
-        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            triggerAndUpdateGenAppLocation,
-            PROCESS_CASE_EVENT,
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -381,7 +295,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPvLrClaim() {
+    void shouldSuccessfullyCompleteUploadTranslatedSDPForLiPvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -390,7 +304,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, true,
@@ -484,16 +397,6 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Trigger and Update GA Location event
-        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            triggerAndUpdateGenAppLocation,
-            PROCESS_CASE_EVENT,
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -502,7 +405,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLrvLrClaim() {
+    void shouldSuccessfullyCompleteUploadTranslatedSDOForLrvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -595,16 +498,6 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Trigger and Update GA Location event
-        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            triggerAndUpdateGenAppLocation,
-            PROCESS_CASE_EVENT,
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -622,7 +515,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true,
@@ -715,40 +607,6 @@ class CreateSDOTest extends BpmnBaseTest {
             "Activity_Notice_Hearing_Defendant",
             variables
         );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @ParameterizedTest
-    @CsvSource({"true,false,false", "false,true,false", "false,false,true"})
-    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual,
-                                                    boolean docsBilingual) {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
-            WELSH_ENABLED, true,
-            CLAIM_ISSUE_BILINGUAL, claimantBilingual,
-            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual,
-            BILINGUAL_DOCS, docsBilingual
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness,
-                                   START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT,
-                                   START_BUSINESS_ACTIVITY,
-                                   variables);
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
