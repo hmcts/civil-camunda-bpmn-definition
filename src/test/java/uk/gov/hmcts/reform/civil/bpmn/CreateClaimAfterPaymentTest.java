@@ -32,8 +32,8 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOnlineNotifier";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOfflineNotifier";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     public static final String NOTIFY_ROBOTICS_ON_CONTINUOUS_FEED = "NotifyRoboticsOnContinuousFeed";
 
