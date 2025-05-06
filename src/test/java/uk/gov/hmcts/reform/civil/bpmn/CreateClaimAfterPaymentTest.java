@@ -21,9 +21,9 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     //proceed offline
     public static final String PROCEEDS_IN_HERITAGE_SYSTEM_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     public static final String PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
-        = "ProceedOfflineForUnregisteredFirm";
+            = "ProceedOfflineForUnregisteredFirm";
     public static final String PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
-        = "ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm";
+            = "ProceedOfflineForUnRepresentedSolicitorUnRegisteredFirm";
     //claim issued
     public static final String ISSUE_CLAIM_EVENT = "PROCESS_CLAIM_ISSUE";
     private static final String ISSUE_CLAIM_ACTIVITY_ID = "IssueClaim";
@@ -32,8 +32,8 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOnlineNotifier";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOfflineNotifier";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     public static final String NOTIFY_ROBOTICS_ON_CONTINUOUS_FEED = "NotifyRoboticsOnContinuousFeed";
 
@@ -68,39 +68,39 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
             assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
+                    startBusiness,
+                    START_BUSINESS_TOPIC,
+                    START_BUSINESS_EVENT,
+                    START_BUSINESS_ACTIVITY,
+                    variables
             );
 
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
+                    documentGeneration,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_CLAIM_FORM_EVENT,
+                    GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                    variables
             );
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                claimIssue,
-                PROCESS_CASE_EVENT,
-                ISSUE_CLAIM_EVENT,
-                ISSUE_CLAIM_ACTIVITY_ID,
-                variables
+                    claimIssue,
+                    PROCESS_CASE_EVENT,
+                    ISSUE_CLAIM_EVENT,
+                    ISSUE_CLAIM_ACTIVITY_ID,
+                    variables
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
+                    notificationTask,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
                     CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER
             );
@@ -108,11 +108,11 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
+                    forRobotics,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_RPA_ON_CONTINUOUS_FEED,
                     NOTIFY_ROBOTICS_ON_CONTINUOUS_FEED,
-                variables
+                    variables
             );
 
             //end business process
@@ -135,38 +135,38 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
             assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
+                    startBusiness,
+                    START_BUSINESS_TOPIC,
+                    START_BUSINESS_EVENT,
+                    START_BUSINESS_ACTIVITY,
+                    variables
             );
 
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
+                    documentGeneration,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_CLAIM_FORM_EVENT,
+                    GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                    variables
             );
 
             //Take offline
             ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                takeOffline,
-                PROCESS_CASE_EVENT,
-                PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
-                PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
+                    takeOffline,
+                    PROCESS_CASE_EVENT,
+                    PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
+                    PROCEED_OFFLINE_FOR_UNREGISTERED_SOLICITOR_ACTIVITY_ID
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
+                    notificationTask,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
                     CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER
             );
@@ -174,10 +174,10 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                    forRobotics,
+                    PROCESS_CASE_EVENT,
+                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
@@ -200,39 +200,39 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
             assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
+                    startBusiness,
+                    START_BUSINESS_TOPIC,
+                    START_BUSINESS_EVENT,
+                    START_BUSINESS_ACTIVITY,
+                    variables
             );
 
             //complete the document generation
             variables.putValue(FLOW_STATE,
-                               FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
+                    FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
+                    documentGeneration,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_CLAIM_FORM_EVENT,
+                    GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                    variables
             );
 
             //Take offline
             ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                takeOffline,
-                PROCESS_CASE_EVENT,
-                PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
-                PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
+                    takeOffline,
+                    PROCESS_CASE_EVENT,
+                    PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
+                    PROCEED_OFFLINE_FOR_UNREPRESENTED_UNREGISTERED_SOLICITOR_ACTIVITY_ID
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
+                    notificationTask,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
                     CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER
             );
@@ -240,10 +240,10 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                    forRobotics,
+                    PROCESS_CASE_EVENT,
+                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
             );
 
             //end business process
@@ -281,39 +281,39 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //complete the start business process
             ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
             assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
+                    startBusiness,
+                    START_BUSINESS_TOPIC,
+                    START_BUSINESS_EVENT,
+                    START_BUSINESS_ACTIVITY,
+                    variables
             );
 
             //complete the document generation
             variables.putValue(FLOW_STATE, FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName());
             ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
+                    documentGeneration,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_CLAIM_FORM_EVENT,
+                    GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                    variables
             );
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                claimIssue,
-                PROCESS_CASE_EVENT,
-                ISSUE_CLAIM_EVENT,
-                ISSUE_CLAIM_UNREPRESENTED_RESPONDENT_ACTIVITY_ID,
-                variables
+                    claimIssue,
+                    PROCESS_CASE_EVENT,
+                    ISSUE_CLAIM_EVENT,
+                    ISSUE_CLAIM_UNREPRESENTED_RESPONDENT_ACTIVITY_ID,
+                    variables
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
+                    notificationTask,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
                     CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER
             );
@@ -321,11 +321,11 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
             //Notify RPA
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                forRobotics,
-                PROCESS_CASE_EVENT,
+                    forRobotics,
+                    PROCESS_CASE_EVENT,
                     NOTIFY_RPA_ON_CONTINUOUS_FEED,
                     NOTIFY_ROBOTICS_ON_CONTINUOUS_FEED,
-                variables
+                    variables
             );
 
             //end business process
