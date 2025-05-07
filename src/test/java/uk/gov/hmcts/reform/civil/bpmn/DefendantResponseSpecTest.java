@@ -19,31 +19,27 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
 
     //CCD EVENTS
     public static final String FULL_DEFENCE_RESPONSE_EVENT = "PROCESS_FULL_DEFENCE_SPEC";
-    public static final String FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE";
-    public static final String FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC";
-    public static final String FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1_CC
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC";
+    public static final String NOTIFY_EVENT
+        = "NOTIFY_EVENT";
     public static final String FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
     private static final String FULL_DEFENCE_GENERATE_SEALED_FORM = "GENERATE_RESPONSE_SEALED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
 
     //ACTIVITY IDs
     private static final String FULL_DEFENCE_RESPONSE_ACTIVITY_ID = "FullDefenceResponse";
-    private static final String FULL_DEFENCE_APPLICANT_NOTIFICATION_ACTIVITY_ID
-        = "DefendantResponseFullDefenceNotifyApplicantSolicitor1";
-    private static final String FULL_DEFENCE_RESPONDENT_NOTIFICATION_ACTIVITY_ID
-        = "DefendantResponseFullDefenceNotifyRespondentSolicitor1CC";
+    private static final String ONE_RESP_RESPOND_ACTIVITY_ID
+        = "DefendantResponseSpecOneRespRespondedNotifyParties";
+    private static final String LR_FULL_DEFENCE_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID
+        = "DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties";
+    private static final String LIP_V_LR_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID
+        = "DefendantResponseSpecLipvLRFullOrPartAdmit";
+    private static final String COUNTER_CLAIM_DIVERGED_RESP_ACTIVITY_ID
+        = "DefendantResponseSpecCaseHandedOfflineNotifyParties";
     private static final String FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "DefendantResponseFullDefenceGenerateDirectionsQuestionnaire";
     private static final String FULL_DEFENCE_GENERATE_SEALED_FORM_ACTIVITY_ID
         = "Activity_1ga6w9n";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPApplicantClaimantConfirmToProceed";
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
     public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
     private static final String APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
     public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
@@ -89,23 +85,12 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to applicant
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1,
-            FULL_DEFENCE_APPLICANT_NOTIFICATION_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the CC notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1,
-            FULL_DEFENCE_RESPONDENT_NOTIFICATION_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            LR_FULL_DEFENCE_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID,
             variables
         );
 
@@ -282,13 +267,12 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the CC notification to respondent
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1_CC,
-            "DefendantResponseFullDefenceNotifyRespondentSolicitor1",
+            NOTIFY_EVENT,
+            ONE_RESP_RESPOND_ACTIVITY_ID,
             variables
         );
 
@@ -347,23 +331,12 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to applicant
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_APPLICANT_SOLICITOR_1,
-            FULL_DEFENCE_APPLICANT_NOTIFICATION_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the CC notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1,
-            FULL_DEFENCE_RESPONDENT_NOTIFICATION_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            FULL_DEFENCE_RESPONSE_ACTIVITY_ID,
             variables
         );
 
@@ -440,24 +413,13 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "ProceedOfflineForNonDefenceResponse"
         );
 
-        //complete the notification to respondent
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE",
-            "DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1"
+            NOTIFY_EVENT,
+            COUNTER_CLAIM_DIVERGED_RESP_ACTIVITY_ID
         );
-
-        //complete the notification to applicant
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE",
-            "DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1"
-        );
-
         //complete RPA
         ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -584,23 +546,13 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
-        //complete the notification to LR respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_NOTIFY_RESPONDENT_SOLICITOR_1,
-            "Notify",
-            variables
-        );
-
         //complete the notification to LIP applicant
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            LIP_V_LR_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID
         );
 
         //end business process
