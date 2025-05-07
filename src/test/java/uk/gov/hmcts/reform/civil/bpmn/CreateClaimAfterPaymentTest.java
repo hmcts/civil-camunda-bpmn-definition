@@ -32,8 +32,8 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "Notifyapplicantsolicitor1";
-    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "Notifyapplicantsolicitor1";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOnlineNotifier";
+    public static final String CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER = "CreateClaimAfterPaymentContinuingOfflineNotifier";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     public static final String NOTIFY_ROBOTICS_ON_CONTINUOUS_FEED = "NotifyRoboticsOnContinuousFeed";
 
@@ -102,7 +102,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimAfterPaymentContinuingOnlineNotifier"
+                    CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER
             );
 
             //complete the Robotics notification
@@ -168,7 +168,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimAfterPaymentContinuingOfflineNotifier"
+                    CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER
             );
 
             //complete the Robotics notification
@@ -234,7 +234,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorUnRegisteredFirm"
+                    CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_OFFLINE_NOTIFIER
             );
 
             //complete the Robotics notification
@@ -315,7 +315,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimContinuingOnlineUnrepresentedRespondent"
+                    CREATE_CLAIM_AFTER_PAYMENT_CONTINUING_ONLINE_NOTIFIER
             );
 
             //Notify RPA
