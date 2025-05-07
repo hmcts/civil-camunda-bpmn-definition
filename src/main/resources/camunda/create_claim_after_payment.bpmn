@@ -64,8 +64,8 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_UNREGISTERED_DEFENDANT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17vsjp4" sourceRef="Activity_19rrcw0" targetRef="Event_1irqmkk" />
-    <bpmn:sequenceFlow id="Flow_RPA_Case_Handed_Offline_Completed" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_19rrcw0" />
-    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Activity_19rrcw0" />
+    <bpmn:sequenceFlow id="Flow_RPA_Case_Handed_Offline_Completed" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Gateway_0j2n8td" />
+    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Gateway_0j2n8td" />
     <bpmn:sequenceFlow id="Flow_0znizfx" sourceRef="Event_0yfoky6" targetRef="Activity_032r20h" />
     <bpmn:sequenceFlow id="Flow_0oy1b4w" sourceRef="Activity_032r20h" targetRef="GenerateClaimForm" />
     <bpmn:sequenceFlow id="Flow_0o4v7r8" sourceRef="Event_0x002k6" targetRef="Event_1muwoc1" />
@@ -150,10 +150,15 @@
         <camunda:in variables="all" />
         <camunda:out variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
-      <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
+      <bpmn:incoming>Flow_1j066cd</bpmn:incoming>
       <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
     </bpmn:callActivity>
+    <bpmn:inclusiveGateway id="Gateway_0j2n8td">
+      <bpmn:incoming>Flow_RPA_Case_Handed_Offline_Completed</bpmn:incoming>
+      <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j066cd</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j066cd" sourceRef="Gateway_0j2n8td" targetRef="Activity_19rrcw0" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaimAfterPayment">
@@ -207,7 +212,10 @@
         <dc:Bounds x="1892" y="442" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="1740" y="420" width="100" height="80" />
+        <dc:Bounds x="1760" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0j2n8td_di" bpmnElement="Gateway_0j2n8td">
+        <dc:Bounds x="1715" y="325" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="362" y="342" width="36" height="36" />
@@ -253,17 +261,18 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="1840" y="460" />
+        <di:waypoint x="1860" y="460" />
         <di:waypoint x="1892" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mak1f7_di" bpmnElement="Flow_RPA_Case_Handed_Offline_Completed">
         <di:waypoint x="1670" y="270" />
-        <di:waypoint x="1790" y="270" />
-        <di:waypoint x="1790" y="420" />
+        <di:waypoint x="1740" y="270" />
+        <di:waypoint x="1740" y="325" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ehbml1_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
         <di:waypoint x="1670" y="460" />
         <di:waypoint x="1740" y="460" />
+        <di:waypoint x="1740" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0znizfx_di" bpmnElement="Flow_0znizfx">
         <di:waypoint x="248" y="400" />
@@ -312,6 +321,11 @@
         <di:waypoint x="1480" y="395" />
         <di:waypoint x="1480" y="460" />
         <di:waypoint x="1570" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j066cd_di" bpmnElement="Flow_1j066cd">
+        <di:waypoint x="1740" y="375" />
+        <di:waypoint x="1740" y="460" />
+        <di:waypoint x="1760" y="460" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
