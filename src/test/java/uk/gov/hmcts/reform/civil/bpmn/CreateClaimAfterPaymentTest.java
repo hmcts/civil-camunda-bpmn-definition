@@ -102,7 +102,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimContinuingOnlineNotifyApplicantSolicitor1"
+                    "CreateClaimAfterPaymentContinuingOnlineNotifier"
             );
 
             //complete the Robotics notification
@@ -168,7 +168,7 @@ class CreateClaimAfterPaymentTest extends BpmnBaseTest {
                     notificationTask,
                     PROCESS_CASE_EVENT,
                     NOTIFY_EVENT,
-                    "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRegisteredFirm"
+                    "CreateClaimAfterPaymentContinuingOfflineNotifier"
             );
 
             //complete the Robotics notification
