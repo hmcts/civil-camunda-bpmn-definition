@@ -175,18 +175,8 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyApplicant,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE",
-            "DefendantResponseCaseHandedOfflineNotifyRespondentSolicitor1",
-            variables
-        );
-
-        //complete the notification to applicant
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_HANDED_OFFLINE",
-            "DefendantResponseCaseHandedOfflineNotifyApplicantSolicitor1",
+            NOTIFY_EVENT,
+            COUNTER_CLAIM_DIVERGED_RESP_ACTIVITY_ID,
             variables
         );
 
@@ -254,16 +244,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
             "Activity_0tyidsx",
-            variables
-        );
-
-        //complete the notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE",
-            "Activity_0dne463",
             variables
         );
 
@@ -336,7 +316,7 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             notifyApplicant,
             PROCESS_CASE_EVENT,
             NOTIFY_EVENT,
-            FULL_DEFENCE_RESPONSE_ACTIVITY_ID,
+            LR_FULL_DEFENCE_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID,
             variables
         );
 
