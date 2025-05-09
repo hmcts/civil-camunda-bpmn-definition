@@ -56,7 +56,6 @@ public class ApplyNocDecisionTest extends BpmnBaseTest {
                                    NOTIFY_PARTIES,
                                    TASK_ID_NOTIFY_SOLICITORS);
 
-
         //complete clear former solicitor email from case data
         ExternalTask clearFormerSolicitorInfo = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(clearFormerSolicitorInfo,
