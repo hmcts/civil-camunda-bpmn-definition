@@ -5,14 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
+public class UpdateLanguagePreferenceTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "APPLY_NOC_DECISION_LIP";
-    public static final String PROCESS_ID = "APPLY_NOC_DECISION_LIP";
-    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    private static final String UPDATE_LANGUAGE_PREFERENCE_EVENT = "UPDATE_GA_LANGUAGE_PREFERENCE";
+    private static final String UPDATE_LANGUAGE_PREFERENCE_ACTIVITY_ID = "UpdateGenAppLanguagePreference";
 
-    public ApplyNocDecisionLipTest() {
-        super("apply_noc_decision_lip.bpmn", PROCESS_ID);
+    public UpdateLanguagePreferenceTest() {
+        super("update_language_preference.bpmn", "UPDATE_LANGUAGE_PREFERENCE_PROCESS_ID");
     }
 
     @Test
@@ -28,22 +27,13 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        //complete updating case details
-        ExternalTask updateCaseDetails = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //Update Language preference for GA
+        ExternalTask updateLanguagePreference = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            updateCaseDetails,
+            updateLanguagePreference,
             PROCESS_CASE_EVENT,
-            "UPDATE_CASE_DETAILS_AFTER_NOC",
-            "UpdateCaseDetailsAfterNoC"
-        );
-
-        //complete notify claimant
-        ExternalTask notifyClaimantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimantAfterNoc,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            "ClaimantLipRepresentedWithNoCNotifier"
+            UPDATE_LANGUAGE_PREFERENCE_EVENT,
+            UPDATE_LANGUAGE_PREFERENCE_ACTIVITY_ID
         );
 
         //end business process
