@@ -26,7 +26,6 @@ class UploadTranslatedDocumentSettlementAgreementTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
         "NotifyRespondentForSignSettlementAgreement";
 
-
     public UploadTranslatedDocumentSettlementAgreementTest() {
         super("upload_translated_document_settlement_agreement.bpmn", PROCESS_ID);
     }
