@@ -326,7 +326,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true,false", "true, true"})
-    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshFTisOff(boolean isClaimantBilingual, boolean isRespondentBilingual ) {
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshFTisOff(boolean isClaimantBilingual, boolean isRespondentBilingual) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -361,8 +361,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
-
-
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
