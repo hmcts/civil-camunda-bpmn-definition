@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends BpmnBaseTest {
 
-    private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANTS_DOCUMENT";
+    private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_REJECTS_REPAYMENT_PLAN";
     private static final String PROCESS_ID = "UPLOAD_TRANSLATED_CLAIMANTS_DOCUMENT_PROCESS_ID";
     private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
         = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
