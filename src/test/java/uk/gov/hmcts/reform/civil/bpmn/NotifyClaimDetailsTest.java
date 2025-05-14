@@ -335,7 +335,6 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
                                        NOTIFY_PARTIES
             );
 
-
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
