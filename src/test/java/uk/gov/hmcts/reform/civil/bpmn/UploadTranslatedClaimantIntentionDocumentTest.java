@@ -54,6 +54,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
+    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        = "NotifyLiPApplicantClaimantConfirmToProceed";
+
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -199,6 +203,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of( WELSH_ENABLED, false));
         assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,
@@ -241,6 +246,91 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 PROCESS_CASE_EVENT,
                 UPDATE_CLAIM_STATE_EVENT,
                 UPDATE_CLAIM_STATE_ACTIVITY_ID
+        );
+
+        // generate dashboard notification task
+        ExternalTask generateDashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        );
+
+        //complete the Generate Dashboard Notification Respondent 1
+        ExternalTask notificationTaskForDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForDashboardNotification,
+                                   PROCESS_CASE_EVENT,
+                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsHavingMediationWelshFlagOn() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of( WELSH_ENABLED, true));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the claim issue
+        ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimIssue,
+            PROCESS_CASE_EVENT,
+            SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT,
+            SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID
+        );
+
+        //complete the respondent notification
+        ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
+            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
+            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+        );
+
+        //complete the RPA notification
+        ExternalTask proceedCaseOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedCaseOffline,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED,
+            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
+        );
+
+        //complete the state change task
+        ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimStateTask,
+            PROCESS_CASE_EVENT,
+            UPDATE_CLAIM_STATE_EVENT,
+            UPDATE_CLAIM_STATE_ACTIVITY_ID
         );
 
         // generate dashboard notification task
