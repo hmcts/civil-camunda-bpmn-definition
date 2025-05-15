@@ -58,7 +58,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         = "NotifyLiPApplicantClaimantConfirmToProceed";
 
-
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
     }
@@ -203,7 +202,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
-        variables.put(FLOW_FLAGS, Map.of( WELSH_ENABLED, false));
+        variables.put(FLOW_FLAGS, Map.of(WELSH_ENABLED, false));
         assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,
@@ -280,7 +279,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
-        variables.put(FLOW_FLAGS, Map.of( WELSH_ENABLED, true));
+        variables.put(FLOW_FLAGS, Map.of(WELSH_ENABLED, true));
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
