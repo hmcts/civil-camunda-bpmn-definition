@@ -30,12 +30,15 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         super("apply_noc_decision_defendant_lip.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldRunProcess() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldRunProcess(boolean welshEnabled) {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            LIP_CASE, false));
+            LIP_CASE, false,
+            WELSH_ENABLED, welshEnabled
+        ));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -57,6 +60,17 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
+
+        if (welshEnabled) {
+            //update GA language flag
+            ExternalTask updateGeneralApps = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                updateGeneralApps,
+                PROCESS_CASE_EVENT,
+                "UPDATE_GA_LANGUAGE_PREFERENCE",
+                "UpdateGenAppLanguagePreference"
+            );
+        }
 
         //complete notify claimant
         ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -120,7 +134,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
-        
+
         //complete notify claimant
         ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
