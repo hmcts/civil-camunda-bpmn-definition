@@ -195,7 +195,9 @@
     <bpmn:sequenceFlow id="Flow_1vgldhz" name="LiP Defendant" sourceRef="Gateway_0zj33b5" targetRef="SendSDOToDefendantLIP">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_03c0a27" name="No" sourceRef="Gateway_0ooegq0" targetRef="CreateSDONotifyApplicantsSolicitor" />
+    <bpmn:sequenceFlow id="Flow_03c0a27" name="No" sourceRef="Gateway_0ooegq0" targetRef="CreateSDONotifyApplicantsSolicitor">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED) || ((empty flowFlags.CLAIM_ISSUE_BILINGUAL || !flowFlags.CLAIM_ISSUE_BILINGUAL) &amp;&amp; (empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL || !flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL) &amp;&amp; (empty flowFlags.BILINGUAL_DOCS || !flowFlags.BILINGUAL_DOCS))}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15em7r9" sourceRef="CreateSDONotifyApplicantsSolicitor" targetRef="Gateway_1fhcsxk" />
     <bpmn:sequenceFlow id="Flow_09mv2n3" sourceRef="Gateway_1fhcsxk" targetRef="Gateway_0zj33b5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
@@ -224,14 +226,6 @@ claimant ?</bpmn:text>
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0oe9xk7">
       <bpmndi:BPMNShape id="Participant_1st11o5_di" bpmnElement="Participant_1st11o5" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="1910" height="500" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0bch0eh_di" bpmnElement="TextAnnotation_0bch0eh">
-        <dc:Bounds x="630" y="140" width="100" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0k20fta_di" bpmnElement="TextAnnotation_0k20fta">
-        <dc:Bounds x="810" y="140" width="85" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndCreateSDO">
@@ -308,14 +302,14 @@ claimant ?</bpmn:text>
           <dc:Bounds x="424" y="302" width="85" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_08tudnc_di" bpmnElement="Association_08tudnc">
-        <di:waypoint x="830" y="245" />
-        <di:waypoint x="830" y="181" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1rsw75w_di" bpmnElement="Association_1rsw75w">
-        <di:waypoint x="680" y="245" />
-        <di:waypoint x="680" y="181" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0bch0eh_di" bpmnElement="TextAnnotation_0bch0eh">
+        <dc:Bounds x="630" y="140" width="100" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0k20fta_di" bpmnElement="TextAnnotation_0k20fta">
+        <dc:Bounds x="810" y="140" width="85" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_178o507_di" bpmnElement="Event_11hktcj">
         <dc:Bounds x="321" y="212" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -468,6 +462,14 @@ claimant ?</bpmn:text>
       <bpmndi:BPMNEdge id="Flow_0w9edp6_di" bpmnElement="Flow_0w9edp6">
         <di:waypoint x="340" y="230" />
         <di:waypoint x="340" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_08tudnc_di" bpmnElement="Association_08tudnc">
+        <di:waypoint x="830" y="245" />
+        <di:waypoint x="830" y="181" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1rsw75w_di" bpmnElement="Association_1rsw75w">
+        <di:waypoint x="680" y="245" />
+        <di:waypoint x="680" y="181" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
