@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.CourtOfficerOrderTest.NOTIFY_EVENT;
 
 public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
@@ -20,6 +21,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
     private static final String JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID = "Judicial_Referral";
+
+    private static final String NOTIFY_REJECTION_ACTIVITY_ID = "RejectRepaymentPlanNotifyParties";
+    private static final String NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID = "ClaimantConfirmProceedNotifyParties";
     //CCD Case Event
     private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
@@ -800,6 +804,10 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void notifyRespondentClaimantConfirmsToProceed() {
         assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    }
+
+    private void notifyPartiesClaimantConfirmsToProceed() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_REJECTION_ACTIVITY_ID);
     }
 
     private void createClaimantDashboardNotification() {
