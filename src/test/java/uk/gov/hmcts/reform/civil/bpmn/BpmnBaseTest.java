@@ -196,10 +196,12 @@ public abstract class BpmnBaseTest {
      */
     public List<LockedExternalTask> fetchAndLockTask(String topicName) {
         return engine.getExternalTaskService()
-            .fetchAndLock(1, WORKER_ID)
-            .topic(topicName, 100)
-            .execute();
+                .fetchAndLock(1, WORKER_ID)
+                .topic(topicName, 100)
+                .enableCustomObjectDeserialization()
+                .execute();
     }
+
 
     /**
      * Completes an external task with the given id.
