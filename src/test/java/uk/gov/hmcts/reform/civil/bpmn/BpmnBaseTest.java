@@ -202,7 +202,6 @@ public abstract class BpmnBaseTest {
                 .execute();
     }
 
-
     /**
      * Completes an external task with the given id.
      *

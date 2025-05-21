@@ -332,7 +332,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 variables
             );
 
-
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
