@@ -26,8 +26,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID
         = "IssueClaimForSpecUnrepresentedSolicitor";
     //notify applicant solicitor 1 continuing online
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
-        = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
     private static final String CONTINUING_ONLINE_APPLICANT_SPEC_CLAIM_NOTIFIER
         = "ContinuingOnlineApplicantSpecClaimNotifier";
 
@@ -319,7 +317,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 notificationTask,
                 PROCESS_CASE_EVENT,
                 NOTIFY_EVENT,
-                NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
+                CONTINUING_ONLINE_APPLICANT_SPEC_CLAIM_NOTIFIER
             );
 
             //complete the respondent 1 and 2 notification
