@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ranzx9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
-  <bpmn:process id="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_PROCESS_ID" name="Defendant sign settlement agreement process" isExecutable="true" camunda:historyTimeToLive="180">
+  <bpmn:process id="UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT_PROCESS_ID" name="Upload translated settlement agreement process" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:callActivity id="START_BUSINESS_PROCESS" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
         <camunda:out variables="all" />
@@ -9,17 +9,16 @@
       <bpmn:incoming>Flow_0cfl6cy</bpmn:incoming>
       <bpmn:outgoing>Flow_1b0wlsx</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:startEvent id="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT" name="Start">
+    <bpmn:startEvent id="UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT" name="Start">
       <bpmn:outgoing>Flow_0cfl6cy</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0bf75ki" messageRef="Message_1pokpru" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0cfl6cy" sourceRef="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT" targetRef="START_BUSINESS_PROCESS" />
+    <bpmn:sequenceFlow id="Flow_0cfl6cy" sourceRef="UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT" targetRef="START_BUSINESS_PROCESS" />
     <bpmn:callActivity id="END_BUSINESS_PROCESS" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1bcrztk</bpmn:incoming>
-      <bpmn:incoming>Flow_0ttqtcj</bpmn:incoming>
       <bpmn:outgoing>Flow_0s09rb1</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:boundaryEvent id="Event_1dduelw" name="Abort" attachedToRef="START_BUSINESS_PROCESS">
@@ -40,7 +39,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0nkuig2</bpmn:incoming>
+      <bpmn:incoming>Flow_1b0wlsx</bpmn:incoming>
       <bpmn:outgoing>Flow_08h5dj6</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="NotifyRespondentForSignSettlementAgreement" name="Notify Respondent" camunda:type="external" camunda:topic="processCaseEvent">
@@ -52,17 +51,8 @@
       <bpmn:incoming>Flow_08h5dj6</bpmn:incoming>
       <bpmn:outgoing>Flow_03ryv4c</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1b0wlsx" sourceRef="START_BUSINESS_PROCESS" targetRef="GenerateSignSettlementAgreement" />
+    <bpmn:sequenceFlow id="Flow_1b0wlsx" sourceRef="START_BUSINESS_PROCESS" targetRef="NotifyApplicantForSignSettlementAgreement" />
     <bpmn:sequenceFlow id="Flow_08h5dj6" sourceRef="NotifyApplicantForSignSettlementAgreement" targetRef="NotifyRespondentForSignSettlementAgreement" />
-    <bpmn:serviceTask id="GenerateSignSettlementAgreement" name="Generate settlement agreement" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1b0wlsx</bpmn:incoming>
-      <bpmn:outgoing>Flow_06yllwl</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateDashboardNotificationSignSettlementAgreement" name="Generate dashboard notification settlement agreement" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -74,66 +64,44 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1bcrztk" sourceRef="GenerateDashboardNotificationSignSettlementAgreement" targetRef="END_BUSINESS_PROCESS" />
     <bpmn:sequenceFlow id="Flow_03ryv4c" sourceRef="NotifyRespondentForSignSettlementAgreement" targetRef="GenerateDashboardNotificationSignSettlementAgreement" />
-    <bpmn:sequenceFlow id="Flow_06yllwl" sourceRef="GenerateSignSettlementAgreement" targetRef="Gateway_170srz1" />
-    <bpmn:exclusiveGateway id="Gateway_170srz1" name="Welsh party/docs preference?">
-      <bpmn:incoming>Flow_06yllwl</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nkuig2</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0ttqtcj</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0nkuig2" name="No" sourceRef="Gateway_170srz1" targetRef="NotifyApplicantForSignSettlementAgreement">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED) || ((empty flowFlags.CLAIM_ISSUE_BILINGUAL || !flowFlags.CLAIM_ISSUE_BILINGUAL) &amp;&amp; (empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL || !flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL) &amp;&amp; (empty flowFlags.BILINGUAL_DOCS || !flowFlags.BILINGUAL_DOCS))}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ttqtcj" name="Yes" sourceRef="Gateway_170srz1" targetRef="END_BUSINESS_PROCESS">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED) &amp;&amp; ((!empty flowFlags.CLAIM_ISSUE_BILINGUAL &amp;&amp; flowFlags.CLAIM_ISSUE_BILINGUAL) || (!empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL &amp;&amp; flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL) || (!empty flowFlags.BILINGUAL_DOCS &amp;&amp; flowFlags.BILINGUAL_DOCS))}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
   </bpmn:process>
-  <bpmn:message id="Message_1pokpru" name="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT" />
+  <bpmn:message id="Message_1pokpru" name="UPLOAD_TRANSLATED_DOCUMENT_SETTLEMENT_AGREEMENT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_PROCESS_ID">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT_PROCESS_ID">
       <bpmndi:BPMNShape id="Activity_10jropq_di" bpmnElement="START_BUSINESS_PROCESS">
         <dc:Bounds x="260" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ptcm16_di" bpmnElement="DEFENDANT_SIGN_SETTLEMENT_AGREEMENT">
+      <bpmndi:BPMNShape id="Event_0ptcm16_di" bpmnElement="UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT">
         <dc:Bounds x="152" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="159" y="245" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0uio47l_di" bpmnElement="END_BUSINESS_PROCESS">
-        <dc:Bounds x="1170" y="180" width="100" height="80" />
+        <dc:Bounds x="950" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qbq48j_di" bpmnElement="Event_0qbq48j">
         <dc:Bounds x="292" y="72" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0262kdl_di" bpmnElement="Event_0262kdl">
-        <dc:Bounds x="1342" y="202" width="36" height="36" />
+        <dc:Bounds x="1132" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="737" y="245" width="8" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13z753m_di" bpmnElement="NotifyApplicantForSignSettlementAgreement">
-        <dc:Bounds x="640" y="180" width="100" height="80" />
+        <dc:Bounds x="430" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0l9xl1u_di" bpmnElement="NotifyRespondentForSignSettlementAgreement">
-        <dc:Bounds x="820" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0anwp1i" bpmnElement="GenerateSignSettlementAgreement">
-        <dc:Bounds x="400" y="180" width="100" height="80" />
+        <dc:Bounds x="600" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ry2oyd" bpmnElement="GenerateDashboardNotificationSignSettlementAgreement">
-        <dc:Bounds x="990" y="180" width="100" height="80" />
+        <dc:Bounds x="770" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_170srz1_di" bpmnElement="Gateway_170srz1" isMarkerVisible="true">
-        <dc:Bounds x="535" y="195" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="518" y="252" width="85" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dduelw_di" bpmnElement="Event_1dduelw">
         <dc:Bounds x="292" y="162" width="36" height="36" />
@@ -150,44 +118,24 @@
         <di:waypoint x="310" y="108" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s09rb1_di" bpmnElement="Flow_0s09rb1">
-        <di:waypoint x="1270" y="220" />
-        <di:waypoint x="1342" y="220" />
+        <di:waypoint x="1050" y="220" />
+        <di:waypoint x="1132" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b0wlsx_di" bpmnElement="Flow_1b0wlsx">
         <di:waypoint x="360" y="220" />
-        <di:waypoint x="400" y="220" />
+        <di:waypoint x="430" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08h5dj6_di" bpmnElement="Flow_08h5dj6">
-        <di:waypoint x="740" y="220" />
-        <di:waypoint x="820" y="220" />
+        <di:waypoint x="530" y="220" />
+        <di:waypoint x="600" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bcrztk_di" bpmnElement="Flow_1bcrztk">
-        <di:waypoint x="1090" y="220" />
-        <di:waypoint x="1170" y="220" />
+        <di:waypoint x="870" y="220" />
+        <di:waypoint x="950" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03ryv4c_di" bpmnElement="Flow_03ryv4c">
-        <di:waypoint x="920" y="220" />
-        <di:waypoint x="990" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06yllwl_di" bpmnElement="Flow_06yllwl">
-        <di:waypoint x="500" y="220" />
-        <di:waypoint x="535" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nkuig2_di" bpmnElement="Flow_0nkuig2">
-        <di:waypoint x="585" y="220" />
-        <di:waypoint x="640" y="220" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="605" y="202" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ttqtcj_di" bpmnElement="Flow_0ttqtcj">
-        <di:waypoint x="560" y="195" />
-        <di:waypoint x="560" y="110" />
-        <di:waypoint x="1220" y="110" />
-        <di:waypoint x="1220" y="180" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="881" y="92" width="19" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="770" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
