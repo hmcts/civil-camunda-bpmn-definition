@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 
 public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
 
-    public UploadTranslatedDiscontinuanceDocTest(){
-        super("upload_translated_discontinuance_doc.bpmn","UPLOAD_TRANSLATED_DISCONTINUANCE_DOC");
+    public UploadTranslatedDiscontinuanceDocTest() {
+        super("upload_translated_discontinuance_doc.bpmn", "UPLOAD_TRANSLATED_DISCONTINUANCE_DOC");
     }
 
     @Test
@@ -54,8 +54,7 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
             "NOTIFY_DISCONTINUANCE_CLAIMANT1",
             "NotifyDiscontinuanceClaimant"
         );
-
-
+        
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
