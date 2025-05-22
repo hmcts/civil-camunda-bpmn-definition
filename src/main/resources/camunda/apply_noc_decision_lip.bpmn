@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xagno6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_0lkiw1g">
     <bpmn:participant id="Participant_1nspjir" name="Apply NoC Decision for Lip" processRef="APPLY_NOC_DECISION_LIP" />
   </bpmn:collaboration>
@@ -27,8 +27,10 @@
     <bpmn:sequenceFlow id="Flow_1s0jw89" sourceRef="Event_0rh0701" targetRef="Event_0l4t4tn" />
     <bpmn:sequenceFlow id="Flow_0dm1zjw" sourceRef="Event_Apply_NoC_Decision" targetRef="Activity_0czttms" />
     <bpmn:sequenceFlow id="Flow_1x9k7i6" sourceRef="Activity_EndBusinessProcess" targetRef="Event_1ryj0ug" />
-    <bpmn:sequenceFlow id="Flow_1bgy1m8" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="NotifyClaimantLipAfterNocApproval" />
+    <bpmn:sequenceFlow id="Flow_1bgy1m8" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="Gateway_13ebgvf" />
     <bpmn:sequenceFlow id="Flow_05auzpf" sourceRef="NotifyDefendantLipClaimantRepresented" targetRef="NotifyApplicantLipSolicitor" />
+    <bpmn:sequenceFlow id="Flow_1qc6s0r" sourceRef="NotifyClaimantLipAfterNocApproval" targetRef="NotifyDefendantLipClaimantRepresented" />
+    <bpmn:sequenceFlow id="Flow_0r5cjn6" sourceRef="NotifyApplicantLipSolicitor" targetRef="Activity_EndBusinessProcess" />
     <bpmn:serviceTask id="UpdateCaseDetailsAfterNoC" name="Update case details" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -38,25 +40,7 @@
       <bpmn:incoming>Flow_00ec3ti</bpmn:incoming>
       <bpmn:outgoing>Flow_1bgy1m8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1qc6s0r" sourceRef="NotifyClaimantLipAfterNocApproval" targetRef="NotifyDefendantLipClaimantRepresented" />
-    <bpmn:serviceTask id="NotifyDefendantLipClaimantRepresented" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_LIP_CLAIMANT_REPRESENTED</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qc6s0r</bpmn:incoming>
-      <bpmn:outgoing>Flow_05auzpf</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyClaimantLipAfterNocApproval" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_LIP_AFTER_NOC_APPROVAL</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1bgy1m8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1qc6s0r</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0htqeux" sourceRef="UpdateGenAppLanguagePreference" targetRef="NotifyClaimantLipAfterNocApproval" />
     <bpmn:endEvent id="Event_1ryj0ug">
       <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
     </bpmn:endEvent>
@@ -76,7 +60,45 @@
       <bpmn:incoming>Flow_05auzpf</bpmn:incoming>
       <bpmn:outgoing>Flow_0r5cjn6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0r5cjn6" sourceRef="NotifyApplicantLipSolicitor" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:serviceTask id="NotifyDefendantLipClaimantRepresented" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_LIP_CLAIMANT_REPRESENTED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qc6s0r</bpmn:incoming>
+      <bpmn:outgoing>Flow_05auzpf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyClaimantLipAfterNocApproval" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_LIP_AFTER_NOC_APPROVAL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0htqeux</bpmn:incoming>
+      <bpmn:incoming>Flow_1d8fpn2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qc6s0r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="UpdateGenAppLanguagePreference" name="Update General Application Language Preference" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_GA_LANGUAGE_PREFERENCE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o6wtc1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0htqeux</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_13ebgvf" name="Welsh enabled?">
+      <bpmn:incoming>Flow_1bgy1m8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o6wtc1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1d8fpn2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0o6wtc1" name="Yes" sourceRef="Gateway_13ebgvf" targetRef="UpdateGenAppLanguagePreference">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1d8fpn2" name="No" sourceRef="Gateway_13ebgvf" targetRef="NotifyClaimantLipAfterNocApproval">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_14dl5pe" name="APPLY_NOC_DECISION_LIP" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -98,25 +120,35 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0dev963" bpmnElement="UpdateCaseDetailsAfterNoC">
-        <dc:Bounds x="520" y="227" width="100" height="80" />
+        <dc:Bounds x="470" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
+        <dc:Bounds x="1462" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1290" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1fqgqwi" bpmnElement="NotifyApplicantLipSolicitor">
+        <dc:Bounds x="1140" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="CaseAssignmentToApplicantSolicitor1_di" bpmnElement="NotifyDefendantLipClaimantRepresented">
-        <dc:Bounds x="820" y="227" width="100" height="80" />
+        <dc:Bounds x="980" y="227" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mqz8x4" bpmnElement="NotifyClaimantLipAfterNocApproval">
-        <dc:Bounds x="670" y="227" width="100" height="80" />
+        <dc:Bounds x="840" y="227" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
-        <dc:Bounds x="1342" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="1140" y="227" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1fqgqwi" bpmnElement="NotifyApplicantLipSolicitor">
-        <dc:Bounds x="970" y="227" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1asxwxx_di" bpmnElement="UpdateGenAppLanguagePreference">
+        <dc:Bounds x="680" y="227" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_13ebgvf_di" bpmnElement="Gateway_13ebgvf" isMarkerVisible="true">
+        <dc:Bounds x="595" y="242" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="581" y="299" width="79" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_056imgr_di" bpmnElement="Event_0rh0701">
         <dc:Bounds x="371" y="209" width="36" height="36" />
@@ -126,7 +158,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_00ec3ti_di" bpmnElement="Flow_00ec3ti">
         <di:waypoint x="439" y="267" />
-        <di:waypoint x="520" y="267" />
+        <di:waypoint x="470" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s0jw89_di" bpmnElement="Flow_1s0jw89">
         <di:waypoint x="389" y="209" />
@@ -137,24 +169,44 @@
         <di:waypoint x="339" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x9k7i6_di" bpmnElement="Flow_1x9k7i6">
-        <di:waypoint x="1240" y="267" />
-        <di:waypoint x="1342" y="267" />
+        <di:waypoint x="1390" y="267" />
+        <di:waypoint x="1462" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bgy1m8_di" bpmnElement="Flow_1bgy1m8">
-        <di:waypoint x="620" y="267" />
-        <di:waypoint x="670" y="267" />
+        <di:waypoint x="570" y="267" />
+        <di:waypoint x="595" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05auzpf_di" bpmnElement="Flow_05auzpf">
-        <di:waypoint x="920" y="267" />
-        <di:waypoint x="970" y="267" />
+        <di:waypoint x="1080" y="267" />
+        <di:waypoint x="1140" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qc6s0r_di" bpmnElement="Flow_1qc6s0r">
-        <di:waypoint x="770" y="267" />
-        <di:waypoint x="820" y="267" />
+        <di:waypoint x="940" y="267" />
+        <di:waypoint x="980" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0r5cjn6_di" bpmnElement="Flow_0r5cjn6">
-        <di:waypoint x="1070" y="267" />
-        <di:waypoint x="1140" y="267" />
+        <di:waypoint x="1240" y="267" />
+        <di:waypoint x="1290" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0htqeux_di" bpmnElement="Flow_0htqeux">
+        <di:waypoint x="780" y="267" />
+        <di:waypoint x="840" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o6wtc1_di" bpmnElement="Flow_0o6wtc1">
+        <di:waypoint x="645" y="267" />
+        <di:waypoint x="680" y="267" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="653" y="249" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d8fpn2_di" bpmnElement="Flow_1d8fpn2">
+        <di:waypoint x="620" y="242" />
+        <di:waypoint x="620" y="180" />
+        <di:waypoint x="890" y="180" />
+        <di:waypoint x="890" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="748" y="162" width="15" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
