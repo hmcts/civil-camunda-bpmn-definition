@@ -54,7 +54,7 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
             "NOTIFY_DISCONTINUANCE_CLAIMANT1",
             "NotifyDiscontinuanceClaimant"
         );
-        
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
