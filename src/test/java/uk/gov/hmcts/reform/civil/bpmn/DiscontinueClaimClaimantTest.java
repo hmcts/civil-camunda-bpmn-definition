@@ -22,15 +22,18 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1 = "NOTIFY_DISCONTINUANCE_DEFENDANT1";
     public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1 = "NOTIFY_DISCONTINUANCE_CLAIMANT1";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1 = "SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1";
-    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE";
+    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE =
+        "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT2 = "NOTIFY_DISCONTINUANCE_DEFENDANT2";
 
     //ACTIVITY IDs
     public static final String GEN_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID = "GenerateNoticeOfDiscontinuance";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT1_ACTIVITY_ID = "NotifyDiscontinuancetDefendant1";
     public static final String NOTIFY_DISCONTINUANCE_CLAIMANT1_ACTIVITY_ID = "NotifyDiscontinuanceClaimant";
-    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LIP";
-    public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID = "CreateDefendantDashboardNotificationsForDiscontinuance";
+    public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID =
+        "PostNoticeOfDiscontinuanceDefendant1LIP";
+    public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID =
+        "CreateDefendantDashboardNotificationsForDiscontinuance";
     public static final String NOTIFY_DISCONTINUANCE_DEFENDANT2_ACTIVITY_ID = "NotifyDiscontinuanceDefendant2";
 
     public DiscontinueClaimClaimantTest() {
@@ -39,16 +42,18 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true",
-        "true, true, false",
-        "true, false, true",
-        "true, false, false",
-        "false, true, false",
-        "false, false, false",
-        "false, true, true",
-        "false, false, true"
+        "true, true, true,false",
+        "true, true, false,false",
+        "true, false, true,false",
+        "true, false, false,false",
+        "false, true, false,false",
+        "false, false, false,false",
+        "false, true, true,false",
+        "false, false, true,false",
+        "true, false, false,true",
     })
-    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean twoDefendants) {
+    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant,
+                                    boolean twoDefendants, boolean welshEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -63,7 +68,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, !twoDefendants
         ));
         variables.put("JUDGE_ORDER_VERIFICATION_REQUIRED", isJudgeOrderVerificationRequired);
-
+        variables.put("WELSH_ENABLED", welshEnabled);
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
