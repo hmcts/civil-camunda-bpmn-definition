@@ -39,16 +39,17 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true",
-        "true, true, false",
-        "true, false, true",
-        "true, false, false",
-        "false, true, false",
-        "false, false, false",
-        "false, true, true",
-        "false, false, true"
+        "true, true, true,false",
+        "true, true, false,false",
+        "true, false, true,false",
+        "true, false, false,false",
+        "false, true, false,false",
+        "false, false, false,false",
+        "false, true, true,false",
+        "false, false, true,false",
+        "true, false, false,true",
     })
-    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean twoDefendants) {
+    void shouldSuccessfullyComplete(boolean isJudgeOrderVerificationRequired, boolean isLiPDefendant, boolean twoDefendants,boolean welshEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -63,7 +64,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, !twoDefendants
         ));
         variables.put("JUDGE_ORDER_VERIFICATION_REQUIRED", isJudgeOrderVerificationRequired);
-
+        variables.put("WELSH_ENABLED",welshEnabled);
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
