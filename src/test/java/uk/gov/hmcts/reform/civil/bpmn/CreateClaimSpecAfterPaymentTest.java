@@ -136,8 +136,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notificationRespondentTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                    CONTINUING_ONLINE_SPEC_CLAIM_NOTIFIER
+                    "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC",
+                    "CreateClaimContinuingOnlineNotifyRespondent1ForSpec"
             );
 
             //complete the notification
@@ -421,8 +421,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notificationRespondentTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                    CONTINUING_ONLINE_SPEC_CLAIM_NOTIFIER
+                "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC",
+                    "CreateClaimContinuingOnlineNotifyRespondent1ForSpec"
             );
 
             //complete the applicant notification
