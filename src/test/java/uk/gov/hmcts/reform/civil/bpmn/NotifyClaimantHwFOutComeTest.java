@@ -26,7 +26,7 @@ public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
             notifyClaimantTask,
             PROCESS_CASE_EVENT,
             "NOTIFY_EVENT",
-            "HwFOutcomeNotify"
+            "HwFOutcomeNotifyParties"
         );
 
         ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
