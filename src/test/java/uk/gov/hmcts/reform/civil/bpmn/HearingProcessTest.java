@@ -70,6 +70,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
@@ -137,6 +138,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1 All Responses Received > Divergent Response
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
@@ -211,6 +213,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -290,6 +293,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -370,6 +374,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1 All Responses Received > Divergent Response
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
@@ -443,6 +448,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -531,6 +537,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -604,6 +611,7 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
@@ -639,6 +647,63 @@ class HearingProcessTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+        );
+
+        //complete the service request process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_SERVICE_REQUEST_API, CREATE_SERVICE_REQUEST_API_ACTIVITY_ID, variables
+        );
+
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
+        );
+
+        //complete the dashboard notification process
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotTriggerDefendantBulkPrintAndNotificationsIfClaimHasWelshParty() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        //Setup Case as 1v1
+        VariableMap variables = Variables.createVariables();
+        variables.put("WELSH_ENABLED", true);
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            UNREPRESENTED_DEFENDANT_ONE, false,
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            LIP_CASE, true,
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        //complete the hearing form generation
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
         //complete the service request process
