@@ -40,7 +40,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyPostHearingForAndNotifyClaimantAndDefendantHearing_1v1() {
+    void shouldSuccessfullyPostHearingLetterAndNotifyClaimantAndDefendantHearing_1v1() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -51,8 +51,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             LIP_CASE, true,
-            UNREPRESENTED_DEFENDANT_ONE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+            UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
         //complete the start business process
@@ -91,7 +90,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
 
 
     @Test
-    void shouldSuccessfullyCompleteHearingFormAndNotifyClaimantAndDefendantHearing_1v1_LipClaimant_LrDefendant() {
+    void shouldSuccessfullyPostHearingLetterAndNotifyClaimantAndDefendantHearing_1v1_LipClaimant_LrDefendant() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -128,7 +127,6 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
                                    NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
         );
 
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -137,7 +135,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteHearingFormAndNotifyClaimantAndDefendantLipHearing_1v1() {
+    void shouldSuccessfullyPostHearingLetterAndNotifyClaimantAndDefendantLipHearing_1v1() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -147,9 +145,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true,
-            LIP_CASE, false,
-            DASHBOARD_SERVICE_ENABLED, true));
+            UNREPRESENTED_DEFENDANT_ONE, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
