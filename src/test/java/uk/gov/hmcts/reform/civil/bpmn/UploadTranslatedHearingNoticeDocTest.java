@@ -88,7 +88,6 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @Test
     void shouldSuccessfullyPostHearingLetterAndNotifyClaimantAndDefendantHearing_1v1_LipClaimant_LrDefendant() {
         //assert process has started
