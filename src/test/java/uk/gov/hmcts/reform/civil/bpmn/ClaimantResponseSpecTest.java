@@ -39,10 +39,9 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantAgreedSettledPartAdmitNotifyLip";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantResponseConfirmsNotToProceedNotify";
+
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -220,20 +219,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyClimantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyClimantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT",
-            "ClaimantDisAgreeRepaymentPlanNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT",
-            "ClaimantDisAgreedRepaymentPlanNotifyLip"
+            NOTIFY_EVENT,
+            "ClaimantResponseNotAgreedRepaymentNotify"
         );
 
         //complete the Robotics notification
@@ -312,22 +303,13 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to all parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -475,20 +457,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent"
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -538,28 +512,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent"
-        );
-
-        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent2,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT2_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent2"
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -664,22 +622,13 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
-        //complete the Respondent1 notification
-        ExternalTask notifyRespondentSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to all parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondentSolicitor1,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_EVENT,
             NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID,
-            variables
-        );
-        //complete the Applicant1 notification
-        ExternalTask notifyApplicantSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicantSolicitor1,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID,
             variables
         );
 
