@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -25,7 +23,7 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteNotifyClaim_whenCalled(boolean twoRespondents) {
+    void shouldSuccessfullyCompleteNotifyClaim_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -33,51 +31,26 @@ class AddDefendantLitigationFriendTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            "TWO_RESPONDENT_REPRESENTATIVES", twoRespondents)
-        );
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to applicant
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_LITIGATION_FRIEND_ADDED",
-            "LitigationFriendAddedNotifyApplicantSolicitor1",
-            variables
-        );
-
-        //complete the CC notification to respondent solicitor 1
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_LITIGATION_FRIEND_ADDED",
-            "LitigationFriendAddedNotifyRespondentSolicitor1",
-            variables
-        );
-
-        if (twoRespondents) {
-            //complete the CC notification to respondent solicitor 2
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_FOR_LITIGATION_FRIEND_ADDED",
-                "LitigationFriendAddedNotifyRespondentSolicitor2",
+                "NOTIFY_EVENT",
+                "LitigationFriendAddedNotifier",
                 variables
-            );
-        }
+        );
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);

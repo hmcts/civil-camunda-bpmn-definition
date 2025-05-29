@@ -39,16 +39,24 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true",
-        "true, true, false, false",
-        "true, false, true, false",
-        "true, false, false, true",
-        "false, true, true, true",
-        "false, true, false, true",
-        "false, false, true, true",
-        "false, false, false, true"
+        "true, true, true, true, true",
+        "true, true, true, false, false",
+        "true, false, true, true, false",
+        "true, false, true, false, true",
+        "false, true, true, true, true",
+        "false, true, true, false, true",
+        "false, false, true, true, true",
+        "false, false, true, false, true",
+        "true, true, false, true, true",
+        "true, true, false, false, false",
+        "true, false, false, true, false",
+        "true, false, false, false, true",
+        "false, true, false, true, true",
+        "false, true, false, false, true",
+        "false, false, false, true, true",
+        "false, false, false, false, true"
     })
-    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled,
+    void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPClaimant, boolean dashboardServiceEnabled,
                                     boolean isJoFeedLive) {
 
         //assert process has started
@@ -64,7 +72,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive
+            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
+            LIP_CASE, isLiPClaimant
             ));
 
         //complete the start business process
@@ -79,18 +88,19 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
         ExternalTask docmosisTask;
 
-        //complete generate dj form claimant spec activity
-        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
-                                   GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
-        );
-        //complete generate dj form claimant spec activity
-        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                                   GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
-                                   GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
-        );
+        // If the case is NOT Lip v Lip then complete the generation tasks
+        if (!(isLiPClaimant && isLiPDefendant)) {
+            docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
+                    GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
+            );
+            docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
+                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
+                    GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
+            );
+        }
 
         //complete call to CJES for default Judgment
         ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -100,8 +110,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             SEND_JUDGMENT_DETAILS_TO_CJES,
             SEND_JUDGMENT_DETAILS_TO_CJES_ACTIVITY_ID
         );
-        //end business process
 
+        // Continue with the rest of the process as before
         if (!isLiPDefendant) {
             //complete the notification to Respondent
             ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -112,9 +122,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
-
-        } else if (isLiPDefendant) {
-            //complete the notification to LiP respondent
+        } else { // Lip v Lip: different notification
             ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 respondent1LIpNotification,
@@ -144,17 +152,19 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                     CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_DEFENDANT_ACTIVITY_ID,
                     variables
                 );
-
-                //complete generate dashboard notification to claimant
-                ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    claimantDashboardNotification,
-                    PROCESS_CASE_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
-                    CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
-                    variables
-                );
             }
+        }
+
+        if (dashboardServiceEnabled && isLiPClaimant) {
+            //complete generate dashboard notification to claimant
+            ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_DJ_NON_DIVERGENT_CLAIMANT_ACTIVITY_ID,
+                variables
+            );
         }
 
         //complete the notification to Claimant
