@@ -16,10 +16,11 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
             = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "updateClaimStateAfterTranslateDocumentUploadedID";
-    public static final String CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER = "ClaimContinuingOnlineSpecNotifier";
+    public static final String CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER = "ContinuingOnlineSpecClaimNotifier";
     //notify RPA
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public UploadTranslatedClaimIssueDocumentTest() {
         super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
