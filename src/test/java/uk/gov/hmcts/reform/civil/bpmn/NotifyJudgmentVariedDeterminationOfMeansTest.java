@@ -16,6 +16,14 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS";
     public static final String PROCESS_ID = "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String JUDGMENT_VARIED_DETERMINATION_OF_MEANS_NOTIFY_PARTIES = "JudgmentVariedDeterminationOfMeansNotifyParties";
+    public static final String GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT = "GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT";
+    public static final String GENERATE_DEFENDANT_JUDGMENT_BY_DETERMINATION_DOC = "GenerateDefendantJudgmentByDeterminationDoc";
+    public static final String GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT = "GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT";
+    public static final String GENERATE_CLAIMANT_JUDGMENT_BY_DETERMINATION_DOC = "GenerateClaimantJudgmentByDeterminationDoc";
+    public static final String SEND_JUDGMENT_DETAILS_CJES = "SEND_JUDGMENT_DETAILS_CJES";
+    public static final String SEND_JUDGMENT_DETAILS_TO_CJES = "SendJudgmentDetailsToCJES";
 
     public NotifyJudgmentVariedDeterminationOfMeansTest() {
         super("notify_judgment_varied_determination_of_means.bpmn", "NOTIFY_JUDGMENT_VARIED_DETERMINATION_OF_MEANS");
@@ -33,89 +41,53 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+                ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+                TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+                UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
         variables.put("judgmentRecordedReason", "DETERMINATION_OF_MEANS");
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
         //complete call to CJES for edit Judgment
         ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendJudgmentDetailsToCJES,
-            PROCESS_CASE_EVENT,
-            "SEND_JUDGMENT_DETAILS_CJES",
-            "SendJudgmentDetailsToCJES"
+                sendJudgmentDetailsToCJES,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES,
+                SEND_JUDGMENT_DETAILS_TO_CJES
         );
         //generate judgment determination doc for claimant
         ExternalTask claimantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantDoc,
-            PROCESS_CASE_EVENT,
-            "GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT",
-            "GenerateClaimantJudgmentByDeterminationDoc"
+                claimantDoc,
+                PROCESS_CASE_EVENT,
+                GEN_JUDGMENT_BY_DETERMINATION_DOC_CLAIMANT,
+                GENERATE_CLAIMANT_JUDGMENT_BY_DETERMINATION_DOC
         );
         //generate judgment determination doc for defendant
         ExternalTask defendantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantDoc,
-            PROCESS_CASE_EVENT,
-            "GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT",
-            "GenerateDefendantJudgmentByDeterminationDoc"
+                defendantDoc,
+                PROCESS_CASE_EVENT,
+                GEN_JUDGMENT_BY_DETERMINATION_DOC_DEFENDANT,
+                GENERATE_DEFENDANT_JUDGMENT_BY_DETERMINATION_DOC
         );
         //complete the notification to Claimant
         ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-            "NotifyClaimantJudgmentVariedDeterminationOfMeans",
-            variables
+                claimantNotification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                JUDGMENT_VARIED_DETERMINATION_OF_MEANS_NOTIFY_PARTIES,
+                variables
         );
-
-        if (!isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_SOLICITOR1_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-                "NotifyDefendantVariedDeterminationOfMeans1",
-                variables
-            );
-
-            if (twoRepresentatives) {
-                //complete the notification to Respondent2
-                ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_SOLICITOR2_DEFENDANT_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-                    "NotifyDefendantVariedDeterminationOfMeans2",
-                    variables
-                );
-            }
-        }
-
-        if (isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_DEFENDANT1_LIP_JUDGMENT_VARIED_DETERMINATION_OF_MEANS",
-                "NotifyDefendantLipVariedDeterminationOfMeans",
-                variables
-            );
-        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -138,19 +110,19 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendJudgement,
-            PROCESS_CASE_EVENT,
-            "SEND_JUDGMENT_DETAILS_CJES",
-            "SendJudgmentDetailsToCJES"
+                sendJudgement,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES,
+                SEND_JUDGMENT_DETAILS_TO_CJES
         );
 
         //end business process
