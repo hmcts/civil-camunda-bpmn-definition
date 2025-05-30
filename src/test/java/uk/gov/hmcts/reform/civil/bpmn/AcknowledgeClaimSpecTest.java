@@ -15,6 +15,8 @@ class AcknowledgeClaimSpecTest extends BpmnBaseTest {
     private static final String GENERATE_CERTIFICATE_ACTIVITY_ID = "AcknowledgeClaimGenerateAcknowledgementOfClaimForSpec";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    public static final String ACKNOWLEDGE_CLAIM_SPEC_NOTIFY_PARTIES = "AcknowledgeClaimSpecNotifyParties";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public AcknowledgeClaimSpecTest() {
         super("acknowledge_claim_spec.bpmn", "ACKNOWLEDGE_CLAIM_PROCESS_ID_SPEC");
@@ -31,31 +33,31 @@ class AcknowledgeClaimSpecTest extends BpmnBaseTest {
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness,
-                                   START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT,
-                                   START_BUSINESS_ACTIVITY);
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY);
 
         //complete the document generation
         ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(documentGeneration,
-                                   PROCESS_CASE_EVENT,
-                                   GENERATE_ACKNOWLEDGEMENT_OF_CLAIM,
-                                   GENERATE_CERTIFICATE_ACTIVITY_ID);
+                PROCESS_CASE_EVENT,
+                GENERATE_ACKNOWLEDGEMENT_OF_CLAIM,
+                GENERATE_CERTIFICATE_ACTIVITY_ID);
 
         //complete the notification to relevant parties
         ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_EVENT",
-                                   "AcknowledgeSpecClaimNotifier");
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                ACKNOWLEDGE_CLAIM_SPEC_NOTIFY_PARTIES);
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
         );
 
         //end business process
