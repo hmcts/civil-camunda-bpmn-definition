@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
@@ -188,8 +189,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, true,
-                CLAIM_ISSUE_BILINGUAL, false,
-                JO_ONLINE_LIVE_ENABLED, false
+                CLAIM_ISSUE_BILINGUAL, false
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -251,8 +251,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertFalse(processInstance.isEnded());
     }
 
-    @Test
-    void shouldRunProcess_ClaimIsInFullAdmitRejectRepayment() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepayment(boolean joEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -264,7 +265,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JO_ONLINE_LIVE_ENABLED, joEnabled
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -287,8 +289,82 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimIsInPartAdmitRejectPayment() {
+    @ParameterizedTest
+    @CsvSource({"true,false", "false,true"})
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshParty(boolean isRespondentBilingual, boolean isClaimantBilingual) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
+            BILINGUAL_DOCS, false,
+            WELSH_ENABLED, true,
+            JO_ONLINE_LIVE_ENABLED, false));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,false", "true, true"})
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshFTisOff(boolean isClaimantBilingual, boolean isRespondentBilingual) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
+            BILINGUAL_DOCS, false,
+            WELSH_ENABLED, false,
+            JO_ONLINE_LIVE_ENABLED, false));
+
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        notifyRespondentClaimantRejectRepayment();
+        notifyClaimantClaimantRejectRepayment();
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInPartAdmitRejectPayment(boolean joEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -300,7 +376,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.PART_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
                 LIP_JUDGMENT_ADMISSION, false,
-                CLAIM_ISSUE_BILINGUAL, false
+                CLAIM_ISSUE_BILINGUAL, false,
+                JO_ONLINE_LIVE_ENABLED, joEnabled
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -394,6 +471,103 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenDefendantBilingual_EnglishToWelshDisabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, false,
+            RESPONDENT_BILINGUAL, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenDefendantBilingual_EnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true,
+            BILINGUAL_DOCS, false,
+            CLAIM_ISSUE_BILINGUAL, false,
+            WELSH_ENABLED, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenBothBilingual_EnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, false,
+            BILINGUAL_DOCS, false,
+            CLAIM_ISSUE_BILINGUAL, true,
+            WELSH_ENABLED, false
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
     void shouldRunProcess_ClaimIssueInBilingual() {
 
         //assert process has started
@@ -454,6 +628,39 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @Test
+    void shouldRunProcess_whenFullDefenceNotProceedAndDefendantNocOnlineEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_NOT_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, false,
+            DEFENDANT_NOC_ONLINE, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void shouldRunProcess_ClaimIsInFullAdmitRepaymentAcceptedAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
@@ -466,6 +673,92 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, true,
+            IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        generateJudgmentByAdmissionPdf();
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
+        if (isRpaLiveFeed) {
+            generateJoRPAContinuousFeed();
+        }
+        createClaimantDashboardNotificationForJOIssued();
+        createDefendantDashboardNotificationForJOIssued();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInFullAdmitRepaymentRejectedJBAAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, true,
+            IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        generateJudgmentByAdmissionPdf();
+        notifyRespondentClaimantConfirmsToProceed();
+        notifyApplicantClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
+        if (isRpaLiveFeed) {
+            generateJoRPAContinuousFeed();
+        }
+        createClaimantDashboardNotificationForJOIssued();
+        createDefendantDashboardNotificationForJOIssued();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInPartAdmitRepaymentRejectedJBAAndJudgmentOnlineLive(boolean isRpaLiveFeed) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_REJECT_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
