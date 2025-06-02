@@ -19,29 +19,18 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "NOTIFY_CLAIM_DETAILS";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_DETAILS_CC";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS
-        = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_DETAILS";
-
-    private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_PROCEEDS_IN_CASEMAN";
+    public static final String NOTIFY_EVENT
+        = "NOTIFY_EVENT";
 
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE =
         "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
-        = "NotifyClaimDetailsRespondentSolicitor1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID
-        = "NotifyClaimDetailsApplicantSolicitor1CC";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID
-        = "NotifyClaimDetailsRespondentSolicitor2";
+    private static final String NOTIFY_PARTIES
+        = "UnspecNotifyClaimDetailsNotifier";
 
     private static final String NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID =
-        "NotifyClaimDetailsProceedOfflineApplicantSolicitor1CC";
+        "ClaimProceedsOfflineNotifyApplicantSolicitor";
 
     private static final String NOTIFY_RPA_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
@@ -84,17 +73,8 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the CC notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
-                                   PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC,
-                                   NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID,
+                                   NOTIFY_EVENT,
+                                   NOTIFY_PARTIES,
                                    variables
         );
 
@@ -148,31 +128,10 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_PARTIES,
             variables
         );
-
-        //complete the CC notification
-        ExternalTask notificationCcTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationCcTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID,
-            variables
-        );
-
-        if (twoRespondentRepresentatives) {
-            //complete the additional defendant solicitor notification
-            ExternalTask secondSolicitorNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(secondSolicitorNotificationTask,
-                                       PROCESS_CASE_EVENT,
-                                       NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS,
-                                       NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID,
-                                       variables
-            );
-        }
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -218,18 +177,8 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the CC notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_PARTIES,
             variables
         );
 
@@ -247,7 +196,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             proceedOfflineTask1,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE,
+            NOTIFY_EVENT,
             NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID
         );
 
@@ -289,26 +238,15 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification
+        //complete the notification to all parties
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_PARTIES,
             variables
         );
-
-        //complete the CC notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID,
-            variables
-        );
-
         //Proceed Offline
         ExternalTask proceedOfflineTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -341,7 +279,7 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             proceedOfflineTask1,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE,
+            NOTIFY_EVENT,
             NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID
         );
 
@@ -389,34 +327,13 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to respondent 1
-        if (!unrepresentedDefendant1) {
-            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondentNotification,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS,
-                    NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_ACTIVITY_ID
-            );
-        }
-
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC,
-                NOTIFY_RESPONDENT_SOLICITOR_1_CLAIM_DETAILS_CC_ACTIVITY_ID,
-                variables
+        //complete the notification to all parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notifyParties,
+                                   PROCESS_CASE_EVENT,
+                                       NOTIFY_EVENT,
+                                       NOTIFY_PARTIES
         );
-
-        if (!unrepresentedDefendant2) {
-            //complete the additional defendant solicitor notification
-            ExternalTask secondSolicitorNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(secondSolicitorNotificationTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS,
-                    NOTIFY_RESPONDENT_SOLICITOR_2_CLAIM_DETAILS_ACTIVITY_ID,
-                    variables
-            );
-        }
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
