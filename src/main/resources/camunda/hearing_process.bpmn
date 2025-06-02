@@ -179,10 +179,10 @@
       <bpmn:outgoing>Flow_08usjdu</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0uo8t7q" name="No" sourceRef="Gateway_1ifeoi9" targetRef="Gateway_0as7ets">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty WELSH_ENABLED || WELSH_ENABLED==false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED) || ((empty flowFlags.CLAIM_ISSUE_BILINGUAL || !flowFlags.CLAIM_ISSUE_BILINGUAL) &amp;&amp; (empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL || !flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL) &amp;&amp; (empty flowFlags.BILINGUAL_DOCS || !flowFlags.BILINGUAL_DOCS))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_08usjdu" name="Yes" sourceRef="Gateway_1ifeoi9" targetRef="ServiceRequestAPI">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${WELSH_ENABLED==true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED) &amp;&amp; ((!empty flowFlags.CLAIM_ISSUE_BILINGUAL &amp;&amp; flowFlags.CLAIM_ISSUE_BILINGUAL) || (!empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL &amp;&amp; flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL) || (!empty flowFlags.BILINGUAL_DOCS &amp;&amp; flowFlags.BILINGUAL_DOCS))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_0bkm1zk">
       <bpmn:text>Two Respondent Representatives?</bpmn:text>
@@ -227,6 +227,9 @@ claimant ?</bpmn:text>
         <dc:Bounds x="1260" y="197" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateHearingForm_di" bpmnElement="GenerateHearingForm">
+        <dc:Bounds x="350" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0z829gt_di" bpmnElement="Gateway_0z829gt" isMarkerVisible="true">
         <dc:Bounds x="1065" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -251,15 +254,12 @@ claimant ?</bpmn:text>
       <bpmndi:BPMNShape id="Gateway_013w7to_di" bpmnElement="Gateway_013w7to" isMarkerVisible="true">
         <dc:Bounds x="1545" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1k64586" bpmnElement="SendHearingToClaimantLIP">
-        <dc:Bounds x="530" y="490" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_12kprud" bpmnElement="Gateway_0as7ets" isMarkerVisible="true">
         <dc:Bounds x="555" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GenerateHearingForm_di" bpmnElement="GenerateHearingForm">
-        <dc:Bounds x="350" y="197" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1k64586" bpmnElement="SendHearingToClaimantLIP">
+        <dc:Bounds x="530" y="490" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ifeoi9_di" bpmnElement="Gateway_1ifeoi9" isMarkerVisible="true">
         <dc:Bounds x="465" y="212" width="50" height="50" />
@@ -267,15 +267,15 @@ claimant ?</bpmn:text>
           <dc:Bounds x="452" y="182" width="82" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0d4cmye_di" bpmnElement="Association_0d4cmye">
-        <di:waypoint x="582" y="214" />
-        <di:waypoint x="588" y="151" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0bkm1zk_di" bpmnElement="TextAnnotation_0bkm1zk">
         <dc:Bounds x="1030" y="300" width="120" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1ekyudw_di" bpmnElement="TextAnnotation_1ekyudw">
         <dc:Bounds x="700" y="120" width="100" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_175xode_di" bpmnElement="TextAnnotation_175xode">
+        <dc:Bounds x="540" y="110" width="100" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
@@ -398,14 +398,6 @@ claimant ?</bpmn:text>
         <di:waypoint x="670" y="237" />
         <di:waypoint x="725" y="237" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0dg0e62_di" bpmnElement="Association_0dg0e62">
-        <di:waypoint x="1090" y="262" />
-        <di:waypoint x="1090" y="300" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0hxb3ro_di" bpmnElement="Association_0hxb3ro">
-        <di:waypoint x="750" y="212" />
-        <di:waypoint x="750" y="161" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0uo8t7q_di" bpmnElement="Flow_0uo8t7q">
         <di:waypoint x="515" y="237" />
         <di:waypoint x="555" y="237" />
@@ -422,10 +414,18 @@ claimant ?</bpmn:text>
           <dc:Bounds x="961" y="602" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="TextAnnotation_175xode_di" bpmnElement="TextAnnotation_175xode">
-        <dc:Bounds x="540" y="110" width="100" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0dg0e62_di" bpmnElement="Association_0dg0e62">
+        <di:waypoint x="1090" y="262" />
+        <di:waypoint x="1090" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0hxb3ro_di" bpmnElement="Association_0hxb3ro">
+        <di:waypoint x="750" y="212" />
+        <di:waypoint x="750" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0d4cmye_di" bpmnElement="Association_0d4cmye">
+        <di:waypoint x="582" y="214" />
+        <di:waypoint x="588" y="151" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -70,7 +70,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
@@ -138,7 +137,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1 All Responses Received > Divergent Response
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
@@ -213,7 +211,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -293,7 +290,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -374,7 +370,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1 All Responses Received > Divergent Response
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
@@ -448,7 +443,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -537,7 +531,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
@@ -611,7 +604,6 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", false);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, false,
@@ -686,9 +678,10 @@ class HearingProcessTest extends BpmnBaseTest {
 
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
-        variables.put("WELSH_ENABLED", true);
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true,
             UNREPRESENTED_DEFENDANT_ONE, false,
             ONE_RESPONDENT_REPRESENTATIVE, true,
             LIP_CASE, true,
