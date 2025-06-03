@@ -195,7 +195,7 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('install-dependencies')
   }
 
-  afterSuccess('smoketest:preview') {
+  afterAlways('smoketest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
@@ -207,7 +207,7 @@ withPipeline(type, product, component) {
     }
   }
 
-  afterSuccess('functionalTest:preview') {
+  afterAlways('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
@@ -233,7 +233,7 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('install-dependencies')
   }
 
-  afterSuccess('smoketest:aat') {
+  afterAlways('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
@@ -241,6 +241,9 @@ withPipeline(type, product, component) {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
     uploadBpmnDiagrams('prod')
+  }
+
+  afterAlways('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 }
