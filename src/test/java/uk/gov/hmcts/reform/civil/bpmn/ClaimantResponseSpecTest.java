@@ -758,7 +758,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowFlags", Map.of(
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true
+            WELSH_ENABLED, true,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true
         ));
 
         // complete the start business process
