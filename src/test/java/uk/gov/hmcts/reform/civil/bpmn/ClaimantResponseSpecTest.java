@@ -22,6 +22,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "ClaimantResponseGenerateDirectionsQuestionnaire";
+    private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_FOR_TRANSLATION_ACTIVITY_ID
+        = "ClaimantResponseGenerateDirectionsQuestionnaireForTranslation";
     private static final String GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID = "ClaimantGenerateDQMeditation";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
@@ -744,4 +746,44 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
         );
     }
+
+    @Test
+    void shouldSuccessfullyCompleteWhenDefendantIsBilingual() {
+        // assert process has started
+        assertFalse(processInstance.isEnded());
+
+        // assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowFlags", Map.of(
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true
+        ));
+
+        // complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDQ,
+            PROCESS_CASE_EVENT,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE_FOR_TRANSLATION_ACTIVITY_ID
+        );
+
+        // end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
 }
