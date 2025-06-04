@@ -12,11 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBaseGASpecTest {
 
-    private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
-    private static final String WELSH_ENABLED = "WELSH_ENABLED";
-
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
+    private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
+    private static final String WELSH_ENABLED = "WELSH_ENABLED";
     private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
@@ -31,12 +30,17 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
         //deploy process
         startBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH,
-                                                "start_business_process_in_general_application.bpmn"))
+            .addClasspathResource(String.format(
+                DIAGRAM_PATH,
+                "start_business_process_in_general_application.bpmn"
+            ))
             .deploy();
         endBusinessProcessDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process_without_WA_task.bpmn"))
+            .addClasspathResource(String.format(
+                DIAGRAM_PATH,
+                "end_general_application_business_process_without_WA_task.bpmn"
+            ))
             .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
@@ -45,11 +49,11 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
         processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
-  @Test
+    @Test
     void shouldPauseNotificationAndStateChangeForWelshApplication() {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            WELSH_ENABLED,"true"));
+            WELSH_ENABLED, "true"));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -63,25 +67,25 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             variables
         );
 
-      //assigne of roles
-      ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
-      assertCompleteExternalTask(
-          assignRoles,
-          APPLICATION_PROCESS_CASE_EVENT,
-          ASSIGNIN_OF_ROLES_EVENT,
-          ASSIGNIN_OF_ROLES_ID,
-          variables
-      );
+        //assigne of roles
+        ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignRoles,
+            APPLICATION_PROCESS_CASE_EVENT,
+            ASSIGNIN_OF_ROLES_EVENT,
+            ASSIGNIN_OF_ROLES_ID,
+            variables
+        );
 
-      //complete the document generation
-      ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
-      assertCompleteExternalTask(
-          documentGeneration,
-          APPLICATION_PROCESS_CASE_EVENT,
-          GENERATE_DRAFT_DOCUMENT,
-          GENERATE_DRAFT_DOCUMENT_ID,
-          variables
-      );
+        //complete the document generation
+        ExternalTask documentGeneration = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            documentGeneration,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_DRAFT_DOCUMENT,
+            GENERATE_DRAFT_DOCUMENT_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
