@@ -28,7 +28,7 @@ public class CreateClaimLipTest extends BpmnBaseTest {
 
     //Notify applicant 1 claim submitted
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    public static final String APPLICANT_CLAIM_SUBMITTED_NOTIFIER = "ApplicantClaimSubmittedNotifier";
+    public static final String APPLICANT_CLAIM_SUBMITTED_NOTIFIER = "ClaimSubmittedApplicantNotifier";
 
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
