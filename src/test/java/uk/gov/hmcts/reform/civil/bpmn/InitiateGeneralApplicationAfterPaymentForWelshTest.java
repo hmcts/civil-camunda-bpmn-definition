@@ -46,7 +46,7 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
     }
 
   @Test
-    void shouldNotifyTranslatedDocumentUploaded() {
+    void shouldPauseNotificationAndStateChangeForWelshApplication() {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             WELSH_ENABLED,"true"));
