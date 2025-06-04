@@ -707,7 +707,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the notification to respondent
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
