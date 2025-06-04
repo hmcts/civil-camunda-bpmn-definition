@@ -33,10 +33,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1Lip";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
-    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED =
-        "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
-    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
-        "ClaimantAgreedSettledPartAdmitNotifyLip";
+    private static final String CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID =
+        "ClaimantResponseAgreedSettledPartAdmitNotify";
+    private static final String CLAIMANT_RESPONSE_NOT_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseNotAgreedRepaymentNotify";
+    private static final String CLAIMANT_RESPONSE_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseAgreedRepaymentNotify";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
     private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantResponseConfirmsNotToProceedNotify";
@@ -85,8 +85,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT1_FOR_CLAIMANT_AGREED_REPAYMENT",
-            "ClaimantAgreedRepaymentNotifyRespondent1"
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_AGREED_REPAYMENT_ACTIVITY_ID
         );
 
         //complete the Robotics notification
@@ -574,8 +574,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID
         );
         createDefendantDashboardNotification();
 
@@ -675,6 +675,56 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        createDefendantDashboardNotification();
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteClaimantResponse_WhenApplicantRejectRepayment() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_NOT_AGREED_REPAYMENT_ACTIVITY_ID
+        );
+
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+            variables
+        );
         createDefendantDashboardNotification();
 
         //end business process
