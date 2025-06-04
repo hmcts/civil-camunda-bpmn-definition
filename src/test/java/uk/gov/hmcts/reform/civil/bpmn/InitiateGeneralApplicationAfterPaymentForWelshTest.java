@@ -5,8 +5,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -15,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBaseGASpecTest {
 
     private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
-    private static final String LIP_APPLICANT = "LIP_APPLICANT";
-    private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     private static final String WELSH_ENABLED = "WELSH_ENABLED";
 
