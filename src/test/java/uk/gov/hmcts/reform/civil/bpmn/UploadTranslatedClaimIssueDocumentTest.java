@@ -16,7 +16,7 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
             = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "updateClaimStateAfterTranslateDocumentUploadedID";
-    public static final String CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER = "ContinuingOnlineSpecClaimNotifier";
+    public static final String CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER = "ContinuingClaimOnlineSpecClaimNotifier";
     //notify RPA
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
