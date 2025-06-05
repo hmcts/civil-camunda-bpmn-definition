@@ -257,13 +257,15 @@
       <bpmn:incoming>Flow_0mdk6wm</bpmn:incoming>
       <bpmn:outgoing>Flow_0ce9o0c</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_09y2h07" name="Claimant represented?">
+    <bpmn:exclusiveGateway id="Gateway_09y2h07" name="Claimant represented?" default="Flow_1cbdzp4"
+>
       <bpmn:incoming>Flow_0ce9o0c</bpmn:incoming>
       <bpmn:outgoing>Flow_0wambq9</bpmn:outgoing>
       <bpmn:outgoing>Flow_0m7rqcj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1cbdzp4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0m7rqcj" name="Yes" sourceRef="Gateway_09y2h07" targetRef="NotifyRoboticsOnContinuousFeed">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES || flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="CreateIssueClaimDashboardNotificationsForApplicant1" name="Create applicant 1 dashboard notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -285,6 +287,7 @@
       <bpmn:incoming>Flow_1trj012</bpmn:incoming>
       <bpmn:incoming>Flow_10s3q9k</bpmn:incoming>
       <bpmn:incoming>Flow_0m7rqcj</bpmn:incoming>
+      <bpmn:incoming>Flow_1cbdzp4</bpmn:incoming>
       <bpmn:outgoing>Flow_1g36kc5</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_1x7sf84">
@@ -301,6 +304,7 @@
       <bpmn:incoming>Flow_1kgddyt</bpmn:incoming>
       <bpmn:outgoing>Flow_0mdk6wm</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cbdzp4" sourceRef="Gateway_09y2h07" targetRef="NotifyRoboticsOnContinuousFeed" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -641,6 +645,12 @@
         <di:waypoint x="2340" y="350" />
         <di:waypoint x="2360" y="350" />
         <di:waypoint x="2360" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cbdzp4_di" bpmnElement="Flow_1cbdzp4">
+        <di:waypoint x="1935" y="450" />
+        <di:waypoint x="2123" y="450" />
+        <di:waypoint x="2123" y="480" />
+        <di:waypoint x="2310" y="480" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
