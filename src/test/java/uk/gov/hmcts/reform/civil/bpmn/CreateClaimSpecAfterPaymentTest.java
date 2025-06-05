@@ -417,73 +417,73 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         }
     }*/
 
-    @Test
-    void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
+        @Test
+        void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
 
-        //assert process has started
-        assertFalse(processInstance.isEnded());
+            //assert process has started
+            assertFalse(processInstance.isEnded());
 
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+            //assert message start event
+            assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
-        variables.put(FLOW_FLAGS, Map.of(
-                BULK_CLAIM_ENABLED, true,
-                LIP_CASE, true,
-                GENERAL_APPLICATION_ENABLED, true,
-                UNREPRESENTED_DEFENDANT_ONE, true,
-                PIP_ENABLED, true,
-                CLAIM_ISSUE_BILINGUAL, true
-        ));
+            VariableMap variables = Variables.createVariables();
+            variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
+            variables.put(FLOW_FLAGS, Map.of(
+                    BULK_CLAIM_ENABLED, true,
+                    LIP_CASE, true,
+                    GENERAL_APPLICATION_ENABLED, true,
+                    UNREPRESENTED_DEFENDANT_ONE, true,
+                    PIP_ENABLED, true,
+                    CLAIM_ISSUE_BILINGUAL, true
+            ));
 
-        //complete the start business process
-        startBusinessProcess(variables);
+            //complete the start business process
+            startBusinessProcess(variables);
 
-        //Generate Lip claimant claim form
-        ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                generateLipClaimantClaimForm,
-                PROCESS_CASE_EVENT,
-                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
-                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
-        );
+            //Generate Lip claimant claim form
+            ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                    generateLipClaimantClaimForm,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+                    GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
 
-        //Generate Lip defendant claim form
-        ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                generateLipDefendantClaimForm,
-                PROCESS_CASE_EVENT,
-                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
-                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
-        );
+            //Generate Lip defendant claim form
+            ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                    generateLipDefendantClaimForm,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+                    GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            );
 
-        //Notify Lip Claimant claim submission
-        ExternalTask notifyLipClaimantClaimSubmission = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                notifyLipClaimantClaimSubmission,
-                PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                CLAIM_SUBMISSION_NOTIFY_PARTIES
-        );
+            //Notify Lip Claimant claim submission
+            ExternalTask notifyLipClaimantClaimSubmission = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                    notifyLipClaimantClaimSubmission,
+                    PROCESS_CASE_EVENT,
+                    NOTIFY_EVENT,
+                    CLAIM_SUBMISSION_NOTIFY_PARTIES
+            );
 
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
+            //end business process
+            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+            completeBusinessProcess(endBusinessProcess);
 
-        assertNoExternalTasksLeft();
+            assertNoExternalTasksLeft();
+        }
+
+        public void documentGeneration(VariableMap variables) {
+            ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                    documentGeneration,
+                    PROCESS_CASE_EVENT,
+                    GENERATE_CLAIM_FORM_EVENT,
+                    GENERATE_CLAIM_FORM_ACTIVITY_ID,
+                    variables
+            );
+        }
     }
-
-    public void documentGeneration(VariableMap variables) {
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
-        );
-    }
-}
 }
 
