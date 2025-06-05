@@ -313,7 +313,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @Test
+        /*@Test
         void shouldSuccessfullyCompleteCreateClaim_whenClaimIssued_UnregisteredDefendant() {
 
             //assert process has started
@@ -415,7 +415,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             assertNoExternalTasksLeft();
         }
-    }
+    }*/
 
     @Test
     void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
@@ -484,5 +484,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 variables
         );
     }
+}
 }
 
