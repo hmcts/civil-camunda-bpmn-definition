@@ -149,6 +149,7 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
                                           LIP_CASE, true,
+                                          WELSH_ENABLED, true,
                                           UNREPRESENTED_DEFENDANT_ONE, false
         ));
 
@@ -182,6 +183,58 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the notification to Respondent
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+            "Activity_0txb7dk",
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotTriggerBulkPrintForClaimantWhenWelshFlagDisabledForLipCase() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
+                                          LIP_CASE, true,
+                                          WELSH_ENABLED, false,
+                                          UNREPRESENTED_DEFENDANT_ONE, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification to Claimant
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+            "Activity_0nyrqab",
+            variables
+        );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -212,6 +265,7 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
                                           LIP_CASE, false,
+                                          WELSH_ENABLED, true,
                                           UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
@@ -255,7 +309,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -293,7 +346,8 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(UNREPRESENTED_DEFENDANT_ONE, true
+        variables.put("flowFlags", Map.of(UNREPRESENTED_DEFENDANT_ONE, true,
+                                          WELSH_ENABLED, true
         ));
 
         //complete the start business process
@@ -344,6 +398,57 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
     }
 
     @Test
+    void shouldNotTriggerBulkPrintForDefendantWhenLipDefendantAndWelshFlagDisabledWithoutDashboardEvents() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(UNREPRESENTED_DEFENDANT_ONE, true,
+                                          WELSH_ENABLED, false
+        ));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification to Claimant
+        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondentNotification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+            "Activity_0nyrqab",
+            variables
+        );
+
+        //complete the notification to Respondent
+        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent2Notification,
+            PROCESS_CASE_EVENT,
+            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+            "Activity_0txb7dk",
+            variables
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
     void shouldSuccessfullyTriggerBulkPrintForBothClaimantNDefendantAndDashboardEvents() {
 
         //assert process has started
@@ -355,6 +460,7 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
                                           LIP_CASE, true,
+                                          WELSH_ENABLED, true,
                                           UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
@@ -408,7 +514,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -447,7 +552,8 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
-                                          LIP_CASE, true
+                                          LIP_CASE, true,
+                                          WELSH_ENABLED, true
         ));
 
         //complete the start business process
@@ -490,7 +596,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
             variables
         );
 
-
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -530,6 +635,7 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
                                           LIP_CASE, false,
+                                          WELSH_ENABLED, true,
                                           UNREPRESENTED_DEFENDANT_ONE, false
                                           ));
 

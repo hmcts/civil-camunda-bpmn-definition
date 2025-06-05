@@ -99,7 +99,7 @@
       <bpmn:outgoing>Flow_0a4a3kg</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_08avc9f" sourceRef="Gateway_0zj33b5" targetRef="Activity_0txb7dk">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED)) }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="SendDORToClaimantLIP" name="Trigger Bulk Print for claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -120,14 +120,14 @@
       <bpmn:outgoing>Flow_1737ozj</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_10kpido" name="LiP Claimant" sourceRef="Gateway_1fhcsxk" targetRef="SendDORToClaimantLIP">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE) &amp;&amp; (!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0a4a3kg" name="LiP Defendant" sourceRef="Gateway_0zj33b5" targetRef="SendToDefendantLIP">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE) &amp;&amp; (!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1idq44w" sourceRef="SendDORToClaimantLIP" targetRef="Gateway_0zj33b5" />
     <bpmn:sequenceFlow id="Flow_1wv90dl" sourceRef="Gateway_1fhcsxk" targetRef="Gateway_0zj33b5">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1737ozj" sourceRef="SendToDefendantLIP" targetRef="Activity_0txb7dk" />
     <bpmn:textAnnotation id="TextAnnotation_1kl1nm4">
