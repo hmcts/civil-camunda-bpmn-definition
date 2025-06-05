@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
-  <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID_SPEC" name="Claimant response process spec" isExecutable="true" camunda:historyTimeToLive="P90D">
+  <bpmn:process id="CLAIMANT_RESPONSE_PROCESS_ID_SPEC" name="Claimant response process spec" isExecutable="true" camunda:historyTimeToLive="P90D" camunda:isStartableInTasklist="false">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1oxj7lg" messageRef="Message_0ttrrz3" />
@@ -569,10 +569,10 @@
       <bpmn:outgoing>Flow_18gr26c</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0xdbkqg" sourceRef="Gateway_0innlw7" targetRef="Gateway_PROCEED_OR_NOT_PROCEED">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL != true  or flowFlags.WELSH_ENABLED != true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL != true or flowFlags.WELSH_ENABLED != true) or (flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL and flowFlags.WELSH_ENABLED and  !(flowState == "MAIN.FULL_DEFENCE_PROCEED" or flowState == "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION" or flowState == "MAIN.FULL_ADMIT_PROCEED" or flowState == "MAIN.PART_ADMIT_PROCEED" or flowState == "MAIN.IN_MEDIATION"))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_18gr26c" name="When defendant LIP has selected WELSH as preferred language" sourceRef="Gateway_0innlw7" targetRef="ClaimantResponseGenerateDirectionsQuestionnaireForTranslation">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL and flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_18gr26c" sourceRef="Gateway_0innlw7" targetRef="ClaimantResponseGenerateDirectionsQuestionnaireForTranslation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL and flowFlags.WELSH_ENABLED) and ((flowState == "MAIN.FULL_DEFENCE_PROCEED" or flowState == "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION") or (flowState == "MAIN.FULL_ADMIT_PROCEED" or flowState == "MAIN.PART_ADMIT_PROCEED") or (flowState == "MAIN.IN_MEDIATION") )}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="ClaimantResponseGenerateDirectionsQuestionnaireForTranslation" name="Generate DQ" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -611,6 +611,28 @@
       <bpmn:text>1 Respondent representative</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0yrrfj5" sourceRef="Gateway_0gjh55q" targetRef="TextAnnotation_1l5q3bl" />
+    <bpmn:textAnnotation id="TextAnnotation_0h74uvb">
+      <bpmn:text>If Welsh is not requested or not enabled, OR when welsh AND the case is in a flow state where translation is not needed, due to no DQ</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1z0v6xh" associationDirection="None" sourceRef="Flow_0xdbkqg" targetRef="TextAnnotation_0h74uvb" />
+    <bpmn:textAnnotation id="TextAnnotation_0tf9uhj">
+      <bpmn:text>When defendant LIP has selected WELSH as preferred language
+
+And Welsh enabled,
+
+And the case flowstate, one of:
+
+Full defence proceeding,
+
+Part admission not settled without mediation,
+
+Full admission proceeding,
+
+Part admission proceeding,
+
+In mediation.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1n29786" associationDirection="None" sourceRef="Flow_18gr26c" targetRef="TextAnnotation_0tf9uhj" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="CLAIMANT_RESPONSE_SPEC" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -785,6 +807,15 @@
       <bpmndi:BPMNShape id="BPMNShape_19psry5" bpmnElement="ClaimantResponseGenerateDirectionsQuestionnaireForTranslation">
         <dc:Bounds x="1490" y="1750" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1z0v6xh_di" bpmnElement="Association_1z0v6xh">
+        <di:waypoint x="480" y="520" />
+        <di:waypoint x="371" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1n29786_di" bpmnElement="Association_1n29786">
+        <di:waypoint x="430" y="650" />
+        <di:waypoint x="210" y="950" />
+        <di:waypoint x="214" y="945" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1o3q1xa_di" bpmnElement="TextAnnotation_1o3q1xa">
         <dc:Bounds x="961" y="155" width="110" height="45" />
       </bpmndi:BPMNShape>
@@ -1251,7 +1282,7 @@
         <di:waypoint x="430" y="1790" />
         <di:waypoint x="1490" y="1790" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="329" y="657" width="82" height="66" />
+          <dc:Bounds x="327" y="657" width="88" height="344" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1sx576v_di" bpmnElement="Flow_1sx576v">
@@ -1283,6 +1314,14 @@
         <di:waypoint x="1401" y="1455" />
         <di:waypoint x="1441" y="1464" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0h74uvb_di" bpmnElement="TextAnnotation_0h74uvb">
+        <dc:Bounds x="250" y="210" width="140" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0tf9uhj_di" bpmnElement="TextAnnotation_0tf9uhj">
+        <dc:Bounds x="130" y="945" width="170" height="310" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

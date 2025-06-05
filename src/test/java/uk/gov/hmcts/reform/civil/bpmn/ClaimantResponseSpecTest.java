@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -747,8 +749,10 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         );
     }
 
-    @Test
-    void shouldSuccessfullyCompleteWhenDefendantIsBilingual() {
+    @ParameterizedTest
+    @ValueSource(strings = {"MAIN.FULL_DEFENCE_PROCEED", "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION", "MAIN.FULL_ADMIT_PROCEED",
+        "MAIN.PART_ADMIT_PROCEED", "MAIN.IN_MEDIATION"})
+    void shouldSuccessfullyCompleteWhenDefendantIsBilingual(String flowState) {
         // assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -757,6 +761,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
 
         VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", flowState);
         variables.putValue("flowFlags", Map.of(
             WELSH_ENABLED, true,
             RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true
