@@ -7,7 +7,7 @@
         <camunda:out variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0y1b4y2</bpmn:incoming>
-      <bpmn:outgoing>Flow_122wpi9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vgg3id</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1duzjl5">
       <bpmn:incoming>Flow_0wksds5</bpmn:incoming>
@@ -35,6 +35,7 @@
       <bpmn:outgoing>Flow_12hrz4u</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_PROCEED_OR_NOT_PROCEED">
+      <bpmn:incoming>Flow_0vgg3id</bpmn:incoming>
       <bpmn:outgoing>Flow_FULL_DEFENCE_PROCEED</bpmn:outgoing>
       <bpmn:outgoing>Full_defence_proceed_no_mediation</bpmn:outgoing>
       <bpmn:outgoing>IN_MEDIATION_FLOW</bpmn:outgoing>
@@ -175,7 +176,6 @@
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_Sdo_Enabled">
       <bpmn:incoming>Flow_09ed1dn</bpmn:incoming>
-      <bpmn:incoming>Flow_122wpi9</bpmn:incoming>
       <bpmn:outgoing>Flow_Sdo_Enabled</bpmn:outgoing>
       <bpmn:outgoing>Flow_Sdo_Disabled</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -273,9 +273,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ruvuz3" sourceRef="Activity_0izac4m" targetRef="Gateway_0b7rgfk" />
-    <bpmn:sequenceFlow id="Flow_09ed1dn" name="Not agreed to mediation" sourceRef="mayGoToJdgeReferral" targetRef="Gateway_Sdo_Enabled">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1wvs49g" name="No mediation" sourceRef="Gateway_1scpjza" targetRef="NotifyRoboticsOnContinuousFeed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -312,7 +309,10 @@
     <bpmn:sequenceFlow id="Flow_GA_Enabled" name="GA Enabled" sourceRef="Gateway_02ny4v1" targetRef="defendantLipApplicationOfflineDashboardNotification">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_122wpi9" sourceRef="Activity_1ht8rpf" targetRef="Gateway_Sdo_Enabled" />
+    <bpmn:sequenceFlow id="Flow_09ed1dn" name="Not agreed to mediation" sourceRef="mayGoToJdgeReferral" targetRef="Gateway_Sdo_Enabled">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.AGREED_TO_MEDIATION &amp;&amp; flowFlags.AGREED_TO_MEDIATION)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0vgg3id" sourceRef="Activity_1ht8rpf" targetRef="Gateway_PROCEED_OR_NOT_PROCEED" />
     <bpmn:textAnnotation id="TextAnnotation_1o3q1xa">
       <bpmn:text>2 Respondent representatives</bpmn:text>
     </bpmn:textAnnotation>
@@ -333,18 +333,6 @@
   <bpmn:message id="Message_027t9r1" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_LR_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_LR_INTENTION">
-      <bpmndi:BPMNShape id="Activity_050udn8_di" bpmnElement="Activity_1ht8rpf">
-        <dc:Bounds x="180" y="207" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1duzjl5_di" bpmnElement="Event_1duzjl5">
-        <dc:Bounds x="212" y="92" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0z17wfu_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="112" y="229" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="118" y="272" width="25" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
         <dc:Bounds x="2432" y="502" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -435,6 +423,24 @@
         <dc:Bounds x="2090" y="627" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_050udn8_di" bpmnElement="Activity_1ht8rpf">
+        <dc:Bounds x="180" y="477" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1duzjl5_di" bpmnElement="Event_1duzjl5">
+        <dc:Bounds x="212" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0z17wfu_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="112" y="499" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="118" y="542" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
+        <dc:Bounds x="212" y="459" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248" y="440" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1o3q1xa_di" bpmnElement="TextAnnotation_1o3q1xa">
         <dc:Bounds x="780" y="152" width="110" height="45" />
       </bpmndi:BPMNShape>
@@ -447,23 +453,6 @@
       <bpmndi:BPMNShape id="TextAnnotation_1l5q3bl_di" bpmnElement="TextAnnotation_1l5q3bl">
         <dc:Bounds x="1199" y="797" width="100" height="41" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
-        <dc:Bounds x="212" y="189" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="248" y="170" width="27" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0y1b4y2_di" bpmnElement="Flow_0y1b4y2">
-        <di:waypoint x="148" y="247" />
-        <di:waypoint x="180" y="247" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="168" y="219" width="72" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wksds5_di" bpmnElement="Flow_0wksds5">
-        <di:waypoint x="230" y="189" />
-        <di:waypoint x="230" y="128" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ico438_di" bpmnElement="Flow_1ico438">
         <di:waypoint x="2370" y="520" />
         <di:waypoint x="2432" y="520" />
@@ -691,10 +680,6 @@
           <dc:Bounds x="1970" y="650" width="59" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_122wpi9_di" bpmnElement="Flow_122wpi9">
-        <di:waypoint x="280" y="247" />
-        <di:waypoint x="395" y="247" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1574yb4_di" bpmnElement="Association_1574yb4">
         <di:waypoint x="893" y="229" />
         <di:waypoint x="882" y="197" />
@@ -710,6 +695,21 @@
       <bpmndi:BPMNEdge id="Association_0yrrfj5_di" bpmnElement="Association_0yrrfj5">
         <di:waypoint x="1156" y="775" />
         <di:waypoint x="1212" y="797" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vgg3id_di" bpmnElement="Flow_0vgg3id">
+        <di:waypoint x="280" y="517" />
+        <di:waypoint x="395" y="517" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y1b4y2_di" bpmnElement="Flow_0y1b4y2">
+        <di:waypoint x="148" y="517" />
+        <di:waypoint x="180" y="517" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="219" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wksds5_di" bpmnElement="Flow_0wksds5">
+        <di:waypoint x="230" y="459" />
+        <di:waypoint x="230" y="398" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
