@@ -64,7 +64,6 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                 UNPAID_HEARING_FEE_NOTIFIER
         );
 
-
         //complete the notification to applicant
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(defendantDashboard,
@@ -120,7 +119,6 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                 NOTIFY_EVENT,
                 UNPAID_HEARING_FEE_NOTIFIER
         );
-
 
         //complete the notification to applicant
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
