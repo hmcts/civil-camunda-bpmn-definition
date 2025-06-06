@@ -198,6 +198,7 @@ public abstract class BpmnBaseTest {
         return engine.getExternalTaskService()
             .fetchAndLock(1, WORKER_ID)
             .topic(topicName, 100)
+            .enableCustomObjectDeserialization()
             .execute();
     }
 

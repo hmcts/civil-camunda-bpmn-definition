@@ -27,8 +27,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1_ACTIVITY_ID = "GenerateDashboardNotificationClaimIssueHwfClaimant1";
 
     //Notify applicant 1 claim submitted
-    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT = "NOTIFY_APPLICANT1_CLAIM_SUBMITTED";
-    private static final String NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID = "NotifyApplicant1ClaimSubmitted";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String APPLICANT_CLAIM_SUBMITTED_NOTIFIER = "ClaimSubmittedApplicantNotifier";
 
     public CreateClaimLipTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -81,8 +81,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             claimIssue,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT1_CLAIM_SUBMITTED_EVENT,
-            NOTIFY_APPLICANT1_CLAIM_SUBMITTED__ACTIVITY_ID,
+            NOTIFY_EVENT,
+            APPLICANT_CLAIM_SUBMITTED_NOTIFIER,
             variables
         );
     }
