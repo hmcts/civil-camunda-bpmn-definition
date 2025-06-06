@@ -305,7 +305,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, false,
             CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
             RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
-            BILINGUAL_DOCS, false,
             WELSH_ENABLED, true,
             JO_ONLINE_LIVE_ENABLED, false));
         assertCompleteExternalTask(
@@ -340,7 +339,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, false,
             CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
             RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
-            BILINGUAL_DOCS, false,
             WELSH_ENABLED, false,
             JO_ONLINE_LIVE_ENABLED, false));
 
@@ -517,7 +515,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, false,
             RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true,
-            BILINGUAL_DOCS, false,
             CLAIM_ISSUE_BILINGUAL, false,
             WELSH_ENABLED, true
         ));
@@ -549,7 +546,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             LIP_JUDGMENT_ADMISSION, false,
             RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, false,
-            BILINGUAL_DOCS, false,
             CLAIM_ISSUE_BILINGUAL, true,
             WELSH_ENABLED, false
         ));
