@@ -44,7 +44,7 @@ public class DismissCaseTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-        //complete the claimant notification
+        //complete the notifications to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    "NOTIFY_EVENT",
