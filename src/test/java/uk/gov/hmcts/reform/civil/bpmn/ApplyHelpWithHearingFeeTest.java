@@ -15,11 +15,11 @@ class ApplyHelpWithHearingFeeTest extends BpmnBaseTest {
 
     //CCD CASE EVENT
     public static final String NOTIFY_CLAIMANT_LIP_HELP_WITH_FEES
-        = "NOTIFY_CLAIMANT_LIP_HELP_WITH_FEES";
+        = "NOTIFY_EVENT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_LIP_HELP_WITH_FEES_ACTIVITY_ID
-        = "NotifyClaimantHwf";
+        = "ClaimantLipHelpWithFeesNotifier";
 
     public ApplyHelpWithHearingFeeTest() {
         super("apply_help_with_hearing_fee.bpmn", PROCESS_ID);
