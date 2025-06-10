@@ -13,6 +13,11 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
     private static final String SEND_JUDGMENT_DETAILS_CJES = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
 
+    private static final String UPDATE_CLAIMANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_CLAIMANT";
+    private static final String UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsClaimant";
+    private static final String UPDATE_DEFENDANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_DEFENDANT";
+    private static final String UPDATE_DEFENDANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsDefendant";
+
     public JudgementPaidInFullTest() {
         super("judgement_paid_in_full.bpmn", PROCESS_ID);
     }
@@ -41,6 +46,24 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             SEND_JUDGMENT_DETAILS_CJES,
             SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
+        );
+
+        //complete the claimant dashboard update
+        ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantDashboard,
+            PROCESS_CASE_EVENT,
+            UPDATE_CLAIMANT_DASHBOARD,
+            UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID
+        );
+
+        //complete the defendant dashboard update
+        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantDashboard,
+            PROCESS_CASE_EVENT,
+            UPDATE_DEFENDANT_DASHBOARD,
+            UPDATE_DEFENDANT_DASHBOARD_ACTIVITY_ID
         );
 
         //end business process
