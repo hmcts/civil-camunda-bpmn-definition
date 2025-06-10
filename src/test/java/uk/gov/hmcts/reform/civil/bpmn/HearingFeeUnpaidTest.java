@@ -17,6 +17,13 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "HEARING_FEE_UNPAID";
     public static final String PROCESS_ID = "HEARING_FEE_UNPAID";
 
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String UNPAID_HEARING_FEE_NOTIFIER = "UnpaidHearingFeeNotifier";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1";
+    public static final String CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1 = "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1";
+    public static final String CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1 = "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1";
+
     public HearingFeeUnpaidTest() {
         super("hearing_fee_unpaid.bpmn", "HEARING_FEE_UNPAID");
     }
@@ -33,62 +40,44 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+                TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                DASHBOARD_SERVICE_ENABLED, true,
+                CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to first respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyRespondentSolicitor1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification to second respondent
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_HEARING_FEE_UNPAID",
-                                       "HearingFeeUnpaidNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                UNPAID_HEARING_FEE_NOTIFIER
         );
 
         //complete the notification to applicant
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(defendantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1",
-                                   "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1"
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1,
+                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1
         );
 
         //complete the notification to applicant
         ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1",
-                                   "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1"
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1,
+                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1
         );
 
         //end business process
@@ -109,50 +98,42 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                UNREPRESENTED_DEFENDANT_ONE, true,
+                DASHBOARD_SERVICE_ENABLED, true,
+                CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to first respondent
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyRespondentSolicitor1"
-        );
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_HEARING_FEE_UNPAID",
-                                   "HearingFeeUnpaidNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                UNPAID_HEARING_FEE_NOTIFIER
         );
 
         //complete the notification to applicant
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(defendantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1",
-                                   "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1"
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1,
+                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1
         );
 
         //complete the notification to applicant
         ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1",
-                                   "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1"
+                PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1,
+                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1
         );
 
         //end business process
