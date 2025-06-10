@@ -21,16 +21,17 @@ public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         startBusinessProcess(variables);
 
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyClaimantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicant,
+            notifyClaimantTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_LIP_CLAIMANT_HWF_OUTCOME",
-            "NotifyClaimantHwFOutcome"
+            "NOTIFY_EVENT",
+            "HwFOutcomeNotifyParties"
         );
-        ExternalTask claimant1HwfDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimant1HwfDashboardNotification,
+            dashboardNotificationTask,
             PROCESS_CASE_EVENT,
             "CLAIMANT1_HWF_DASHBOARD_NOTIFICATION",
             "Claimant1HwFDashboardNotification"
