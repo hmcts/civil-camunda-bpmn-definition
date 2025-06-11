@@ -15,8 +15,8 @@ public class ExtendResponseDeadlineTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "EXTEND_RESPONSE_DEADLINE";
     private static final String PROCESS_ID = "EXTEND_RESPONSE_DEADLINE_PROCESS_ID";
-    private static final String NOTIFY_CLAIMANT_EVENT = "NOTIFY_EVENT";
-    private static final String NOTIFY_CLAIMANT_ACTIVITY_NAME = "ExtendResponseDeadlineNotifier";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    private static final String NOTIFY_ACTIVITY_NAME = "ExtendResponseDeadlineNotifier";
 
     public ExtendResponseDeadlineTest() {
         super("extend_response_deadline.bpmn", PROCESS_ID);
@@ -43,8 +43,8 @@ public class ExtendResponseDeadlineTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_CLAIMANT_EVENT,
-            NOTIFY_CLAIMANT_ACTIVITY_NAME,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_NAME,
             variables
         );
 
