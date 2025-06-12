@@ -610,15 +610,14 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @Test
-    void ShouldPauseTheNotificationsForWelshClaimantDuringTranslation_FullAdmit(){
+    void shouldPauseTheNotificationsForWelshClaimantDuringTranslation_FullAdmit() {
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState","MAIN.FULL_ADMISSION" );
+        variables.putValue("flowState", "MAIN.FULL_ADMISSION");
         variables.put(FLOW_FLAGS, Map.of(
             LIP_CASE, true,
-            WELSH_ENABLED,true,
-            CLAIM_ISSUE_BILINGUAL,true
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
         ));
         //complete the start business process
         ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -646,13 +645,13 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
     }
 
     @Test
-    void ShouldPauseTheNotificationsForWelshClaimantDuringTranslation_PartAdmit(){
+    void shouldPauseTheNotificationsForWelshClaimantDuringTranslation_PartAdmit() {
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState","MAIN.PART_ADMISSION" );
+        variables.putValue("flowState", "MAIN.PART_ADMISSION");
         variables.put(FLOW_FLAGS, Map.of(
             LIP_CASE, true,
-            WELSH_ENABLED,true,
-            CLAIM_ISSUE_BILINGUAL,true
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
         ));
         //complete the start business process
         ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
