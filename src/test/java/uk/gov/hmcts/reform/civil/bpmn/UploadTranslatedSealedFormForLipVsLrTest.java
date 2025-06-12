@@ -3,13 +3,10 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Map;
-
-public class UploadTranslatedSealedFormForLipVSLRTest extends BpmnBaseTest {
+public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
 
     public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
     public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
@@ -22,7 +19,7 @@ public class UploadTranslatedSealedFormForLipVSLRTest extends BpmnBaseTest {
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
         = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
 
-    public UploadTranslatedSealedFormForLipVSLRTest() {
+    public UploadTranslatedSealedFormForLipVsLrTest() {
         super("upload_translated_defendant_sealed_form.bpmn", "UPLOAD_TRANSLATED_DEFENDANT_SEALED_FORM");
     }
 
@@ -40,8 +37,8 @@ public class UploadTranslatedSealedFormForLipVSLRTest extends BpmnBaseTest {
             variables
         );
 
-        if (responseType.equals("MAIN.FULL_ADMISSION") || responseType.equals("MAIN.PART_ADMISSION") ||
-            responseType.equals("MAIN.COUNTER_CLAIM")) {
+        if (responseType.equals("MAIN.FULL_ADMISSION") || responseType.equals("MAIN.PART_ADMISSION")
+            || responseType.equals("MAIN.COUNTER_CLAIM")) {
 
             //proceed offline
             ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
