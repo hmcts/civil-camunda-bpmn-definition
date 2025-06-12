@@ -58,12 +58,11 @@ public class GenerateDJFormTest extends BpmnBaseTest {
             variables
         );
 
-
         ExternalTask publishWATask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             publishWATask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_INTERIM_JUDGEMENT",
+            "NOTIFY_INTERIM_JUDGMENT",
             "publishDJWATask",
             variables
         );
