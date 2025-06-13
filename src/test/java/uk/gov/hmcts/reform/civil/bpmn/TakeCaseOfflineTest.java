@@ -24,6 +24,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
     private static final String APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
     public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
     private static final String APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID = "UpdateClaimWithApplicationStatus";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String TAKE_CASE_OFFLINE_NOTIFIER = "TakeCaseOfflineNotifier";
 
     public TakeCaseOfflineTest() {
         super("take_case_offline.bpmn", "TAKE_CASE_OFFLINE");
@@ -40,53 +42,36 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            GENERAL_APPLICATION_ENABLED, false));
+                ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+                TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                rpaNotification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
+        //complete the notification to relevant parties
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyRespondentSolicitor1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification to respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                TAKE_CASE_OFFLINE_NOTIFIER
         );
 
         //end business process
@@ -108,56 +93,36 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
-            UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-            GENERAL_APPLICATION_ENABLED, false
+                UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
+                UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
+                GENERAL_APPLICATION_ENABLED, false
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                rpaNotification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
-        //complete the notification to respondent 1
-        if (!unrepresentedDefendant1) {
-            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondentNotification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor1"
-            );
-        }
-
-        if (!unrepresentedDefendant2) {
-            //complete the notification to respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
+        //complete the notification to relevant parties
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                TAKE_CASE_OFFLINE_NOTIFIER
         );
 
         //end business process
@@ -178,20 +143,20 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            GENERAL_APPLICATION_ENABLED, true,
-            DASHBOARD_SERVICE_ENABLED, true));
+                ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
+                TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                GENERAL_APPLICATION_ENABLED, true,
+                DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //Update General Application Status
@@ -215,68 +180,51 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                rpaNotification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
+        //complete the notification to relevant parties
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyRespondentSolicitor1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification to respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                TAKE_CASE_OFFLINE_NOTIFIER
         );
 
         //Dashboard notification
         ExternalTask mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            mainCaseNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-            "GenerateClaimantDashboardNotificationCaseProceedOffline"
+                mainCaseNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateClaimantDashboardNotificationCaseProceedOffline"
         );
 
         mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            mainCaseNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-            "GenerateDefendantDashboardNotificationCaseProceedOffline"
+                mainCaseNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateDefendantDashboardNotificationCaseProceedOffline"
         );
 
         ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
-            "claimantLipApplicationOfflineDashboardNotification"
+                claimantGaDashboard,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
+                "claimantLipApplicationOfflineDashboardNotification"
         );
 
         ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-            "defendantLipApplicationOfflineDashboardNotification"
+                defendantGaDashboard,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+                "defendantLipApplicationOfflineDashboardNotification"
         );
 
         //end business process
@@ -298,20 +246,20 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
-            UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-            GENERAL_APPLICATION_ENABLED, true,
-            DASHBOARD_SERVICE_ENABLED, true
+                UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
+                UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
+                GENERAL_APPLICATION_ENABLED, true,
+                DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //Update General Application Status
@@ -335,71 +283,51 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            rpaNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+                rpaNotification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
-        //complete the notification to respondent 1
-        if (!unrepresentedDefendant1) {
-            ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondentNotification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor1"
-            );
-        }
-
-        if (!unrepresentedDefendant2) {
-            //complete the notification to respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CASE_TAKEN_OFFLINE",
-                                       "TakeCaseOfflineNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification to applicant
+        //complete the notification to relevant parties
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE",
-                                   "TakeCaseOfflineNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                TAKE_CASE_OFFLINE_NOTIFIER
         );
 
         //Dashboard notification
         ExternalTask mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            mainCaseNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-            "GenerateClaimantDashboardNotificationCaseProceedOffline"
+                mainCaseNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateClaimantDashboardNotificationCaseProceedOffline"
         );
 
         mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            mainCaseNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-            "GenerateDefendantDashboardNotificationCaseProceedOffline"
+                mainCaseNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
+                "GenerateDefendantDashboardNotificationCaseProceedOffline"
         );
 
         ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
-            "claimantLipApplicationOfflineDashboardNotification"
+                claimantGaDashboard,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
+                "claimantLipApplicationOfflineDashboardNotification"
         );
 
         ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-            "defendantLipApplicationOfflineDashboardNotification"
+                defendantGaDashboard,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+                "defendantLipApplicationOfflineDashboardNotification"
         );
 
         //end business process
