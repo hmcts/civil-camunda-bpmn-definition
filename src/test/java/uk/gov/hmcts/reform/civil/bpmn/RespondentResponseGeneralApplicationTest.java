@@ -29,6 +29,7 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
     private static final String TRIGGER_MAIN_CASE_TOPIC = "processGaCaseEvent";
     private static final String TRIGGER_MAIN_CASE_EVENT = "TRIGGER_MAIN_CASE_FROM_GA";
     private static final String VARY_JUDGE_GA_BY_RESP = "VARY_JUDGE_GA_BY_RESP";
+    private static final String WELSH_ENABLED = "WELSH_ENABLED";
 
     public RespondentResponseGeneralApplicationTest() {
         super("respondent_response_general_application.bpmn",
@@ -47,7 +48,8 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            VARY_JUDGE_GA_BY_RESP, isVaryJudgementAppTakenOffline));
+            VARY_JUDGE_GA_BY_RESP, isVaryJudgementAppTakenOffline,
+            WELSH_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -107,6 +109,7 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
 
         assertNoExternalTasksLeft();
     }
+
 
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
