@@ -110,7 +110,6 @@ class RespondentResponseGeneralApplicationTest extends BpmnBaseGAAfterPaymentTes
         assertNoExternalTasksLeft();
     }
 
-
     @Test
     void shouldAbort_whenStartBusinessProcessThrowsAnError() {
         //assert process has started
