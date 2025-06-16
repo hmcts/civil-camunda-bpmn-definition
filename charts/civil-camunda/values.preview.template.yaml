@@ -1,6 +1,3 @@
-tags:
-  civil-ccd-stack: true
-
 spring:
   transaction:
     default-timeout: 180
@@ -234,6 +231,7 @@ xui-webapp:
       LAUNCH_DARKLY_CLIENT_ID: ~
       WA_SUPPORTED_JURISDICTIONS: "IA,PRIVATELAW"
 ccd:
+  enabled: true
   ccd:
     adminWeb:
       enabled: false
@@ -284,6 +282,8 @@ ccd:
       environment:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
+        DATA_STORE_DB_OPTIONS: "?stringtype=unspecified"
+        DATA_STORE_DB_PASSWORD: ${POSTGRES_PASSWORD}
         DATA_STORE_IDAM_KEY: ${CCD_DATA_STORE_S2S_SECRET}
         DATA_STORE_S2S_AUTHORISED_SERVICES: ccd_data,ccd_gw,ccd_ps,bulk_scan_orchestrator,ccpay_bubble,ctsc_work_allocation,em_ccd_orchestrator,xui_webapp,civil_service,ccd_case_document_am_api,aac_manage_case_assignment
         IDAM_API_BASE_URL: https://idam-api.aat.platform.hmcts.net
@@ -299,8 +299,14 @@ ccd:
         CCD_MULTIPARTY_CASE_TYPES: CIVIL
         CCD_MULTIPARTY_EVENTS: DEFENDANT_RESPONSE,ACKNOWLEDGE_CLAIM,CLAIMANT_RESPONSE
         ROLE_ASSIGNMENT_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
+      secrets:
+        DATA_STORE_DB_PASSWORD:
+          secretRef: "{{ .Values.global.postgresSecret }}"
+          key: PASSWORD
+          disabled: true
       keyVaults: []
       ingressHost: ccd-data-store-api-${SERVICE_FQDN}
+
   ccd-definition-store-api:
     java:
       imagePullPolicy: Always
@@ -314,8 +320,15 @@ ccd:
         DEFINITION_STORE_TX_TIMEOUT_DEFAULT: 60
         WELSH_TRANSLATION_ENABLED: false
         DEFINITION_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
+        DEFINITION_STORE_DB_OPTIONS: "?stringtype=unspecified"
+        DEFINITION_STORE_DB_PASSWORD: ${POSTGRES_PASSWORD}
         DEFINITION_STORE_IDAM_KEY: ${CCD_DEFINITION_STORE_S2S_SECRET}
         IDAM_USER_URL: https://idam-web-public.aat.platform.hmcts.net
+      secrets:
+        DEFINITION_STORE_DB_PASSWORD:
+          secretRef: "{{ .Values.global.postgresSecret }}"
+          key: PASSWORD
+          disabled: true
       keyVaults: []
       ingressHost: ccd-definition-store-${SERVICE_FQDN}
 
