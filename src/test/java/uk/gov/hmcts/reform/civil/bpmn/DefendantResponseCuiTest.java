@@ -86,36 +86,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotCompleteTheProcessWithNotificationsAndPdfGeneration_whenNoneBilingualAndContactsChanged_AndEnglishToWelshEnabled() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
-            "CLAIM_ISSUE_BILINGUAL", false,
-            "WELSH_ENABLED", true,
-            "BILINGUAL_DOCS", true,
-            "DASHBOARD_SERVICE_ENABLED", true));
-
-        assertBusinessProcessHasStarted(variables);
-
-        verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifyGenerateDashboardNotificationClaimantForWelsh();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
     void shouldNotCompleteTheProcessWithNotificationsAndPdfGeneration_whenNotBilingualButClaimantBilingual_whenEnglishToWelshEnabled() {
 
         //assert process has started
@@ -130,7 +100,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
             "CLAIM_ISSUE_BILINGUAL", true,
             "WELSH_ENABLED", true,
-            "BILINGUAL_DOCS", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
