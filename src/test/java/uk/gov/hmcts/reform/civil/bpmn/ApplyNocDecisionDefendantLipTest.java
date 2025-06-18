@@ -435,7 +435,6 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-
     @ParameterizedTest
     @CsvSource({"MAIN.FULL_ADMISSION", "MAIN.PART_ADMISSION"})
     void shouldMoveTheCaseOffline_IfJudgmentByAdmissionIssuedForCase(String responseType) {
