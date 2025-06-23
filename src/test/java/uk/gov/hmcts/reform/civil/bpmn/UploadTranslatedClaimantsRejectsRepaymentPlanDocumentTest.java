@@ -51,8 +51,6 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
         = "GenerateClaimantDashboardNotificationClaimantResponse";
     private static final String UPDATE_CLAIMANT_STATE_ACTIVITY_ID = "UpdateClaimStateAfterTranslatedDocUpload";
 
-
-
     public UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest() {
         super(
             "upload_translated_document_claimant_rejects_repayment_plan.bpmn",
