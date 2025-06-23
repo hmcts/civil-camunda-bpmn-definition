@@ -541,4 +541,80 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
 
         assertNoExternalTasksLeft();
     }
+
+    @Test
+    void shouldPauseTheNotificationsForWelshClaimantDuringTranslation_FullAdmit() {
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMISSION");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, true,
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
+        ));
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusinessTask,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateSealedForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_RESPONSE_SEALED",
+            "Activity_0nakdad"
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldPauseTheNotificationsForWelshClaimantDuringTranslation_PartAdmit() {
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMISSION");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_CASE, true,
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
+        ));
+        //complete the start business process
+        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusinessTask,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDQ,
+            PROCESS_CASE_EVENT,
+            "GENERATE_DIRECTIONS_QUESTIONNAIRE",
+            "Activity_1dkbh3e"
+        );
+
+        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateSealedForm,
+            PROCESS_CASE_EVENT,
+            "GENERATE_RESPONSE_SEALED",
+            "Activity_0nakdad"
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
 }
