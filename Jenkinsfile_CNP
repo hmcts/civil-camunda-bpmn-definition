@@ -1,4 +1,7 @@
 #!groovy
+properties([
+  copyArtifactPermission('/HMCTS_a_to_c/civil-camunda-bpmn-definition/*'),
+]);
 
 @Library("Infrastructure")
 import uk.gov.hmcts.contino.AppPipelineConfig
@@ -12,6 +15,30 @@ def branchesToSync = ['demo', 'perftest','ithc']
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 AppPipelineConfig pipelineConf
+
+def copyPrevFailedAndNotExecutedTestFilesJson() {
+  def buildFound = false
+  def buildNumber = currentBuild.previousBuild ? currentBuild.previousBuild.number : 0
+  def minBuildNumber = ((buildNumber - 8) > 0) ? buildNumber - 8 : 0
+  while (!buildFound && buildNumber > minBuildNumber) {
+    try {
+      copyArtifacts projectName: env.JOB_NAME, selector: specific("${buildNumber}"), filter: "test-results/functional/testFilesReport.json"
+      buildFound = true
+    } catch (Exception error) {
+      echo "artifact not found: " + error.toString()
+      buildNumber--
+    }
+  }
+}
+
+def getFunctionalTestsGroups() {
+  def githubApi = new GithubAPI(this)
+  def functionalTestGroups = []
+  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "pr_ft_")) {
+    functionalTestGroups.add(label.substring(6, label.length()))
+  }
+  return functionalTestGroups.join(",")
+}
 
 static Map<String, Object> secret(String secretName, String envVariable) {
   [$class     : 'AzureKeyVaultSecret',
@@ -86,6 +113,10 @@ def uploadBpmnDiagrams(String env) {
 
 def checkForEnableHelmLabel(branch_name) {
   return new GithubAPI(this).getLabelsbyPattern(branch_name, "enableHelm").contains("enableHelm")
+}
+
+def checkForRunFailedTestFiles(branch_name) {
+  return new GithubAPI(this).getLabelsbyPattern(branch_name, "runFailedTestFiles").contains("runFailedTestFiles")
 }
 
 withPipeline(type, product, component) {
@@ -164,11 +195,19 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('install-dependencies')
   }
 
-  afterSuccess('smoketest:preview') {
+  afterAlways('smoketest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
-  afterSuccess('functionalTest:preview') {
+  before('functionalTest:preview') {
+    if(checkForRunFailedTestFiles(env.BRANCH_NAME)) {
+      echo "GitHub label: 'runFailedTestFiles' currently on PR"
+      copyPrevFailedAndNotExecutedTestFilesJson();
+      env.RUN_PREV_FAILED_AND_NOT_EXECUTED_TEST_FILES = true
+    }
+  }
+
+  afterAlways('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
@@ -194,7 +233,7 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('install-dependencies')
   }
 
-  afterSuccess('smoketest:aat') {
+  afterAlways('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
   }
 
@@ -202,6 +241,9 @@ withPipeline(type, product, component) {
     createGithubRelease()
     uploadBpmnDiagrams('aat')
     uploadBpmnDiagrams('prod')
+  }
+
+  afterAlways('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 }

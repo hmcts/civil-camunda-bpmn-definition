@@ -4,6 +4,10 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
 
@@ -36,11 +40,30 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     void shouldSuccessfullyProcessDefendantSignAgreement() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, true
+        ));
         startBusinessProcess(variables);
+        generateSettlementAgreementDoc();
         notifyApplicantSignSettlementAgreement();
         notifyRespondentSignSettlementAgreement();
-        generateSettlementAgreementDoc();
         generateDashboardNotificationSignSettlementAgreement();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,false", "false,true", "true,true"})
+    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual) {
+        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, claimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
+        ));
+        startBusinessProcess(variables);
+        generateSettlementAgreementDoc();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }

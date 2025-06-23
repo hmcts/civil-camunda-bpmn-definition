@@ -68,6 +68,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", true,
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
+            "CLAIM_ISSUE_BILINGUAL", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
@@ -77,6 +78,35 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyApplicantNotificationOfResponseSubmissionCompleted();
         verifyGenerateDashboardNotificationClaimant();
         verifyGenerateDashboardNotificationDefendant();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotCompleteTheProcessWithNotificationsAndPdfGeneration_whenNotBilingualButClaimantBilingual_whenEnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "CONTACT_DETAILS_CHANGE", true,
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
+            "CLAIM_ISSUE_BILINGUAL", true,
+            "WELSH_ENABLED", true,
+            "DASHBOARD_SERVICE_ENABLED", true));
+
+        assertBusinessProcessHasStarted(variables);
+
+        verifyApplicantNotificationOfAddressChangeCompleted();
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -96,6 +126,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
             "CONTACT_DETAILS_CHANGE", false,
+            "CLAIM_ISSUE_BILINGUAL", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
@@ -121,7 +152,32 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
+            "CLAIM_ISSUE_BILINGUAL", true,
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
+
+        assertBusinessProcessHasStarted(variables);
+        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
+        verifySealedDQGenerationCompleted();
+        verifySealedResponseGenerationCompleted();
+
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldNotNotifyApplicant_whenDefendantResponseAndClaimIssueBilingual_EnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "CLAIM_ISSUE_BILINGUAL", true,
+            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
+            "DEFENDANT_ENGLISH_TO_WELSH_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
         verifyDefendantLipNotificationOfResponseSubmissionCompleted();
@@ -143,6 +199,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
+            "CLAIM_ISSUE_BILINGUAL", true,
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
