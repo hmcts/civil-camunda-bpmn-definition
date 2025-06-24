@@ -31,20 +31,10 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
 
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_ID = "ClaimantConfirmsToProceedNotifyRespondentSolicitor1";
-
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_ID = "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC";
-
     private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT";
     private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID = "defendantLipApplicationOfflineDashboardNotification";
 
-    private static final String NOTIFY_APPLICANT_MEDIATION_AGREEMENT = "NOTIFY_APPLICANT_MEDIATION_AGREEMENT";
-    private static final String NOTIFY_APPLICANT_MEDIATION_AGREEMENT_ID = "ClaimantDefendantAgreedMediationNotifyApplicant";
-
-    private static final String NOTIFY_RESPONDENT_MEDIATION_AGREEMENT = "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT";
-    private static final String NOTIFY_RESPONDENT_MEDIATION_AGREEMENT_ID = "ClaimantDefendantAgreedMediationNotifyRespondent";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public UploadTranslatedLrClaimantIntentionTest() {
         super("upload_translated_lr_claimant_intention.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_LR_INTENTION");
@@ -95,17 +85,8 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED,
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the notification to respondent
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_ID
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -171,17 +152,8 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_ID
-        );
-
-        //complete the notification to respondent
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_ID
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -261,17 +233,8 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_ID
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_ID
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -361,17 +324,8 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_ID
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_ID
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -431,20 +385,12 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             UPDATE_CLAIM_STATE_EVENT_ACTIVITY_ID
         );
 
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicant,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_MEDIATION_AGREEMENT,
-            NOTIFY_APPLICANT_MEDIATION_AGREEMENT_ID
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_MEDIATION_AGREEMENT,
-            NOTIFY_RESPONDENT_MEDIATION_AGREEMENT_ID
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         //complete the Robotics notification
@@ -493,28 +439,12 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             UPDATE_CLAIM_STATE_EVENT_ACTIVITY_ID
         );
 
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_MEDIATION_AGREEMENT,
-            NOTIFY_APPLICANT_MEDIATION_AGREEMENT_ID
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_MEDIATION_AGREEMENT,
-            NOTIFY_RESPONDENT_MEDIATION_AGREEMENT_ID
-        );
-
-        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent2,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT2_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent2"
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         //complete the Robotics notification
