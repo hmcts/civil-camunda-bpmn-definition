@@ -12,10 +12,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class UploadTranslatedDocumentFinalOrderTest extends BpmnBaseTest {
+class UploadTranslatedDocumentOrderTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_FINAL_ORDER";
-    public static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_FINAL_ORDER";
+    public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_ORDER";
+    public static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_ORDER";
 
     //CCD CASE EVENT
     public static final String NOTIFY_EVENT
@@ -33,8 +33,8 @@ class UploadTranslatedDocumentFinalOrderTest extends BpmnBaseTest {
     private static final String SEND_FINAL_ORDER_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendFinalOrderToClaimantLIP";
 
-    public UploadTranslatedDocumentFinalOrderTest() {
-        super("upload_translated_document_final_order.bpmn", PROCESS_ID);
+    public UploadTranslatedDocumentOrderTest() {
+        super("upload_translated_document_order.bpmn", PROCESS_ID);
     }
 
     @Test
