@@ -146,9 +146,16 @@ tasks.register('awaitApplicationReadiness', Exec) {
   commandLine './bin/wait-for.sh', System.getenv('TEST_URL') ?: 'https://localhost:4100'
 }
 
-tasks.register('runApiTests', Exec) {
+tasks.register('runProdApiTests', Exec) {
   onlyIf {
-    return System.env.NIGHTLY_RUN != 'true'
+    return System.env.ENVIRONMENT == 'aat' && System.env.NIGHTLY_RUN != 'true'
+  }
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:api-prod'
+}
+
+tasks.register('runNonProdApiTests', Exec) {
+  onlyIf {
+    return System.env.ENVIRONMENT == 'preview' && System.env.NIGHTLY_RUN != 'true'
   }
   commandLine './bin/run-api-tests.sh'
 }
@@ -185,7 +192,7 @@ tasks.register('smoke') {
 
 tasks.register('functional') {
   dependsOn(inStrictOrder(awaitApplicationReadiness,
-    runApiTests, runNightlyApiTests))
+    runProdApiTests, runNonProdApiTests, runNightlyApiTests))
 }
 
 project.tasks['sonarqube'].dependsOn test, jacocoTestReport
