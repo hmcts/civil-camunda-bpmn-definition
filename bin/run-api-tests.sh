@@ -48,9 +48,7 @@ run_functional_test_groups() {
 
 run_functional_tests() {
   echo "Running all functional tests on ${ENVIRONMENT} env"
-  if [ "$ENVIRONMENT" = "aat" ]; then
-    yarn test:api-prod
-  elif [ -z "$PR_FT_GROUPS" ]; then
+  if [ -z "$PR_FT_GROUPS" ]; then
     yarn test:api-nonprod
   else
     run_functional_test_groups
@@ -73,28 +71,39 @@ run_failed_not_executed_functional_tests() {
   export PREV_FAILED_TEST_FILES="$PREV_FAILED_TEST_FILES"
   export PREV_NOT_EXECUTED_TEST_FILES="$PREV_NOT_EXECUTED_TEST_FILES"
   
-  run_functional_tests
+  if [ -z "$PR_FT_GROUPS" ]; then
+    yarn test:api-nonprod
+  else 
+    run_functional_test_groups
+  fi
 }
 
 #MAIN SCRIPT
-TEST_FILES_REPORT="test-results/functional/testFilesReport.json"
-PREV_TEST_FILES_REPORT="test-results/functional/prevTestFilesReport.json"
+if [ "$RUN_PREV_FAILED_AND_NOT_EXECUTED_TEST_FILES" = "true" ]; then
 
-  # Check if testFilesReport.json exists and is non-empty
-if [ ! -f "$TEST_FILES_REPORT" ] || [ ! -s "$TEST_FILES_REPORT" ]; then
-  echo "testFilesReport.json not found or is empty."
+  TEST_FILES_REPORT="test-results/functional/testFilesReport.json"
+  PREV_TEST_FILES_REPORT="test-results/functional/prevTestFilesReport.json"
+
+   # Check if testFilesReport.json exists and is non-empty
+  if [ ! -f "$TEST_FILES_REPORT" ] || [ ! -s "$TEST_FILES_REPORT" ]; then
+    echo "testFilesReport.json not found or is empty."
+    run_functional_tests
+
+  #Check if latest current git commit is the not the same as git commit of test files report 
+  elif [ "$(jq -r 'if .gitCommitId == null then "__NULL__" else .gitCommitId end' "$TEST_FILES_REPORT")" != "$GIT_COMMIT" ]; then 
+    echo "The gitCommitId does not match the current GIT_COMMIT.";
+    run_functional_tests
+  
+  #Check if ft_groups of test files report is the same as current ft_groups.
+  elif ! compare_ft_groups; then
+    echo "ftGroups do NOT match PR_FT_GROUPS"
+    run_functional_tests
+  
+  else
+    run_failed_not_executed_functional_tests
+  fi
+
+else 
+  echo "env variable 'RUN_PREV_FAILED_AND_NOT_EXECUTED_TEST_FILES' is not set to true"
   run_functional_tests
-
-#Check if latest current git commit is the not the same as git commit of test files report 
-elif [ "$(jq -r 'if .gitCommitId == null then "__NULL__" else .gitCommitId end' "$TEST_FILES_REPORT")" != "$GIT_COMMIT" ]; then 
-  echo "The gitCommitId does not match the current GIT_COMMIT.";
-  run_functional_tests
-
-#Check if ft_groups of test files report is the same as current ft_groups.
-elif ! compare_ft_groups; then
-  echo "ftGroups do NOT match PR_FT_GROUPS"
-  run_functional_tests
-
-else
-  run_failed_not_executed_functional_tests
 fi
