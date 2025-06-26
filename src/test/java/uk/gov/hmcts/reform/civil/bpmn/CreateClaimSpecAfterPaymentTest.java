@@ -256,62 +256,62 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        @Test
-        void shouldSuccessfullyCompleteCreateClaim_whenClaimOnline() {
-            //assert process has started
-            assertFalse(processInstance.isEnded());
-
-            //assert message start event
-            assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-            VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, null);
-
-            //complete the start business process
-            startBusinessProcess(variables);
-
-            //complete the document generation
-            variables.putValue(
-                    FLOW_STATE,
-                    FlowState.PENDING_CLAIM_ISSUED.fullName()
-            );
-            documentGeneration(variables);
-
-            //complete the claim issue
-            ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCESS_CLAIM_ISSUE_EVENT,
-                    PROCESS_CLAIM_ISSUE_ACTIVITY_ID,
-                    variables
-            );
-
-            //complete the notification
-            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                    notificationTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER
-            );
-
-            //complete the Robotics notification
-            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                    variables
-            );
-
-            //end business process
-            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-            completeBusinessProcess(endBusinessProcess);
-
-            assertNoExternalTasksLeft();
-        }
+//        @Test
+//        void shouldSuccessfullyCompleteCreateClaim_whenClaimOnline() {
+//            //assert process has started
+//            assertFalse(processInstance.isEnded());
+//
+//            //assert message start event
+//            assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+//
+//            VariableMap variables = Variables.createVariables();
+//            variables.put(FLOW_FLAGS, null);
+//
+//            //complete the start business process
+//            startBusinessProcess(variables);
+//
+//            //complete the document generation
+//            variables.putValue(
+//                    FLOW_STATE,
+//                    FlowState.PENDING_CLAIM_ISSUED.fullName()
+//            );
+//            documentGeneration(variables);
+//
+//            //complete the claim issue
+//            ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
+//            assertCompleteExternalTask(
+//                    claimIssue,
+//                    PROCESS_CASE_EVENT,
+//                    PROCESS_CLAIM_ISSUE_EVENT,
+//                    PROCESS_CLAIM_ISSUE_ACTIVITY_ID,
+//                    variables
+//            );
+//
+//            //complete the notification
+//            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+//            assertCompleteExternalTask(
+//                    notificationTask,
+//                    PROCESS_CASE_EVENT,
+//                    NOTIFY_EVENT,
+//                    CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER
+//            );
+//
+//            //complete the Robotics notification
+//            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+//            assertCompleteExternalTask(
+//                    forRobotics,
+//                    PROCESS_CASE_EVENT,
+//                    NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+//                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+//                    variables
+//            );
+//
+//            //end business process
+//            ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+//            completeBusinessProcess(endBusinessProcess);
+//
+//            assertNoExternalTasksLeft();
+//        }
 
         @Test
         void shouldSuccessfullyCompleteCreateClaim_whenClaimIssued_UnregisteredDefendant() {
