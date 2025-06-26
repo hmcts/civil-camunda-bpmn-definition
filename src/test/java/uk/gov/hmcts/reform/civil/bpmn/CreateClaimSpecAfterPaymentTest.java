@@ -24,22 +24,59 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String PROCESS_CLAIM_ISSUE_EVENT = "PROCESS_CLAIM_ISSUE_SPEC";
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForSpec";
     private static final String PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID
-            = "IssueClaimForSpecUnrepresentedSolicitor";
+        = "IssueClaimForSpecUnrepresentedSolicitor";
+    //notify applicant solicitor 1 continuing online
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpec";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyApplicantSolicitor1ForSpecUnrepresented";
 
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID
-            = "ProceedOfflineForUnRepresentedSolicitor";
+        = "ProceedOfflineForUnRepresentedSolicitor";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_UNREGISTERED_ACTIVITY_ID
-            = "ProceedOfflineForUnregisteredFirm";
+        = "ProceedOfflineForUnregisteredFirm";
     //notify RPA
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     //notify RPA offline
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_EVENT = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
-
+    //notify applicant solicitor 1 unrepresented offline
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_EVENT
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_SPEC";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_ACTIVITY_ID
+        = "CreateClaimProceedsOfflineNotifyApplicantSolicitor1ForUnRepresentedSolicitorForSpec";
+    //notify applicant solicitor 1 unregistered offline
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC_EVENT
+        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC";
+    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC_ACTIVITY_ID
+        = "TakeCaseOfflineForSpecNotifyApplicantSolicitor1";
+    //notify respondent solicitor 1
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyRespondentSolicitor1ForSpec";
+    //notify respondent solicitor 2
+    private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyRespondentSolicitor2ForSpec";
+    //notify respondent 1
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyRespondent1ForSpec";
+    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
+        = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
+    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+        = "CreateClaimContinuingOnlineNotifyApplicant1ForSpec";
     public static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT = "SET_LIP_RESPONDENT_RESPONSE_DEADLINE";
     private static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID = "SetRespondent1Deadline";
+    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_NO_ACTIVITY_ID = "Activity_0ooszcc";
     private static final String CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_ACTIVITY_ID = "CreateIssueClaimDashboardNotificationsForApplicant1";
     private static final String CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_EVENT = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1";
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC";
@@ -47,15 +84,16 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
+    private static final String NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_EVENT
+        = "NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION";
+
+    private static final String NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_ACTIVITY_ID
+        = "NotifyLipClaimantClaimSubmission";
+
     private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_EVENT
-            = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1";
+        = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1";
     private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
-            = "CreateIssueClaimDashboardNotificationsForDefendant1";
-    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    public static final String CLAIM_SUBMISSION_NOTIFY_PARTIES = "ClaimSubmissionNotifyParties";
-    public static final String CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER = "ContinuingClaimOnlineSpecClaimNotifier";
-    public static final String TAKEN_OFFLINE_CASE_FOR_SPEC_NOTIFIER = "TakenOfflineCaseForSpecNotifier";
-    public static final String RAISING_CLAIM_AGAINST_SPEC_LITIGANT_IN_PERSON_FOR_NOTIFIER = "RaisingClaimAgainstSpecLitigantInPersonForNotifier";
+        = "CreateIssueClaimDashboardNotificationsForDefendant1";
 
     public CreateClaimSpecAfterPaymentTest() {
         super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
@@ -85,26 +123,26 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                    "PIP_ENABLED", true,
-                    "DASHBOARD_SERVICE_ENABLED", true));
+                "PIP_ENABLED", true,
+                "DASHBOARD_SERVICE_ENABLED", true));
 
             startBusinessProcess(variables);
 
             //complete the document generation
             variables.putValue(
-                    FLOW_STATE,
-                    FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC.fullName()
+                FLOW_STATE,
+                FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC.fullName()
             );
             documentGeneration(variables);
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCESS_CLAIM_ISSUE_EVENT,
-                    PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
-                    variables
+                claimIssue,
+                PROCESS_CASE_EVENT,
+                PROCESS_CLAIM_ISSUE_EVENT,
+                PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
+                variables
             );
 
             // complete the defendant dashboard notification
@@ -116,23 +154,32 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
             );
 
-            //complete the notification
+            //complete the respondent notification
             ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    notificationRespondentTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER
+                notificationRespondentTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+            );
+
+            //complete the notification
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_ONLINE_UNREPRESENTED_ACTIVITY_ID
             );
 
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                    variables
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
             );
 
             //end business process
@@ -158,38 +205,38 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             //complete the document generation
             variables.putValue(
-                    FLOW_STATE,
-                    FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName()
+                FLOW_STATE,
+                FlowState.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT.fullName()
             );
             documentGeneration(variables);
 
             //proceed offline
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT,
-                    PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID,
-                    variables
+                claimIssue,
+                PROCESS_CASE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_UNREPRESENTED_ACTIVITY_ID,
+                variables
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    notificationTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    RAISING_CLAIM_AGAINST_SPEC_LITIGANT_IN_PERSON_FOR_NOTIFIER
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_FOR_RESPONDENT_LITIGANT_IN_PERSON_ACTIVITY_ID
             );
 
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_EVENT,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
-                    variables
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                variables
             );
 
             //end business process
@@ -215,38 +262,38 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             //complete the document generation
             variables.putValue(
-                    FLOW_STATE,
-                    FlowState.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT.fullName()
+                FLOW_STATE,
+                FlowState.PENDING_CLAIM_ISSUED_UNREGISTERED_DEFENDANT.fullName()
             );
             documentGeneration(variables);
 
             //proceed offline
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT,
-                    PROCEEDS_IN_HERITAGE_SYSTEM_UNREGISTERED_ACTIVITY_ID,
-                    variables
+                claimIssue,
+                PROCESS_CASE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_ISSUE_EVENT,
+                PROCEEDS_IN_HERITAGE_SYSTEM_UNREGISTERED_ACTIVITY_ID,
+                variables
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    notificationTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    TAKEN_OFFLINE_CASE_FOR_SPEC_NOTIFIER
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_FOR_CASE_TAKEN_OFFLINE_SPEC_ACTIVITY_ID
             );
 
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_EVENT,
-                    NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
-                    variables
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_EVENT,
+                NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+                variables
             );
 
             //end business process
@@ -256,7 +303,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             assertNoExternalTasksLeft();
         }
 
-        /*@Test
+        @Test
         void shouldSuccessfullyCompleteCreateClaim_whenClaimOnline() {
             //assert process has started
             assertFalse(processInstance.isEnded());
@@ -272,38 +319,58 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             //complete the document generation
             variables.putValue(
-                    FLOW_STATE,
-                    FlowState.PENDING_CLAIM_ISSUED.fullName()
+                FLOW_STATE,
+                FlowState.PENDING_CLAIM_ISSUED.fullName()
             );
             documentGeneration(variables);
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCESS_CLAIM_ISSUE_EVENT,
-                    PROCESS_CLAIM_ISSUE_ACTIVITY_ID,
-                    variables
+                claimIssue,
+                PROCESS_CASE_EVENT,
+                PROCESS_CLAIM_ISSUE_EVENT,
+                PROCESS_CLAIM_ISSUE_ACTIVITY_ID,
+                variables
             );
 
             //complete the notification
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    notificationTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ISSUE_EVENT,
+                NOTIFY_APPLICANT_SOLICITOR1_ONLINE_ACTIVITY_ID
+            );
+
+            //complete the respondent 1 notification
+            ExternalTask notificationRespondent1Task = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationRespondent1Task,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID,
+                variables
+            );
+
+            //complete the respondent 2 notification
+            ExternalTask notificationRespondent2Task = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationRespondent2Task,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID,
+                variables
             );
 
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                    variables
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
             );
 
             //end business process
@@ -311,7 +378,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             completeBusinessProcess(endBusinessProcess);
 
             assertNoExternalTasksLeft();
-        }*/
+        }
 
         @Test
         void shouldSuccessfullyCompleteCreateClaim_whenClaimIssued_UnregisteredDefendant() {
@@ -325,12 +392,12 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             VariableMap variables = Variables.createVariables();
             variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
             variables.put(FLOW_FLAGS, Map.of(
-                    BULK_CLAIM_ENABLED, true,
-                    LIP_CASE, true,
-                    GENERAL_APPLICATION_ENABLED, true,
-                    UNREPRESENTED_DEFENDANT_ONE, true,
-                    PIP_ENABLED, true,
-                    DASHBOARD_SERVICE_ENABLED, true
+                BULK_CLAIM_ENABLED, true,
+                LIP_CASE, true,
+                GENERAL_APPLICATION_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, true,
+                PIP_ENABLED, true,
+                DASHBOARD_SERVICE_ENABLED, true
             ));
 
             //complete the start business process
@@ -339,38 +406,38 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             //Generate Lip claimant claim form
             ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    generateLipClaimantClaimForm,
-                    PROCESS_CASE_EVENT,
-                    GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
-                    GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+                generateLipClaimantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
             );
 
             //Generate Lip defendant claim form
             ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    generateLipDefendantClaimForm,
-                    PROCESS_CASE_EVENT,
-                    GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
-                    GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+                generateLipDefendantClaimForm,
+                PROCESS_CASE_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
             );
 
             //Update Respondent response deadline date
             ExternalTask updateRespondentResponseDeadLine = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    updateRespondentResponseDeadLine,
-                    PROCESS_CASE_EVENT,
-                    SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
-                    SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
+                updateRespondentResponseDeadLine,
+                PROCESS_CASE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT,
+                SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID
             );
 
             //complete the claim issue
             ExternalTask claimIssue = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    claimIssue,
-                    PROCESS_CASE_EVENT,
-                    PROCESS_CLAIM_ISSUE_EVENT,
-                    PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
-                    variables
+                claimIssue,
+                PROCESS_CASE_EVENT,
+                PROCESS_CLAIM_ISSUE_EVENT,
+                PROCESS_CLAIM_ISSUE_UNREPRESENTED_ACTIVITY_ID,
+                variables
             );
 
             // complete the defendant dashboard notification
@@ -382,13 +449,22 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
             );
 
-            //complete the notification
+            //complete the respondent notification
             ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    notificationRespondentTask,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_EVENT,
-                    CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER
+                notificationRespondentTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+            );
+
+            //complete the applicant notification
+            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
+                NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
             );
 
             //complete the claimant dashboard notification
@@ -402,11 +478,11 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    forRobotics,
-                    PROCESS_CASE_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-                    NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-                    variables
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+                variables
             );
 
             //end business process
@@ -429,12 +505,12 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC");
         variables.put(FLOW_FLAGS, Map.of(
-                BULK_CLAIM_ENABLED, true,
-                LIP_CASE, true,
-                GENERAL_APPLICATION_ENABLED, true,
-                UNREPRESENTED_DEFENDANT_ONE, true,
-                PIP_ENABLED, true,
-                CLAIM_ISSUE_BILINGUAL, true
+            BULK_CLAIM_ENABLED, true,
+            LIP_CASE, true,
+            GENERAL_APPLICATION_ENABLED, true,
+            UNREPRESENTED_DEFENDANT_ONE, true,
+            PIP_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, true
         ));
 
         //complete the start business process
@@ -443,28 +519,28 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         //Generate Lip claimant claim form
         ExternalTask generateLipClaimantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                generateLipClaimantClaimForm,
-                PROCESS_CASE_EVENT,
-                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
-                GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            generateLipClaimantClaimForm,
+            PROCESS_CASE_EVENT,
+            GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT,
+            GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID
         );
 
         //Generate Lip defendant claim form
         ExternalTask generateLipDefendantClaimForm = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                generateLipDefendantClaimForm,
-                PROCESS_CASE_EVENT,
-                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
-                GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
+            generateLipDefendantClaimForm,
+            PROCESS_CASE_EVENT,
+            GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT,
+            GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID
         );
 
         //Notify Lip Claimant claim submission
         ExternalTask notifyLipClaimantClaimSubmission = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                notifyLipClaimantClaimSubmission,
-                PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                CLAIM_SUBMISSION_NOTIFY_PARTIES
+            notifyLipClaimantClaimSubmission,
+            PROCESS_CASE_EVENT,
+            NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_EVENT,
+            NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_ACTIVITY_ID
         );
 
         //end business process
@@ -474,14 +550,25 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    public void startBusinessProcess(VariableMap variables) {
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+    }
+
     public void documentGeneration(VariableMap variables) {
         ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                documentGeneration,
-                PROCESS_CASE_EVENT,
-                GENERATE_CLAIM_FORM_EVENT,
-                GENERATE_CLAIM_FORM_ACTIVITY_ID,
-                variables
+            documentGeneration,
+            PROCESS_CASE_EVENT,
+            GENERATE_CLAIM_FORM_EVENT,
+            GENERATE_CLAIM_FORM_ACTIVITY_ID,
+            variables
         );
     }
 }
