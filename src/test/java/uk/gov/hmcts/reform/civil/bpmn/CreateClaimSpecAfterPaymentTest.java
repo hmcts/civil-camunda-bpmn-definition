@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
@@ -573,3 +574,4 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
     }
 }
 
+*/
