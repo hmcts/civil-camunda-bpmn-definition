@@ -334,6 +334,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
