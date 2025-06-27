@@ -89,8 +89,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
-    @Test
-    void shouldRunProcess() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess(boolean claimantBilingual) {
         //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION");
@@ -99,7 +100,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
-            CLAIM_ISSUE_BILINGUAL, false
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, claimantBilingual
         ));
 
         //Then
@@ -111,23 +113,27 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             JUDICIAL_REFERRAL_ACTIVITY_ID,
             variables
         );
-
-        notifyPartiesClaimantConfirmsToProceed();
+        if (!claimantBilingual) {
+            notifyPartiesClaimantConfirmsToProceed();
+        }
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
         generateDQPdf();
-        updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        if (!claimantBilingual) {
+            updateClaimState();
+            createClaimantDashboardNotification();
+            createDefendantDashboardNotification();
+        }
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimIsInMediation() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInMediation(boolean claimantBilingual) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -138,7 +144,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
         variables.put(FLOW_FLAGS, Map.of(
-            CLAIM_ISSUE_BILINGUAL, false
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, claimantBilingual
         ));
         assertCompleteExternalTask(
             startBusiness,
@@ -147,13 +154,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
-        notifyPartiesClaimantConfirmsToProceed();
+        if (!claimantBilingual) {
+            notifyPartiesClaimantConfirmsToProceed();
+        }
         generateDQPdf();
-        generateRPAContinuousFeed();
-        updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        if (!claimantBilingual) {
+            generateRPAContinuousFeed();
+            updateClaimState();
+            createClaimantDashboardNotification();
+            createDefendantDashboardNotification();
+        }
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -375,8 +385,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation(boolean defendantBilingual) {
         //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
@@ -385,7 +396,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
-            CLAIM_ISSUE_BILINGUAL, false
+            CLAIM_ISSUE_BILINGUAL, false,
+            WELSH_ENABLED, true,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
         ));
 
         //Then
@@ -397,17 +410,20 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
             variables
         );
-
-        notifyPartiesClaimantConfirmsToProceed();
+        if (!defendantBilingual) {
+            notifyPartiesClaimantConfirmsToProceed();
+        }
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
         generateDQPdf();
-        updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        if (!defendantBilingual) {
+            updateClaimState();
+            createClaimantDashboardNotification();
+            createDefendantDashboardNotification();
+        }
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
