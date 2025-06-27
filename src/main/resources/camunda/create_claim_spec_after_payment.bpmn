@@ -218,12 +218,12 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_07e8le1" sourceRef="ClaimSubmissionNotifyParties" targetRef="Activity_19rrcw0" />
     <bpmn:sequenceFlow id="Flow_07blx0g" sourceRef="IssueClaimForSpecUnrepresentedSolicitor" targetRef="Gateway_0sx9s0b" />
-    <bpmn:sequenceFlow id="Flow_02kkae4" sourceRef="CreateIssueClaimDashboardNotificationsForDefendant1" targetRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" />
-    <bpmn:sequenceFlow id="Flow_0ce9o0c" sourceRef="ContinuingClaimOnlineSpecClaimNotifier" targetRef="Gateway_09y2h07" />
+    <bpmn:sequenceFlow id="Flow_02kkae4" sourceRef="CreateIssueClaimDashboardNotificationsForDefendant1" targetRef="ContinuingClaimOnlineSpecClaimNotifier" />
+    <bpmn:sequenceFlow id="Flow_0ce9o0c" sourceRef="GeneratePipLetter" targetRef="Gateway_09y2h07" />
     <bpmn:sequenceFlow id="Flow_11dfc5e" name="Dashboard Service Enabled" sourceRef="Gateway_0sx9s0b" targetRef="CreateIssueClaimDashboardNotificationsForDefendant1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0dqhmaf" name="Dashboard Service Disabled" sourceRef="Gateway_0sx9s0b" targetRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec">
+    <bpmn:sequenceFlow id="Flow_0dqhmaf" name="Dashboard Service Disabled" sourceRef="Gateway_0sx9s0b" targetRef="ContinuingClaimOnlineSpecClaimNotifier">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17zp4gv" name="Dashboard Service Enabled" sourceRef="Gateway_1x7sf84" targetRef="CreateIssueClaimDashboardNotificationsForApplicant1">
@@ -316,21 +316,21 @@
       <bpmn:outgoing>Flow_17zp4gv</bpmn:outgoing>
       <bpmn:outgoing>Flow_1trj012</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ContinuingClaimOnlineSpecClaimNotifier" name="Notify relevant parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02kkae4</bpmn:incoming>
       <bpmn:incoming>Flow_0dqhmaf</bpmn:incoming>
       <bpmn:outgoing>Flow_1pcrpcv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1pcrpcv" sourceRef="CreateClaimContinuingOnlineNotifyRespondent1ForSpec" targetRef="ContinuingClaimOnlineSpecClaimNotifier" />
-    <bpmn:serviceTask id="ContinuingClaimOnlineSpecClaimNotifier" name="Notify relevant parties" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1pcrpcv" sourceRef="ContinuingClaimOnlineSpecClaimNotifier" targetRef="GeneratePipLetter" />
+    <bpmn:serviceTask id="GeneratePipLetter" name="Generate Pip Letter" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">GENERATE_PIP_LETTER</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1pcrpcv</bpmn:incoming>
@@ -457,10 +457,11 @@
       <bpmndi:BPMNShape id="Gateway_1x7sf84_di" bpmnElement="Gateway_1x7sf84" isMarkerVisible="true">
         <dc:Bounds x="2135" y="325" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_09xh06i" bpmnElement="CreateClaimContinuingOnlineNotifyRespondent1ForSpec">
+      <bpmndi:BPMNShape id="BPMNShape_09xh06i" bpmnElement="ContinuingClaimOnlineSpecClaimNotifier">
         <dc:Bounds x="1790" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xb8tds_di" bpmnElement="ContinuingClaimOnlineSpecClaimNotifier">
+      <bpmndi:BPMNShape id="Activity_1xb8tds_di" bpmnElement="GeneratePipLetter">
         <dc:Bounds x="1930" y="410" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
