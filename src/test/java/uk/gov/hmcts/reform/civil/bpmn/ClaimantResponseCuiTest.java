@@ -782,8 +782,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         if (!defendantNocOnline) {
             generateDQPdf();
         }
