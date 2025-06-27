@@ -31,6 +31,7 @@ public class JudgeMakesDecisionWelshGeneralApplicationTest extends BpmnBaseGASpe
     //Create PDF
     private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
     private static final String CREATE_PDF_ID = "CreatePDFDocument";
+
     public JudgeMakesDecisionWelshGeneralApplicationTest() {
         super("judge_makes_decision_general_application.bpmn", "GA_MAKE_DECISION_PROCESS_ID");
     }
@@ -108,7 +109,6 @@ public class JudgeMakesDecisionWelshGeneralApplicationTest extends BpmnBaseGASpe
             CREATE_PDF_ID,
             variables
         );
-
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
