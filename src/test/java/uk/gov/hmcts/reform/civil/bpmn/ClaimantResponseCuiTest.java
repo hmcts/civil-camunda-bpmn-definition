@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.CourtOfficerOrderTest.NOTIFY_EVENT;
 
 public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
@@ -20,21 +21,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
     private static final String JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID = "Judicial_Referral";
-    //CCD Case Event
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
 
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
+    private static final String NOTIFY_REJECTION_ACTIVITY_ID = "RejectRepaymentPlanNotifyParties";
+    private static final String NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID = "ClaimantConfirmProceedNotifyParties";
+    //CCD Case Event
 
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
         = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
-
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
-        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
-        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
 
     private static final String GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
         = "GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
@@ -49,25 +42,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
 
     //Activity IDs
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
     private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyJoRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
     private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT = "UPDATE_CLAIMANT_INTENTION_CLAIM_STATE";
@@ -128,8 +112,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
@@ -165,8 +148,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         generateRPAContinuousFeed();
         updateClaimState();
@@ -200,8 +182,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
@@ -236,8 +217,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
@@ -276,8 +256,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyPartiesRejectPaymentPlan();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
@@ -350,8 +329,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyPartiesRejectPaymentPlan();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
@@ -385,8 +363,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyPartiesRejectPaymentPlan();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
@@ -424,8 +401,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
@@ -463,8 +439,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -496,8 +471,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -530,8 +504,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -561,8 +534,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -589,8 +561,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -619,8 +590,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -653,8 +623,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
@@ -688,8 +657,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -731,8 +699,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -774,8 +741,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -840,20 +806,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID);
     }
 
-    private void notifyRespondentClaimantConfirmsToProceed() {
-        assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    private void notifyPartiesRejectPaymentPlan() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_REJECTION_ACTIVITY_ID);
+    }
+
+    private void notifyPartiesClaimantConfirmsToProceed() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID);
     }
 
     private void createClaimantDashboardNotification() {
         assertCompletedCaseEvent(CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID);
-    }
-
-    private void notifyClaimantClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
-    }
-
-    private void notifyRespondentClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
     }
 
     private void generateDQPdf() {
@@ -894,16 +856,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             eventName,
             activityId,
             variables
-        );
-    }
-
-    private void notifyApplicantClaimantConfirmsToProceed() {
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
     }
 
