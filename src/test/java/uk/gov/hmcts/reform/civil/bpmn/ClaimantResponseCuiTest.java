@@ -334,6 +334,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
         generateDQPdf();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -506,6 +508,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -536,6 +540,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
