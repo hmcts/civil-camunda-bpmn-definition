@@ -63,6 +63,7 @@ public abstract class BpmnBaseTest {
     public static final String CLAIM_STATE_DURING_NOC = "CLAIM_STATE_DURING_NOC";
     public static final String WELSH_ENABLED = "WELSH_ENABLED";
     public static final String PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW = "processConfirmOrderReview";
+    public static final String SETTLE_THE_CLAIM = "SETTLE_THE_CLAIM";
 
     public final String bpmnFileName;
     public final String processId;
