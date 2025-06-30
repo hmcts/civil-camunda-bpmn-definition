@@ -31,8 +31,9 @@ class RaiseQueryTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false,false", "true,true,false", "false,true,false", "true,false,true", "false,false,false"})
-    void shouldSuccessfullyCompleteRaiseQueryProcess_whenCalled(boolean lipClaim, boolean unrepresentedDefendantOne, boolean removeDocument) {
+    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
+    void shouldSuccessfullyCompleteRaiseQueryProcess_whenCalled(boolean publicQueriesEnabled,
+                                                                boolean removeDocument) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -42,8 +43,7 @@ class RaiseQueryTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put(
             FLOW_FLAGS, Map.of(
-                LIP_CASE, lipClaim,
-                UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendantOne
+                PUBLIC_QUERIES_ENABLED, publicQueriesEnabled
             ));
         variables.put("removeDocument", removeDocument);
 
@@ -57,7 +57,7 @@ class RaiseQueryTest extends BpmnBaseTest {
             variables
         );
 
-        if (!lipClaim && !unrepresentedDefendantOne) {
+        if (!publicQueriesEnabled) {
             //generate the query document
             ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
