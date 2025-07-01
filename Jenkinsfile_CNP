@@ -115,6 +115,10 @@ def checkForEnableHelmLabel(branch_name) {
   return new GithubAPI(this).getLabelsbyPattern(branch_name, "enableHelm").contains("enableHelm")
 }
 
+def checkForRunFailedTestFiles(branch_name) {
+  return new GithubAPI(this).getLabelsbyPattern(branch_name, "runFailedTestFiles").contains("runFailedTestFiles")
+}
+
 withPipeline(type, product, component) {
   pipelineConf = config
   disableLegacyDeployment()
@@ -196,7 +200,11 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
-    copyPrevFailedAndNotExecutedTestFilesJson();
+    if(checkForRunFailedTestFiles(env.BRANCH_NAME)) {
+      echo "GitHub label: 'runFailedTestFiles' currently on PR"
+      copyPrevFailedAndNotExecutedTestFilesJson();
+      env.RUN_PREV_FAILED_AND_NOT_EXECUTED_TEST_FILES = true
+    }
   }
 
   afterAlways('functionalTest:preview') {
@@ -227,10 +235,6 @@ withPipeline(type, product, component) {
 
   afterAlways('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/smokeTest/**/*'
-  }
-
-  before('functionalTest:aat') {
-    copyPrevFailedAndNotExecutedTestFilesJson();
   }
 
   afterSuccess('functionalTest:aat') {
