@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 
 public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPaymentTest {
+
     private static final String VARY_JUDGE_GA_BY_RESP = "VARY_JUDGE_GA_BY_RESP";
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String  LIP_RESPONDENT = "LIP_RESPONDENT";
@@ -38,7 +39,7 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             VARY_JUDGE_GA_BY_RESP, isVaryJudgementAppTakenOffline,
-            LIP_APPLICANT , isLipApplicant,
+            LIP_APPLICANT, isLipApplicant,
             LIP_RESPONDENT, isLipRespondent));
 
         //complete the start business process
@@ -96,7 +97,7 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
         }
 
         if (isLipRespondent) {
-             ExternalTask bulkPrintRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
+            ExternalTask bulkPrintRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
             assertCompleteExternalTask(
                 bulkPrintRespondentTask,
                 NOTIFY_EVENT,

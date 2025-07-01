@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.START_GA_BUSINES
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.START_GA_BUSINESS_EVENT;
 
 public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentTest {
+
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     private static final String WELSH_ENABLED = "WELSH_ENABLED";
@@ -42,7 +43,6 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
         super("upload_translated_document_ga_summary_doc.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_DOC");
     }
 
-
     @ParameterizedTest
     @CsvSource({"false,false", "true,false", "true,true", "false,true"})
     void shouldResumePausedTaskAfterUploadingTranslatedDocument(boolean isLipApplicant, boolean isLipRespondent) {
@@ -50,7 +50,7 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
         variables.put("flowFlags", Map.of(
             WELSH_ENABLED, "true",
             LIP_APPLICANT, isLipApplicant,
-            LIP_RESPONDENT , isLipRespondent));
+            LIP_RESPONDENT, isLipRespondent));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
