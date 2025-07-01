@@ -39,25 +39,25 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true, true",
-        "true, true, true, false, false",
-        "true, false, true, true, false",
-        "true, false, true, false, true",
-        "false, true, true, true, true",
-        "false, true, true, false, true",
-        "false, false, true, true, true",
-        "false, false, true, false, true",
-        "true, true, false, true, true",
-        "true, true, false, false, false",
-        "true, false, false, true, false",
-        "true, false, false, false, true",
-        "false, true, false, true, true",
-        "false, true, false, false, true",
-        "false, false, false, true, true",
-        "false, false, false, false, true"
+        "true, true, true, true, true, true",
+        "true, true, true, false, false, false",
+        "true, false, true, true, false, false",
+        "true, false, true, false, true, true",
+        "false, true, true, true, true, true",
+        "false, true, true, false, true, false",
+        "false, false, true, true, true, false",
+        "false, false, true, false, true, false",
+        "true, true, false, true, true, true",
+        "true, true, false, false, false, true",
+        "true, false, false, true, false, false",
+        "true, false, false, false, true, true",
+        "false, true, false, true, true, false",
+        "false, true, false, false, true, true",
+        "false, false, false, true, true, false",
+        "false, false, false, false, true, false"
     })
     void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPClaimant, boolean dashboardServiceEnabled,
-                                    boolean isJoFeedLive) {
+                                    boolean isJoFeedLive, boolean joFlagEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -73,8 +73,9 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
             IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
-            LIP_CASE, isLiPClaimant
-            ));
+            LIP_CASE, isLiPClaimant,
+            JO_ONLINE_LIVE_ENABLED, joFlagEnabled
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -89,7 +90,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         ExternalTask docmosisTask;
 
         // If the case is NOT Lip v Lip then complete the generation tasks
-        if (!(isLiPClaimant && isLiPDefendant)) {
+        if (!(isLiPClaimant && isLiPDefendant) || joFlagEnabled) {
             docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
                     GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
