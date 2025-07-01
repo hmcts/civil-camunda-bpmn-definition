@@ -43,7 +43,7 @@
       <bpmn:incoming>Flow_00j9g6p</bpmn:incoming>
       <bpmn:outgoing>Flow_1o113vl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_06pv761" name="LiP Applicant" sourceRef="Gateway_0nb8bqq" targetRef="Activity_0hyf44k">
+    <bpmn:sequenceFlow id="Flow_06pv761" name="LiP Applicant" sourceRef="Gateway_0nb8bqq" targetRef="UpdateDashboardNotifications">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="BulkPrintOrderRespondent" name="Bulk print order respondent" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
@@ -65,7 +65,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1o113vl" sourceRef="BulkPrintOrderApplicant" targetRef="Gateway_14xtsk2" />
-    <bpmn:sequenceFlow id="Flow_0zobuvp" name="LiP Respondent" sourceRef="Gateway_14xtsk2" targetRef="Activity_0b9qemx">
+    <bpmn:sequenceFlow id="Flow_0zobuvp" name="LiP Respondent" sourceRef="Gateway_14xtsk2" targetRef="respondentDashboardNotification">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_RESPONDENT &amp;&amp; flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="AddDraftDocToMainCaseID" name="Add Draft Document to Parent Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
@@ -77,8 +77,8 @@
       <bpmn:incoming>Flow_07n1ssi</bpmn:incoming>
       <bpmn:outgoing>Flow_152d168</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_152d168" sourceRef="AddDraftDocToMainCaseID" targetRef="Activity_0aqp9se" />
-    <bpmn:serviceTask id="Activity_0aqp9se" name="Notifying respondents" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
+    <bpmn:sequenceFlow id="Flow_152d168" sourceRef="AddDraftDocToMainCaseID" targetRef="GeneralApplicationNotifying" />
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
@@ -87,8 +87,8 @@
       <bpmn:incoming>Flow_152d168</bpmn:incoming>
       <bpmn:outgoing>Flow_1uafcbh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1uafcbh" sourceRef="Activity_0aqp9se" targetRef="Gateway_0nb8bqq" />
-    <bpmn:serviceTask id="Activity_0hyf44k" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+    <bpmn:sequenceFlow id="Flow_1uafcbh" sourceRef="GeneralApplicationNotifying" targetRef="Gateway_0nb8bqq" />
+    <bpmn:serviceTask id="UpdateDashboardNotifications" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">UPDATE_GA_DASHBOARD_NOTIFICATION</camunda:inputParameter>
@@ -97,8 +97,8 @@
       <bpmn:incoming>Flow_06pv761</bpmn:incoming>
       <bpmn:outgoing>Flow_00j9g6p</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_00j9g6p" sourceRef="Activity_0hyf44k" targetRef="BulkPrintOrderApplicant" />
-    <bpmn:serviceTask id="Activity_0b9qemx" name="Create Dashboard Notification for Respondent" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+    <bpmn:sequenceFlow id="Flow_00j9g6p" sourceRef="UpdateDashboardNotifications" targetRef="BulkPrintOrderApplicant" />
+    <bpmn:serviceTask id="respondentDashboardNotification" name="Create Dashboard Notification for Respondent" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT</camunda:inputParameter>
@@ -107,7 +107,7 @@
       <bpmn:incoming>Flow_0zobuvp</bpmn:incoming>
       <bpmn:outgoing>Flow_02zbmca</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_02zbmca" sourceRef="Activity_0b9qemx" targetRef="BulkPrintOrderRespondent" />
+    <bpmn:sequenceFlow id="Flow_02zbmca" sourceRef="respondentDashboardNotification" targetRef="BulkPrintOrderRespondent" />
     <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -159,14 +159,14 @@
         <dc:Bounds x="390" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1rnrlhi" bpmnElement="Activity_0aqp9se">
+      <bpmndi:BPMNShape id="BPMNShape_1rnrlhi" bpmnElement="GeneralApplicationNotifying">
         <dc:Bounds x="530" y="173" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0qt8tph" bpmnElement="Activity_0hyf44k">
+      <bpmndi:BPMNShape id="BPMNShape_0qt8tph" bpmnElement="UpdateDashboardNotifications">
         <dc:Bounds x="760" y="300" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1erkovz" bpmnElement="Activity_0b9qemx">
+      <bpmndi:BPMNShape id="BPMNShape_1erkovz" bpmnElement="respondentDashboardNotification">
         <dc:Bounds x="1110" y="300" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
