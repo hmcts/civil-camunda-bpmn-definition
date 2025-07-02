@@ -42,6 +42,7 @@ public abstract class BpmnBaseTest {
     public static final String AGREED_TO_MEDIATION = "AGREED_TO_MEDIATION";
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
+    public static final String PUBLIC_QUERIES_ENABLED = "PUBLIC_QUERIES_ENABLED";
     public static final String FLOW_STATE = "flowState";
     public static final String IS_MULTI_TRACK = "IS_MULTI_TRACK";
     public static final String BULK_CLAIM_ENABLED = "BULK_CLAIM_ENABLED";
@@ -49,6 +50,10 @@ public abstract class BpmnBaseTest {
     public static final String PIP_ENABLED = "PIP_ENABLED";
     public static final String LIP_JUDGMENT_ADMISSION = "LIP_JUDGMENT_ADMISSION";
     public static final String CLAIM_ISSUE_BILINGUAL = "CLAIM_ISSUE_BILINGUAL";
+    public static final String RESPONDENT_BILINGUAL = "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL";
+    public static final String DEFENDANT_ENGLISH_TO_WELSH_ENABLED = "DEFENDANT_ENGLISH_TO_WELSH";
+    public static final String CLAIMANT_ENGLISH_TO_WELSH_ENABLED = "CLAIMANT_ENGLISH_TO_WELSH";
+    public static final String RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL = "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL";
     public static final String JO_ONLINE_LIVE_ENABLED = "JO_ONLINE_LIVE_ENABLED";
     public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
     public static final String MINTI_ENABLED = "MINTI_ENABLED";
@@ -56,7 +61,9 @@ public abstract class BpmnBaseTest {
     public static final String IS_JO_LIVE_FEED_ACTIVE = "IS_JO_LIVE_FEED_ACTIVE";
     public static final String DEFENDANT_NOC_ONLINE = "DEFENDANT_NOC_ONLINE";
     public static final String CLAIM_STATE_DURING_NOC = "CLAIM_STATE_DURING_NOC";
+    public static final String WELSH_ENABLED = "WELSH_ENABLED";
     public static final String PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW = "processConfirmOrderReview";
+    public static final String SETTLE_THE_CLAIM = "SETTLE_THE_CLAIM";
 
     public final String bpmnFileName;
     public final String processId;
@@ -192,6 +199,7 @@ public abstract class BpmnBaseTest {
         return engine.getExternalTaskService()
             .fetchAndLock(1, WORKER_ID)
             .topic(topicName, 100)
+            .enableCustomObjectDeserialization()
             .execute();
     }
 

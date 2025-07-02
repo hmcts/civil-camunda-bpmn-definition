@@ -24,14 +24,17 @@ class RespondToQueryTest extends BpmnBaseTest {
     private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_QUERY_HAS_RESPONSE";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
     private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "NotifyOtherPartyQueryHasResponse";
+    private static final String CREATE_DASHBOARD_NOTIFICATION = "UPDATE_DASHBOARD_NOTIFICATIONS_RESPONSE_TO_QUERY";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID = "UpdateDashboardNotificationsResponseToQuery";
 
     public RespondToQueryTest() {
         super("respond_to_query.bpmn", PROCESS_ID);
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "false,true"})
-    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled(boolean lipClaim, boolean removeDocument) {
+    @CsvSource({"false,false", "true,false", "false,true", "true,true"})
+    void shouldSuccessfullyCompleteRespondToQueryProcess_whenCalled(boolean publicQueriesEnabled,
+                                                                    boolean removeDocument) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -40,7 +43,8 @@ class RespondToQueryTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            LIP_CASE, lipClaim));
+            PUBLIC_QUERIES_ENABLED, publicQueriesEnabled
+        ));
         variables.put("removeDocument", removeDocument);
 
         //complete the start business process
@@ -53,7 +57,7 @@ class RespondToQueryTest extends BpmnBaseTest {
             variables
         );
 
-        if (!lipClaim) {
+        if (!publicQueriesEnabled) {
             //generate the query document
             ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -91,6 +95,15 @@ class RespondToQueryTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_OTHER_PARTY,
             NOTIFY_OTHER_PARTY_ACTIVITY_ID
+        );
+
+        //create dashboard notification
+        ExternalTask createDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyOtherParty,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION,
+            CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process

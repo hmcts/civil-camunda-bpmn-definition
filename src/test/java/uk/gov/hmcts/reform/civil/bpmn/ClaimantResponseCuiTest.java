@@ -5,12 +5,14 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.CourtOfficerOrderTest.NOTIFY_EVENT;
 
 public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
@@ -19,21 +21,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String JUDICIAL_REFERRAL_EVENT = "JUDICIAL_REFERRAL";
     private static final String JUDICIAL_REFERRAL_ACTIVITY_ID = "JudicialReferral";
     private static final String JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID = "Judicial_Referral";
-    //CCD Case Event
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED";
 
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
+    private static final String NOTIFY_REJECTION_ACTIVITY_ID = "RejectRepaymentPlanNotifyParties";
+    private static final String NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID = "ClaimantConfirmProceedNotifyParties";
+    //CCD Case Event
 
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED
         = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
-
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
-        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
-        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
 
     private static final String GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
         = "GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC";
@@ -48,25 +42,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
 
     //Activity IDs
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
     private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
     private static final String DQ_PDF_ACTIVITY_ID = "Generate_LIP_Claimant_DQ";
     private static final String DQ_PDF_EVENT = "GENERATE_RESPONSE_DQ_LIP_SEALED";
 
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPApplicantClaimantConfirmToProceed";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyJoRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
 
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
     private static final String LIP_CLAIMANT_MD_ACTIVITY_ID = "Generate_LIP_Claimant_MD";
     private static final String LIP_CLAIMANT_MD = "GENERATE_LIP_CLAIMANT_MANUAL_DETERMINATION";
     private static final String UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT = "UPDATE_CLAIMANT_INTENTION_CLAIM_STATE";
@@ -127,8 +112,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
@@ -164,8 +148,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         generateRPAContinuousFeed();
         updateClaimState();
@@ -199,8 +182,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
@@ -235,8 +217,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
 
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
@@ -275,8 +256,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyPartiesRejectPaymentPlan();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
@@ -284,6 +264,76 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,false", "false,true"})
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshParty(boolean isRespondentBilingual, boolean isClaimantBilingual) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
+            WELSH_ENABLED, true,
+            JO_ONLINE_LIVE_ENABLED, false));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,false", "true, true"})
+    void shouldRunProcess_ClaimIsInFullAdmitRejectRepaymentAndWelshFTisOff(boolean isClaimantBilingual, boolean isRespondentBilingual) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, isClaimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, isRespondentBilingual,
+            WELSH_ENABLED, false,
+            JO_ONLINE_LIVE_ENABLED, false));
+
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        notifyPartiesRejectPaymentPlan();
+        generateManualDeterminationPdf();
+        requestInterlockJudgement();
+        generateJudgmentByDeterminationPdf();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -313,8 +363,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyPartiesRejectPaymentPlan();
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
@@ -326,8 +375,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation(boolean defendantNocOnline) {
         //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
@@ -336,7 +386,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, false,
             GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
-            CLAIM_ISSUE_BILINGUAL, false
+            CLAIM_ISSUE_BILINGUAL, false,
+            SETTLE_THE_CLAIM, true,
+            DEFENDANT_NOC_ONLINE, defendantNocOnline
         ));
 
         //Then
@@ -349,14 +401,15 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
 
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         assertCompletedCaseEvent(
             TRIGGER_UPDATE_GA_LOCATION,
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
-        generateDQPdf();
+        if (!defendantNocOnline) {
+            generateDQPdf();
+        }
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
@@ -386,12 +439,103 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenDefendantBilingual_EnglishToWelshDisabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            CLAIM_ISSUE_BILINGUAL, false,
+            RESPONDENT_BILINGUAL, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        generateDQPdf();
+        updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenDefendantBilingual_EnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            WELSH_ENABLED, true
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        generateDQPdf();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldRunProcess_ClaimIsInPartAdmitPayImmediately_whenBothBilingual_EnglishToWelshEnabled() {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_PAY_IMMEDIATELY");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, false,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, false,
+            CLAIM_ISSUE_BILINGUAL, true,
+            WELSH_ENABLED, false
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -417,8 +561,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -447,8 +590,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -481,8 +623,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
@@ -516,8 +657,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -559,8 +699,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -602,8 +741,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         generateJudgmentByAdmissionPdf();
-        notifyRespondentClaimantConfirmsToProceed();
-        notifyApplicantClaimantConfirmsToProceed();
+        notifyPartiesClaimantConfirmsToProceed();
         generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
@@ -619,6 +757,46 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInPartAdmitPaymentAgreeSettled(boolean defendantNocOnline) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_SETTLE");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, true,
+            DEFENDANT_NOC_ONLINE, defendantNocOnline
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        if (!defendantNocOnline) {
+            generateDQPdf();
+        }
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
+        createClaimantDashboardNotificationForJOIssued();
+        createDefendantDashboardNotificationForJOIssued();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
     private void generateJudgmentByAdmissionPdf() {
         assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_ADMISSION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_ADMISSION_PDF_ACTIVITY_ID);
     }
@@ -627,20 +805,16 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC, GENERATE_JUDGMENT_BY_DETERMINATION_PDF_ACTIVITY_ID);
     }
 
-    private void notifyRespondentClaimantConfirmsToProceed() {
-        assertCompletedCaseEvent(NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED, NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID);
+    private void notifyPartiesRejectPaymentPlan() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_REJECTION_ACTIVITY_ID);
+    }
+
+    private void notifyPartiesClaimantConfirmsToProceed() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID);
     }
 
     private void createClaimantDashboardNotification() {
         assertCompletedCaseEvent(CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID);
-    }
-
-    private void notifyClaimantClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
-    }
-
-    private void notifyRespondentClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
     }
 
     private void generateDQPdf() {
@@ -681,16 +855,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             eventName,
             activityId,
             variables
-        );
-    }
-
-    private void notifyApplicantClaimantConfirmsToProceed() {
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
-            NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
         );
     }
 
