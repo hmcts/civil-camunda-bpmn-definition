@@ -89,15 +89,17 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         ExternalTask docmosisTask;
 
         docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
-                    GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
-            );
-            docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(docmosisTask, PROCESS_CASE_EVENT,
-                    GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
-                    GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
-            );
+        assertCompleteExternalTask(
+            docmosisTask, PROCESS_CASE_EVENT,
+            GEN_DJ_FORM_NON_DIVERGENT_SPEC_CLAIMANT,
+            GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID
+        );
+        docmosisTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            docmosisTask, PROCESS_CASE_EVENT,
+            GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT,
+            GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
+        );
 
          //complete call to CJES for default Judgment
         ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
