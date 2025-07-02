@@ -183,7 +183,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
-        generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
@@ -218,7 +217,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
-        generateDQPdf();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
@@ -658,7 +656,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
-        generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
         generateJudgmentByAdmissionClaimantDocument();
@@ -700,7 +697,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
-        generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
         generateJudgmentByAdmissionClaimantDocument();
@@ -742,7 +738,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         );
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
-        generateDQPdf();
         updateClaimantClaimState();
         sendJudgmentToCjesService();
         generateJudgmentByAdmissionClaimantDocument();
