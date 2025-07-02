@@ -101,7 +101,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
         );
 
-         //complete call to CJES for default Judgment
+        //complete call to CJES for default Judgment
         ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             sendJudgmentDetailsToCJES,
