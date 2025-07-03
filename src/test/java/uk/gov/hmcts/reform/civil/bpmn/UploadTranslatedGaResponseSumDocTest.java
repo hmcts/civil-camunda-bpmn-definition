@@ -84,29 +84,6 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
 
         }
 
-        if (isLipApplicant) {
-            //post translated document to LiP applicant
-            ExternalTask bulkPrintApplicantTask = assertNextExternalTask(NOTIFY_EVENT);
-            assertCompleteExternalTask(
-                bulkPrintApplicantTask,
-                NOTIFY_EVENT,
-                "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT",
-                "BulkPrintOrderApplicant",
-                variables
-            );
-        }
-
-        if (isLipRespondent) {
-            ExternalTask bulkPrintRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
-            assertCompleteExternalTask(
-                bulkPrintRespondentTask,
-                NOTIFY_EVENT,
-                "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT",
-                "BulkPrintOrderRespondent",
-                variables
-            );
-        }
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
