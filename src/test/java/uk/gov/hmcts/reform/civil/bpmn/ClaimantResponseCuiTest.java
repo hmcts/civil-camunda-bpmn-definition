@@ -386,8 +386,49 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,true", "true,true", "false,false"})
-    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation(boolean defendantNocOnline, boolean defendantBilingual) {
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation_nocToggle(boolean defendantNocOnline) {
+        //Given
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
+        variables.put(FLOW_FLAGS, Map.of(
+            ONE_RESPONDENT_REPRESENTATIVE, true,
+            TWO_RESPONDENT_REPRESENTATIVES, false,
+            GENERAL_APPLICATION_ENABLED, true,
+            IS_MULTI_TRACK, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            SETTLE_THE_CLAIM, true,
+            DEFENDANT_NOC_ONLINE, defendantNocOnline
+        ));
+
+        //Then
+        assertProcessHasStarted();
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        startBusinessProcess(variables);
+        assertCompletedCaseEvent(
+            JUDICIAL_REFERRAL_EVENT,
+            JUDICIAL_REFERRAL_FULL_DEFENCE_ACTIVITY_ID,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
+        if (!defendantNocOnline) {
+            generateDQPdf();
+        }
+        updateClaimState();
+        createClaimantDashboardNotification();
+        createDefendantDashboardNotification();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation_defendantBilingualToggle(boolean defendantBilingual) {
         //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
@@ -398,9 +439,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             WELSH_ENABLED, true,
-            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual,
-            SETTLE_THE_CLAIM, true,
-            DEFENDANT_NOC_ONLINE, defendantNocOnline
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
         ));
 
         //Then
@@ -420,9 +459,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
-        if (!defendantNocOnline) {
-            generateDQPdf();
-        }
+        generateDQPdf();
         if (!defendantBilingual) {
             updateClaimState();
             createClaimantDashboardNotification();
