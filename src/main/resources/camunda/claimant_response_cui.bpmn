@@ -457,10 +457,10 @@
       <bpmn:outgoing>Flow_1rtn7sw</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_19cet4s" name="Full Defence not proceed and defendant noc enabled (as documents not generated,  no need to pause)" sourceRef="Gateway_1e1bap6" targetRef="Gateway_RPA_FLOW">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED" &amp;&amp; !empty flowFlags.DEFENDANT_NOC_ONLINE &amp;&amp; flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState == "MAIN.FULL_DEFENCE_NOT_PROCEED" || flowState == "MAIN.PART_ADMIT_AGREE_SETTLE" || (!empty flowFlags.SETTLE_THE_CLAIM &amp;&amp; flowFlags.SETTLE_THE_CLAIM)) &amp;&amp; !empty flowFlags.DEFENDANT_NOC_ONLINE &amp;&amp; flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1rtn7sw" name="Not full defence or proceed or defendant noc disabled" sourceRef="Gateway_1e1bap6" targetRef="Generate_LIP_Claimant_DQ">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.FULL_DEFENCE_NOT_PROCEED" || empty flowFlags.DEFENDANT_NOC_ONLINE || !flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowState != "MAIN.FULL_DEFENCE_NOT_PROCEED" &amp;&amp; flowState != "MAIN.PART_ADMIT_AGREE_SETTLE" &amp;&amp; (empty flowFlags.SETTLE_THE_CLAIM || !flowFlags.SETTLE_THE_CLAIM)) || empty flowFlags.DEFENDANT_NOC_ONLINE || !flowFlags.DEFENDANT_NOC_ONLINE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0yyi3a3" name="welsh party ?">
       <bpmn:incoming>Flow_0ogn4r0</bpmn:incoming>

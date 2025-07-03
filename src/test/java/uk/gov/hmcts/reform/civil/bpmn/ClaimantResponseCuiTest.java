@@ -386,8 +386,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation(boolean defendantBilingual) {
+    @CsvSource({"true,false", "false,true", "true,true", "false,false"})
+    void shouldRunProcess_ClaimFullDefenceNotAgreeMediation(boolean defendantNocOnline, boolean defendantBilingual) {
         //Given
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
@@ -398,7 +398,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             WELSH_ENABLED, true,
-            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual,
+            SETTLE_THE_CLAIM, true,
+            DEFENDANT_NOC_ONLINE, defendantNocOnline
         ));
 
         //Then
@@ -418,7 +420,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
-        generateDQPdf();
+        if (!defendantNocOnline) {
+            generateDQPdf();
+        }
         if (!defendantBilingual) {
             updateClaimState();
             createClaimantDashboardNotification();
@@ -762,6 +766,46 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
+        createClaimantDashboardNotificationForJOIssued();
+        createDefendantDashboardNotificationForJOIssued();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsInPartAdmitPaymentAgreeSettled(boolean defendantNocOnline) {
+
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.PART_ADMIT_AGREE_SETTLE");
+        variables.put(FLOW_FLAGS, Map.of(
+            LIP_JUDGMENT_ADMISSION, true,
+            CLAIM_ISSUE_BILINGUAL, false,
+            JO_ONLINE_LIVE_ENABLED, true,
+            DEFENDANT_NOC_ONLINE, defendantNocOnline
+        ));
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        notifyPartiesClaimantConfirmsToProceed();
+        if (!defendantNocOnline) {
+            generateDQPdf();
+        }
+        updateClaimantClaimState();
+        sendJudgmentToCjesService();
+        generateJudgmentByAdmissionClaimantDocument();
+        generateJudgmentByAdmissionDefendantDocument();
+        sendPinInPOstLetterForJudgmentByAdmission();
         createClaimantDashboardNotificationForJOIssued();
         createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
