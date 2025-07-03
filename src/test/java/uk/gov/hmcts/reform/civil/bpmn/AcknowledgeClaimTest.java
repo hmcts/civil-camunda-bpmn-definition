@@ -11,9 +11,9 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "ACKNOWLEDGE_CLAIM";
     private static final String PROCESS_ID = "ACKNOWLEDGE_CLAIM_PROCESS_ID";
 
-    private static final String NOTIFY_APPLICANT_SOLICITOR_1 = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_ACKNOWLEDGEMENT";
+    private static final String NOTIFY_PARTIES = "NOTIFY_EVENT";
     private static final String GENERATE_ACKNOWLEDGEMENT_OF_CLAIM = "GENERATE_ACKNOWLEDGEMENT_OF_CLAIM";
-    private static final String NOTIFICATION_ACTIVITY_ID = "AcknowledgeClaimNotifyApplicantSolicitor1";
+    private static final String NOTIFICATION_ACTIVITY_ID = "AcknowledgeClaimUnspecNotifyParties";
     private static final String GENERATE_CERTIFICATE_ACTIVITY_ID = "AcknowledgeClaimGenerateAcknowledgementOfClaim";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
@@ -44,20 +44,12 @@ class AcknowledgeClaimTest extends BpmnBaseTest {
                                    GENERATE_ACKNOWLEDGEMENT_OF_CLAIM,
                                    GENERATE_CERTIFICATE_ACTIVITY_ID);
 
-        //complete the notification to applicant
+        //complete the notification to relevant parties
         ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notification,
                                    PROCESS_CASE_EVENT,
-                                   NOTIFY_APPLICANT_SOLICITOR_1,
+                                   NOTIFY_PARTIES,
                                    NOTIFICATION_ACTIVITY_ID);
-
-        //complete the CC notification to respondent
-        notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_ACKNOWLEDGEMENT_CC",
-                                   "AcknowledgeClaimNotifyRespondentSolicitor1CC"
-        );
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
