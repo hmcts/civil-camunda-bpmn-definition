@@ -25,6 +25,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CUI_ACTIVITY_ID = "GenerateDashboardNotificationClaimFeeRequired";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1 = "GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1";
     private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1_ACTIVITY_ID = "GenerateDashboardNotificationClaimIssueHwfClaimant1";
+    private static final String ADD_MESSAGES_TASK_LIST_CATEGORIES = "CREATE_MESSAGES_TASK_CATEGORIES";
+    private static final String ADD_MESSAGES_TASK_LIST_CATEGORIES_ACTIVITY_ID = "GenerateMessageTaskItems";
 
     //Notify applicant 1 claim submitted
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
@@ -35,11 +37,12 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCreateLipClaim() {
+    void shouldSuccessfullyCreateLipClaim_QMOff() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", false));
+                          "CLAIM_ISSUE_HWF", false,
+                      "PUBLIC_QUERIES_ENABLED", false));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
@@ -50,16 +53,50 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldPauseServiceRequestApiCall_WhenHwFApplied() {
+    void shouldSuccessfullyCreateLipClaim() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", true));
+                "CLAIM_ISSUE_HWF", false,
+                      "PUBLIC_QUERIES_ENABLED", true));
+        startBusinessProcess(variables);
+        completeClaimIssue(variables);
+        notifyApplicant1ClaimSubmitted(variables);
+        generateDraftForm(variables);
+        createServiceRequestCui(variables);
+        generateDashboardNotificationClaimFeeRequired(variables);
+        setAddMessagesTaskListCategories(variables);
+        completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
+    }
+
+    @Test
+    void shouldPauseServiceRequestApiCall_WhenHwFAppliedQMOff() {
+        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            "CLAIM_ISSUE_HWF", true,
+            "PUBLIC_QUERIES_ENABLED", false));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
         generateDashboardNotificationHwfRequested(variables);
+        completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
+    }
+
+    @Test
+    void shouldPauseServiceRequestApiCall_WhenHwFApplied() {
+        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+                "CLAIM_ISSUE_HWF", true,
+                "PUBLIC_QUERIES_ENABLED", true));
+        startBusinessProcess(variables);
+        completeClaimIssue(variables);
+        notifyApplicant1ClaimSubmitted(variables);
+        generateDraftForm(variables);
+        generateDashboardNotificationHwfRequested(variables);
+        setAddMessagesTaskListCategories(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
@@ -129,6 +166,17 @@ public class CreateClaimLipTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1,
             GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void setAddMessagesTaskListCategories(final VariableMap variables) {
+        ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignTask,
+            PROCESS_CASE_EVENT,
+            ADD_MESSAGES_TASK_LIST_CATEGORIES,
+            ADD_MESSAGES_TASK_LIST_CATEGORIES_ACTIVITY_ID,
             variables
         );
     }
