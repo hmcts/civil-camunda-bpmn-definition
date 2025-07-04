@@ -584,9 +584,8 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false,false", "false,true,false", "false,false,true"})
-    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual,
-                                                    boolean docsBilingual) {
+    @CsvSource({"true,false", "false,true", "true,true"})
+    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -598,8 +597,7 @@ class CreateSDOTest extends BpmnBaseTest {
             GENERAL_APPLICATION_ENABLED, false,
             WELSH_ENABLED, true,
             CLAIM_ISSUE_BILINGUAL, claimantBilingual,
-            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual,
-            BILINGUAL_DOCS, docsBilingual
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
         ));
 
         //complete the start business process
