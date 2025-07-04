@@ -54,6 +54,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID = "ClaimantConfirmProceedNotifyParties";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -191,14 +193,16 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldRunProcess_ClaimIsHavingMediation() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldRunProcess_ClaimIsHavingMediation(boolean welshEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.IN_MEDIATION");
+        variables.put(FLOW_FLAGS, Map.of(WELSH_ENABLED, welshEnabled));
         assertCompleteExternalTask(
                 startBusiness,
                 START_BUSINESS_TOPIC,
@@ -216,14 +220,23 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID
         );
 
-        //complete the respondent notification
+        //complete the notification
         ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
+        if (welshEnabled) {
+            assertCompleteExternalTask(
+                notificationRespondentTask,
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
+            );
+        } else {
+            assertCompleteExternalTask(
                 notificationRespondentTask,
                 PROCESS_CASE_EVENT,
                 NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
                 NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        );
+            );
+        }
 
         //complete the RPA notification
         ExternalTask proceedCaseOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
