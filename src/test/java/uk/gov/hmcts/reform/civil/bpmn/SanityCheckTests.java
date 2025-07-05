@@ -36,14 +36,15 @@ class SanityCheckTests {
     }
 
     /**
-     * <p>Often times when we create new Camunda files we do it by copy/pasting other files and modifying some key
+     * Often times when we create new Camunda files we do it by copy/pasting other files and modifying some key
      * portions. An easy mistake to make however is to forget modifying the "Process ID" for the file, as it's not
      * meant to affect the application's behaviour and it's done by clicking in an empty area of the Camunda Modeler.
      * </p>
+     *
      * <p>One such mistake can result in the "legit" process being overwritten by the new one, resulting in the manual
      * testing from the developer succeeding while leaving other areas of the application broken in the process.
      * This mistake is also easy to miss during code review, so some automation around it to prevent slipping through
-     * is needed.</p>
+     * is needed.
      *
      * @throws Exception Unimportant
      */
