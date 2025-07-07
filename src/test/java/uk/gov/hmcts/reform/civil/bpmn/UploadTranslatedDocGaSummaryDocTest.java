@@ -94,16 +94,6 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
                 UPDATE_DASHBOARD_NOTIFICATIONS_ID,
                 variables
             );
-
-            //post translated document to LiP applicant
-            ExternalTask bulkPrintApplicantTask = assertNextExternalTask(NOTIFY_EVENT);
-            assertCompleteExternalTask(
-                bulkPrintApplicantTask,
-                NOTIFY_EVENT,
-                "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT",
-                "BulkPrintOrderApplicant",
-                variables
-            );
         }
 
         if (isLipRespondent) {
@@ -114,15 +104,6 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
                 APPLICATION_PROCESS_EVENT_GA_SPEC,
                 CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT,
                 CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID,
-                variables
-            );
-
-            ExternalTask bulkPrintRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
-            assertCompleteExternalTask(
-                bulkPrintRespondentTask,
-                NOTIFY_EVENT,
-                "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT",
-                "BulkPrintOrderRespondent",
                 variables
             );
         }

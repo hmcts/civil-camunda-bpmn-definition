@@ -26,49 +26,6 @@
     <bpmn:sequenceFlow id="Flow_13dgz5v" sourceRef="Event_1p3emre" targetRef="Event_0nc34kd" />
     <bpmn:sequenceFlow id="Flow_0g2t112" sourceRef="StartEvent_1" targetRef="Activity_0gt1863" />
     <bpmn:sequenceFlow id="Flow_07n1ssi" sourceRef="Activity_0gt1863" targetRef="AddDraftDocToMainCaseID" />
-    <bpmn:exclusiveGateway id="Gateway_0nb8bqq">
-      <bpmn:incoming>Flow_01ow93i</bpmn:incoming>
-      <bpmn:incoming>Flow_15j5tee</bpmn:incoming>
-      <bpmn:outgoing>Flow_1u52am6</bpmn:outgoing>
-      <bpmn:outgoing>Flow_06pv761</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1u52am6" name="LR applicant" sourceRef="Gateway_0nb8bqq" targetRef="Gateway_14xtsk2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="BulkPrintOrderApplicant" name="Bulk print order applicant" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_06pv761</bpmn:incoming>
-      <bpmn:outgoing>Flow_1o113vl</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_06pv761" name="LiP Applicant" sourceRef="Gateway_0nb8bqq" targetRef="BulkPrintOrderApplicant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="BulkPrintOrderRespondent" name="Bulk print order respondent" camunda:type="external" camunda:topic="processExternalCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0zobuvp</bpmn:incoming>
-      <bpmn:outgoing>Flow_0xqrj4z</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_14xtsk2">
-      <bpmn:incoming>Flow_1u52am6</bpmn:incoming>
-      <bpmn:incoming>Flow_1o113vl</bpmn:incoming>
-      <bpmn:outgoing>Flow_05b0ay8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0zobuvp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_05b0ay8" name="LR Respondent" sourceRef="Gateway_14xtsk2" targetRef="Activity_0eo8p2p">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1o113vl" sourceRef="BulkPrintOrderApplicant" targetRef="Gateway_14xtsk2" />
-    <bpmn:sequenceFlow id="Flow_0zobuvp" name="LiP Respondent" sourceRef="Gateway_14xtsk2" targetRef="BulkPrintOrderRespondent">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_RESPONDENT &amp;&amp; flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="AddDraftDocToMainCaseID" name="Add Draft Document to Parent Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -83,11 +40,10 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05b0ay8</bpmn:incoming>
-      <bpmn:incoming>Flow_0xqrj4z</bpmn:incoming>
+      <bpmn:incoming>Flow_1lrs5im</bpmn:incoming>
+      <bpmn:incoming>Flow_18u8w9p</bpmn:incoming>
       <bpmn:outgoing>Flow_12hy528</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_0xqrj4z" sourceRef="BulkPrintOrderRespondent" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_12hy528" sourceRef="Activity_0eo8p2p" targetRef="Event_07ek9xj" />
     <bpmn:serviceTask id="WaitCivilDraftDocumentUpdatedId" name="Wait Civil Draft Document Updated" camunda:type="external" camunda:topic="WAIT_CIVIL_DOC_UPDATED_GASPEC">
       <bpmn:extensionElements>
@@ -102,7 +58,7 @@
     <bpmn:exclusiveGateway id="Gateway_1so1uwc" name="IsVaryJudgementAppMovedOffline ?">
       <bpmn:incoming>Flow_061nml9</bpmn:incoming>
       <bpmn:outgoing>Flow_0ho04ze</bpmn:outgoing>
-      <bpmn:outgoing>Flow_15j5tee</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18u8w9p</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0ho04ze" name="Yes" sourceRef="Gateway_1so1uwc" targetRef="TriggerMainCaseToMoveOfflineId">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.VARY_JUDGE_GA_BY_RESP &amp;&amp; flowFlags.VARY_JUDGE_GA_BY_RESP)}</bpmn:conditionExpression>
@@ -114,10 +70,10 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ho04ze</bpmn:incoming>
-      <bpmn:outgoing>Flow_01ow93i</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1lrs5im</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_01ow93i" sourceRef="TriggerMainCaseToMoveOfflineId" targetRef="Gateway_0nb8bqq" />
-    <bpmn:sequenceFlow id="Flow_15j5tee" name="No" sourceRef="Gateway_1so1uwc" targetRef="Gateway_0nb8bqq">
+    <bpmn:sequenceFlow id="Flow_1lrs5im" sourceRef="TriggerMainCaseToMoveOfflineId" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_18u8w9p" name="No" sourceRef="Gateway_1so1uwc" targetRef="Activity_0eo8p2p">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.VARY_JUDGE_GA_BY_RESP || !flowFlags.VARY_JUDGE_GA_BY_RESP)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
@@ -141,29 +97,6 @@
         <dc:Bounds x="390" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
-        <dc:Bounds x="1602" y="195" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1440" y="173" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pwnstm_di" bpmnElement="BulkPrintOrderRespondent">
-        <dc:Bounds x="1350" y="290" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_14xtsk2_di" bpmnElement="Gateway_14xtsk2" isMarkerVisible="true">
-        <dc:Bounds x="1185" y="188" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1gjfcvf_di" bpmnElement="BulkPrintOrderApplicant">
-        <dc:Bounds x="1040" y="300" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0nb8bqq_di" bpmnElement="Gateway_0nb8bqq" isMarkerVisible="true">
-        <dc:Bounds x="965" y="188" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1167" y="155" width="27" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0stc1rq" bpmnElement="WaitCivilDraftDocumentUpdatedId">
         <dc:Bounds x="540" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -177,6 +110,12 @@
       <bpmndi:BPMNShape id="BPMNShape_0hpx5j8" bpmnElement="TriggerMainCaseToMoveOfflineId">
         <dc:Bounds x="790" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
+        <dc:Bounds x="1112" y="195" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="970" y="173" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="262" y="152" width="36" height="36" />
@@ -196,53 +135,13 @@
         <di:waypoint x="330" y="210" />
         <di:waypoint x="390" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1u52am6_di" bpmnElement="Flow_1u52am6">
-        <di:waypoint x="1015" y="213" />
-        <di:waypoint x="1185" y="213" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1069" y="195" width="63" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06pv761_di" bpmnElement="Flow_06pv761">
-        <di:waypoint x="990" y="238" />
-        <di:waypoint x="990" y="340" />
-        <di:waypoint x="1040" y="340" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1007" y="273" width="65" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05b0ay8_di" bpmnElement="Flow_05b0ay8">
-        <di:waypoint x="1235" y="213" />
-        <di:waypoint x="1440" y="213" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1316" y="195" width="78" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1o113vl_di" bpmnElement="Flow_1o113vl">
-        <di:waypoint x="1140" y="340" />
-        <di:waypoint x="1210" y="340" />
-        <di:waypoint x="1210" y="238" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zobuvp_di" bpmnElement="Flow_0zobuvp">
-        <di:waypoint x="1210" y="238" />
-        <di:waypoint x="1210" y="340" />
-        <di:waypoint x="1350" y="340" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1220" y="273" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_152d168_di" bpmnElement="Flow_152d168">
         <di:waypoint x="490" y="213" />
         <di:waypoint x="540" y="213" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xqrj4z_di" bpmnElement="Flow_0xqrj4z">
-        <di:waypoint x="1450" y="330" />
-        <di:waypoint x="1490" y="330" />
-        <di:waypoint x="1490" y="253" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12hy528_di" bpmnElement="Flow_12hy528">
-        <di:waypoint x="1540" y="213" />
-        <di:waypoint x="1602" y="213" />
+        <di:waypoint x="1070" y="213" />
+        <di:waypoint x="1112" y="213" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_061nml9_di" bpmnElement="Flow_061nml9">
         <di:waypoint x="640" y="213" />
@@ -255,17 +154,17 @@
           <dc:Bounds x="754" y="195" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01ow93i_di" bpmnElement="Flow_01ow93i">
+      <bpmndi:BPMNEdge id="Flow_1lrs5im_di" bpmnElement="Flow_1lrs5im">
         <di:waypoint x="890" y="213" />
-        <di:waypoint x="965" y="213" />
+        <di:waypoint x="970" y="213" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15j5tee_di" bpmnElement="Flow_15j5tee">
+      <bpmndi:BPMNEdge id="Flow_18u8w9p_di" bpmnElement="Flow_18u8w9p">
         <di:waypoint x="710" y="238" />
-        <di:waypoint x="710" y="340" />
-        <di:waypoint x="990" y="340" />
-        <di:waypoint x="990" y="238" />
+        <di:waypoint x="710" y="320" />
+        <di:waypoint x="1020" y="320" />
+        <di:waypoint x="1020" y="253" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="843" y="322" width="15" height="14" />
+          <dc:Bounds x="858" y="302" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
