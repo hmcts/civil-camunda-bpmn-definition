@@ -27,6 +27,14 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
         = "makeDecisionCreateDashboardNotificationForRespondent";
 
+    private static final String BULK_PRINT_ORDER_APPLICANT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
+    private static final String BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID
+        = "BulkPrintOrderApplicant";
+
+    private static final String BULK_PRINT_ORDER_RESPONDENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
+    private static final String BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID
+        = "BulkPrintOrderRespondent";
+
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
@@ -103,12 +111,30 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
             variables
         );
 
+        ExternalTask bulkPrintApplicantTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintApplicantTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_APPLICANT,
+            BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID,
+            variables
+        );
+
         dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotificationTask,
             PROCESS_EXTERNAL_CASE_EVENT,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask bulkPrintRespondentTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintRespondentTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_RESPONDENT,
+            BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID,
             variables
         );
 
@@ -197,6 +223,15 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
             PROCESS_EXTERNAL_CASE_EVENT,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask bulkPrintRespondentTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintRespondentTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_RESPONDENT,
+            BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID,
             variables
         );
 
