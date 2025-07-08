@@ -724,9 +724,8 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false,false", "false,true,false", "false,false,true"})
-    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual,
-                                                    boolean docsBilingual) {
+    @CsvSource({"true,false", "false,true", "true,true"})
+    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -737,9 +736,10 @@ class CreateSDOTest extends BpmnBaseTest {
         variables.putValue(FLOW_FLAGS, Map.of(
             GENERAL_APPLICATION_ENABLED, false,
             WELSH_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, true,
+            CASE_PROGRESSION_ENABLED, true,
             CLAIM_ISSUE_BILINGUAL, claimantBilingual,
-            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual,
-            BILINGUAL_DOCS, docsBilingual
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
         ));
 
         //complete the start business process
@@ -749,6 +749,45 @@ class CreateSDOTest extends BpmnBaseTest {
                                    START_BUSINESS_EVENT,
                                    START_BUSINESS_ACTIVITY,
                                    variables);
+
+        //complete the notification dashboard
+        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardClaimant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
+            "GenerateDashboardNotificationSDOClaimant",
+            variables
+        );
+
+        //complete the notification dashboard
+        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardDefendant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
+            "GenerateDashboardNotificationSDODefendant",
+            variables
+        );
+
+        //complete the notification to respondent 1 dashboard
+        ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            respondent1DashboardNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
+            "Activity_Notice_Hearing_Claimant",
+            variables
+        );
+        //complete the notification to defendant 1 dashboard
+        ExternalTask applicant1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicant1DashboardNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT",
+            "Activity_Notice_Hearing_Defendant",
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
