@@ -16,12 +16,6 @@ class HearingProcessTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "HEARING_PROCESS";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_CLAIMANT_HEARING
-        = "NOTIFY_CLAIMANT_HEARING";
-    public static final String NOTIFY_DEFENDANT1_HEARING
-        = "NOTIFY_DEFENDANT1_HEARING";
-    public static final String NOTIFY_DEFENDANT2_HEARING
-        = "NOTIFY_DEFENDANT2_HEARING";
     public static final String GENERATE_HEARING_FORM
         = "GENERATE_HEARING_FORM";
     public static final String CREATE_SERVICE_REQUEST_API
@@ -34,15 +28,9 @@ class HearingProcessTest extends BpmnBaseTest {
         = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT
         = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT";
-
+    public static final String NOTIFY_EVENT
+        = "NOTIFY_EVENT";
     //ACTIVITY IDs
-    private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
-        = "NotifyClaimantHearing";
-    private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
-        = "NotifyDefendant1Hearing";
-
-    private static final String NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
-        = "NotifyDefendant2Hearing";
     public static final String GENERATE_HEARING_FORM_ACTIVITY_ID
         = "GenerateHearingForm";
     private static final String CREATE_SERVICE_REQUEST_API_ACTIVITY_ID
@@ -55,7 +43,8 @@ class HearingProcessTest extends BpmnBaseTest {
         = "GenerateDashboardNotificationHearingScheduledClaimant";
     private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID
         = "GenerateDashboardNotificationHearingScheduledDefendant";
-
+    private static final String NOTIFY_EVENT_ACTIVITY_ID
+        = "HearingProcessNotifier";
     public HearingProcessTest() {
         super("hearing_process.bpmn", PROCESS_ID);
     }
@@ -88,17 +77,12 @@ class HearingProcessTest extends BpmnBaseTest {
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
-        );
 
         //complete the service request process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -156,23 +140,12 @@ class HearingProcessTest extends BpmnBaseTest {
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant2 notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
-        );
 
         //complete the service request process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -241,16 +214,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
@@ -321,16 +288,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
@@ -388,22 +349,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    GENERATE_HEARING_FORM, GENERATE_HEARING_FORM_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the defendant2 notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT2_HEARING, NOTIFY_DEFENDANT2_HEARING_ACTIVITY_ID
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
@@ -467,16 +416,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
@@ -555,16 +498,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
@@ -629,16 +566,10 @@ class HearingProcessTest extends BpmnBaseTest {
                                    SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notification to all parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+                                   NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY_ID, variables
         );
 
         //complete the service request process
