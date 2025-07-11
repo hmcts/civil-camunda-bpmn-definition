@@ -19,20 +19,10 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "AMEND_RESTITCH_BUNDLE";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE
-        = "NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE";
-    public static final String NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE
-        = "NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE";
-    public static final String NOTIFY_DEFENDANT_TWO_AMEND_RESTITCH_BUNDLE
-        = "NOTIFY_DEFENDANT_TWO_AMEND_RESTITCH_BUNDLE";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID
-        = "NotifyClaimantAmendRestitchBundle";
-    private static final String NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID
-        = "NotifyDefendantAmendRestitchBundle";
-    private static final String NOTIFY_DEFENDANT_TWO_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID
-        = "NotifyDefendant2AmendRestitchBundle";
+    private static final String NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID = "AmendRestitchBundleNotify";
 
     public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT
         = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
@@ -95,26 +85,8 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE,
-                                   NOTIFY_CLAIMANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
-                                   variables
-        );
-
-        if (twoRespondents) {
-            //complete the defendant 2 notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       NOTIFY_DEFENDANT_TWO_AMEND_RESTITCH_BUNDLE,
-                                       NOTIFY_DEFENDANT_TWO_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
-                                       variables
-            );
-        }
-
-        //complete the defendant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE,
-                                   NOTIFY_DEFENDANT_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
+                                   NOTIFY_EVENT,
+                                   NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
                                    variables
         );
 
