@@ -13,18 +13,14 @@ class UploadTranslatedDocumentSettlementAgreementTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_SETTLEMENT_AGREEMENT";
     public static final String PROCESS_ID = "UPLOAD_TRANSLATED_SETTLEMENT_AGREEMENT_PROCESS_ID";
 
-    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT =
-        "NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT";
-    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT =
-        "NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT";
+    private static final String NOTIFY_EVENT =
+        "NOTIFY_EVENT";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_EVENT_ID =
         "CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_ACTIVITY_ID =
         "GenerateDashboardNotificationSignSettlementAgreement";
-    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
-        "NotifyApplicantForSignSettlementAgreement";
-    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
-        "NotifyRespondentForSignSettlementAgreement";
+    private static final String NOTIFY_EVENT_ID =
+        "DefendantSignSettlementNotify";
 
     public UploadTranslatedDocumentSettlementAgreementTest() {
         super("upload_translated_document_settlement_agreement.bpmn", PROCESS_ID);
@@ -48,7 +44,6 @@ class UploadTranslatedDocumentSettlementAgreementTest extends BpmnBaseTest {
                                    variables);
 
         notifyApplicantSignSettlementAgreement();
-        notifyRespondentSignSettlementAgreement();
         generateDashboardNotificationSignSettlementAgreement();
 
         //end business process
@@ -63,18 +58,8 @@ class UploadTranslatedDocumentSettlementAgreementTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT,
-            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
-        );
-    }
-
-    private void notifyRespondentSignSettlementAgreement() {
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT,
-            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
+            NOTIFY_EVENT,
+            NOTIFY_EVENT_ID
         );
     }
 
