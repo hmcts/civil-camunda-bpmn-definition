@@ -35,11 +35,19 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
 
+    private static final String BULK_PRINT_APPLICANT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
+    private static final String BULK_PRINT_APPLICANT_ACTIVITY = "BulkPrintOrderApplicant";
+
+    private static final String BULK_PRINT_RESPONDENT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
+    private static final String BULK_PRINT_RESPONDENT_ACTIVITY = "BulkPrintOrderRespondent";
+
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+
+
 
     public UploadTranslatedDocumentGaFinalOrderTest() {
         super("upload_translated_document_ga_final_order.bpmn", "UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID");
@@ -107,6 +115,15 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
                 CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
                 variables
             );
+
+            ExternalTask bulkPrintApplicant = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintApplicant,
+                MAKE_DECISION_CASE_EVENT,
+                BULK_PRINT_APPLICANT_EVENT,
+                BULK_PRINT_APPLICANT_ACTIVITY,
+                variables
+            );
         }
 
         if (isLipRespondent) {
@@ -116,6 +133,15 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
                 MAKE_DECISION_CASE_EVENT,
                 CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
                 CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
+                variables
+            );
+
+            ExternalTask bulkPrintRespondent = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintRespondent,
+                MAKE_DECISION_CASE_EVENT,
+                BULK_PRINT_RESPONDENT_EVENT,
+                BULK_PRINT_RESPONDENT_ACTIVITY,
                 variables
             );
         }
