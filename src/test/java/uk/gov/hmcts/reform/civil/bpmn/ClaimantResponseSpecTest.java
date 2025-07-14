@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -22,27 +24,31 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE = "GENERATE_DIRECTIONS_QUESTIONNAIRE";
     private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID
         = "ClaimantResponseGenerateDirectionsQuestionnaire";
+    private static final String GENERATE_DIRECTIONS_QUESTIONNAIRE_FOR_TRANSLATION_ACTIVITY_ID
+        = "ClaimantResponseGenerateDirectionsQuestionnaireForTranslation";
     private static final String GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID = "ClaimantGenerateDQMeditation";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
-    private static final String NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED =
-        "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_LIP";
     private static final String NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID =
-        "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1Lip";
+        "ClaimantResponseConfirmsNotToProceedLipNotify";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
-    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED =
-        "NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED";
-    private static final String NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID =
-        "ClaimantAgreedSettledPartAdmitNotifyLip";
+    private static final String CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID =
+        "ClaimantResponseAgreedSettledPartAdmitNotify";
+    private static final String CLAIMANT_RESPONSE_NOT_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseNotAgreedRepaymentNotify";
+    private static final String CLAIMANT_RESPONSE_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseAgreedRepaymentNotify";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
     private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID = "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC";
+    private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantResponseConfirmsNotToProceedNotify";
+
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+
+    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_RESPONDENT1_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
+    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_APPLICANT_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
+    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "DefendantPartAdmitPayImmediatelyNotification";
+    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "ClaimantPartAdmitPayImmediatelyNotification";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -86,8 +92,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT1_FOR_CLAIMANT_AGREED_REPAYMENT",
-            "ClaimantAgreedRepaymentNotifyRespondent1"
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_AGREED_REPAYMENT_ACTIVITY_ID
         );
 
         //complete the Robotics notification
@@ -220,20 +226,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyClimantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyClimantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT",
-            "ClaimantDisAgreeRepaymentPlanNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT",
-            "ClaimantDisAgreedRepaymentPlanNotifyLip"
+            NOTIFY_EVENT,
+            "ClaimantResponseNotAgreedRepaymentNotify"
         );
 
         //complete the Robotics notification
@@ -312,22 +310,13 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to all parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
+            NOTIFY_EVENT,
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -388,7 +377,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyLipRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_EVENT,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
         createDefendantDashboardNotification();
@@ -441,7 +430,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyLipRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_EVENT,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
 
@@ -475,20 +464,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent"
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -538,28 +519,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask notifyApplicantLR = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyApplicantLR,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyApplicant"
-        );
-
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent"
-        );
-
-        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent2,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT2_MEDIATION_AGREEMENT",
-            "ClaimantDefendantAgreedMediationNotifyRespondent2"
+            NOTIFY_EVENT,
+            "ClaimantDefendantAgreedMediationNotify"
         );
 
         ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -616,8 +581,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED,
-            NOTIFY_LIP_DEFENDANT_PART_ADMIT_CLAIM_SETTLED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID
         );
         createDefendantDashboardNotification();
 
@@ -664,22 +629,13 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
-        //complete the Respondent1 notification
-        ExternalTask notifyRespondentSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to all parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondentSolicitor1,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED,
+            NOTIFY_EVENT,
             NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID,
-            variables
-        );
-        //complete the Applicant1 notification
-        ExternalTask notifyApplicantSolicitor1 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicantSolicitor1,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_CC,
-            NOTIFY_RESPONDENT_SOLICITOR1_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC_EVENT_ID,
             variables
         );
 
@@ -725,10 +681,118 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
+            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
+            variables
+        );
+
+        assertCompleteExternalTask(
+            notificationTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
+            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
+            variables
+        );
 
         createDefendantDashboardNotification();
 
         //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteClaimantResponse_WhenApplicantRejectRepayment() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", "MAIN.FULL_ADMIT_REJECT_REPAYMENT");
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        //complete the notification to respondent
+        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondent,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            CLAIMANT_RESPONSE_NOT_AGREED_REPAYMENT_ACTIVITY_ID
+        );
+
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
+            variables
+        );
+        createDefendantDashboardNotification();
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"MAIN.FULL_DEFENCE_PROCEED", "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION", "MAIN.FULL_ADMIT_PROCEED",
+        "MAIN.PART_ADMIT_PROCEED", "MAIN.IN_MEDIATION"})
+    void shouldSuccessfullyCompleteWhenDefendantIsBilingual(String flowState) {
+        // assert process has started
+        assertFalse(processInstance.isEnded());
+
+        // assert message start event
+        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
+            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
+
+        VariableMap variables = Variables.createVariables();
+        variables.putValue("flowState", flowState);
+        variables.putValue("flowFlags", Map.of(
+            WELSH_ENABLED, true,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, true
+        ));
+
+        // complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateDQ,
+            PROCESS_CASE_EVENT,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE,
+            GENERATE_DIRECTIONS_QUESTIONNAIRE_FOR_TRANSLATION_ACTIVITY_ID
+        );
+
+        // end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
