@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -95,6 +97,12 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1";
     private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
         = "CreateIssueClaimDashboardNotificationsForDefendant1";
+
+    private static final String REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_EVENT
+        = "REMOVE_PAYMENT_DASHBOARD_NOTIFICATION";
+
+    private static final String REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        = "RemovePaymentDashboardNotification";
 
     public CreateClaimSpecAfterPaymentTest() {
         super("create_claim_spec_after_payment.bpmn", "CREATE_CLAIM_PROCESS_ID_SPEC_AFTER_PAYMENT");
@@ -494,8 +502,9 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         }
     }
 
-    @Test
-    void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldSuccessfullyCompleteCreateClaim_whenClaimIssuedIsBilingual(boolean welshEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -511,7 +520,8 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, true,
             PIP_ENABLED, true,
-            CLAIM_ISSUE_BILINGUAL, true
+            CLAIM_ISSUE_BILINGUAL, true,
+            WELSH_ENABLED, welshEnabled
         ));
 
         //complete the start business process
@@ -543,6 +553,17 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_EVENT,
             NOTIFY_LIP_CLAIMANT_CLAIM_SUBMISSION_ACTIVITY_ID
         );
+
+        if (welshEnabled) {
+            //Delete payment notification
+            ExternalTask removePaymentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                removePaymentNotification,
+                PROCESS_CASE_EVENT,
+                REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_EVENT,
+                REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
