@@ -141,40 +141,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the notification to respondent 1 dashboard
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
-            "Activity_Notice_Hearing_Claimant",
-            variables
-        );
-        //complete the notification to defendant 1 dashboard
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT",
-            "Activity_Notice_Hearing_Defendant",
-            variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -267,7 +233,8 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, lipDefendant,
-            LIP_CASE, lipClaimant));
+            LIP_CASE, lipClaimant,
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -357,6 +324,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
+            DASHBOARD_SERVICE_ENABLED, false,
             LIP_CASE, false));
 
         //complete the start business process
@@ -378,40 +346,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    NOTIFY_EVENT,
                                    NOTIFY_PARTIES_FOR_GENERATE_ORDER_ACTIVITY_ID,
                                    variables
-        );
-
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_DEFENDANT_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the notification to respondent 1 dashboard
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT",
-            "Activity_Notice_Hearing_Claimant",
-            variables
-        );
-        //complete the notification to defendant 1 dashboard
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT",
-            "Activity_Notice_Hearing_Defendant",
-            variables
         );
 
         //end business process
