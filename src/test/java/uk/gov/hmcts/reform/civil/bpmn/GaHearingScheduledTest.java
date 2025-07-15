@@ -3,12 +3,14 @@ package uk.gov.hmcts.reform.civil.bpmn;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.WELSH_ENABLED;
 
 class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
@@ -39,6 +41,66 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
     public GaHearingScheduledTest() {
         super("ga_hearing_scheduled_access.bpmn", PROCESS_ID);
+    }
+
+    @BeforeEach
+    void setup() {
+
+        //deploy process
+        startBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH,
+                                                "start_hearing_scheduled_business_process.bpmn"))
+            .deploy();
+        endBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_hearing_scheduled_business_process.bpmn"))
+            .deploy();
+        endBusinessProcessWithoutTaskDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process_without_WA_task.bpmn"))
+            .deploy();
+        deployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
+            .deploy();
+        processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
+    }
+
+    @Test
+    void shouldSuccessfullyCompleteCreatePDFDocumentIfWelshApplication_whenCalled() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put("flowFlags", Map.of(
+            WELSH_ENABLED, true));
+
+        //complete the start business process
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        //Generate Hearing Notice Document
+        ExternalTask generateHearingNoticeDocument = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            generateHearingNoticeDocument,
+            APPLICATION_PROCESS_CASE_EVENT,
+            GENERATE_HEARING_NOTICE_EVENT,
+            GENERATE_HEARING_FORM_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS_WITHOUT_TASK);
+        completeBusinessProcessForGADocUpload(endBusinessProcess);
+        assertNoExternalTasksLeft();
     }
 
     @Test
