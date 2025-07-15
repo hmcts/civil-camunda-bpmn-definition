@@ -10,16 +10,14 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.WELSH_ENABLED;
 
 class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String MESSAGE_NAME = "HEARING_SCHEDULED_GA";
     private static final String PROCESS_ID = "GA_HEARING_SCHEDULED_PROCESS_ID";
-
+    private static final String WELSH_ENABLED_FOR_JUDGE_DECISION = "WELSH_ENABLED_FOR_JUDGE_DECISION";
     private static final String GENERATE_HEARING_NOTICE_EVENT = "GENERATE_HEARING_NOTICE_DOCUMENT";
     private static final String GENERATE_HEARING_FORM_ACTIVITY_ID = "GenerateHearingNoticeDocument";
-
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
@@ -77,7 +75,9 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            WELSH_ENABLED, true));
+            WELSH_ENABLED_FOR_JUDGE_DECISION, true,
+            LIP_APPLICANT, false,
+            LIP_RESPONDENT, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
