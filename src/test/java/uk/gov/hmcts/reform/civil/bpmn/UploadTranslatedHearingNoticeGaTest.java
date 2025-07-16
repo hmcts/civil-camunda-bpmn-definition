@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
 class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_HEARING_SCHEDULED";
     private static final String PROCESS_ID = "UPLOAD_TRANSLATED_GA_HEARING_SCHEDULED_PROCESS_ID";
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
-
     private static final String NOTIFY_HEARING_NOTICE_CLAIMANT_EVENT = "NOTIFY_HEARING_NOTICE_CLAIMANT";
     private static final String NOTIFY_HEARING_NOTICE_CLAIMANT_ACTIVITY_ID = "NotifyHearingNoticeClaimant";
     private static final String NOTIFY_HEARING_NOTICE_DEFENDANT_EVENT = "NOTIFY_HEARING_NOTICE_DEFENDANT";
@@ -31,11 +31,9 @@ class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest
     private static final String BULK_PRINT_ORDER_APPLICANT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
     private static final String BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID
         = "BulkPrintOrderApplicant";
-
     private static final String BULK_PRINT_ORDER_RESPONDENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
     private static final String BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID
         = "BulkPrintOrderRespondent";
-
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
 
