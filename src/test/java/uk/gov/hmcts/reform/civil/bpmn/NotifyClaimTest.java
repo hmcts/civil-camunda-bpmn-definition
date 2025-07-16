@@ -30,7 +30,7 @@ class NotifyClaimTest extends BpmnBaseTest {
         = "UnspecNotifyClaimNotifier";
 
     private static final String NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID =
-        "ClaimProceedsOfflineNotifyApplicantSolicitor";
+        "ClaimProceedsOfflineUnspecNotifyApplicantSolicitor";
 
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
