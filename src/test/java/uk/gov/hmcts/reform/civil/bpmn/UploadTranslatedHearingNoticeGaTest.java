@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
 class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest {
 
     private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_HEARING_SCHEDULED";
@@ -28,6 +27,14 @@ class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
         = "hearingScheduledCreateDashboardNotificationForRespondent";
+
+    private static final String BULK_PRINT_ORDER_APPLICANT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
+    private static final String BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID
+        = "BulkPrintOrderApplicant";
+
+    private static final String BULK_PRINT_ORDER_RESPONDENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
+    private static final String BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID
+        = "BulkPrintOrderRespondent";
 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
@@ -161,6 +168,16 @@ class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest
             variables
         );
 
+        //BulkPrint for Applicant
+        ExternalTask bulkPrintApplicantTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintApplicantTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_APPLICANT,
+            BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID,
+            variables
+        );
+
         //dashboard Hearing Notice Defendant
         ExternalTask dashboardNotificationTaskDefendant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
@@ -168,6 +185,16 @@ class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest
             PROCESS_EXTERNAL_CASE_EVENT,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            variables
+        );
+
+        //BulkPrint for Respondent
+        ExternalTask bulkPrintRespondentTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintRespondentTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_RESPONDENT,
+            BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID,
             variables
         );
 
@@ -239,6 +266,16 @@ class UploadTranslatedHearingNoticeGaTest extends BpmnBaseHearingScheduledGATest
             PROCESS_EXTERNAL_CASE_EVENT,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
             CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            variables
+        );
+
+        //BulkPrint for Respondent
+        ExternalTask bulkPrintRespondentTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintRespondentTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            BULK_PRINT_ORDER_RESPONDENT,
+            BULK_PRINT_ORDER_RESPONDENT_ACTIVITY_ID,
             variables
         );
 
