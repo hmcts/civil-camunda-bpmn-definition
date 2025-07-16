@@ -60,7 +60,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1kgddyt</bpmn:incoming>
-      <bpmn:outgoing>Flow_0mdk6wm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1gohbq2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0crivtb" name="Multiparty" sourceRef="Gateway_0v9sl34" targetRef="ProceedOfflineForUnRepresentedSolicitor">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT"}</bpmn:conditionExpression>
@@ -96,7 +96,7 @@
     <bpmn:sequenceFlow id="Flow_1kgddyt" name="Respondent 1 represented and registered" sourceRef="Gateway_1i24lv3" targetRef="IssueClaimForSpec">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="IssueClaimForSpec" targetRef="ContinuingClaimOnlineSpecClaimNotifier" />
+    <bpmn:sequenceFlow id="Flow_0mdk6wm" sourceRef="Activity_0l3mgi4" targetRef="ContinuingClaimOnlineSpecClaimNotifier" />
     <bpmn:sequenceFlow id="Flow_0szloke" name="1v1" sourceRef="Gateway_0v9sl34" targetRef="IssueClaimForSpecUnrepresentedSolicitor">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PENDING_CLAIM_ISSUED_UNREPRESENTED_DEFENDANT_ONE_V_ONE_SPEC"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -334,6 +334,16 @@
       <bpmn:incoming>Flow_0ce9o0c</bpmn:incoming>
       <bpmn:outgoing>Flow_0nutn2b</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0l3mgi4" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_CLAIM_CONTINUING_ONLINE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1gohbq2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mdk6wm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1gohbq2" sourceRef="IssueClaimForSpec" targetRef="Activity_0l3mgi4" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -467,6 +477,9 @@
         <dc:Bounds x="1930" y="410" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0fh17i5" bpmnElement="Activity_0l3mgi4">
+        <dc:Bounds x="1430" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="442" y="392" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -571,7 +584,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mdk6wm_di" bpmnElement="Flow_0mdk6wm">
-        <di:waypoint x="1360" y="560" />
+        <di:waypoint x="1530" y="560" />
         <di:waypoint x="1790" y="560" />
         <di:waypoint x="1790" y="490" />
       </bpmndi:BPMNEdge>
@@ -712,6 +725,10 @@
       <bpmndi:BPMNEdge id="Flow_0nutn2b_di" bpmnElement="Flow_0nutn2b">
         <di:waypoint x="2030" y="450" />
         <di:waypoint x="2135" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gohbq2_di" bpmnElement="Flow_1gohbq2">
+        <di:waypoint x="1360" y="560" />
+        <di:waypoint x="1430" y="560" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
