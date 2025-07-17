@@ -59,7 +59,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
     private static final String REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
             = "RemovePaymentDashboardNotification";
-
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String CLAIM_SUBMISSION_NOTIFY_PARTIES = "ClaimSubmissionNotifyParties";
     public static final String CONTINUING_CLAIM_ONLINE_SPEC_CLAIM_NOTIFIER = "ContinuingClaimOnlineSpecClaimNotifier";
