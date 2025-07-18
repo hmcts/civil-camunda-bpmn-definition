@@ -16,24 +16,20 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_HEARING_NOTICE";
 
     //CCD CASE EVENT
-    public static final String NOTIFY_CLAIMANT_HEARING
-        = "NOTIFY_CLAIMANT_HEARING";
-    public static final String NOTIFY_DEFENDANT1_HEARING
-        = "NOTIFY_DEFENDANT1_HEARING";
+    public static final String NOTIFY_EVENT
+            = "NOTIFY_EVENT";
     public static final String SEND_HEARING_TO_LIP_DEFENDANT
-        = "SEND_HEARING_TO_LIP_DEFENDANT";
+            = "SEND_HEARING_TO_LIP_DEFENDANT";
     public static final String SEND_HEARING_TO_LIP_CLAIMANT
-        = "SEND_HEARING_TO_LIP_CLAIMANT";
+            = "SEND_HEARING_TO_LIP_CLAIMANT";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
-        = "NotifyClaimantHearing";
-    private static final String NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID
-        = "NotifyDefendant1Hearing";
+    public static final String HEARING_NOTICE_GENERATOR_NOTIFIER
+            = "HearingNoticeGeneratorNotifier";
     private static final String SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID
-        = "SendHearingToDefendantLIP";
+            = "SendHearingToDefendantLIP";
     private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
-        = "SendHearingToClaimantLIP";
+            = "SendHearingToClaimantLIP";
 
     public UploadTranslatedHearingNoticeDocTest() {
         super("upload_translated_hearing_notice.bpmn", PROCESS_ID);
@@ -50,8 +46,8 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            LIP_CASE, true,
-            UNREPRESENTED_DEFENDANT_ONE, true
+                LIP_CASE, true,
+                UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
         //complete the start business process
@@ -60,25 +56,19 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
 
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
+                SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
         );
 
         //complete the bulk print
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+                SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notify relevant parties notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+                NOTIFY_EVENT, HEARING_NOTICE_GENERATOR_NOTIFIER, variables
         );
 
         //end business process
@@ -99,9 +89,9 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, true
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                LIP_CASE, true,
+                DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
@@ -111,19 +101,13 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //complete the bulk print
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
+                SEND_HEARING_TO_LIP_CLAIMANT, SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notify relevant parties notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID, variables
+                NOTIFY_EVENT, HEARING_NOTICE_GENERATOR_NOTIFIER, variables
         );
 
         //end business process
@@ -144,7 +128,7 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //Setup Case as 1v1
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true));
+                UNREPRESENTED_DEFENDANT_ONE, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -153,19 +137,13 @@ class UploadTranslatedHearingNoticeDocTest extends BpmnBaseTest {
         //complete the bulk print
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
+                SEND_HEARING_TO_LIP_DEFENDANT, SEND_HEARING_TO_LIP_DEFENDANT_ACTIVITY_ID, variables
         );
 
-        //complete the defendant1 notification
+        //complete the notify relevant parties notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_DEFENDANT1_HEARING, NOTIFY_DEFENDANT1_HEARING_ACTIVITY_ID, variables
-        );
-
-        //complete the claimant notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_CLAIMANT_HEARING, NOTIFY_CLAIMANT_HEARING_ACTIVITY_ID
+                NOTIFY_EVENT, HEARING_NOTICE_GENERATOR_NOTIFIER, variables
         );
 
         //end business process
