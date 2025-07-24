@@ -569,6 +569,14 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "Activity_0nakdad"
         );
 
+        ExternalTask removeDJNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            removeDJNotificationTask,
+            PROCESS_CASE_EVENT,
+            "REMOVE_CLAIMANT_DJ_DASHBOARD_NOTIFICATION",
+            "Activity_1phjbuy"
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -609,6 +617,14 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "GENERATE_RESPONSE_SEALED",
             "Activity_0nakdad"
+        );
+
+        ExternalTask removeDJNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            removeDJNotificationTask,
+            PROCESS_CASE_EVENT,
+            "REMOVE_CLAIMANT_DJ_DASHBOARD_NOTIFICATION",
+            "Activity_1phjbuy"
         );
 
         //end business process
