@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.junit.jupiter.api.Test;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -15,8 +20,14 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
         super("apply_noc_decision_lip.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldRunProcess() {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void shouldRunProcess(boolean welshEnabled) {
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, welshEnabled
+        ));
+
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
@@ -25,7 +36,8 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
         //complete updating case details
@@ -36,6 +48,17 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
+
+        if (welshEnabled) {
+            //update GA language flag
+            ExternalTask updateGeneralApps = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                updateGeneralApps,
+                PROCESS_CASE_EVENT,
+                "UPDATE_GA_LANGUAGE_PREFERENCE",
+                "UpdateGenAppLanguagePreference"
+            );
+        }
 
         //complete notify claimant
         ExternalTask notifyClaimantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);

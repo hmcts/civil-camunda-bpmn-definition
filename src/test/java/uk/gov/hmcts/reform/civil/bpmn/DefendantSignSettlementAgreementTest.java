@@ -4,24 +4,24 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Map;
 
 class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
 
     private static final String FILE_NAME = "defendant_sign_settlement_agreement.bpmn";
     private static final String MESSAGE_NAME = "DEFENDANT_SIGN_SETTLEMENT_AGREEMENT";
     private static final String PROCESS_ID = "DEFENDANT_SIGN_SETTLEMENT_AGREEMENT_PROCESS_ID";
-    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT =
-        "NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT";
-    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT =
-        "NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT";
+    private static final String NOTIFY_EVENT =
+        "NOTIFY_EVENT";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_EVENT_ID =
         "CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_ACTIVITY_ID =
         "GenerateDashboardNotificationSignSettlementAgreement";
-    private static final String NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
-        "NotifyApplicantForSignSettlementAgreement";
-    private static final String NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID =
-        "NotifyRespondentForSignSettlementAgreement";
+    private static final String NOTIFY_EVENT_ID =
+        "DefendantSignSettlementNotify";
 
     private static final String GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM =
             "GENERATE_LIP_SIGN_SETTLEMENT_AGREEMENT_FORM";
@@ -36,11 +36,29 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     void shouldSuccessfullyProcessDefendantSignAgreement() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, true
+        ));
         startBusinessProcess(variables);
-        notifyApplicantSignSettlementAgreement();
-        notifyRespondentSignSettlementAgreement();
         generateSettlementAgreementDoc();
+        notifyApplicantSignSettlementAgreement();
         generateDashboardNotificationSignSettlementAgreement();
+        endBusinessProcess();
+        assertNoExternalTasksLeft();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,false", "false,true", "true,true"})
+    void shouldSkipTasksWhenLanguagePreferenceWelsh(boolean claimantBilingual, boolean defendantBilingual) {
+        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
+        VariableMap variables = Variables.createVariables();
+        variables.putValue(FLOW_FLAGS, Map.of(
+            WELSH_ENABLED, true,
+            CLAIM_ISSUE_BILINGUAL, claimantBilingual,
+            RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL, defendantBilingual
+        ));
+        startBusinessProcess(variables);
+        generateSettlementAgreementDoc();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -55,18 +73,8 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT,
-            NOTIFY_LIP_APPLICANT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
-        );
-    }
-
-    private void notifyRespondentSignSettlementAgreement() {
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT,
-            NOTIFY_LIP_RESPONDENT_FOR_SIGN_SETTLEMENT_AGREEMENT_ID
+            NOTIFY_EVENT,
+            NOTIFY_EVENT_ID
         );
     }
 
