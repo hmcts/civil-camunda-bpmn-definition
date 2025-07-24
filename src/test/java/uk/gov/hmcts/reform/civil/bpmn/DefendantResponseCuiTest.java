@@ -92,7 +92,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
 
-        verifyNotifyPartiesCompleted();
         verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
@@ -116,7 +115,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
 
         assertBusinessProcessHasStarted(variables);
-        verifyNotifyPartiesCompleted();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
