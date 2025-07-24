@@ -24,18 +24,10 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         = "GenerateDashboardNotificationCOOClaimant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID
         = "GenerateDashboardNotificationCOODefendant";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER
-        = "NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER";
-    public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER
-        = "NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER";
-    private static final String NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
-        = "GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor2";
-    public static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
-        = "GenerateOrderNotifyApplicantCourtOfficerOrderSolicitor1";
-    public static final String NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID
-        = "GenerateOrderNotifyRespondentCourtOfficerOrderSolicitor1";
+    public static final String NOTIFY_EVENT
+        = "NOTIFY_EVENT";
+    public static final String NOTIFY_PARTIES_FOR_COURT_OFFICER_ORDER_TASK_ID
+        = "GenerateOrderNotifyPartiesCourtOfficerOrder";
 
     public CourtOfficerOrderTest() {
         super("court_officer_order.bpmn", PROCESS_ID);
@@ -43,7 +35,7 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void shouldSuccessfullyCompleteCourtOfficerOrder(boolean twoRepresentatives) {
+    void shouldSuccessfullyCompleteCourtOfficerOrder(boolean dashboardServiceFlag) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -52,58 +44,43 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, false,
-            CASE_PROGRESSION_ENABLED, false
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceFlag
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
+                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY
         );
 
         ExternalTask notificationTask;
 
-        //complete the claimant notification
+        //complete all the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER,
-                                   NOTIFY_APPLICANT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
-                                   variables
-        );
-        if (twoRepresentatives) {
-            //complete the defendant notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER,
-                                       NOTIFY_RESPONDENT_SOLICITOR2_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
-                                       variables
-            );
-        }
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER,
-                                   NOTIFY_RESPONDENT_SOLICITOR1_FOR_COURT_OFFICER_ORDER_ACTIVITY_ID,
+                                   NOTIFY_EVENT,
+                                   NOTIFY_PARTIES_FOR_COURT_OFFICER_ORDER_TASK_ID,
                                    variables
         );
 
-        //complete the dashboard form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-        //complete the hearing form process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID,
-                                   variables
-        );
+        if (dashboardServiceFlag) {
+            //complete the dashboard form process
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID,
+                variables
+            );
+            //complete the hearing form process
+            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID,
+                variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
