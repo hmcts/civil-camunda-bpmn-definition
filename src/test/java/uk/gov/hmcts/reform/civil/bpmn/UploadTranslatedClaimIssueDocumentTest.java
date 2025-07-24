@@ -12,22 +12,18 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
     private static final String PROCESS_CLAIM_ISSUE_ACTIVITY_ID = "IssueClaimForLip";
     public static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT = "SET_LIP_RESPONDENT_RESPONSE_DEADLINE";
     private static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID = "Respondent1Deadline";
-    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
-            = "NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-            = "CreateClaimContinuingOnlineNotifyApplicant1ForSpec";
-    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT
-            = "NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC";
-    private static final String NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
-            = "NotifyRespondent1ForClaimContinuingOnlineSpec";
-
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED
             = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_AFTER_TRANSLATED_DOCUMENT_UPLOADED_ID
             = "updateClaimStateAfterTranslateDocumentUploadedID";
+    public static final String CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER = "ContinuingClaimOnlineSpecClaimNotifier";
     //notify RPA
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+
+    public static final String GENERATE_PIP_LETTER = "GENERATE_PIP_LETTER";
+    public static final String GENERATE_PIP_LETTER_ID = "GeneratePipLetter";
 
     public UploadTranslatedClaimIssueDocumentTest() {
         super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
@@ -64,22 +60,22 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
                 PROCESS_CLAIM_ISSUE_ACTIVITY_ID
         );
 
-        //complete the applicant notification
+        //complete the relevant parties notification
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 notificationTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
-                NOTIFY_APPLICANT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+                NOTIFY_EVENT,
+                CLAIM_CONTINUING_ONLINE_SPEC_NOTIFIER
         );
 
-        //complete the respondent notification
-        ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete generate PIP letter
+        ExternalTask generatePipLetterTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                notificationRespondentTask,
+                generatePipLetterTask,
                 PROCESS_CASE_EVENT,
-                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_EVENT,
-                NOTIFY_RESPONDENT1_FOR_CLAIM_CONTINUING_ONLINE_SPEC_ACTIVITY_ID
+                GENERATE_PIP_LETTER,
+                GENERATE_PIP_LETTER_ID
         );
 
         //complete the case state update
@@ -93,26 +89,26 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
         //complete the case state update
         ExternalTask notificationTaskForDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTaskForDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1",
-                                   "CreateIssueClaimDashboardNotificationsForApplicant1"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1",
+                "CreateIssueClaimDashboardNotificationsForApplicant1"
         );
 
         //complete the case state update
         ExternalTask notificationTaskForRespondentDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTaskForRespondentDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1",
-                                   "CreateIssueClaimDashboardNotificationsForDefendant1"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1",
+                "CreateIssueClaimDashboardNotificationsForDefendant1"
         );
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_EVENT,
+                NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
         );
 
         //end business process
