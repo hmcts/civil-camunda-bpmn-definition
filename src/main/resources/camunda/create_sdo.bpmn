@@ -1,58 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1mvdzjv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1mvdzjv" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_0oe9xk7">
     <bpmn:participant id="Participant_1st11o5" name="Create sdo" processRef="CREATE_SDO" />
   </bpmn:collaboration>
   <bpmn:process id="CREATE_SDO" name="Create sdo" isExecutable="true" camunda:historyTimeToLive="P90D">
-    <bpmn:endEvent id="Event_EndCreateSDO">
-      <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1tspyrp</bpmn:incoming>
-      <bpmn:incoming>Flow_1d1dliv</bpmn:incoming>
-      <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:serviceTask id="TriggerAndUpdateGenAppLocation" name="Trigger and Update General Application Location" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">TRIGGER_UPDATE_GA_LOCATION</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1i7qse8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1d1dliv</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_1pc8agd">
-      <bpmn:incoming>Flow_1xnqdrx</bpmn:incoming>
-      <bpmn:incoming>Flow_0f5y8kz</bpmn:incoming>
-      <bpmn:outgoing>Flow_1i7qse8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1tspyrp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_Notice_Hearing_Defendant" name="Dashboard CUI notification upload hearing docs def" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0h2h2vr</bpmn:incoming>
-      <bpmn:outgoing>Flow_0f5y8kz</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Notice_Hearing_Claimant" name="Dashboard CUI notification upload hearing docs claim" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_07v5pc8</bpmn:incoming>
-      <bpmn:outgoing>Flow_0h2h2vr</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_01l4u29">
       <bpmn:incoming>Flow_1fj5995</bpmn:incoming>
       <bpmn:incoming>Flow_06m0qjy</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xnqdrx</bpmn:outgoing>
       <bpmn:outgoing>Flow_07v5pc8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xnqdrx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="GenerateDashboardNotificationSDODefendant" name="Generate Dashboard Notification Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -140,17 +96,7 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1npe7kd" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1huwtcs" sourceRef="Activity_EndBusinessProcess" targetRef="Event_EndCreateSDO" />
-    <bpmn:sequenceFlow id="Flow_1tspyrp" name="General Application Disabled" sourceRef="Gateway_1pc8agd" targetRef="Activity_EndBusinessProcess">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1d1dliv" sourceRef="TriggerAndUpdateGenAppLocation" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_1i7qse8" name="General Application Enabled" sourceRef="Gateway_1pc8agd" targetRef="TriggerAndUpdateGenAppLocation">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1xnqdrx" name="Case Progression CUI Disabled" sourceRef="Gateway_01l4u29" targetRef="Gateway_1pc8agd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0f5y8kz" sourceRef="Activity_Notice_Hearing_Defendant" targetRef="Gateway_1pc8agd" />
     <bpmn:sequenceFlow id="Flow_1pt0244" name="Yes" sourceRef="Gateway_0ooegq0" targetRef="Gateway_1qm05yn">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED) &amp;&amp; ((!empty flowFlags.CLAIM_ISSUE_BILINGUAL &amp;&amp; flowFlags.CLAIM_ISSUE_BILINGUAL) || (!empty flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL &amp;&amp; flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -185,6 +131,48 @@
     <bpmn:sequenceFlow id="Flow_0w9edp6" sourceRef="Activity_StartBusinessProcess" targetRef="Event_0miwx8k" />
     <bpmn:sequenceFlow id="Flow_0u8jvlc" sourceRef="Gateway_0zj33b5" targetRef="Gateway_1qm05yn" />
     <bpmn:sequenceFlow id="Flow_1x1u15b" sourceRef="SendSDOToDefendantLIP" targetRef="Gateway_1qm05yn" />
+    <bpmn:sequenceFlow id="Flow_0f5y8kz" sourceRef="Activity_Notice_Hearing_Defendant" targetRef="TriggerAndUpdateGenAppLocation" />
+    <bpmn:sequenceFlow id="Flow_1xnqdrx" name="Case Progression CUI Disabled" sourceRef="Gateway_01l4u29" targetRef="TriggerAndUpdateGenAppLocation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_Notice_Hearing_Defendant" name="Dashboard CUI notification upload hearing docs def" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0h2h2vr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f5y8kz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_Notice_Hearing_Claimant" name="Dashboard CUI notification upload hearing docs claim" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07v5pc8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h2h2vr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="TriggerAndUpdateGenAppLocation" name="Trigger and Update General Application Location" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">TRIGGER_UPDATE_GA_LOCATION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xnqdrx</bpmn:incoming>
+      <bpmn:incoming>Flow_0f5y8kz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d1dliv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d1dliv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1huwtcs</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_EndCreateSDO">
+      <bpmn:incoming>Flow_1huwtcs</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:textAnnotation id="TextAnnotation_0bch0eh">
       <bpmn:text>LR or LiP
 claimant ?</bpmn:text>
@@ -202,27 +190,6 @@ claimant ?</bpmn:text>
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0oe9xk7">
       <bpmndi:BPMNShape id="Participant_1st11o5_di" bpmnElement="Participant_1st11o5" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="1910" height="500" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndCreateSDO">
-        <dc:Bounds x="2012" y="232" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1vef0vg_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="1880" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
-        <dc:Bounds x="1810" y="340" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1pc8agd_di" bpmnElement="Gateway_1pc8agd" isMarkerVisible="true">
-        <dc:Bounds x="1735" y="225" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ubkn4i" bpmnElement="Activity_Notice_Hearing_Defendant">
-        <dc:Bounds x="1590" y="210" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0jnmqpk" bpmnElement="Activity_Notice_Hearing_Claimant">
-        <dc:Bounds x="1590" y="400" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1n2cdgo" bpmnElement="Gateway_01l4u29" isMarkerVisible="true">
@@ -273,6 +240,24 @@ claimant ?</bpmn:text>
           <dc:Bounds x="436" y="302" width="64" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ubkn4i" bpmnElement="Activity_Notice_Hearing_Defendant">
+        <dc:Bounds x="1580" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0jnmqpk" bpmnElement="Activity_Notice_Hearing_Claimant">
+        <dc:Bounds x="1580" y="400" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ctrg77" bpmnElement="TriggerAndUpdateGenAppLocation">
+        <dc:Bounds x="1730" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vef0vg_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1880" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1etg9jk_di" bpmnElement="Event_EndCreateSDO">
+        <dc:Bounds x="2012" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0bch0eh_di" bpmnElement="TextAnnotation_0bch0eh">
         <dc:Bounds x="630" y="140" width="100" height="41" />
         <bpmndi:BPMNLabel />
@@ -288,41 +273,25 @@ claimant ?</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1huwtcs_di" bpmnElement="Flow_1huwtcs">
-        <di:waypoint x="1980" y="250" />
-        <di:waypoint x="2012" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tspyrp_di" bpmnElement="Flow_1tspyrp">
-        <di:waypoint x="1785" y="250" />
-        <di:waypoint x="1880" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1807" y="210" width="54" height="40" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="1980" y="270" />
+        <di:waypoint x="2012" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d1dliv_di" bpmnElement="Flow_1d1dliv">
-        <di:waypoint x="1910" y="380" />
-        <di:waypoint x="1930" y="380" />
-        <di:waypoint x="1930" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1i7qse8_di" bpmnElement="Flow_1i7qse8">
-        <di:waypoint x="1760" y="275" />
-        <di:waypoint x="1760" y="380" />
-        <di:waypoint x="1810" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1771" y="386" width="54" height="40" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="1830" y="270" />
+        <di:waypoint x="1880" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xnqdrx_di" bpmnElement="Flow_1xnqdrx">
         <di:waypoint x="1500" y="245" />
         <di:waypoint x="1500" y="190" />
         <di:waypoint x="1760" y="190" />
-        <di:waypoint x="1760" y="225" />
+        <di:waypoint x="1760" y="230" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1576" y="156" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f5y8kz_di" bpmnElement="Flow_0f5y8kz">
-        <di:waypoint x="1690" y="250" />
-        <di:waypoint x="1735" y="250" />
+        <di:waypoint x="1680" y="250" />
+        <di:waypoint x="1730" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pt0244_di" bpmnElement="Flow_1pt0244">
         <di:waypoint x="460" y="245" />
@@ -334,15 +303,15 @@ claimant ?</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0h2h2vr_di" bpmnElement="Flow_0h2h2vr">
-        <di:waypoint x="1640" y="400" />
-        <di:waypoint x="1640" y="290" />
+        <di:waypoint x="1630" y="400" />
+        <di:waypoint x="1630" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07v5pc8_di" bpmnElement="Flow_07v5pc8">
         <di:waypoint x="1500" y="295" />
         <di:waypoint x="1500" y="420" />
-        <di:waypoint x="1590" y="420" />
+        <di:waypoint x="1580" y="420" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1512" y="366" width="88" height="27" />
+          <dc:Bounds x="1506" y="366" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06m0qjy_di" bpmnElement="Flow_06m0qjy">
@@ -418,14 +387,6 @@ claimant ?</bpmn:text>
         <di:waypoint x="340" y="230" />
         <di:waypoint x="340" y="148" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_08tudnc_di" bpmnElement="Association_08tudnc">
-        <di:waypoint x="830" y="245" />
-        <di:waypoint x="830" y="181" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1rsw75w_di" bpmnElement="Association_1rsw75w">
-        <di:waypoint x="680" y="245" />
-        <di:waypoint x="680" y="181" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0u8jvlc_di" bpmnElement="Flow_0u8jvlc">
         <di:waypoint x="855" y="270" />
         <di:waypoint x="1205" y="270" />
@@ -434,6 +395,14 @@ claimant ?</bpmn:text>
         <di:waypoint x="950" y="380" />
         <di:waypoint x="950" y="270" />
         <di:waypoint x="1205" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_08tudnc_di" bpmnElement="Association_08tudnc">
+        <di:waypoint x="830" y="245" />
+        <di:waypoint x="830" y="181" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1rsw75w_di" bpmnElement="Association_1rsw75w">
+        <di:waypoint x="680" y="245" />
+        <di:waypoint x="680" y="181" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
