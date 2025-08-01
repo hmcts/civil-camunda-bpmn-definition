@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION_AFTER_PAYMENT" />
   <bpmn:collaboration id="InitiateGeneralApplicationAfterPayment">
     <bpmn:extensionElements />
@@ -43,15 +43,6 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ksbz12</bpmn:incoming>
       <bpmn:outgoing>Flow_0p2nz8j</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="GenerateDraftDocumentId" name="Generate Draft Document" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">GENERATE_DRAFT_DOCUMENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0p2nz8j</bpmn:incoming>
-      <bpmn:outgoing>Flow_1id0afk</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0m3cux8" sourceRef="respondentDashboardNotification" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_0ci22ld" name="Yes" sourceRef="Gateway_09zr7oo" targetRef="respondentDashboardNotification">
@@ -143,6 +134,15 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_198vcxh" sourceRef="Activity_1cweuly" targetRef="Event_0ii7uzg" />
+    <bpmn:serviceTask id="GenerateDraftDocumentId" name="Generate Draft Document" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_DRAFT_DOCUMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0p2nz8j</bpmn:incoming>
+      <bpmn:outgoing>Flow_1id0afk</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InitiateGeneralApplicationAfterPayment">
@@ -164,10 +164,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0n2dfke_di" bpmnElement="AssigningOfRoles">
         <dc:Bounds x="440" y="208" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0blxg0o" bpmnElement="GenerateDraftDocumentId">
-        <dc:Bounds x="590" y="208" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
         <dc:Bounds x="1932" y="230" width="36" height="36" />
@@ -209,6 +205,10 @@
         <dc:Bounds x="1760" y="310" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0blxg0o" bpmnElement="GenerateDraftDocumentId">
+        <dc:Bounds x="590" y="215" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="190" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -237,7 +237,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0p2nz8j_di" bpmnElement="Flow_0p2nz8j">
         <di:waypoint x="540" y="248" />
-        <di:waypoint x="590" y="248" />
+        <di:waypoint x="565" y="248" />
+        <di:waypoint x="565" y="255" />
+        <di:waypoint x="590" y="255" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lx6vdp_di" bpmnElement="Flow_1lx6vdp">
         <di:waypoint x="1080" y="248" />
@@ -285,7 +287,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1id0afk_di" bpmnElement="Flow_1id0afk">
-        <di:waypoint x="690" y="248" />
+        <di:waypoint x="690" y="255" />
+        <di:waypoint x="718" y="255" />
+        <di:waypoint x="718" y="248" />
         <di:waypoint x="745" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b9xd33_di" bpmnElement="Flow_1b9xd33">
