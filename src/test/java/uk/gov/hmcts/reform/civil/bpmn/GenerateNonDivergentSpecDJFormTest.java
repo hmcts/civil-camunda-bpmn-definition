@@ -39,25 +39,25 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true, true",
-        "true, true, true, false, false",
-        "true, false, true, true, false",
-        "true, false, true, false, true",
-        "false, true, true, true, true",
-        "false, true, true, false, true",
-        "false, false, true, true, true",
-        "false, false, true, false, true",
-        "true, true, false, true, true",
-        "true, true, false, false, false",
-        "true, false, false, true, false",
-        "true, false, false, false, true",
-        "false, true, false, true, true",
-        "false, true, false, false, true",
-        "false, false, false, true, true",
-        "false, false, false, false, true"
+        "true, true, true, true, true, true",
+        "true, true, true, false, false, false",
+        "true, false, true, true, false, false",
+        "true, false, true, false, true, false",
+        "false, true, true, true, true, true",
+        "false, true, true, false, true, false",
+        "false, false, true, true, true, false",
+        "false, false, true, false, true, true",
+        "true, true, false, true, true, true",
+        "true, true, false, false, false, false",
+        "true, false, false, true, false, false",
+        "true, false, false, false, true, true",
+        "false, true, false, true, true, false",
+        "false, true, false, false, true, true",
+        "false, false, false, true, true, false",
+        "false, false, false, false, true, true"
     })
     void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPClaimant, boolean dashboardServiceEnabled,
-                                    boolean isJoFeedLive) {
+                                    boolean isJoFeedLive, boolean isCjesServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -73,6 +73,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
             IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled,
             LIP_CASE, isLiPClaimant
             ));
 
@@ -101,14 +102,16 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
         );
 
-        //complete call to CJES for default Judgment
-        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendJudgmentDetailsToCJES,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_TO_CJES,
-            SEND_JUDGMENT_DETAILS_TO_CJES_ACTIVITY_ID
-        );
+        if (isCjesServiceEnabled) {
+            //complete call to CJES for default Judgment
+            ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendJudgmentDetailsToCJES,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_TO_CJES,
+                SEND_JUDGMENT_DETAILS_TO_CJES_ACTIVITY_ID
+            );
+        }
 
         // Continue with the rest of the process as before
         if (!isLiPDefendant) {

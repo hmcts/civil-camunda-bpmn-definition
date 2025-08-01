@@ -173,7 +173,7 @@
           <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0b03asg</bpmn:incoming>
+      <bpmn:incoming>Flow_Cjes_Service_Enabled</bpmn:incoming>
       <bpmn:outgoing>Flow_1d6nmfl</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1d6nmfl" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateJudgmentByAdmissionDocClaimant" />
@@ -239,7 +239,7 @@
     <bpmn:sequenceFlow id="Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED" name="JO live feed active disabled" sourceRef="Gateway_08rlyk5" targetRef="GenerateClaimantCCJDashboardNotification">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE || !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0b03asg" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="SendJudgmentDetailsToCJES" />
+    <bpmn:sequenceFlow id="Flow_0b03asg" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="Gateway_00o5dzk" />
     <bpmn:serviceTask id="GenerateClaimantCCJDashboardNotification" name="Generate Dashboard Notification for CCJ Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -258,6 +258,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1d6nmfl</bpmn:incoming>
+      <bpmn:incoming>Flow_Cjes_Service_Disabled</bpmn:incoming>
       <bpmn:outgoing>Flow_0h3y4av</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0h3y4av" sourceRef="GenerateJudgmentByAdmissionDocClaimant" targetRef="GenerateJudgmentByAdmissionDocDefendant" />
@@ -302,6 +303,17 @@
       <bpmn:outgoing>Flow_0d5v3gr</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0d5v3gr" sourceRef="ClaimantConfirmProceedNotifyParties" targetRef="Gateway_RPA_FLOW" />
+    <bpmn:exclusiveGateway id="Gateway_00o5dzk">
+      <bpmn:incoming>Flow_0b03asg</bpmn:incoming>
+      <bpmn:outgoing>Flow_Cjes_Service_Disabled</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Cjes_Service_Enabled</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_Cjes_Service_Disabled" name="CJES Service Disabled" sourceRef="Gateway_00o5dzk" targetRef="GenerateJudgmentByAdmissionDocClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_CJES_SERVICE_ENABLED || !flowFlags.IS_CJES_SERVICE_ENABLED }</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Cjes_Service_Enabled" name="CJES Service Enabled" sourceRef="Gateway_00o5dzk" targetRef="SendJudgmentDetailsToCJES">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_CJES_SERVICE_ENABLED &amp;&amp; flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -376,7 +388,7 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0aq0usx" bpmnElement="SendJudgmentDetailsToCJES">
-        <dc:Bounds x="1140" y="650" width="100" height="80" />
+        <dc:Bounds x="1130" y="820" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1h1jczf_di" bpmnElement="Gateway_1h1jczf" isMarkerVisible="true">
@@ -428,6 +440,9 @@
       <bpmndi:BPMNShape id="Activity_01arc7j_di" bpmnElement="ClaimantConfirmProceedNotifyParties">
         <dc:Bounds x="680" y="40" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00o5dzk_di" bpmnElement="Gateway_00o5dzk" isMarkerVisible="true">
+        <dc:Bounds x="1155" y="665" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13zbmk0_di" bpmnElement="Event_13zbmk0">
         <dc:Bounds x="272" y="172" width="36" height="36" />
@@ -527,8 +542,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d6nmfl_di" bpmnElement="Flow_1d6nmfl">
-        <di:waypoint x="1240" y="690" />
-        <di:waypoint x="1290" y="690" />
+        <di:waypoint x="1230" y="860" />
+        <di:waypoint x="1340" y="860" />
+        <di:waypoint x="1340" y="730" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1yy0cs8_di" bpmnElement="Flow_GA_Not_Enabled">
         <di:waypoint x="1345" y="520" />
@@ -580,7 +596,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0b03asg_di" bpmnElement="Flow_0b03asg">
         <di:waypoint x="1090" y="690" />
-        <di:waypoint x="1140" y="690" />
+        <di:waypoint x="1155" y="690" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1uirmez_di" bpmnElement="Flow_1uirmez">
         <di:waypoint x="1960" y="690" />
@@ -617,6 +633,20 @@
         <di:waypoint x="780" y="80" />
         <di:waypoint x="900" y="80" />
         <di:waypoint x="900" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ddvi5i_di" bpmnElement="Flow_Cjes_Service_Disabled">
+        <di:waypoint x="1205" y="690" />
+        <di:waypoint x="1290" y="690" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1214" y="656" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16cc5hg_di" bpmnElement="Flow_Cjes_Service_Enabled">
+        <di:waypoint x="1180" y="715" />
+        <di:waypoint x="1180" y="820" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1186" y="765" width="68" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

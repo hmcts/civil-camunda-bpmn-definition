@@ -153,7 +153,7 @@
           <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1k9eh3i</bpmn:incoming>
+      <bpmn:incoming>Flow_1re9717</bpmn:incoming>
       <bpmn:outgoing>Flow_1qwbe29</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateJudgmentByAdmissionDocClaimant" name="Generate judgment by admission doc claimant" camunda:type="external" camunda:topic="processCaseEvent">
@@ -163,6 +163,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1qwbe29</bpmn:incoming>
+      <bpmn:incoming>Flow_0xx8ld4</bpmn:incoming>
       <bpmn:outgoing>Flow_0c1rl9o</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateJudgmentByAdmissionDocDefendant" name="Generate judgment by admission doc defendant" camunda:type="external" camunda:topic="processCaseEvent">
@@ -225,7 +226,7 @@
     <bpmn:sequenceFlow id="Flow_02qaqh4" name="Applicant accept or reject repayment plan (full/part admit), request CCJ and judgment online enabled" sourceRef="Gateway_0d76l1r" targetRef="UpdateClaimStateAfterTranslatedDocUpload">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; (!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1k9eh3i" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="SendJudgmentDetailsToCJES" />
+    <bpmn:sequenceFlow id="Flow_1k9eh3i" sourceRef="UpdateClaimStateAfterTranslatedDocUpload" targetRef="Gateway_1ik4g6o" />
     <bpmn:sequenceFlow id="Flow_1qwbe29" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateJudgmentByAdmissionDocClaimant" />
     <bpmn:sequenceFlow id="Flow_0c1rl9o" sourceRef="GenerateJudgmentByAdmissionDocClaimant" targetRef="GenerateJudgmentByAdmissionDocDefendant" />
     <bpmn:sequenceFlow id="Flow_1x042o9" sourceRef="GenerateJudgmentByAdmissionDocDefendant" targetRef="PostPINInLetterLIPDefendant" />
@@ -253,6 +254,17 @@
       <bpmn:outgoing>Flow_0ip7v81</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ip7v81" sourceRef="GenerateDefendantCCJDashboardNotificationForClaimantResponse" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:exclusiveGateway id="Gateway_1ik4g6o">
+      <bpmn:incoming>Flow_1k9eh3i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1re9717</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xx8ld4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1re9717" name="CJES Service Enabled" sourceRef="Gateway_1ik4g6o" targetRef="SendJudgmentDetailsToCJES">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_CJES_SERVICE_ENABLED &amp;&amp; flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0xx8ld4" name="CJES Service Disabled" sourceRef="Gateway_1ik4g6o" targetRef="GenerateJudgmentByAdmissionDocClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_CJES_SERVICE_ENABLED || !flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1pokpru" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_REJECTS_REPAYMENT_PLAN" />
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
@@ -307,12 +319,28 @@
         <dc:Bounds x="1190" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16mix7e" bpmnElement="Activity_0fb0527">
+        <dc:Bounds x="830" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_131sc0w" bpmnElement="Activity_0vcs82d">
+        <dc:Bounds x="970" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0bxsnxe" bpmnElement="Activity_1rgduq8">
+        <dc:Bounds x="1090" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10hn4y9" bpmnElement="Activity_1dt112k">
+        <dc:Bounds x="1220" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ec49q4" bpmnElement="UpdateClaimStateAfterTranslatedDocUpload">
         <dc:Bounds x="840" y="490" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0aq0usx" bpmnElement="SendJudgmentDetailsToCJES">
-        <dc:Bounds x="970" y="490" width="100" height="80" />
+        <dc:Bounds x="970" y="630" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1orii9b" bpmnElement="GenerateJudgmentByAdmissionDocClaimant">
@@ -344,29 +372,16 @@
         <dc:Bounds x="1720" y="490" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1a8hd7m" bpmnElement="GenerateDefendantCCJDashboardNotificationForClaimantResponse">
-        <dc:Bounds x="1490" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0c7yl9h" bpmnElement="GenerateClaimantCCJDashboardNotificationClaimantResponse">
         <dc:Bounds x="1360" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_10hn4y9" bpmnElement="Activity_1dt112k">
-        <dc:Bounds x="1220" y="370" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1a8hd7m" bpmnElement="GenerateDefendantCCJDashboardNotificationForClaimantResponse">
+        <dc:Bounds x="1490" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0bxsnxe" bpmnElement="Activity_1rgduq8">
-        <dc:Bounds x="1090" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_131sc0w" bpmnElement="Activity_0vcs82d">
-        <dc:Bounds x="970" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_16mix7e" bpmnElement="Activity_0fb0527">
-        <dc:Bounds x="830" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Gateway_1ik4g6o_di" bpmnElement="Gateway_1ik4g6o" isMarkerVisible="true">
+        <dc:Bounds x="995" y="505" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1dduelw_di" bpmnElement="Event_1dduelw">
         <dc:Bounds x="272" y="162" width="36" height="36" />
@@ -462,11 +477,12 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1k9eh3i_di" bpmnElement="Flow_1k9eh3i">
         <di:waypoint x="940" y="530" />
-        <di:waypoint x="970" y="530" />
+        <di:waypoint x="995" y="530" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qwbe29_di" bpmnElement="Flow_1qwbe29">
-        <di:waypoint x="1070" y="530" />
-        <di:waypoint x="1100" y="530" />
+        <di:waypoint x="1070" y="670" />
+        <di:waypoint x="1150" y="670" />
+        <di:waypoint x="1150" y="570" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0c1rl9o_di" bpmnElement="Flow_0c1rl9o">
         <di:waypoint x="1200" y="530" />
@@ -505,6 +521,20 @@
         <di:waypoint x="1640" y="310" />
         <di:waypoint x="1540" y="310" />
         <di:waypoint x="1540" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1re9717_di" bpmnElement="Flow_1re9717">
+        <di:waypoint x="1020" y="555" />
+        <di:waypoint x="1020" y="630" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="946" y="590" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xx8ld4_di" bpmnElement="Flow_0xx8ld4">
+        <di:waypoint x="1045" y="530" />
+        <di:waypoint x="1100" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1026" y="496" width="68" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
