@@ -32,7 +32,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"true,false,true", "false,false,false", "true,true,true", "false,true,true"})
-    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives, boolean isLiPDefendant, boolean isCJESServiceEnabled) {
+    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives, boolean isLiPDefendant, boolean isCjesServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -45,7 +45,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
                 TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
                 UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-                IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+                IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
         variables.put("judgmentRecordedReason", "DETERMINATION_OF_MEANS");
 
         //complete the start business process
@@ -58,7 +58,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //complete call to CJES for edit Judgment
             ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

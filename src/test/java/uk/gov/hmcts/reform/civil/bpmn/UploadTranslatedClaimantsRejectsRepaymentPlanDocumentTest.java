@@ -132,7 +132,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCJESServiceEnabled) {
+    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
@@ -141,7 +141,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
                                          "JO_ONLINE_LIVE_ENABLED", true,
-                                         IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled,
+                                         IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled,
                                          IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed));
         assertCompleteExternalTask(
             startBusiness,
@@ -162,7 +162,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
             UPDATE_CLAIMANT_STATE_ACTIVITY_ID
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //Send judgement details to CJES service
             ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

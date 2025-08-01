@@ -34,7 +34,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
         "false, false, false, false"
     })
     void shouldSuccessfullyCompleteRecordJudgmentNotificationMultiparty(boolean twoRepresentatives, boolean isLiPDefendant, boolean dashboardServiceEnabled,
-                                                                        boolean isCJESServiceEnabled) {
+                                                                        boolean isCjesServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -48,7 +48,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
         variables.put("judgmentRecordedReason", "DETERMINATION_OF_MEANS");
 
         //complete the start business process
@@ -61,7 +61,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendJudgement,

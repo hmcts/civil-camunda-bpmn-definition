@@ -35,7 +35,7 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({"false,false,false", "true,false,true", "true,true,true", "false,true,false"})
-    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled, boolean isCJESServiceEnabled) {
+    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -48,7 +48,7 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             "DASHBOARD_SERVICE_ENABLED", true,
             "IS_JO_LIVE_FEED_ACTIVE", isJOLiveFeedActiveEnabled,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -91,7 +91,7 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendJudgmentDetailsToCJES,

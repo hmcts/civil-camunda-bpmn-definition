@@ -30,7 +30,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean isCJESServiceEnabled) {
+    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -38,7 +38,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+        variables.put(FLOW_FLAGS, Map.of(IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -50,7 +50,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

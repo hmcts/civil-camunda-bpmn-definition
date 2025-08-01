@@ -57,7 +57,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         "false, false, false, false, true, true"
     })
     void shouldSuccessfullyComplete(boolean twoRepresentatives, boolean isLiPDefendant, boolean isLiPClaimant, boolean dashboardServiceEnabled,
-                                    boolean isJoFeedLive, boolean isCJESServiceEnabled) {
+                                    boolean isJoFeedLive, boolean isCjesServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -73,7 +73,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_TWO, false,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
             IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled,
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled,
             LIP_CASE, isLiPClaimant
             ));
 
@@ -102,7 +102,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //complete call to CJES for default Judgment
             ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

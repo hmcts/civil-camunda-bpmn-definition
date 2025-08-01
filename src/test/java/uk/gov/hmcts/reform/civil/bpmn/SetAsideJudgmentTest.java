@@ -57,7 +57,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
                                                          boolean dashboardServiceEnabled,
                                                          boolean judgmentSetAsideError,
                                                          boolean isJoFeedLive,
-                                                         boolean isCJESServiceEnabled) {
+                                                         boolean isCjesServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -72,7 +72,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
             IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
         variables.put(JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError);
 
         //complete the start business process
@@ -85,7 +85,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //complete the call to CJES for Set Aside Judgment
             ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
