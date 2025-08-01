@@ -86,6 +86,17 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
                 "NotifyApplicantLipSolicitor"
         );
 
+        if (welshEnabled) {
+            //update main claim language flag
+            ExternalTask updateLanguage = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                updateLanguage,
+                PROCESS_CASE_EVENT,
+                "RESET_LANGUAGE_PREFERENCE",
+                "ResetLanguagePreferenceAfterNoC"
+            );
+        }
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
