@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.civil.bpmn;
 
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,13 +28,17 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
         super("judgement_paid_in_full.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean isCJESServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -36,18 +46,20 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             startBusiness,
             START_BUSINESS_TOPIC,
             START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES,
-            SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
-        );
-
+        if (isCJESServiceEnabled) {
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES,
+                SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
+            );
+        }
         //complete the claimant dashboard update
         ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(

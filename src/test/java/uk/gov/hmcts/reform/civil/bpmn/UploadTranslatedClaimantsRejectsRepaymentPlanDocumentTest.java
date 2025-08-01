@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
@@ -131,8 +131,8 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false"})
-    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed) {
+    @CsvSource({"true, true", "false, false"})
+    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCJESServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
@@ -141,6 +141,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
         variables.putValue("flowState", "MAIN.FULL_ADMIT_AGREE_REPAYMENT");
         variables.put(FLOW_FLAGS, Map.of("LIP_JUDGMENT_ADMISSION", true,
                                          "JO_ONLINE_LIVE_ENABLED", true,
+                                         IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled,
                                          IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed));
         assertCompleteExternalTask(
             startBusiness,
@@ -160,18 +161,21 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
             UPDATE_CLAIM_STATE_EVENT,
             UPDATE_CLAIMANT_STATE_ACTIVITY_ID
         );
-        //Send judgement details to CJES service
-        ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendJudgmentToCjesService,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
-        );
+
+        if (isCJESServiceEnabled) {
+            //Send judgement details to CJES service
+            ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendJudgmentToCjesService,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
+            );
+        }
 
         ExternalTask generateJudgmentByAdmissionClaimantDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendJudgmentToCjesService,
+            generateJudgmentByAdmissionClaimantDocument,
             PROCESS_CASE_EVENT,
             GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT,
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID
@@ -179,7 +183,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
 
         ExternalTask generateJudgmentByAdmissionDefendantDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendJudgmentToCjesService,
+            generateJudgmentByAdmissionDefendantDocument,
             PROCESS_CASE_EVENT,
             GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT,
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
@@ -187,7 +191,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
 
         ExternalTask pinAndPostLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendJudgmentToCjesService,
+            pinAndPostLetter,
             PROCESS_CASE_EVENT,
             JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID,
             JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID

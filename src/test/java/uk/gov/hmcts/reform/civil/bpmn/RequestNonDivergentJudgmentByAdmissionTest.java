@@ -34,8 +34,8 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
-    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled) {
+    @CsvSource({"false,false,false", "true,false,true", "true,true,true", "false,true,false"})
+    void shouldSuccessfullyCompleteRequestJudgmentByAdmission(boolean isLiPDefendant, boolean isJOLiveFeedActiveEnabled, boolean isCJESServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -47,7 +47,8 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             "LIP_CASE", false,
             "DASHBOARD_SERVICE_ENABLED", true,
             "IS_JO_LIVE_FEED_ACTIVE", isJOLiveFeedActiveEnabled,
-            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+            UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -90,14 +91,15 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
         );
 
-        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendJudgmentDetailsToCJES,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_EVENT,
-            SEND_JUDGMENT_DETAILS_ACTIVITY_ID
-        );
-
+        if (isCJESServiceEnabled) {
+            ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendJudgmentDetailsToCJES,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_EVENT,
+                SEND_JUDGMENT_DETAILS_ACTIVITY_ID
+            );
+        }
         if (isJOLiveFeedActiveEnabled) {
             ExternalTask notifyRPAFeed = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(

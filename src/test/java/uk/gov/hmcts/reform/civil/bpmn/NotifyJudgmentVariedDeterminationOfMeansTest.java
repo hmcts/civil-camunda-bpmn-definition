@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -30,8 +31,8 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
-    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives, boolean isLiPDefendant) {
+    @CsvSource({"true,false,true", "false,false,false", "true,true,true", "false,true,true"})
+    void shouldSuccessfullyNotifyJudgmentVariedDeterminationOfMeans(boolean twoRepresentatives, boolean isLiPDefendant, boolean isCJESServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -43,7 +44,8 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
                 ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
                 TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-                UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant));
+                UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
+                IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
         variables.put("judgmentRecordedReason", "DETERMINATION_OF_MEANS");
 
         //complete the start business process
@@ -55,14 +57,18 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables
         );
-        //complete call to CJES for edit Judgment
-        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
+
+        if (isCJESServiceEnabled) {
+            //complete call to CJES for edit Judgment
+            ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
                 sendJudgmentDetailsToCJES,
                 PROCESS_CASE_EVENT,
                 SEND_JUDGMENT_DETAILS_CJES,
                 SEND_JUDGMENT_DETAILS_TO_CJES
-        );
+            );
+        }
+
         //generate judgment determination doc for claimant
         ExternalTask claimantDoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -96,8 +102,9 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    @Test
-    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans(boolean isCJESServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -105,7 +112,9 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("judgmentRecordedReason", "SOMETHING_ELSE");
+        variables.put("flowFlags", Map.of(IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+        variables.put("judgmentRecordedReason", "SOMETHING_ELSE"
+        );
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -117,14 +126,15 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 variables
         );
 
-        ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
+        if (isCJESServiceEnabled) {
+            ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
                 sendJudgement,
                 PROCESS_CASE_EVENT,
                 SEND_JUDGMENT_DETAILS_CJES,
                 SEND_JUDGMENT_DETAILS_TO_CJES
-        );
-
+            );
+        }
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
