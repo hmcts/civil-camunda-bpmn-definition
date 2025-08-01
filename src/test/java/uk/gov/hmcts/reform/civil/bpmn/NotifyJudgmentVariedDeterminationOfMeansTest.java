@@ -104,7 +104,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans(boolean isCJESServiceEnabled) {
+    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans(boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -112,7 +112,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+        variables.put("flowFlags", Map.of(IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
         variables.put("judgmentRecordedReason", "SOMETHING_ELSE"
         );
 
@@ -126,7 +126,7 @@ class NotifyJudgmentVariedDeterminationOfMeansTest extends BpmnBaseTest {
                 variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendJudgement,

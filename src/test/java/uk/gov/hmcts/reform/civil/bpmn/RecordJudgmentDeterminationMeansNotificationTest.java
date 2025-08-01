@@ -148,7 +148,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans(boolean isCJESServiceEnabled) {
+    void shouldBypassProcessesWhenJudgementRecordedReasonIsNotDeterminationOfMeans(boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -157,7 +157,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put(FLOW_FLAGS, Map.of(
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled));
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
         variables.put("judgmentRecordedReason", "SOMETHING_ELSE");
 
         //complete the start business process
@@ -170,7 +170,7 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendJudgement,
