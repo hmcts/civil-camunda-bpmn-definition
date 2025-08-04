@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_11gbg7u" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI_DEFENDANT" name="Request for Reconsideration Notification CUI Defendant" isExecutable="true" camunda:historyTimeToLive="P90D">
+    <bpmn:startEvent id="Event_0t2zome" name="Start">
+      <bpmn:outgoing>Flow_0xbu6hd</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cb4oje" messageRef="Message_0k3v0kd" />
+    </bpmn:startEvent>
+    <bpmn:callActivity id="TrialReadyProcess" name="Start Business Process" calledElement="StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xbu6hd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0e3h8wh</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_1fn0bf1" name="Abort" attachedToRef="TrialReadyProcess">
+      <bpmn:outgoing>Flow_05zsda8</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1ilh7qa" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_1nsmt51">
+      <bpmn:incoming>Flow_05zsda8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0xbu6hd" sourceRef="Event_0t2zome" targetRef="TrialReadyProcess" />
+    <bpmn:sequenceFlow id="Flow_05zsda8" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
+    <bpmn:sequenceFlow id="Flow_0e3h8wh" sourceRef="TrialReadyProcess" targetRef="Gateway_1dbhtjt" />
+    <bpmn:callActivity id="Activity_0wretog" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ulh4c0</bpmn:incoming>
+      <bpmn:incoming>Flow_0wqn14b</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gffc54</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0r8yo0r">
+      <bpmn:incoming>Flow_1gffc54</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1gffc54" sourceRef="Activity_0wretog" targetRef="Event_0r8yo0r" />
+    <bpmn:exclusiveGateway id="Gateway_1dbhtjt">
+      <bpmn:incoming>Flow_0e3h8wh</bpmn:incoming>
+      <bpmn:outgoing>Flow_086atdy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ulh4c0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_086atdy" name="Case Progression CUI Enabled" sourceRef="Gateway_1dbhtjt" targetRef="CreateNotificationRequestForReconsiderationClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ulh4c0" name="Case Progression Disabled" sourceRef="Gateway_1dbhtjt" targetRef="Activity_0wretog">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="CreateNotificationRequestForReconsiderationClaimant" name="Create Notification Request for Reconsideration Recipient Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_086atdy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wqn14b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wqn14b" sourceRef="CreateNotificationRequestForReconsiderationClaimant" targetRef="Activity_0wretog" />
+  </bpmn:process>
+  <bpmn:message id="Message_0k3v0kd" name="REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI_DEFENDANT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="REQUEST_FOR_RECONSIDERATION_NOTIFICATION_CUI_DEFENDANT">
+      <bpmndi:BPMNEdge id="Flow_1gffc54_di" bpmnElement="Flow_1gffc54">
+        <di:waypoint x="910" y="250" />
+        <di:waypoint x="952" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e3h8wh_di" bpmnElement="Flow_0e3h8wh">
+        <di:waypoint x="340" y="250" />
+        <di:waypoint x="415" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05zsda8_di" bpmnElement="Flow_05zsda8">
+        <di:waypoint x="290" y="192" />
+        <di:waypoint x="290" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xbu6hd_di" bpmnElement="Flow_0xbu6hd">
+        <di:waypoint x="188" y="250" />
+        <di:waypoint x="240" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_086atdy_di" bpmnElement="Flow_086atdy">
+        <di:waypoint x="465" y="250" />
+        <di:waypoint x="590" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="450" y="256" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ulh4c0_di" bpmnElement="Flow_1ulh4c0">
+        <di:waypoint x="440" y="225" />
+        <di:waypoint x="440" y="170" />
+        <di:waypoint x="860" y="170" />
+        <di:waypoint x="860" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="606" y="136" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wqn14b_di" bpmnElement="Flow_0wqn14b">
+        <di:waypoint x="690" y="250" />
+        <di:waypoint x="810" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0t2zome_di" bpmnElement="Event_0t2zome">
+        <dc:Bounds x="152" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="275" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TrialReadyProcess_di" bpmnElement="TrialReadyProcess">
+        <dc:Bounds x="240" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
+        <dc:Bounds x="272" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1dbhtjt_di" bpmnElement="Gateway_1dbhtjt" isMarkerVisible="true">
+        <dc:Bounds x="415" y="225" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wretog_di" bpmnElement="Activity_0wretog">
+        <dc:Bounds x="810" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
+        <dc:Bounds x="952" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CreateNotificationRequestForReconsiderationClaimant_di" bpmnElement="CreateNotificationRequestForReconsiderationClaimant">
+        <dc:Bounds x="590" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
+        <dc:Bounds x="272" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="307" y="173" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ttqkub" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="NOTIFY_HEARING_PARTIES" name="Notify hearing parties" isExecutable="true" camunda:historyTimeToLive="P90D">
+    <bpmn:exclusiveGateway id="Gateway_07xgv30">
+      <bpmn:incoming>Flow_1vghrk7</bpmn:incoming>
+      <bpmn:outgoing>Flow_Two_Respondent_Representatives</bpmn:outgoing>
+      <bpmn:outgoing>Flow_One_Respondent_Representatives</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_1ev9ueh">
+      <bpmn:incoming>Flow_0rd76ep</bpmn:incoming>
+      <bpmn:incoming>Flow_1g8nch6</bpmn:incoming>
+      <bpmn:outgoing>Case_State_Equals_Case_Progression</bpmn:outgoing>
+      <bpmn:outgoing>Case_State_Does_Not_Equal_Case_Progression</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_0fnnwsv">
+      <bpmn:incoming>Flow_1avyg0i</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1l7asky" sourceRef="NotifyClaimantSolicitorHearing" targetRef="NotifyDefendantSolicitor1Hearing" />
+    <bpmn:sequenceFlow id="Flow_1vghrk7" sourceRef="NotifyDefendantSolicitor1Hearing" targetRef="Gateway_07xgv30" />
+    <bpmn:sequenceFlow id="Flow_Two_Respondent_Representatives" sourceRef="Gateway_07xgv30" targetRef="NotifyDefendantSolicitor2Hearing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_One_Respondent_Representatives" sourceRef="Gateway_07xgv30" targetRef="ServiceRequestAPI">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_122arsq" sourceRef="NotifyDefendantSolicitor2Hearing" targetRef="ServiceRequestAPI" />
+    <bpmn:sequenceFlow id="Flow_1ccr7sh" sourceRef="UpdateHMCPartiesNotified" targetRef="Gateway_013w7to" />
+    <bpmn:sequenceFlow id="Case_State_Equals_Case_Progression" sourceRef="Gateway_1ev9ueh" targetRef="UpdateCaseProgress">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${caseState == "CASE_PROGRESSION"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="NotifyClaimantSolicitorHearing" name="Notify Claimant Solicitor Hearing" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_HEARING_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1470fqr</bpmn:incoming>
+      <bpmn:incoming>Flow_1gm8eah</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l7asky</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyDefendantSolicitor1Hearing" name="Notify Defendant Solicitor 1 Hearing" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT1_HEARING_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1l7asky</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vghrk7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyDefendantSolicitor2Hearing" name="Notify Defendant Solicitor 2 Hearing" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT2_HEARING_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Two_Respondent_Representatives</bpmn:incoming>
+      <bpmn:outgoing>Flow_122arsq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceRequestAPI" name="Service Request API" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_SERVICE_REQUEST_API_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_One_Respondent_Representatives</bpmn:incoming>
+      <bpmn:incoming>Flow_122arsq</bpmn:incoming>
+      <bpmn:outgoing>Flow_07jzgz3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_1g4yfs7" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ce3205</bpmn:incoming>
+      <bpmn:incoming>Case_State_Does_Not_Equal_Case_Progression</bpmn:incoming>
+      <bpmn:outgoing>Flow_1avyg0i</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1ce3205" sourceRef="UpdateCaseProgress" targetRef="Activity_1g4yfs7" />
+    <bpmn:sequenceFlow id="Flow_1avyg0i" sourceRef="Activity_1g4yfs7" targetRef="Event_0fnnwsv" />
+    <bpmn:startEvent id="startNotifyHearingParties" name="Start">
+      <bpmn:outgoing>Flow_1473ebu</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0yzu93q" messageRef="Message_1ti825e" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0ftska8">
+      <bpmn:incoming>Flow_0pc5as4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_12d33qc" name="Start Hearing Notice Business Process" calledElement="StartHearingNoticeBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1473ebu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ucplyk</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_0h9zswv" attachedToRef="Activity_12d33qc">
+      <bpmn:outgoing>Flow_0pc5as4</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1oxnhoe" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0pc5as4" name="Abort" sourceRef="Event_0h9zswv" targetRef="Event_0ftska8" />
+    <bpmn:sequenceFlow id="Flow_1473ebu" sourceRef="startNotifyHearingParties" targetRef="Activity_12d33qc" />
+    <bpmn:sequenceFlow id="Flow_1ucplyk" sourceRef="Activity_12d33qc" targetRef="GenerateHearingNotice" />
+    <bpmn:sequenceFlow id="Case_State_Does_Not_Equal_Case_Progression" sourceRef="Gateway_1ev9ueh" targetRef="Activity_1g4yfs7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${caseState != "CASE_PROGRESSION"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_07jzgz3" sourceRef="ServiceRequestAPI" targetRef="UpdateHMCPartiesNotified" />
+    <bpmn:serviceTask id="UpdateHMCPartiesNotified" name="Update HMC Parties Notified" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_PARTIES_NOTIFIED_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07jzgz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ccr7sh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="UpdateCaseProgress" name="Update Case Progress" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">UPDATE_CASE_PROGRESS_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Case_State_Equals_Case_Progression</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ce3205</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1upp8lx">
+      <bpmn:incoming>Flow_0klz9qh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tlbnnk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wzq5t0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1tlbnnk" sourceRef="Gateway_1upp8lx" targetRef="Gateway_143y3a4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="SendAutomaticHearingToDefendantLIP" name="Trigger Bulk Print Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_HEARING_TO_LIP_DEFENDANT_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ydlh7i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gm8eah</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="SendAutomaticHearingToClaimantLIP" name="Trigger Bulk Print Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_HEARING_TO_LIP_CLAIMANT_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wzq5t0</bpmn:incoming>
+      <bpmn:outgoing>Flow_18jtk5y</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GenerateHearingNotice" name="Generate Hearing Notice" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_HEARING_NOTICE_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ucplyk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0klz9qh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0klz9qh" sourceRef="GenerateHearingNotice" targetRef="Gateway_1upp8lx" />
+    <bpmn:exclusiveGateway id="Gateway_013w7to">
+      <bpmn:incoming>Flow_1ccr7sh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hfv1pi</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1g8nch6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hfv1pi" name="Case Progression CUI Enabled" sourceRef="Gateway_013w7to" targetRef="GenerateDashboardNotificationHearingScheduledClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="GenerateDashboardNotificationHearingScheduledClaimant" name="Generate Dashboard Notification Claimant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_HMC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hfv1pi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cxqj8j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0cxqj8j" sourceRef="GenerateDashboardNotificationHearingScheduledClaimant" targetRef="GenerateDashboardNotificationHearingScheduledDefendant" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationHearingScheduledDefendant" name="Generate Dashboard Notification Defendant1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cxqj8j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rd76ep</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0rd76ep" sourceRef="GenerateDashboardNotificationHearingScheduledDefendant" targetRef="Gateway_1ev9ueh" />
+    <bpmn:sequenceFlow id="Flow_1g8nch6" name="Case Progression CUI Disabled" sourceRef="Gateway_013w7to" targetRef="Gateway_1ev9ueh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1wzq5t0" name="Lip Claimant" sourceRef="Gateway_1upp8lx" targetRef="SendAutomaticHearingToClaimantLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_143y3a4">
+      <bpmn:incoming>Flow_1tlbnnk</bpmn:incoming>
+      <bpmn:incoming>Flow_18jtk5y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1470fqr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ydlh7i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1470fqr" sourceRef="Gateway_143y3a4" targetRef="NotifyClaimantSolicitorHearing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)  || empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ydlh7i" name="Lip Defendant" sourceRef="Gateway_143y3a4" targetRef="SendAutomaticHearingToDefendantLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18jtk5y" sourceRef="SendAutomaticHearingToClaimantLIP" targetRef="Gateway_143y3a4" />
+    <bpmn:sequenceFlow id="Flow_1gm8eah" sourceRef="SendAutomaticHearingToDefendantLIP" targetRef="NotifyClaimantSolicitorHearing" />
+    <bpmn:textAnnotation id="TextAnnotation_1r4kcyf">
+      <bpmn:text>One Representative</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1fb7ou2">
+      <bpmn:text>Two Representatives</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1cxbz92">
+      <bpmn:text>NOTIFY_HEARING_PARTIES</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_19ijq07" sourceRef="startNotifyHearingParties" targetRef="TextAnnotation_1cxbz92" />
+    <bpmn:textAnnotation id="TextAnnotation_1i4jd0d">
+      <bpmn:text>caseState == CASE_PROGRESSION</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_12nq3im">
+      <bpmn:text>caseState != CASE_PROGRESSION</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1d1451h">
+      <bpmn:text>LR or Lip Claimant?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_02a91et" sourceRef="Gateway_1upp8lx" targetRef="TextAnnotation_1d1451h" />
+    <bpmn:textAnnotation id="TextAnnotation_15equ0g">
+      <bpmn:text>LR or Lip Respondent?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1hxhmv8" sourceRef="Gateway_143y3a4" targetRef="TextAnnotation_15equ0g" />
+  </bpmn:process>
+  <bpmn:message id="Message_1a8u428" name="DEFAULT_JUDGEMENT" />
+  <bpmn:message id="Message_1ti825e" name="NOTIFY_HEARING_PARTIES" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NOTIFY_HEARING_PARTIES">
+      <bpmndi:BPMNShape id="TextAnnotation_1cxbz92_di" bpmnElement="TextAnnotation_1cxbz92">
+        <dc:Bounds x="161" y="195" width="178" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1d1451h_di" bpmnElement="TextAnnotation_1d1451h">
+        <dc:Bounds x="580" y="170" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_15equ0g_di" bpmnElement="TextAnnotation_15equ0g">
+        <dc:Bounds x="760" y="160" width="100" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1r4kcyf_di" bpmnElement="TextAnnotation_1r4kcyf">
+        <dc:Bounds x="1216" y="329" width="100" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1fb7ou2_di" bpmnElement="TextAnnotation_1fb7ou2">
+        <dc:Bounds x="1090" y="170" width="100" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1i4jd0d_di" bpmnElement="TextAnnotation_1i4jd0d">
+        <dc:Bounds x="2020" y="340" width="142" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12nq3im_di" bpmnElement="TextAnnotation_12nq3im">
+        <dc:Bounds x="1450" y="140" width="140" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1g8nch6_di" bpmnElement="Flow_1g8nch6">
+        <di:waypoint x="1630" y="312" />
+        <di:waypoint x="1630" y="440" />
+        <di:waypoint x="2010" y="440" />
+        <di:waypoint x="2010" y="312" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1777" y="447" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rd76ep_di" bpmnElement="Flow_0rd76ep">
+        <di:waypoint x="1920" y="287" />
+        <di:waypoint x="1985" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cxqj8j_di" bpmnElement="Flow_0cxqj8j">
+        <di:waypoint x="1780" y="287" />
+        <di:waypoint x="1820" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hfv1pi_di" bpmnElement="Flow_1hfv1pi">
+        <di:waypoint x="1655" y="287" />
+        <di:waypoint x="1680" y="287" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1656" y="183" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0klz9qh_di" bpmnElement="Flow_0klz9qh">
+        <di:waypoint x="570" y="287" />
+        <di:waypoint x="605" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tlbnnk_di" bpmnElement="Flow_1tlbnnk">
+        <di:waypoint x="655" y="287" />
+        <di:waypoint x="785" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07jzgz3_di" bpmnElement="Flow_07jzgz3">
+        <di:waypoint x="1400" y="287" />
+        <di:waypoint x="1450" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_121yxi2_di" bpmnElement="Case_State_Does_Not_Equal_Case_Progression">
+        <di:waypoint x="2010" y="262" />
+        <di:waypoint x="2010" y="120" />
+        <di:waypoint x="2280" y="120" />
+        <di:waypoint x="2280" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ucplyk_di" bpmnElement="Flow_1ucplyk">
+        <di:waypoint x="440" y="287" />
+        <di:waypoint x="470" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1473ebu_di" bpmnElement="Flow_1473ebu">
+        <di:waypoint x="268" y="287" />
+        <di:waypoint x="340" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pc5as4_di" bpmnElement="Flow_0pc5as4">
+        <di:waypoint x="390" y="229" />
+        <di:waypoint x="390" y="188" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="403" y="198" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1avyg0i_di" bpmnElement="Flow_1avyg0i">
+        <di:waypoint x="2330" y="287" />
+        <di:waypoint x="2362" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ce3205_di" bpmnElement="Flow_1ce3205">
+        <di:waypoint x="2180" y="287" />
+        <di:waypoint x="2230" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pe93nh_di" bpmnElement="Case_State_Equals_Case_Progression">
+        <di:waypoint x="2035" y="287" />
+        <di:waypoint x="2080" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ccr7sh_di" bpmnElement="Flow_1ccr7sh">
+        <di:waypoint x="1550" y="287" />
+        <di:waypoint x="1605" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_122arsq_di" bpmnElement="Flow_122arsq">
+        <di:waypoint x="1270" y="120" />
+        <di:waypoint x="1350" y="120" />
+        <di:waypoint x="1350" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mmsw9f_di" bpmnElement="Flow_One_Respondent_Representatives">
+        <di:waypoint x="1245" y="287" />
+        <di:waypoint x="1300" y="287" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="941" y="269" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1692cq8_di" bpmnElement="Flow_Two_Respondent_Representatives">
+        <di:waypoint x="1220" y="262" />
+        <di:waypoint x="1220" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="904" y="208" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vghrk7_di" bpmnElement="Flow_1vghrk7">
+        <di:waypoint x="1150" y="287" />
+        <di:waypoint x="1195" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l7asky_di" bpmnElement="Flow_1l7asky">
+        <di:waypoint x="1010" y="287" />
+        <di:waypoint x="1050" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wzq5t0_di" bpmnElement="Flow_1wzq5t0">
+        <di:waypoint x="630" y="312" />
+        <di:waypoint x="630" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="383" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1470fqr_di" bpmnElement="Flow_1470fqr">
+        <di:waypoint x="835" y="287" />
+        <di:waypoint x="910" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ydlh7i_di" bpmnElement="Flow_1ydlh7i">
+        <di:waypoint x="810" y="312" />
+        <di:waypoint x="810" y="470" />
+        <di:waypoint x="840" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="815" y="383" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18jtk5y_di" bpmnElement="Flow_18jtk5y">
+        <di:waypoint x="680" y="470" />
+        <di:waypoint x="750" y="470" />
+        <di:waypoint x="750" y="287" />
+        <di:waypoint x="785" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gm8eah_di" bpmnElement="Flow_1gm8eah">
+        <di:waypoint x="940" y="470" />
+        <di:waypoint x="960" y="470" />
+        <di:waypoint x="960" y="327" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_07xgv30_di" bpmnElement="Gateway_07xgv30" isMarkerVisible="true">
+        <dc:Bounds x="1195" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ev9ueh_di" bpmnElement="Gateway_1ev9ueh" isMarkerVisible="true">
+        <dc:Bounds x="1985" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0fnnwsv_di" bpmnElement="Event_0fnnwsv">
+        <dc:Bounds x="2362" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d91lrq_di" bpmnElement="NotifyClaimantSolicitorHearing">
+        <dc:Bounds x="910" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1e5338x_di" bpmnElement="NotifyDefendantSolicitor1Hearing">
+        <dc:Bounds x="1050" y="247" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dipkfu_di" bpmnElement="NotifyDefendantSolicitor2Hearing">
+        <dc:Bounds x="1170" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zzu5to_di" bpmnElement="ServiceRequestAPI">
+        <dc:Bounds x="1300" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0136jcz_di" bpmnElement="Activity_1g4yfs7">
+        <dc:Bounds x="2230" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1v381fb_di" bpmnElement="UpdateHMCPartiesNotified">
+        <dc:Bounds x="1450" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_096ga75_di" bpmnElement="UpdateCaseProgress">
+        <dc:Bounds x="2080" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_013w7to_di" bpmnElement="Gateway_013w7to" isMarkerVisible="true">
+        <dc:Bounds x="1605" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationHearingScheduledClaimant_di" bpmnElement="GenerateDashboardNotificationHearingScheduledClaimant">
+        <dc:Bounds x="1680" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GenerateDashboardNotificationHearingScheduledDefendant_di" bpmnElement="GenerateDashboardNotificationHearingScheduledDefendant">
+        <dc:Bounds x="1820" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o1l6dj_di" bpmnElement="startNotifyHearingParties">
+        <dc:Bounds x="232" y="269" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="312" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z4uxz1_di" bpmnElement="Activity_12d33qc">
+        <dc:Bounds x="340" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ftska8_di" bpmnElement="Event_0ftska8">
+        <dc:Bounds x="372" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12mxi58_di" bpmnElement="GenerateHearingNotice">
+        <dc:Bounds x="470" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1upp8lx_di" bpmnElement="Gateway_1upp8lx" isMarkerVisible="true">
+        <dc:Bounds x="605" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w87r3g_di" bpmnElement="SendAutomaticHearingToClaimantLIP">
+        <dc:Bounds x="580" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_143y3a4_di" bpmnElement="Gateway_143y3a4" isMarkerVisible="true">
+        <dc:Bounds x="785" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10k103l_di" bpmnElement="SendAutomaticHearingToDefendantLIP">
+        <dc:Bounds x="840" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_19ijq07_di" bpmnElement="Association_19ijq07">
+        <di:waypoint x="250" y="269" />
+        <di:waypoint x="250" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_02a91et_di" bpmnElement="Association_02a91et">
+        <di:waypoint x="630" y="262" />
+        <di:waypoint x="630" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1hxhmv8_di" bpmnElement="Association_1hxhmv8">
+        <di:waypoint x="810" y="262" />
+        <di:waypoint x="810" y="199" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_16z5exw_di" bpmnElement="Event_0h9zswv">
+        <dc:Bounds x="372" y="229" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
