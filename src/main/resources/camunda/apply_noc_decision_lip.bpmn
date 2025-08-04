@@ -30,7 +30,7 @@
     <bpmn:sequenceFlow id="Flow_1bgy1m8" sourceRef="UpdateCaseDetailsAfterNoC" targetRef="Gateway_13ebgvf" />
     <bpmn:sequenceFlow id="Flow_05auzpf" sourceRef="NotifyDefendantLipClaimantRepresented" targetRef="NotifyApplicantLipSolicitor" />
     <bpmn:sequenceFlow id="Flow_1qc6s0r" sourceRef="NotifyClaimantLipAfterNocApproval" targetRef="NotifyDefendantLipClaimantRepresented" />
-    <bpmn:sequenceFlow id="Flow_0r5cjn6" sourceRef="NotifyApplicantLipSolicitor" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_0r5cjn6" sourceRef="NotifyApplicantLipSolicitor" targetRef="Gateway_0r0t37w" />
     <bpmn:serviceTask id="UpdateCaseDetailsAfterNoC" name="Update case details" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -41,16 +41,6 @@
       <bpmn:outgoing>Flow_1bgy1m8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0htqeux" sourceRef="UpdateGenAppLanguagePreference" targetRef="NotifyClaimantLipAfterNocApproval" />
-    <bpmn:endEvent id="Event_1ryj0ug">
-      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0r5cjn6</bpmn:incoming>
-      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:serviceTask id="NotifyApplicantLipSolicitor" name="Notify Applicant Solicitor" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -99,6 +89,38 @@
     <bpmn:sequenceFlow id="Flow_1d8fpn2" name="No" sourceRef="Gateway_13ebgvf" targetRef="NotifyClaimantLipAfterNocApproval">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0r0t37w" name="Welsh enabled?">
+      <bpmn:incoming>Flow_0r5cjn6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fmvdvf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mxk5nh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1fmvdvf" name="Yes" sourceRef="Gateway_0r0t37w" targetRef="ResetLanguagePreferenceAfterNoC">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1ryj0ug">
+      <bpmn:incoming>Flow_1x9k7i6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_EndBusinessProcess" name="End Business Process" calledElement="EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_172nb5l</bpmn:incoming>
+      <bpmn:incoming>Flow_0mxk5nh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x9k7i6</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="ResetLanguagePreferenceAfterNoC" name="Reset Language Preference" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">RESET_LANGUAGE_PREFERENCE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fmvdvf</bpmn:incoming>
+      <bpmn:outgoing>Flow_172nb5l</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_172nb5l" sourceRef="ResetLanguagePreferenceAfterNoC" targetRef="Activity_EndBusinessProcess" />
+    <bpmn:sequenceFlow id="Flow_0mxk5nh" name="No" sourceRef="Gateway_0r0t37w" targetRef="Activity_EndBusinessProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.WELSH_ENABLED || !flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_14dl5pe" name="APPLY_NOC_DECISION_LIP" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -122,12 +144,6 @@
       <bpmndi:BPMNShape id="BPMNShape_0dev963" bpmnElement="UpdateCaseDetailsAfterNoC">
         <dc:Bounds x="470" y="227" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
-        <dc:Bounds x="1462" y="249" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="1290" y="227" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1fqgqwi" bpmnElement="NotifyApplicantLipSolicitor">
         <dc:Bounds x="1140" y="227" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -150,6 +166,22 @@
           <dc:Bounds x="581" y="299" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0r0t37w_di" bpmnElement="Gateway_0r0t37w" isMarkerVisible="true">
+        <dc:Bounds x="1265" y="242" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1251" y="299" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ryj0ug_di" bpmnElement="Event_1ryj0ug">
+        <dc:Bounds x="1692" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19xyncl_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1530" y="227" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f44nkm_di" bpmnElement="ResetLanguagePreferenceAfterNoC">
+        <dc:Bounds x="1360" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_056imgr_di" bpmnElement="Event_0rh0701">
         <dc:Bounds x="371" y="209" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -169,8 +201,8 @@
         <di:waypoint x="339" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x9k7i6_di" bpmnElement="Flow_1x9k7i6">
-        <di:waypoint x="1390" y="267" />
-        <di:waypoint x="1462" y="267" />
+        <di:waypoint x="1630" y="267" />
+        <di:waypoint x="1692" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bgy1m8_di" bpmnElement="Flow_1bgy1m8">
         <di:waypoint x="570" y="267" />
@@ -186,7 +218,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0r5cjn6_di" bpmnElement="Flow_0r5cjn6">
         <di:waypoint x="1240" y="267" />
-        <di:waypoint x="1290" y="267" />
+        <di:waypoint x="1265" y="267" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0htqeux_di" bpmnElement="Flow_0htqeux">
         <di:waypoint x="780" y="267" />
@@ -206,6 +238,26 @@
         <di:waypoint x="890" y="227" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="748" y="162" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fmvdvf_di" bpmnElement="Flow_1fmvdvf">
+        <di:waypoint x="1315" y="267" />
+        <di:waypoint x="1360" y="267" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1329" y="249" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_172nb5l_di" bpmnElement="Flow_172nb5l">
+        <di:waypoint x="1460" y="267" />
+        <di:waypoint x="1530" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mxk5nh_di" bpmnElement="Flow_0mxk5nh">
+        <di:waypoint x="1290" y="242" />
+        <di:waypoint x="1290" y="180" />
+        <di:waypoint x="1550" y="180" />
+        <di:waypoint x="1550" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1413" y="162" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
