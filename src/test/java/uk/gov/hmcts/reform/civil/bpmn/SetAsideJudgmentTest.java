@@ -35,29 +35,28 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "true, true, true, true, true, true",
-        "true, true, true, false, true, true",
-        "true, true, false, true, false, true",
-        "true, true, false, false, false, false",
-        "true, false, true, true, true, true",
-        "true, false, true, false, false, false",
-        "true, false, false, true, true, true",
-        "true, false, false, false, false, false",
-        "false, true, true, true, true, true",
-        "false, true, true, false, false, false",
-        "false, true, false, true, true, true",
-        "false, true, false, false, false, false",
-        "false, false, true, true, true, true",
-        "false, false, true, false, false, false",
-        "false, false, false, true, true, true",
-        "false, false, false, false, false, false"
+        "true, true, true, true, true",
+        "true, true, true, false, true",
+        "true, true, false, true, false",
+        "true, true, false, false, false",
+        "true, false, true, true, true",
+        "true, false, true, false, false",
+        "true, false, false, true, true",
+        "true, false, false, false, false",
+        "false, true, true, true, true",
+        "false, true, true, false, false",
+        "false, true, false, true, true",
+        "false, true, false, false, false",
+        "false, false, true, true,true",
+        "false, false, true, false, false",
+        "false, false, false, true, true",
+        "false, false, false, false, false"
     })
     void shouldSuccessfullyNotifySetAsideJudgmentRequest(boolean twoRepresentatives,
                                                          boolean isLiPDefendant,
                                                          boolean dashboardServiceEnabled,
                                                          boolean judgmentSetAsideError,
-                                                         boolean isJoFeedLive,
-                                                         boolean isCjesServiceEnabled) {
+                                                         boolean isJoFeedLive) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -71,8 +70,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
             UNREPRESENTED_DEFENDANT_ONE, isLiPDefendant,
             DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
-            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
-            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled));
+            IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive));
         variables.put(JUDGMENT_SET_ASIDE_ERROR, judgmentSetAsideError);
 
         //complete the start business process
@@ -85,16 +83,14 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCjesServiceEnabled) {
-            //complete the call to CJES for Set Aside Judgment
-            ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendJudgmentDetailsToCJES,
-                PROCESS_CASE_EVENT,
-                SEND_JUDGMENT_DETAILS_SA_EVENT,
-                SEND_JUDGMENT_DETAILS_ACTIVITY_ID
-            );
-        }
+        //complete the call to CJES for Set Aside Judgment
+        ExternalTask sendJudgmentDetailsToCJES = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentDetailsToCJES,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_SA_EVENT,
+            SEND_JUDGMENT_DETAILS_ACTIVITY_ID
+        );
 
         if (judgmentSetAsideError) {
             //complete the notification to Claimant
