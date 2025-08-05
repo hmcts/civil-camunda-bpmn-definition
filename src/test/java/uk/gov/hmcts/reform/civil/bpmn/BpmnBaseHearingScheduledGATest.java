@@ -24,13 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.camunda.bpm.engine.ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BpmnBaseHearingScheduledGATest {
+public abstract class  BpmnBaseHearingScheduledGATest {
 
-    private static final String DIAGRAM_PATH = "camunda/%s";
+    protected static final String DIAGRAM_PATH = "camunda/%s";
     public static final String WORKER_ID = "test-worker";
     public static final String START_BUSINESS_TOPIC = "START_HEARING_SCHEDULED_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_HEARING_SCHEDULED_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartHearingScheduledBusinessProcessTaskId";
+    public static final String END_BUSINESS_PROCESS_WITHOUT_TASK = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
     public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
     public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
@@ -42,6 +43,7 @@ class BpmnBaseHearingScheduledGATest {
     public Deployment deployment;
     public Deployment endBusinessProcessDeployment;
     public Deployment startBusinessProcessDeployment;
+    public Deployment endBusinessProcessWithoutTaskDeployment;
     public static ProcessEngine engine;
 
     public ProcessInstance processInstance;
@@ -70,6 +72,10 @@ class BpmnBaseHearingScheduledGATest {
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, "end_hearing_scheduled_business_process.bpmn"))
             .deploy();
+        endBusinessProcessWithoutTaskDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process_without_WA_task.bpmn"))
+            .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
@@ -82,6 +88,9 @@ class BpmnBaseHearingScheduledGATest {
         engine.getRepositoryService().deleteDeployment(startBusinessProcessDeployment.getId());
         engine.getRepositoryService().deleteDeployment(endBusinessProcessDeployment.getId());
         engine.getRepositoryService().deleteDeployment(deployment.getId());
+        if (endBusinessProcessWithoutTaskDeployment != null) {
+            engine.getRepositoryService().deleteDeployment(endBusinessProcessWithoutTaskDeployment.getId());
+        }
     }
 
     @AfterAll
@@ -256,6 +265,15 @@ class BpmnBaseHearingScheduledGATest {
 
         List<LockedExternalTask> lockedEndBusinessProcessTask
             = fetchAndLockTask("END_HEARING_SCHEDULED_PROCESS_GASPEC");
+
+        assertThat(lockedEndBusinessProcessTask).hasSize(1);
+        completeTask(lockedEndBusinessProcessTask.get(0).getId());
+    }
+
+    public void completeBusinessProcessForGADocUpload(ExternalTask externalTask) {
+        assertThat(externalTask.getTopicName()).isEqualTo("END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK");
+
+        List<LockedExternalTask> lockedEndBusinessProcessTask = fetchAndLockTask("END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK");
 
         assertThat(lockedEndBusinessProcessTask).hasSize(1);
         completeTask(lockedEndBusinessProcessTask.get(0).getId());
