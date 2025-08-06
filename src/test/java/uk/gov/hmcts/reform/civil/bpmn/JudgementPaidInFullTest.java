@@ -36,7 +36,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
         "false, false",
         "true, true",
     })
-    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag, boolean isCJESServiceEnabled) {
+    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -59,7 +59,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             variables
         );
 
-        if (isCJESServiceEnabled) {
+        if (isCjesServiceEnabled) {
             //complete the Robotics notification
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
