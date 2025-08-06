@@ -46,7 +46,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             IS_JO_LIVE_FEED_ACTIVE, joFlag,
-            IS_CJES_SERVICE_ENABLED, isCJESServiceEnabled
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled
         ));
 
         //complete the start business process
