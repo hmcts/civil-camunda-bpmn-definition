@@ -24,12 +24,12 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "false, false",
-        "false, true",
-        "true, false",
-        "true, true",
+        "false, false, false",
+        "false, true, false",
+        "true, false, true",
+        "true, true, true",
     })
-    void shouldSuccessfullyCompleteAcknowledgeClaim_whenCalled(boolean cjes, boolean joFlag) {
+    void shouldSuccessfullyCompleteAcknowledgeClaim_whenCalled(boolean cjes, boolean joFlag, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -38,7 +38,8 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            IS_JO_LIVE_FEED_ACTIVE, joFlag
+            IS_JO_LIVE_FEED_ACTIVE, joFlag,
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled
         ));
         variables.put(SEND_DETAILS_CJES, cjes);
 
@@ -59,7 +60,7 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
             "CheckAndMarkDefendantPaidInFull"
         );
 
-        if (cjes) {
+        if (isCjesServiceEnabled) {
             ExternalTask sendJudgement = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendJudgement,
