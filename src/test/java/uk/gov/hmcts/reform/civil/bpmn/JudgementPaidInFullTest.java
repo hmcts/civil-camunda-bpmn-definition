@@ -33,10 +33,10 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "false",
-        "true",
+        "false, false",
+        "true, true",
     })
-    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag) {
+    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -45,7 +45,8 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            IS_JO_LIVE_FEED_ACTIVE, joFlag
+            IS_JO_LIVE_FEED_ACTIVE, joFlag,
+            IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled
         ));
 
         //complete the start business process
@@ -58,15 +59,16 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES,
-            SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
-        );
-
+        if (isCjesServiceEnabled) {
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES,
+                SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
+            );
+        }
         //complete the claimant dashboard update
         ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
