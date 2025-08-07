@@ -21,6 +21,15 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM = "PROCEEDS_IN_HERITAGE_SYSTEM";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT
+        = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT_ACTIVITY_ID
+        = "claimantLipApplicationOfflineDashboardNotification";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ACTIVITY_ID
+        = "defendantLipApplicationOfflineDashboardNotification";
     private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC
         = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC";
     private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC_ACTIVITY_ID
@@ -73,31 +82,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         }
 
         //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
-        );
+        completeNotifyEvents();
 
         if (welshEnabled) {
             //update main claim language flag
@@ -147,6 +132,36 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         );
 
         //complete notify claimant
+        completeNotifyEvents();
+
+        //Proceed Offline
+        ExternalTask proceedOfflineTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            proceedOfflineTask,
+            PROCESS_CASE_EVENT,
+            PROCEEDS_IN_HERITAGE_SYSTEM,
+            PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+        );
+
+        completeDashboardNotifications();
+
+        //complete the Robotics notification
+        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            forRobotics,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
+            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
+        );
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    private void completeNotifyEvents() {
         ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyDefendantAfterNoc,
@@ -172,17 +187,27 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
             "NotifyClaimantLipDefendantRepresented"
         );
+    }
 
-        //Proceed Offline
-        ExternalTask proceedOfflineTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+    private void completeDashboardNotifications() {
+        //complete the dashboard notification
+        ExternalTask applicantProceedOfflineClaimantDashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            proceedOfflineTask,
+            applicantProceedOfflineClaimantDashboardNotificationTask,
             PROCESS_CASE_EVENT,
-            PROCEEDS_IN_HERITAGE_SYSTEM,
-            PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT_ACTIVITY_ID
         );
 
-        //complete the dashboard notification
+        ExternalTask defendantProceedOfflineClaimantDashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantProceedOfflineClaimantDashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ACTIVITY_ID
+        );
+
+
         ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotificationTask,
@@ -190,21 +215,6 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC,
             CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC_ACTIVITY_ID
         );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
     }
 
     @Test
@@ -264,6 +274,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
             "NotifyClaimantLipDefendantRepresented"
         );
+
         //complete dashboard notification
         ExternalTask dashboardClaimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -348,6 +359,23 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         );
 
         //complete Dashboard notification
+        ExternalTask applicantProceedOfflineClaimantDashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicantProceedOfflineClaimantDashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT_ACTIVITY_ID
+        );
+
+        ExternalTask defendantProceedOfflineClaimantDashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantProceedOfflineClaimantDashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ACTIVITY_ID
+        );
+
+
         ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotificationTask,
@@ -514,13 +542,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
         );
 
         //complete Dashboard notification
-        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardNotificationTask,
-            PROCESS_CASE_EVENT,
-            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC,
-            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC_ACTIVITY_ID
-        );
+        completeDashboardNotifications();
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);

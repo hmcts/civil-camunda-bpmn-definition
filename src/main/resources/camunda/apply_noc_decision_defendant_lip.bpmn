@@ -18,7 +18,43 @@
       <bpmn:incoming>Flow_1yk0wbv</bpmn:incoming>
       <bpmn:incoming>Flow_0y8qy6v</bpmn:incoming>
       <bpmn:incoming>Flow_0s2h327</bpmn:incoming>
-      <bpmn:outgoing>Flow_08dsgc9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1vzzsdt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="defendantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rmhi4k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yhff7r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="claimantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vzzsdt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rmhi4k</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="CreateClaimantDashboardNotificationDefendantNoc" name="Create Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yhff7r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tclzid</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tclzid</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rz35k4</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_02x3bwe" name="NOC for Lip Defendant enabled">
       <bpmn:incoming>Flow_08bhmdx</bpmn:incoming>
@@ -161,13 +197,6 @@
     <bpmn:sequenceFlow id="Flow_0s2h327" name="Yes" sourceRef="Gateway_0pceuzw" targetRef="ProceedOffline">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.JBA_ISSUED_BEFORE_NOC &amp;&amp; flowFlags.JBA_ISSUED_BEFORE_NOC)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1xu1asr" sourceRef="ProceedOffline" targetRef="Gateway_0wjzkke" />
-    <bpmn:sequenceFlow id="Flow_GA_Not_Enabled" name="GA Not Enabled" sourceRef="Gateway_0wjzkke" targetRef="CreateClaimantDashboardNotificationDefendantNoc">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.GENERAL_APPLICATION_ENABLED || !flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_GA_Enabled" name="GA Enabled" sourceRef="Gateway_0wjzkke" targetRef="claimantLipApplicationOfflineDashboardNotification">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.GENERAL_APPLICATION_ENABLED &amp;&amp; flowFlags.GENERAL_APPLICATION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0rmhi4k" sourceRef="claimantLipApplicationOfflineDashboardNotification" targetRef="defendantLipApplicationOfflineDashboardNotification" />
     <bpmn:sequenceFlow id="Flow_1yhff7r" sourceRef="defendantLipApplicationOfflineDashboardNotification" targetRef="CreateClaimantDashboardNotificationDefendantNoc" />
     <bpmn:sequenceFlow id="Flow_1tclzid" sourceRef="CreateClaimantDashboardNotificationDefendantNoc" targetRef="NotifyRoboticsOnCaseHandedOffline" />
@@ -216,43 +245,7 @@
     <bpmn:sequenceFlow id="Flow_0rvh8ne" name="Yes" sourceRef="Gateway_0eccios" targetRef="ResetLanguagePreferenceAfterNoC">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.WELSH_ENABLED &amp;&amp; flowFlags.WELSH_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="claimantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_08dsgc9</bpmn:incoming>
-      <bpmn:outgoing>Flow_0rmhi4k</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="defendantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0rmhi4k</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yhff7r</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_08dsgc9" sourceRef="ProceedOffline" targetRef="claimantLipApplicationOfflineDashboardNotification" />
-    <bpmn:serviceTask id="CreateClaimantDashboardNotificationDefendantNoc" name="Create Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_NOC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1yhff7r</bpmn:incoming>
-      <bpmn:outgoing>Flow_1tclzid</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyRoboticsOnCaseHandedOffline" name="Notify RPA on case handed offline" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1tclzid</bpmn:incoming>
-      <bpmn:outgoing>Flow_0rz35k4</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1vzzsdt" sourceRef="ProceedOffline" targetRef="claimantLipApplicationOfflineDashboardNotification" />
   </bpmn:process>
   <bpmn:message id="Message_14dl5pe" name="APPLY_NOC_DECISION_DEFENDANT_LIP" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -264,9 +257,6 @@
       <bpmndi:BPMNShape id="BPMNShape_0azkwrd" bpmnElement="ProceedOffline">
         <dc:Bounds x="1631" y="610" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0wjzkke_di" bpmnElement="Gateway_0wjzkke" isMarkerVisible="true">
-        <dc:Bounds x="1796" y="625" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
         <dc:Bounds x="2071" y="610" width="100" height="80" />
@@ -370,21 +360,6 @@
         <dc:Bounds x="1410" y="260" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1rtq8df" bpmnElement="claimantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="1560" y="610" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="1720" y="610" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01op09a_di" bpmnElement="CreateClaimantDashboardNotificationDefendantNoc">
-        <dc:Bounds x="1910" y="610" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1kdqyo6_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="2100" y="610" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_056imgr_di" bpmnElement="Event_0rh0701">
         <dc:Bounds x="392" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -414,25 +389,6 @@
         <di:waypoint x="1690" y="610" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1811" y="353" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xu1asr_di" bpmnElement="Flow_1xu1asr">
-        <di:waypoint x="1731" y="650" />
-        <di:waypoint x="1796" y="650" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09ya9uk_di" bpmnElement="Flow_GA_Not_Enabled">
-        <di:waypoint x="1821" y="625" />
-        <di:waypoint x="1821" y="500" />
-        <di:waypoint x="2071" y="500" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1901" y="483" width="79" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0sru8ot_di" bpmnElement="Flow_GA_Enabled">
-        <di:waypoint x="1846" y="650" />
-        <di:waypoint x="1931" y="650" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1845" y="663" width="59" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rmhi4k_di" bpmnElement="Flow_0rmhi4k">
@@ -584,9 +540,9 @@
           <dc:Bounds x="1384" y="282" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08dsgc9_di" bpmnElement="Flow_08dsgc9">
-        <di:waypoint x="1431" y="650" />
-        <di:waypoint x="1560" y="650" />
+      <bpmndi:BPMNEdge id="Flow_1vzzsdt_di" bpmnElement="Flow_1vzzsdt">
+        <di:waypoint x="1731" y="650" />
+        <di:waypoint x="1931" y="650" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
