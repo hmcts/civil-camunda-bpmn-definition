@@ -36,7 +36,7 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, false));
+        variables.putValue(FLOW_FLAGS, Map.of(DASHBOARD_SERVICE_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -56,6 +56,9 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
             PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
+
+
+        completeGaEvents();
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -91,7 +94,7 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, true));
+        variables.putValue(FLOW_FLAGS, Map.of(DASHBOARD_SERVICE_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -112,23 +115,7 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-        //Update General Application Status
-        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            updateApplicationStatus,
-            PROCESS_CASE_EVENT,
-            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
-            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
-        );
-
-        //Update Claim Details with General Application Status
-        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            updateClaimWithApplicationStatus,
-            PROCESS_CASE_EVENT,
-            APPLICATION_OFFLINE_UPDATE_CLAIM,
-            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
-        );
+        completeGaEvents();
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -164,8 +151,7 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, true,
-                DASHBOARD_SERVICE_ENABLED, true));
+        variables.putValue(FLOW_FLAGS, Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -186,23 +172,7 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
                 PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-        //Update General Application Status
-        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                updateApplicationStatus,
-                PROCESS_CASE_EVENT,
-                TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
-                APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
-        );
-
-        //Update Claim Details with General Application Status
-        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                updateClaimWithApplicationStatus,
-                PROCESS_CASE_EVENT,
-                APPLICATION_OFFLINE_UPDATE_CLAIM,
-                APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
-        );
+        completeGaEvents();
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -239,6 +209,16 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
                 "GenerateDefendantDashboardNotificationCaseProceedOffline"
         );
 
+        completeGaDashboardEvents();
+
+        //end business process
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    private void completeGaDashboardEvents() {
         ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             claimantGaDashboard,
@@ -254,12 +234,26 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
             "defendantLipApplicationOfflineDashboardNotification"
         );
+    }
 
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
+    private void completeGaEvents() {
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateApplicationStatus,
+                PROCESS_CASE_EVENT,
+                TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+                APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
 
-        assertNoExternalTasksLeft();
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                updateClaimWithApplicationStatus,
+                PROCESS_CASE_EVENT,
+                APPLICATION_OFFLINE_UPDATE_CLAIM,
+                APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
+        );
     }
 
     @ParameterizedTest
@@ -272,9 +266,8 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
-            GENERAL_APPLICATION_ENABLED, false
+        variables.put("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, false,
+            UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1
         ));
 
         //complete the start business process
@@ -286,7 +279,6 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
         //Take offline
         ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -295,6 +287,8 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             PROCEEDS_IN_HERITAGE_SYSTEM_EVENT,
             PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
+
+        completeGaEvents();
 
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
