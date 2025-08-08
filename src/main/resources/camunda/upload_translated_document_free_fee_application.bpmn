@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:message id="Message_0yl8iuc" name="INITIATE_GENERAL_APPLICATION" />
+  <bpmn:process id="Process_02396vj" isExecutable="true">
+    <bpmn:callActivity id="Activity_099a8bs" name="Start Business Process" calledElement="GA_StartBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0waujj0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dryhgr</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
+      <bpmn:outgoing>Flow_0pg0q3q</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_05p2p60" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_0shejso">
+      <bpmn:incoming>Flow_0pg0q3q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0pg0q3q" sourceRef="Event_1r5gva6" targetRef="Event_0shejso" />
+    <bpmn:serviceTask id="GeneralApplicationNotifying" name="Notifying respondents" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_GENERAL_APPLICATION_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dryhgr</bpmn:incoming>
+      <bpmn:outgoing>Flow_17guhe2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_18x7hxw" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ltxmck</bpmn:incoming>
+      <bpmn:incoming>Flow_017qvrb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ujnajq</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_05yxbay" name="">
+      <bpmn:incoming>Flow_0ujnajq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ujnajq" sourceRef="Activity_18x7hxw" targetRef="Event_05yxbay" />
+    <bpmn:sequenceFlow id="Flow_1dryhgr" sourceRef="Activity_099a8bs" targetRef="GeneralApplicationNotifying" />
+    <bpmn:sequenceFlow id="Flow_17guhe2" sourceRef="GeneralApplicationNotifying" targetRef="Gateway_1rwamuv" />
+    <bpmn:exclusiveGateway id="Gateway_1rwamuv" name="is lip applicant?">
+      <bpmn:incoming>Flow_17guhe2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bkq36x</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0stwm81</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1bkq36x" name="No" sourceRef="Gateway_1rwamuv" targetRef="Gateway_07dw1rt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_07dw1rt" name="is lip respondent?">
+      <bpmn:incoming>Flow_1bkq36x</bpmn:incoming>
+      <bpmn:incoming>Flow_1q1arpt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ltxmck</bpmn:outgoing>
+      <bpmn:outgoing>Flow_16rv2bh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0ltxmck" name="No" sourceRef="Gateway_07dw1rt" targetRef="Activity_18x7hxw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="GenerateGANotificationForApplicantFeeRequired" name="Create Dashboard notification applicant" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0stwm81</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q1arpt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0stwm81" name="Yes" sourceRef="Gateway_1rwamuv" targetRef="GenerateGANotificationForApplicantFeeRequired">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1q1arpt" sourceRef="GenerateGANotificationForApplicantFeeRequired" targetRef="Gateway_07dw1rt" />
+    <bpmn:serviceTask id="GenerateGANotificationForRespondentFreeApplication" name="Create Dashboard notification respondent" camunda:type="external" camunda:topic="applicationEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16rv2bh</bpmn:incoming>
+      <bpmn:outgoing>Flow_017qvrb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16rv2bh" name="Yes" sourceRef="Gateway_07dw1rt" targetRef="GenerateGANotificationForRespondentFreeApplication">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_RESPONDENT&amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_017qvrb" sourceRef="GenerateGANotificationForRespondentFreeApplication" targetRef="Activity_18x7hxw" />
+    <bpmn:startEvent id="Event_1jp55hn" name="start">
+      <bpmn:outgoing>Flow_0waujj0</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1o704zs" messageRef="Message_3g7gib3" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0waujj0" sourceRef="Event_1jp55hn" targetRef="Activity_099a8bs" />
+  </bpmn:process>
+  <bpmn:message id="Message_0rapbcd" name="Message_0rapbcd" />
+  <bpmn:message id="Message_3g7gib3" name="UPLOAD_TRANSLATED_DOC_FOR_FREE_FEE_APPLICATION" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_02396vj">
+      <bpmndi:BPMNShape id="BPMNShape_09inh63" bpmnElement="Activity_099a8bs">
+        <dc:Bounds x="230" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0shejso_di" bpmnElement="Event_0shejso">
+        <dc:Bounds x="262" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1rwamuv_di" bpmnElement="Gateway_1rwamuv" isMarkerVisible="true">
+        <dc:Bounds x="545" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="532" y="163" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_07dw1rt_di" bpmnElement="Gateway_07dw1rt" isMarkerVisible="true">
+        <dc:Bounds x="735" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="731" y="163" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1vmzx7q" bpmnElement="Activity_18x7hxw">
+        <dc:Bounds x="1000" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0wo3nim" bpmnElement="GenerateGANotificationForApplicantFeeRequired">
+        <dc:Bounds x="610" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0kwe1re" bpmnElement="GenerateGANotificationForRespondentFreeApplication">
+        <dc:Bounds x="820" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1top2yy" bpmnElement="Event_05yxbay">
+        <dc:Bounds x="1172" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1966" y="275" width="88" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0i1xk7m" bpmnElement="GeneralApplicationNotifying">
+        <dc:Bounds x="390" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jp55hn_di" bpmnElement="Event_1jp55hn">
+        <dc:Bounds x="132" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="139" y="235" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1alphtq" bpmnElement="Event_1r5gva6">
+        <dc:Bounds x="262" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="287" y="122" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1dryhgr_di" bpmnElement="Flow_1dryhgr">
+        <di:waypoint x="330" y="210" />
+        <di:waypoint x="390" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pg0q3q_di" bpmnElement="Flow_0pg0q3q">
+        <di:waypoint x="280" y="152" />
+        <di:waypoint x="280" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17guhe2_di" bpmnElement="Flow_17guhe2">
+        <di:waypoint x="490" y="210" />
+        <di:waypoint x="545" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ujnajq_di" bpmnElement="Flow_0ujnajq">
+        <di:waypoint x="1100" y="210" />
+        <di:waypoint x="1172" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bkq36x_di" bpmnElement="Flow_1bkq36x">
+        <di:waypoint x="595" y="210" />
+        <di:waypoint x="735" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="658" y="192" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0stwm81_di" bpmnElement="Flow_0stwm81">
+        <di:waypoint x="570" y="235" />
+        <di:waypoint x="570" y="360" />
+        <di:waypoint x="610" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="295" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q1arpt_di" bpmnElement="Flow_1q1arpt">
+        <di:waypoint x="710" y="360" />
+        <di:waypoint x="760" y="360" />
+        <di:waypoint x="760" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ltxmck_di" bpmnElement="Flow_0ltxmck">
+        <di:waypoint x="785" y="210" />
+        <di:waypoint x="1000" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="885" y="192" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16rv2bh_di" bpmnElement="Flow_16rv2bh">
+        <di:waypoint x="760" y="235" />
+        <di:waypoint x="760" y="360" />
+        <di:waypoint x="820" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="766" y="295" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_017qvrb_di" bpmnElement="Flow_017qvrb">
+        <di:waypoint x="920" y="360" />
+        <di:waypoint x="960" y="360" />
+        <di:waypoint x="960" y="210" />
+        <di:waypoint x="1000" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0waujj0_di" bpmnElement="Flow_0waujj0">
+        <di:waypoint x="168" y="210" />
+        <di:waypoint x="230" y="210" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
