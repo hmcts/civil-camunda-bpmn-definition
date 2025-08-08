@@ -184,6 +184,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         );
 
         //create dashboard notification
+        generateClaimantLipApplicationOfflineDashboardNotification();
+        generateDefendantLipApplicationOfflineDashboardNotification();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
         generateDefendantDashboardNotificationForCCJClaimantResponse();
 
@@ -326,16 +328,15 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID
         );
 
-        if (isCjesServiceEnabled) {
-            //Send judgement details to CJES service
-            ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                sendJudgmentToCjesService,
-                PROCESS_CASE_EVENT,
-                SEND_JUDGMENT_DETAILS_CJES_EVENT,
-                SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
-            );
-        }
+
+        ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            sendJudgmentToCjesService,
+            PROCESS_CASE_EVENT,
+            SEND_JUDGMENT_DETAILS_CJES_EVENT,
+            SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
+        );
+
         ExternalTask generateJudgmentByAdmissionClaimantDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generateJudgmentByAdmissionClaimantDocument,
@@ -398,6 +399,14 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
     private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
         assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
+    }
+
+    private void generateClaimantLipApplicationOfflineDashboardNotification() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT", "claimantLipApplicationOfflineDashboardNotification");
+    }
+
+    private void generateDefendantLipApplicationOfflineDashboardNotification() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
     }
 
     private void    assertCompletedCaseEvent(String eventName, String activityId) {
