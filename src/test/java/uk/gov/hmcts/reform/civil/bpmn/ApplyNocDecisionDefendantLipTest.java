@@ -552,7 +552,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             DEFENDANT_NOC_ONLINE, true,
             JBA_ISSUED_BEFORE_NOC, true,
             CLAIM_STATE_DURING_NOC, false,
-            GENERAL_APPLICATION_ENABLED , true));
+            GENERAL_APPLICATION_ENABLED, true));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
