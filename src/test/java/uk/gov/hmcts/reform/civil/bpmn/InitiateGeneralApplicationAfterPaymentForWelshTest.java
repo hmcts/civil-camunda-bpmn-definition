@@ -20,6 +20,9 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+    public static final String UPDATE_FROM_GA_CASE_EVENT = "updateFromGACaseEvent";
+    private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
+    private static final String ADD_PDF_ID = "AddDraftDocToMainCaseID";
 
     public InitiateGeneralApplicationAfterPaymentForWelshTest() {
         super("initiate_general_application_after_payment.bpmn", "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
@@ -84,6 +87,15 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             APPLICATION_PROCESS_CASE_EVENT,
             GENERATE_DRAFT_DOCUMENT,
             GENERATE_DRAFT_DOCUMENT_ID,
+            variables
+        );
+        //Complete add pdf to main case event
+        ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
+        assertCompleteExternalTask(
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID,
             variables
         );
 
