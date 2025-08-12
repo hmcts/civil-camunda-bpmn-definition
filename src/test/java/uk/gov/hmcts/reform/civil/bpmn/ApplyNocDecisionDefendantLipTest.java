@@ -128,31 +128,13 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UpdateCaseDetailsAfterNoC"
         );
 
-        //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete notify parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
+            "NOTIFY_EVENT",
+            "DefendantLipRepresentedWithNoCNotifier"
         );
 
         //Proceed Offline
@@ -220,32 +202,15 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UpdateCaseDetailsAfterNoC"
         );
 
-        //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete notify parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
+            "NOTIFY_EVENT",
+            "DefendantLipRepresentedWithNoCNotifier"
         );
 
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
-        );
         //complete dashboard notification
         ExternalTask dashboardClaimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -293,31 +258,14 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
-        //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        
+        //complete notify parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
+            "NOTIFY_EVENT",
+            "DefendantLipRepresentedWithNoCNotifier"
         );
 
         //Proceed Offline
@@ -385,31 +333,13 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UpdateCaseDetailsAfterNoC"
         );
 
-        //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete notify parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
+            "NOTIFY_EVENT",
+            "DefendantLipRepresentedWithNoCNotifier"
         );
 
         //complete dashboard notification
@@ -459,31 +389,14 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
-        //complete notify claimant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        
+        //complete notify parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_AFTER_NOC_APPROVAL",
-            "NotifyDefendantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantSolicitorAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantSolicitorAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_SOLICITOR_AFTER_NOC_APPROVAL",
-            "NotifyDefendant1SolicitorRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_DEFENDANT_REPRESENTED",
-            "NotifyClaimantLipDefendantRepresented"
+            "NOTIFY_EVENT",
+            "DefendantLipRepresentedWithNoCNotifier"
         );
 
         //Proceed Offline
