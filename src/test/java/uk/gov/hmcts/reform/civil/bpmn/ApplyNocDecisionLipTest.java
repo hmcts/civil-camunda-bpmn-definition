@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
+public class ApplyNocDecisionLipTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "APPLY_NOC_DECISION_LIP";
     public static final String PROCESS_ID = "APPLY_NOC_DECISION_LIP";
@@ -60,30 +60,12 @@ public class ApplyNocDecisionLipTest  extends BpmnBaseTest {
         }
 
         //complete notify claimant
-        ExternalTask notifyClaimantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParies = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyClaimantAfterNoc,
+            notifyParies,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_LIP_AFTER_NOC_APPROVAL",
-            "NotifyClaimantLipAfterNocApproval"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyDefendantAfterNoc = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyDefendantAfterNoc,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_LIP_CLAIMANT_REPRESENTED",
-            "NotifyDefendantLipClaimantRepresented"
-        );
-
-        //complete notify defendant
-        ExternalTask notifyClaimantSolicitor = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                notifyDefendantAfterNoc,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANT_LIP_SOLICITOR",
-                "NotifyApplicantLipSolicitor"
+            "NOTIFY_EVENT",
+            "ClaimantLipRepresentedWithNoCNotifier"
         );
 
         if (welshEnabled) {
