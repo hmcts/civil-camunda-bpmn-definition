@@ -145,7 +145,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.COUNTER_CLAIM");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            GENERAL_APPLICATION_ENABLED, false,
             "COUNTER_CLAIM", true,
             DASHBOARD_SERVICE_ENABLED, true
         ));
@@ -168,6 +167,24 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "PROCEEDS_IN_HERITAGE_SYSTEM",
             "ProceedOfflineForNonDefenceResponse",
             variables
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            "Activity_0drqld6"
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            "Activity_12sc57s"
         );
 
         //complete the notification to respondent
@@ -224,7 +241,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_FULL_DEFENCE_RECEIVED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            GENERAL_APPLICATION_ENABLED, true,
             TWO_RESPONDENT_REPRESENTATIVES, true,
             DASHBOARD_SERVICE_ENABLED, false
         ));
@@ -369,7 +385,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.COUNTER_CLAIM");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            GENERAL_APPLICATION_ENABLED, false,
             "COUNTER_CLAIM", true,
             DASHBOARD_SERVICE_ENABLED, false
         ));
@@ -391,6 +406,24 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "PROCEEDS_IN_HERITAGE_SYSTEM",
             "ProceedOfflineForNonDefenceResponse"
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            "Activity_0drqld6"
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            "Activity_12sc57s"
         );
 
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);

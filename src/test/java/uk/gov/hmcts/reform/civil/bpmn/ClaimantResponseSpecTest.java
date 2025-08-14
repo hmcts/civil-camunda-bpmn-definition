@@ -105,6 +105,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -159,6 +160,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -194,6 +196,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -243,6 +246,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -265,7 +269,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true,
             "SDO_ENABLED", true,
             DASHBOARD_SERVICE_ENABLED, true
         ));
@@ -329,14 +332,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-            "defendantLipApplicationOfflineDashboardNotification"
-        );
-
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -380,6 +376,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -489,6 +486,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -545,6 +543,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -584,6 +583,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -629,6 +629,28 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID,
             variables
         );
+
+        //complete the GA events
+        ExternalTask updateGaStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateGaStatus,
+            PROCESS_CASE_EVENT,
+            "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE",
+            "UpdateGeneralApplicationStatus",
+            variables
+        );
+        //complete the GA events
+        ExternalTask updateClaimGaStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimGaStatus,
+            PROCESS_CASE_EVENT,
+            "APPLICATION_OFFLINE_UPDATE_CLAIM",
+            "UpdateClaimWithApplicationStatus",
+            variables
+        );
+
+
+
         //complete the notification to all parties
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -697,7 +719,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
             variables
         );
-
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -747,6 +769,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
+        createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
         //end business process
@@ -806,6 +829,17 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
             CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+        );
+    }
+
+
+    private void createDefendantGaDashboardNotification() {
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
         );
     }
 }

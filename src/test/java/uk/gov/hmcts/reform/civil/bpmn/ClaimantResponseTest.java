@@ -321,6 +321,25 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
+        );
+
+
         //complete the notification to respondent
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(

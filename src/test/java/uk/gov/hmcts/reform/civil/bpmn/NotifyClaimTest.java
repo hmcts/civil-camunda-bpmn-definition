@@ -166,7 +166,6 @@ class NotifyClaimTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_STATE, FlowState.TAKEN_OFFLINE_AFTER_CLAIM_NOTIFIED.fullName());
-        variables.putValue(FLOW_FLAGS, Map.of(GENERAL_APPLICATION_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -195,13 +194,33 @@ class NotifyClaimTest extends BpmnBaseTest {
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
+        );
+
         //Notify Claimant Solicitor - Handed Offline
         ExternalTask notifyApplicantSolicitorHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notifyApplicantSolicitorHandedOffline,
-                                   PROCESS_CASE_EVENT,
-                                   NOTIFY_EVENT,
-                                   NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
         );
+
 
         //Notify RPA - Handed Offline
         ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);

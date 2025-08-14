@@ -191,6 +191,25 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             "ProceedOffline"
         );
 
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
+        );
+
         //Notify Applicant Solicitor
         ExternalTask proceedOfflineTask1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -199,6 +218,8 @@ class NotifyClaimDetailsTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             NOTIFY_CLAIM_DETAILS_OFFLINE_APPLICANT_SOLICITOR1_ACTIVITY_ID
         );
+
+
 
         //Notify RPA
         ExternalTask proceedOfflineTask2 = assertNextExternalTask(PROCESS_CASE_EVENT);
