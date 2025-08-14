@@ -33,7 +33,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true
         ));
@@ -95,41 +94,13 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationDisabledDashboardDisabled() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness,
-                                   START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT,
-                                   START_BUSINESS_ACTIVITY,
-                                   variables);
-
-        //complete the notification to parties
-        ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the Trigger and Update GA Location event
+        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notification,
+            triggerAndUpdateGenAppLocation,
             PROCESS_CASE_EVENT,
-            "NOTIFY_EVENT",
-            "CreateSDONotify",
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
 
@@ -141,7 +112,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabled() {
+    void shouldSuccessfullyCompleteTakeCaseOffline() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -150,7 +121,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             DASHBOARD_SERVICE_ENABLED, false,
             CASE_PROGRESSION_ENABLED, false
         ));
@@ -191,7 +161,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPDefendant() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineForLiPDefendant() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -200,7 +170,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, true,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, true,
@@ -301,7 +270,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLiPvLrClaim() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineForLiPvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -310,7 +279,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, true,
@@ -402,7 +370,7 @@ class CreateSDOTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteTakeCaseOfflineWhenGeneralApplicationEnabledForLrvLrClaim() {
+    void shouldSuccessfullyCompleteTakeCaseOfflineForLrvLrClaim() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -411,7 +379,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, false,
@@ -502,7 +469,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
             UNREPRESENTED_DEFENDANT_ONE, true,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true,
@@ -576,6 +542,16 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the Trigger and Update GA Location event
+        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            triggerAndUpdateGenAppLocation,
+            PROCESS_CASE_EVENT,
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -594,7 +570,6 @@ class CreateSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, false,
             WELSH_ENABLED, true,
             DASHBOARD_SERVICE_ENABLED, true,
             CASE_PROGRESSION_ENABLED, true,
@@ -646,6 +621,16 @@ class CreateSDOTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "CREATE_DASHBOARD_NOTIFICATION_UPLOAD_HEARING_DOCUMENTS_DEFENDANT",
             "Activity_Notice_Hearing_Defendant",
+            variables
+        );
+
+        //complete the Trigger and Update GA Location event
+        ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            triggerAndUpdateGenAppLocation,
+            PROCESS_CASE_EVENT,
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
             variables
         );
 
