@@ -649,8 +649,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-
-
         //complete the notification to all parties
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -831,7 +829,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
         );
     }
-
 
     private void createDefendantGaDashboardNotification() {
         ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);

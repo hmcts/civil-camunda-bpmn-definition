@@ -328,7 +328,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID
         );
 
-
         ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             sendJudgmentToCjesService,

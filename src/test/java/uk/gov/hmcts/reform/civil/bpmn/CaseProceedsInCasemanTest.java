@@ -57,7 +57,6 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
             PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-
         completeGaEvents();
 
         //complete the RPA notification

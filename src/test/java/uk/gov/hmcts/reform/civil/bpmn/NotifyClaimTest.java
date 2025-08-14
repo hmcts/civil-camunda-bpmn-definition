@@ -194,7 +194,6 @@ class NotifyClaimTest extends BpmnBaseTest {
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-
         //Update General Application Status
         ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -220,7 +219,6 @@ class NotifyClaimTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             NOTIFY_APPLICANT_SOLICITOR_1_HAND_OFFLINE_ACTIVITY_ID
         );
-
 
         //Notify RPA - Handed Offline
         ExternalTask notifyRpaHandedOffline = assertNextExternalTask(PROCESS_CASE_EVENT);

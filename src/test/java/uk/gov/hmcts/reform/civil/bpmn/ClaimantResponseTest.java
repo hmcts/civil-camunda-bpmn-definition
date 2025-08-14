@@ -339,7 +339,6 @@ class ClaimantResponseTest extends BpmnBaseTest {
             APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
-
         //complete the notification to respondent
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
