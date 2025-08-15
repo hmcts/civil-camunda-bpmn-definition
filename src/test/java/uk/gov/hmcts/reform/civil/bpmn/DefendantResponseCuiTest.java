@@ -16,12 +16,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "DEFENDANT_RESPONSE_PROCESS_ID_CUI";
 
     //CCD Case Event
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_CONTACT_DETAILS_CHANGE";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI
-        = "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI";
-    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION
-        = "NOTIFY_LIP_DEFENDANT_RESPONSE_SUBMISSION";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
     private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
     private static final String GENERATE_CLAIMANT_DASHBOARD
@@ -33,12 +28,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE_WELSH";
 
     //ACTIVITY IDs
-    private static final String NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
-        = "DefendantContactDetailsChangeNotifyApplicantSolicitor1";
-    private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        = "DefendantResponseNotifyApplicantSolicitor1ForCui";
-    private static final String NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
-        = "DefendantLipResponseNotifyDefendant";
+    private static final String NOTIFY_EVENT_ACTIVITY = "DefendantResponseCUINotify";
     private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
     private static final String GENERATE_CLAIMANT_DASHBOARD_ACTIVITY
@@ -73,41 +63,9 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
 
-        verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
+        verifyNotifyPartiesCompleted();
         verifyGenerateDashboardNotificationClaimant();
         verifyGenerateDashboardNotificationDefendant();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldNotCompleteTheProcessWithNotificationsAndPdfGeneration_whenNoneBilingualAndContactsChanged_AndEnglishToWelshEnabled() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
-            "CLAIM_ISSUE_BILINGUAL", false,
-            "WELSH_ENABLED", true,
-            "BILINGUAL_DOCS", true,
-            "DASHBOARD_SERVICE_ENABLED", true));
-
-        assertBusinessProcessHasStarted(variables);
-
-        verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -130,13 +88,10 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", false,
             "CLAIM_ISSUE_BILINGUAL", true,
             "WELSH_ENABLED", true,
-            "BILINGUAL_DOCS", true,
             "DASHBOARD_SERVICE_ENABLED", true));
 
         assertBusinessProcessHasStarted(variables);
 
-        verifyApplicantNotificationOfAddressChangeCompleted();
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
@@ -146,34 +101,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSkipNotifyApplicantSolicitor_whenNoContactDetailsChange() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CONTACT_DETAILS_CHANGE", false,
-            "CLAIM_ISSUE_BILINGUAL", true,
-            "DASHBOARD_SERVICE_ENABLED", true));
-
-        assertBusinessProcessHasStarted(variables);
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifyApplicantNotificationOfResponseSubmissionCompleted();
-        verifyGenerateDashboardNotificationClaimant();
-        verifyGenerateDashboardNotificationDefendant();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldNotNotifyApplicant_whenDefendantResponseBilingual() {
+    void shouldNotSendDashboardNotifications_whenDashboardServiceDisabled() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -187,55 +115,6 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
 
         assertBusinessProcessHasStarted(variables);
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldNotNotifyApplicant_whenDefendantResponseAndClaimIssueBilingual_EnglishToWelshEnabled() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CLAIM_ISSUE_BILINGUAL", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
-            "DEFENDANT_ENGLISH_TO_WELSH_ENABLED", true));
-
-        assertBusinessProcessHasStarted(variables);
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
-        verifySealedDQGenerationCompleted();
-        verifySealedResponseGenerationCompleted();
-
-        endBusinessProcess();
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldNotNotifyApplicant_whenDefendantResponseBilingualAndDashboardIsSet() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CLAIM_ISSUE_BILINGUAL", true,
-            "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true,
-            "DASHBOARD_SERVICE_ENABLED", true));
-
-        assertBusinessProcessHasStarted(variables);
-        verifyDefendantLipNotificationOfResponseSubmissionCompleted();
         verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
@@ -244,25 +123,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    private void verifyApplicantNotificationOfAddressChangeCompleted() {
-        verifyTaskIsComplete(
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_DETAILS_CHANGE,
-            NOTIFY_RESPONDENT_SOLICITOR_1_CONTACT_CHANGE_ACTIVITY_ID
-        );
-    }
-
-    private void verifyApplicantNotificationOfResponseSubmissionCompleted() {
-        verifyTaskIsComplete(
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CUI,
-            NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_ACTIVITY_ID
-        );
-    }
-
-    private void verifyDefendantLipNotificationOfResponseSubmissionCompleted() {
-        verifyTaskIsComplete(
-            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION,
-            NOTIFY_LIP_DEFENDANT_FOR_RESPONSE_SUBMISSION_ACTIVITY_ID
-        );
+    private void verifyNotifyPartiesCompleted() {
+        verifyTaskIsComplete(NOTIFY_EVENT, NOTIFY_EVENT_ACTIVITY);
     }
 
     private void verifySealedDQGenerationCompleted() {

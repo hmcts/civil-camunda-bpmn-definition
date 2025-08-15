@@ -97,22 +97,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
+        //complete the notification to parties
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
+            "NOTIFY_EVENT",
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -192,22 +183,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CC"
+            "NOTIFY_EVENT",
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -276,22 +258,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RES_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_MULTITRACK",
-            "ClaimantConfirmsToProceedNotifyRespondentSolicitor1Multitrack"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_APP_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_TO_PROCEED_CC_MULTITRACK",
-            "ClaimantConfirmsToProceedNotifyApplicantSolicitor1CCMultitrack"
+            "NOTIFY_EVENT",
+            "ClaimantConfirmsToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -349,30 +322,12 @@ class ClaimantResponseTest extends BpmnBaseTest {
         );
 
         //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
-            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the notification to respondent
-        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent2,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
-            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor2"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC",
-            "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC"
+            "NOTIFY_EVENT",
+            "ClaimantResponseConfirmsNotToProceedNotify"
         );
 
         //complete the Robotics notification
@@ -447,31 +402,13 @@ class ClaimantResponseTest extends BpmnBaseTest {
                 APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
-        //complete the notification to respondent
-        ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyRespondent,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
-            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor1"
-        );
-
-        //complete the notification to respondent
-        ExternalTask notifyRespondent2 = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyRespondent2,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR2_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED",
-            "ClaimantConfirmsNotToProceedNotifyRespondentSolicitor2"
-        );
-
-        //complete the CC notification to applicant
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT_SOLICITOR1_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_CC",
-            "ClaimantConfirmsNotToProceedNotifyApplicantSolicitor1CC"
+            "NOTIFY_EVENT",
+            "ClaimantResponseConfirmsNotToProceedNotify"
         );
 
         //complete the Robotics notification
