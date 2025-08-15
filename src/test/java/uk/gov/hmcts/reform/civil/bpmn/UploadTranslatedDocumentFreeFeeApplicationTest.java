@@ -15,9 +15,9 @@ import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.APPLICATION_EVEN
 public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAfterPaymentTest {
 
     //BPMN Settings
-    private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOC_FOR_FREE_FEE_APPLICATION";
+    private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_FOR_FREE_FEE_APPLICATION";
     private static final String PROCESS_ID = "UPLOAD_TRANSLATED_FREE_GA_SUMMARY_DOC";
-    private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
+    private static final String NOTIFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
@@ -66,7 +66,7 @@ public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAf
         assertCompleteExternalTask(
             notifyRespondents,
             APPLICATION_EVENT_GASPEC,
-            NOTYFYING_RESPONDENTS_EVENT,
+            NOTIFYING_RESPONDENTS_EVENT,
             GENERAL_APPLICATION_NOTIYFYING_ID,
             variables
         );
