@@ -40,6 +40,10 @@ public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
     private static final String GENERATE_DRAFT_DOC_ID = "DraftDocumentGenerator";
     private static final String FREE_FEE_WELSH_APPLICATION = "FREE_FEE_WELSH_APPLICATION";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
+    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
+    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
+    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
+    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
 
     public InitiateGeneralApplicationWelshTest() {
         super("initiate_general_application.bpmn", "GA_INITIATE_PROCESS_ID");
@@ -147,6 +151,25 @@ public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
             APPLICATION_EVENT_GASPEC,
             GENERATE_DRAFT_DOC_EVENT,
             GENERATE_DRAFT_DOC_ID,
+            variables
+        );
+
+        //update dashboard
+        ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            updateCuiClaimantDashboard,
+            APPLICATION_EVENT_GASPEC,
+            UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
+            variables
+        );
+
+        ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            updateCuiDefendantDashboard,
+            APPLICATION_EVENT_GASPEC,
+            UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
+            GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
             variables
         );
 
