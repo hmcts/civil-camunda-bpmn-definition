@@ -439,62 +439,6 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation() {
-
-        assertFalse(processInstance.isEnded());
-        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE_SPEC").getKey())
-            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.IN_MEDIATION");
-        variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            DASHBOARD_SERVICE_ENABLED, true,
-            GENERAL_APPLICATION_ENABLED, false));
-
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyParties,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            "ClaimantDefendantAgreedMediationNotify"
-        );
-
-        ExternalTask generateDQ = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            generateDQ,
-            PROCESS_CASE_EVENT,
-            GENERATE_DIRECTIONS_QUESTIONNAIRE,
-            GENERATE_CLAIMANT_DQ_MEDITATION_ACTIVITY_ID
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
-        );
-        createDefendantGaDashboardNotification();
-        createDefendantDashboardNotification();
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
     void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation1v2DifferentSol() {
 
         assertFalse(processInstance.isEnded());

@@ -396,7 +396,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             SETTLE_THE_CLAIM, true,
@@ -433,7 +432,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             WELSH_ENABLED, true,
