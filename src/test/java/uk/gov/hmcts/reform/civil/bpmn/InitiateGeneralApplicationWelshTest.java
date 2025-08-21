@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
 
+    public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     //BPMN Settings
     private static final String MESSAGE_NAME = "INITIATE_GENERAL_APPLICATION";
     private static final String PROCESS_ID = "GA_INITIATE_PROCESS_ID";
@@ -30,16 +31,13 @@ public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
     //Fee Validation
     private static final String VALIDATE_FEE_EVENT = "VALIDATE_FEE_GASPEC";
     private static final String VALIDATE_FEE_ID = "GeneralApplicationValidateFee";
-
     //Make Service Request
     private static final String MAKE_SERVICE_REQ_EVENT = "MAKE_PAYMENT_SERVICE_REQ_GASPEC";
     private static final String MAKE_SERVICE_REQ_ID = "GeneralApplicationPaymentServiceReq";
-
     //Make Service Request
     private static final String GENERATE_DRAFT_DOC_EVENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOC_ID = "DraftDocumentGenerator";
     private static final String FREE_FEE_WELSH_APPLICATION = "FREE_FEE_WELSH_APPLICATION";
-    public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
@@ -151,6 +149,15 @@ public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
             APPLICATION_EVENT_GASPEC,
             GENERATE_DRAFT_DOC_EVENT,
             GENERATE_DRAFT_DOC_ID,
+            variables
+        );
+       //add application to translation
+        ExternalTask applicationToTranslationSection = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            applicationToTranslationSection,
+            APPLICATION_EVENT_GASPEC,
+            "ADD_APPLICATION_TO_TRANSLATION_COLLECTION",
+            "applicationTranslationCollectionId",
             variables
         );
 
