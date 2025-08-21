@@ -87,6 +87,15 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             variables
         );
 
+        //add application to translation
+        ExternalTask applicationToTranslationSection = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicationToTranslationSection,
+            APPLICATION_PROCESS_CASE_EVENT,
+            "ADD_APPLICATION_TO_TRANSLATION_COLLECTION",
+            "applicationTranslationCollectionId",
+            variables
+        );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcessForGADocUpload(endBusinessProcess);
