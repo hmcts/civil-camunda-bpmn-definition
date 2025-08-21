@@ -151,7 +151,7 @@ public class InitiateGeneralApplicationWelshTest extends BpmnBaseGASpecTest {
             GENERATE_DRAFT_DOC_ID,
             variables
         );
-       //add application to translation
+        //add application to translation
         ExternalTask applicationToTranslationSection = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
         assertCompleteExternalTask(
             applicationToTranslationSection,
