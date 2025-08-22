@@ -113,6 +113,18 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             );
         }
 
+        if (isLiPClaimant) {
+            // should send letter to LiP claimant
+            ExternalTask claimantLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                claimantLipLetter,
+                PROCESS_CASE_EVENT,
+                "POST_DJ_NON_DIVERGENT_PIN_IN_LETTER_CLAIMANT",
+                "NotifyDJNonDivergentClaimantLiP",
+                variables
+            );
+        }
+
         // Continue with the rest of the process as before
         if (!isLiPDefendant) {
             //complete the notification to Respondent
