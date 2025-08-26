@@ -119,8 +119,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 claimantLipLetter,
                 PROCESS_CASE_EVENT,
-                "POST_DJ_NON_DIVERGENT_PIN_IN_LETTER_CLAIMANT",
-                "NotifyDJNonDivergentClaimantLiP",
+                "POST_DJ_NON_DIVERGENT_COVER_LETTER_CLAIMANT",
+                "PostClaimantDJCoverLetterAndDocument",
                 variables
             );
         }
