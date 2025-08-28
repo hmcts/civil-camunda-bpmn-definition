@@ -26,7 +26,6 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
     private static final String DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         = "DeletePaymentDashboardNotification";
 
-
     public InitiateGeneralApplicationAfterPaymentForWelshTest() {
         super("initiate_general_application_after_payment.bpmn", "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
     }
