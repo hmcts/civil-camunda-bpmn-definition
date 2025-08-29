@@ -81,6 +81,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER_ID = "PostClaimantLIPJBALetter";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER = "POST_CLAIMANT_LIP_JBA_LETTER";
 
     public ClaimantResponseCuiTest() {
         super(
@@ -714,6 +716,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
+        postClaimantLipJbaLetter();
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
@@ -756,6 +759,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
+        postClaimantLipJbaLetter();
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
@@ -797,6 +801,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
+        postClaimantLipJbaLetter();
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
@@ -841,6 +846,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
+        postClaimantLipJbaLetter();
         createClaimantDashboardNotificationForJOIssued();
         createDefendantDashboardNotificationForJOIssued();
         endBusinessProcess();
@@ -966,5 +972,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void generateJoRPAContinuousFeed() {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CONTINUOUS_FEED, NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID);
+    }
+
+    private void postClaimantLipJbaLetter() {
+        assertCompletedCaseEvent(POST_CLAIMANT_LIP_JBA_LETTER, POST_CLAIMANT_LIP_JBA_LETTER_ID);
     }
 }
