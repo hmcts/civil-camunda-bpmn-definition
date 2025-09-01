@@ -92,6 +92,16 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             variables
         );
 
+        // add application to translation
+        ExternalTask applicationToTranslationSection = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            applicationToTranslationSection,
+            APPLICATION_PROCESS_CASE_EVENT,
+            "ADD_APPLICATION_TO_TRANSLATION_COLLECTION",
+            "applicationTranslationCollectionId",
+            variables
+        );
+
         //Delete payment notification
         ExternalTask deletePaymentNotification = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
