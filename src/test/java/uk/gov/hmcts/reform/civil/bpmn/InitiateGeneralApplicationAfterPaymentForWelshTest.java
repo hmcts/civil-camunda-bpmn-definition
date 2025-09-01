@@ -20,6 +20,11 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
     private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
     private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
+    private static final String DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION
+        = "DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION";
+
+    private static final String DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        = "DeletePaymentDashboardNotification";
 
     public InitiateGeneralApplicationAfterPaymentForWelshTest() {
         super("initiate_general_application_after_payment.bpmn", "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
@@ -85,6 +90,15 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             GENERATE_DRAFT_DOCUMENT,
             GENERATE_DRAFT_DOCUMENT_ID,
             variables
+        );
+
+        //Delete payment notification
+        ExternalTask deletePaymentNotification = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            deletePaymentNotification,
+            APPLICATION_PROCESS_CASE_EVENT,
+            DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION,
+            DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         // add application to translation
