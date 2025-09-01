@@ -56,7 +56,7 @@
     <bpmn:sequenceFlow id="Flow_0xb4xrg" name="No" sourceRef="Gateway_0pc8yx4" targetRef="GenerateCoSCDocument">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!sendDetailsToCJES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1xfttkv" name="Yes" sourceRef="Gateway_0pc8yx4" targetRef="SendJudgmentDetailsCJES">
+    <bpmn:sequenceFlow id="Flow_1xfttkv" name="Yes" sourceRef="Gateway_0pc8yx4" targetRef="Gateway_1hewg7r">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendDetailsToCJES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="SendJudgmentDetailsCJES" name="Send Judgment Details to CJES" camunda:type="external" camunda:topic="processCaseEvent">
@@ -65,7 +65,7 @@
           <camunda:inputParameter name="caseEvent">SEND_JUDGMENT_DETAILS_CJES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1xfttkv</bpmn:incoming>
+      <bpmn:incoming>Flow_0vmzevg</bpmn:incoming>
       <bpmn:outgoing>Flow_11c1g3g</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="DefendantDashboardNotificationCertificateGenerated" name="Defendant Dashboard Notification Certificate Generated" camunda:type="external" camunda:topic="processCaseEvent">
@@ -86,6 +86,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0xb4xrg</bpmn:incoming>
       <bpmn:incoming>Flow_11c1g3g</bpmn:incoming>
+      <bpmn:incoming>Flow_0bgzmdf</bpmn:incoming>
       <bpmn:outgoing>Flow_1juthvt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1juthvt" sourceRef="GenerateCoSCDocument" targetRef="DefendantDashboardNotificationCertificateGenerated" />
@@ -111,6 +112,17 @@
     <bpmn:sequenceFlow id="JoOnlineDisabled" name="Jo Live Feed Disabled" sourceRef="Gateway_0jn0zxa" targetRef="Activity_0471ljz">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1hewg7r">
+      <bpmn:incoming>Flow_1xfttkv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vmzevg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0bgzmdf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0vmzevg" name="CJES Service Enabled" sourceRef="Gateway_1hewg7r" targetRef="SendJudgmentDetailsCJES">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_CJES_SERVICE_ENABLED &amp;&amp; flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0bgzmdf" name="CJES Service Disabled" sourceRef="Gateway_1hewg7r" targetRef="GenerateCoSCDocument">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_CJES_SERVICE_ENABLED || !flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_1jdkgsi">
       <bpmn:text>PROCESS_COSC_APPLICATION</bpmn:text>
     </bpmn:textAnnotation>
@@ -125,74 +137,6 @@
   <bpmn:message id="Message_1ysab1l" name="Message_19rb2d5" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PROCESS_COSC_APPLICATION_PROCESS_ID">
-      <bpmndi:BPMNEdge id="Flow_0an2om7_di" bpmnElement="JoOnlineDisabled">
-        <di:waypoint x="1285" y="210" />
-        <di:waypoint x="1480" y="210" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1299" y="176" width="63" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ce0pyb_di" bpmnElement="Flow_1ce0pyb">
-        <di:waypoint x="1460" y="90" />
-        <di:waypoint x="1530" y="90" />
-        <di:waypoint x="1530" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0k7pan7_di" bpmnElement="JoOnlineEnabled">
-        <di:waypoint x="1260" y="185" />
-        <di:waypoint x="1260" y="90" />
-        <di:waypoint x="1360" y="90" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1271" y="56" width="63" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11c1g3g_di" bpmnElement="Flow_11c1g3g">
-        <di:waypoint x="930" y="390" />
-        <di:waypoint x="1010" y="390" />
-        <di:waypoint x="1010" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1juthvt_di" bpmnElement="Flow_1juthvt">
-        <di:waypoint x="1060" y="210" />
-        <di:waypoint x="1110" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14mr64s_di" bpmnElement="Flow_14mr64s">
-        <di:waypoint x="1210" y="210" />
-        <di:waypoint x="1235" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xfttkv_di" bpmnElement="Flow_1xfttkv">
-        <di:waypoint x="730" y="235" />
-        <di:waypoint x="730" y="390" />
-        <di:waypoint x="830" y="390" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="737" y="319" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xb4xrg_di" bpmnElement="Flow_0xb4xrg">
-        <di:waypoint x="755" y="210" />
-        <di:waypoint x="960" y="210" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="802" y="192" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18kikyy_di" bpmnElement="Flow_18kikyy">
-        <di:waypoint x="660" y="210" />
-        <di:waypoint x="705" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
-        <di:waypoint x="440" y="149" />
-        <di:waypoint x="440" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_1a5jsca">
-        <di:waypoint x="490" y="210" />
-        <di:waypoint x="560" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_0x2wz2">
-        <di:waypoint x="1580" y="210" />
-        <di:waypoint x="1632" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_116h4jr">
-        <di:waypoint x="338" y="210" />
-        <di:waypoint x="390" y="210" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0vk0w99_di" bpmnElement="Event_0vk0w88">
         <dc:Bounds x="302" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -217,9 +161,6 @@
       <bpmndi:BPMNShape id="Gateway_0pc8yx4_di" bpmnElement="Gateway_0pc8yx4" isMarkerVisible="true">
         <dc:Bounds x="705" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_06kis6x_di" bpmnElement="SendJudgmentDetailsCJES">
-        <dc:Bounds x="830" y="350" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_163l4ja_di" bpmnElement="DefendantDashboardNotificationCertificateGenerated">
         <dc:Bounds x="1110" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -239,12 +180,85 @@
       <bpmndi:BPMNShape id="TextAnnotation_05s03a1_di" bpmnElement="TextAnnotation_05s03a1">
         <dc:Bounds x="760" y="100" width="100" height="40" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06kis6x_di" bpmnElement="SendJudgmentDetailsCJES">
+        <dc:Bounds x="830" y="470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1hewg7r_di" bpmnElement="Gateway_1hewg7r" isMarkerVisible="true">
+        <dc:Bounds x="705" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
         <dc:Bounds x="422" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="456" y="130" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_116h4jn_di" bpmnElement="Flow_116h4jr">
+        <di:waypoint x="338" y="210" />
+        <di:waypoint x="390" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x2wz2v_di" bpmnElement="Flow_0x2wz2">
+        <di:waypoint x="1580" y="210" />
+        <di:waypoint x="1632" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a5jscb_di" bpmnElement="Flow_1a5jsca">
+        <di:waypoint x="490" y="210" />
+        <di:waypoint x="560" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0ic2q_di" bpmnElement="Flow_1y0ic2q">
+        <di:waypoint x="440" y="149" />
+        <di:waypoint x="440" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18kikyy_di" bpmnElement="Flow_18kikyy">
+        <di:waypoint x="660" y="210" />
+        <di:waypoint x="705" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xb4xrg_di" bpmnElement="Flow_0xb4xrg">
+        <di:waypoint x="755" y="210" />
+        <di:waypoint x="960" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="802" y="176" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xfttkv_di" bpmnElement="Flow_1xfttkv">
+        <di:waypoint x="730" y="235" />
+        <di:waypoint x="730" y="325" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="741" y="263" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14mr64s_di" bpmnElement="Flow_14mr64s">
+        <di:waypoint x="1210" y="210" />
+        <di:waypoint x="1235" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1juthvt_di" bpmnElement="Flow_1juthvt">
+        <di:waypoint x="1060" y="210" />
+        <di:waypoint x="1110" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11c1g3g_di" bpmnElement="Flow_11c1g3g">
+        <di:waypoint x="930" y="510" />
+        <di:waypoint x="1010" y="510" />
+        <di:waypoint x="1010" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k7pan7_di" bpmnElement="JoOnlineEnabled">
+        <di:waypoint x="1260" y="185" />
+        <di:waypoint x="1260" y="90" />
+        <di:waypoint x="1360" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1271" y="56" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ce0pyb_di" bpmnElement="Flow_1ce0pyb">
+        <di:waypoint x="1460" y="90" />
+        <di:waypoint x="1530" y="90" />
+        <di:waypoint x="1530" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0an2om7_di" bpmnElement="JoOnlineDisabled">
+        <di:waypoint x="1285" y="210" />
+        <di:waypoint x="1480" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1299" y="176" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0ct49aq_di" bpmnElement="Association_0ct49aq">
         <di:waypoint x="308" y="197" />
         <di:waypoint x="228" y="115" />
@@ -252,6 +266,22 @@
       <bpmndi:BPMNEdge id="Association_1b5e6or_di" bpmnElement="Association_1b5e6or">
         <di:waypoint x="741" y="196" />
         <di:waypoint x="789" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vmzevg_di" bpmnElement="Flow_0vmzevg">
+        <di:waypoint x="730" y="375" />
+        <di:waypoint x="730" y="510" />
+        <di:waypoint x="830" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="736" y="466" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bgzmdf_di" bpmnElement="Flow_0bgzmdf">
+        <di:waypoint x="755" y="350" />
+        <di:waypoint x="990" y="350" />
+        <di:waypoint x="990" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="776" y="356" width="68" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

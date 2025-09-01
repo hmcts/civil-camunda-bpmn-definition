@@ -5,22 +5,20 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class BundleCreationNotificationTest extends BpmnBaseTest {
+class ClaimantResponseFullAdmitPayImmediatelyCCJTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "BUNDLE_CREATION_NOTIFICATION";
-    public static final String PROCESS_ID = "BUNDLE_CREATION_NOTIFICATION";
+    public static final String MESSAGE_NAME = "CLAIMANT_RESPONSE_FA_IMMEDIATE_CCJ";
+    public static final String PROCESS_ID = "CLAIMANT_RESPONSE_FA_IMMEDIATE_CCJ";
 
-    public BundleCreationNotificationTest() {
-        super("bundle_creation_notification.bpmn", "BUNDLE_CREATION_NOTIFICATION");
+    public ClaimantResponseFullAdmitPayImmediatelyCCJTest() {
+        super("claimant_response_full_admit_immediate_ccj.bpmn", "CLAIMANT_RESPONSE_FA_IMMEDIATE_CCJ");
     }
 
     @Test
-    void shouldSuccessfullyCompleteBundleCreatedMultiparty() {
+    void shouldSuccessfullyCompleteTrialReadyMultiparty() {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -29,10 +27,6 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -44,28 +38,12 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification for all parties
+        //complete the notification for claimant 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                                    PROCESS_CASE_EVENT,
-                                   "NOTIFY_EVENT",
-                                   "BundleCreationNotify"
-        );
-
-        //complete the Dashboard creation for defendant
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(defendantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
-                                   "CreateBundleCreatedDashboardNotificationsForDefendant1"
-        );
-
-        //complete the Dashboard creation for claimant
-        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
-                                   "CreateBundleCreatedDashboardNotificationsForClaimant1"
+                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_FA_IMMEDIATE_CCJ",
+                                   "GenerateClaimantDashboardNotificationFAPayImmediatelyCCJ"
         );
 
         //end business process

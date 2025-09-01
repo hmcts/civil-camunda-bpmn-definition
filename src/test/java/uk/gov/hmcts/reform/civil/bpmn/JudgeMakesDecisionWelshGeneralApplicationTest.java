@@ -8,26 +8,32 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBaseGASpecTest {
+public class JudgeMakesDecisionWelshGeneralApplicationTest extends BpmnBaseGASpecTest {
 
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
+    private static final String PROCESS_ID = "GA_MAKE_DECISION_PROCESS_ID";
+    private static final String WELSH_ENABLED_FOR_JUDGE_DECISION = "WELSH_ENABLED_FOR_JUDGE_DECISION";
+    private static final String MESSAGE_NAME = "MAKE_DECISION";
+    public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
+    public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
+    public static final String PROCESS_EXTERNAL_CASE_EVENT = "processExternalCaseEventGASpec";
     public static final String APPLICATION_PROCESS_CASE_EVENT = "applicationProcessCaseEventGASpec";
-    private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
-    private static final String WELSH_ENABLED = "WELSH_ENABLED";
-    private static final String ASSIGNIN_OF_ROLES_EVENT = "ASSIGN_GA_ROLES";
-    private static final String ASSIGNIN_OF_ROLES_ID = "AssigningOfRoles";
-    private static final String GENERATE_DRAFT_DOCUMENT = "GENERATE_DRAFT_DOCUMENT";
-    private static final String GENERATE_DRAFT_DOCUMENT_ID = "GenerateDraftDocumentId";
-    private static final String DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION
-        = "DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION";
+    //Obtain Additional fee value
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_EVENT = "OBTAIN_ADDITIONAL_FEE_VALUE";
+    private static final String OBTAIN_ADDITIONAL_FEE_VALUE_ID = "ObtainAdditionalFeeValue";
+    //Obtain fee reference
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT = "OBTAIN_ADDITIONAL_PAYMENT_REF";
+    private static final String OBTAIN_ADDIIONAL_FEE_REFERENCE_ID = "ObtainAdditionalPaymentReference";
+    //Create PDF
+    private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
+    private static final String CREATE_PDF_ID = "CreatePDFDocument";
 
-    private static final String DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-        = "DeletePaymentDashboardNotification";
-
-    public InitiateGeneralApplicationAfterPaymentForWelshTest() {
-        super("initiate_general_application_after_payment.bpmn", "GA_INITIATE_AFTER_PAYMENT_PROCESS_ID");
+    public JudgeMakesDecisionWelshGeneralApplicationTest() {
+        super("judge_makes_decision_general_application.bpmn", "GA_MAKE_DECISION_PROCESS_ID");
     }
 
     @BeforeEach
@@ -58,27 +64,39 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
     void shouldPauseNotificationAndStateChangeForWelshApplication() {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            WELSH_ENABLED, "true"));
+            WELSH_ENABLED_FOR_JUDGE_DECISION, "true"));
 
         //assert process has started
         assertFalse(processInstance.isEnded());
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
             startBusiness,
             START_BUSINESS_TOPIC,
-            START_GA_BUSINESS_EVENT,
-            START_GA_BUSINESS_ACTIVITY,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+        //Obtain Additional Fee Value
+        ExternalTask additionalFeeValueProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            additionalFeeValueProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            OBTAIN_ADDITIONAL_FEE_VALUE_EVENT,
+            OBTAIN_ADDITIONAL_FEE_VALUE_ID,
             variables
         );
 
-        //assigne of roles
-        ExternalTask assignRoles = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        //Obtain Additional Payment Reference
+        ExternalTask additionalPaymentRefProcess = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            assignRoles,
-            APPLICATION_PROCESS_CASE_EVENT,
-            ASSIGNIN_OF_ROLES_EVENT,
-            ASSIGNIN_OF_ROLES_ID,
+            additionalPaymentRefProcess,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_EVENT,
+            OBTAIN_ADDIIONAL_FEE_REFERENCE_ID,
             variables
         );
 
@@ -87,18 +105,9 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
         assertCompleteExternalTask(
             documentGeneration,
             APPLICATION_PROCESS_CASE_EVENT,
-            GENERATE_DRAFT_DOCUMENT,
-            GENERATE_DRAFT_DOCUMENT_ID,
+            CREATE_PDF_EVENT,
+            CREATE_PDF_ID,
             variables
-        );
-
-        //Delete payment notification
-        ExternalTask deletePaymentNotification = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            deletePaymentNotification,
-            APPLICATION_PROCESS_CASE_EVENT,
-            DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION,
-            DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process

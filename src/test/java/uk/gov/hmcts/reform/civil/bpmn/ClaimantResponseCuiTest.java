@@ -697,6 +697,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
             JO_ONLINE_LIVE_ENABLED, true,
+            IS_CJES_SERVICE_ENABLED, true,
             IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
         ));
         assertCompleteExternalTask(
@@ -738,6 +739,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
             JO_ONLINE_LIVE_ENABLED, true,
+            IS_CJES_SERVICE_ENABLED, true,
             IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
         ));
         assertCompleteExternalTask(
@@ -779,6 +781,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
             JO_ONLINE_LIVE_ENABLED, true,
+            IS_CJES_SERVICE_ENABLED, false,
             IS_JO_LIVE_FEED_ACTIVE, isRpaLiveFeed
         ));
         assertCompleteExternalTask(
@@ -791,7 +794,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionPdf();
         notifyPartiesClaimantConfirmsToProceed();
         updateClaimantClaimState();
-        sendJudgmentToCjesService();
         generateJudgmentByAdmissionClaimantDocument();
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
@@ -820,6 +822,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             LIP_JUDGMENT_ADMISSION, true,
             CLAIM_ISSUE_BILINGUAL, false,
             JO_ONLINE_LIVE_ENABLED, true,
+            IS_CJES_SERVICE_ENABLED, true,
             DEFENDANT_NOC_ONLINE, defendantNocOnline
         ));
         assertCompleteExternalTask(
