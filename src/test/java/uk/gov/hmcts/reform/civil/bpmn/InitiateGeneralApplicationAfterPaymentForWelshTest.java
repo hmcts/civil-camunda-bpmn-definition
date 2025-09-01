@@ -92,15 +92,6 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             variables
         );
 
-        //Delete payment notification
-        ExternalTask deletePaymentNotification = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            deletePaymentNotification,
-            APPLICATION_PROCESS_CASE_EVENT,
-            DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION,
-            DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-        );
-
         // add application to translation
         ExternalTask applicationToTranslationSection = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -110,6 +101,16 @@ public class InitiateGeneralApplicationAfterPaymentForWelshTest extends BpmnBase
             "applicationTranslationCollectionId",
             variables
         );
+
+        //Delete payment notification
+        ExternalTask deletePaymentNotification = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            deletePaymentNotification,
+            APPLICATION_PROCESS_CASE_EVENT,
+            DELETE_APPLICATION_PAYMENT_DASHBOARD_NOTIFICATION,
+            DELETE_PAYMENT_DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcessForGADocUpload(endBusinessProcess);
