@@ -24,7 +24,6 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_08i1zph</bpmn:incoming>
-      <bpmn:incoming>Flow_1tfnjks</bpmn:incoming>
       <bpmn:outgoing>Flow_1ew3g5l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_1adcwon">
@@ -65,7 +64,7 @@
       <bpmn:incoming>Flow_0hcqnfz</bpmn:incoming>
       <bpmn:outgoing>Flow_0mjjy8b</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0mjjy8b" sourceRef="ServiceRequestAPI" targetRef="Gateway_013w7to" />
+    <bpmn:sequenceFlow id="Flow_0mjjy8b" sourceRef="ServiceRequestAPI" targetRef="GenerateDashboardNotificationHearingScheduledClaimant" />
     <bpmn:exclusiveGateway id="Gateway_19x9cv2">
       <bpmn:incoming>Flow_1vl7r09</bpmn:incoming>
       <bpmn:incoming>Flow_06odvfg</bpmn:incoming>
@@ -73,10 +72,10 @@
       <bpmn:outgoing>Flow_0zrk7ig</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_05en6qt" name="LR defendant" sourceRef="Gateway_19x9cv2" targetRef="HearingNoticeGeneratorNotifier">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)  || empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0zrk7ig" name="Lip defendant and Case Progression CUI Enabled" sourceRef="Gateway_19x9cv2" targetRef="SendHearingToDefendantLIP">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_0zrk7ig" name="Lip defendant" sourceRef="Gateway_19x9cv2" targetRef="SendHearingToDefendantLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_06dx72c" sourceRef="SendHearingToDefendantLIP" targetRef="HearingNoticeGeneratorNotifier" />
     <bpmn:serviceTask id="SendHearingToDefendantLIP" name="Trigger Bulk Print Defendant" camunda:type="external" camunda:topic="processCaseEvent">
@@ -94,7 +93,7 @@
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1uy4bb9</bpmn:incoming>
+      <bpmn:incoming>Flow_0mjjy8b</bpmn:incoming>
       <bpmn:outgoing>Flow_1tzlguk</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1tzlguk" sourceRef="GenerateDashboardNotificationHearingScheduledClaimant" targetRef="GenerateDashboardNotificationHearingScheduledDefendant" />
@@ -108,17 +107,6 @@
       <bpmn:outgoing>Flow_08i1zph</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_08i1zph" sourceRef="GenerateDashboardNotificationHearingScheduledDefendant" targetRef="Activity_072j7li" />
-    <bpmn:exclusiveGateway id="Gateway_013w7to">
-      <bpmn:incoming>Flow_0mjjy8b</bpmn:incoming>
-      <bpmn:outgoing>Flow_1uy4bb9</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1tfnjks</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1uy4bb9" name="Case Progression CUI Enabled" sourceRef="Gateway_013w7to" targetRef="GenerateDashboardNotificationHearingScheduledClaimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1tfnjks" name="Case Progression CUI Disabled" sourceRef="Gateway_013w7to" targetRef="Activity_072j7li">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0as7ets">
       <bpmn:incoming>Flow_0uo8t7q</bpmn:incoming>
       <bpmn:outgoing>Flow_1bktxtt</bpmn:outgoing>
@@ -133,8 +121,8 @@
       <bpmn:incoming>Flow_1bktxtt</bpmn:incoming>
       <bpmn:outgoing>Flow_06odvfg</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1bktxtt" name="LiP Claimant and Case Progression CUI Enabled" sourceRef="Gateway_0as7ets" targetRef="SendHearingToClaimantLIP">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE &amp;&amp; !empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_1bktxtt" name="LiP Claimant" sourceRef="Gateway_0as7ets" targetRef="SendHearingToClaimantLIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1vl7r09" name="LR claimant" sourceRef="Gateway_0as7ets" targetRef="Gateway_19x9cv2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)}</bpmn:conditionExpression>
@@ -196,14 +184,8 @@ claimant ?</bpmn:text>
       <bpmndi:BPMNShape id="Gateway_19x9cv2_di" bpmnElement="Gateway_19x9cv2" isMarkerVisible="true">
         <dc:Bounds x="725" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="GenerateClaimantDashboardNotificationDefendantResponse_di" bpmnElement="GenerateDashboardNotificationHearingScheduledClaimant">
-        <dc:Bounds x="1670" y="197" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04qy3ga_di" bpmnElement="GenerateDashboardNotificationHearingScheduledDefendant">
-        <dc:Bounds x="1810" y="197" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_013w7to_di" bpmnElement="Gateway_013w7to" isMarkerVisible="true">
-        <dc:Bounds x="1545" y="212" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_1v005o3_di" bpmnElement="SendHearingToDefendantLIP">
+        <dc:Bounds x="700" y="490" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_12kprud" bpmnElement="Gateway_0as7ets" isMarkerVisible="true">
         <dc:Bounds x="555" y="212" width="50" height="50" />
@@ -218,8 +200,11 @@ claimant ?</bpmn:text>
           <dc:Bounds x="464" y="182" width="64" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1v005o3_di" bpmnElement="SendHearingToDefendantLIP">
-        <dc:Bounds x="700" y="490" width="100" height="80" />
+      <bpmndi:BPMNShape id="GenerateClaimantDashboardNotificationDefendantResponse_di" bpmnElement="GenerateDashboardNotificationHearingScheduledClaimant">
+        <dc:Bounds x="1600" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04qy3ga_di" bpmnElement="GenerateDashboardNotificationHearingScheduledDefendant">
+        <dc:Bounds x="1780" y="197" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1ekyudw_di" bpmnElement="TextAnnotation_1ekyudw">
         <dc:Bounds x="700" y="120" width="100" height="41" />
@@ -257,7 +242,7 @@ claimant ?</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mjjy8b_di" bpmnElement="Flow_0mjjy8b">
         <di:waypoint x="1500" y="237" />
-        <di:waypoint x="1545" y="237" />
+        <di:waypoint x="1600" y="237" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05en6qt_di" bpmnElement="Flow_05en6qt">
         <di:waypoint x="775" y="237" />
@@ -270,7 +255,7 @@ claimant ?</bpmn:text>
         <di:waypoint x="750" y="262" />
         <di:waypoint x="750" y="490" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="765" y="353" width="81" height="53" />
+          <dc:Bounds x="772" y="353" width="67" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06dx72c_di" bpmnElement="Flow_06dx72c">
@@ -279,34 +264,18 @@ claimant ?</bpmn:text>
         <di:waypoint x="1080" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tzlguk_di" bpmnElement="Flow_1tzlguk">
-        <di:waypoint x="1770" y="237" />
-        <di:waypoint x="1810" y="237" />
+        <di:waypoint x="1700" y="237" />
+        <di:waypoint x="1780" y="237" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08i1zph_di" bpmnElement="Flow_08i1zph">
-        <di:waypoint x="1910" y="237" />
+        <di:waypoint x="1880" y="237" />
         <di:waypoint x="1980" y="237" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1uy4bb9_di" bpmnElement="Flow_1uy4bb9">
-        <di:waypoint x="1595" y="237" />
-        <di:waypoint x="1670" y="237" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1590" y="246" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tfnjks_di" bpmnElement="Flow_1tfnjks">
-        <di:waypoint x="1570" y="212" />
-        <di:waypoint x="1570" y="90" />
-        <di:waypoint x="2030" y="90" />
-        <di:waypoint x="2030" y="197" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1589" y="96" width="88" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bktxtt_di" bpmnElement="Flow_1bktxtt">
         <di:waypoint x="580" y="262" />
         <di:waypoint x="580" y="490" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="492" y="350" width="88" height="40" />
+          <dc:Bounds x="505" y="350" width="63" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vl7r09_di" bpmnElement="Flow_1vl7r09">

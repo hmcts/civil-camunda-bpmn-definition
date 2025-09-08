@@ -57,7 +57,6 @@ public class StayCaseTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
             DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true,
             TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives
         ));
 

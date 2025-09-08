@@ -29,56 +29,56 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true));
+        variables.put("flowFlags", Map.of());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
         );
 
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationClaimant",
-            variables
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
         );
 
         //complete the dashboard notification for Respondent
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationDefendant",
-            variables
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -98,36 +98,56 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false));
+        variables.put("flowFlags", Map.of());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
+        );
+
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -147,50 +167,69 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
-                                          LIP_CASE, true,
-                                          WELSH_ENABLED, true,
-                                          UNREPRESENTED_DEFENDANT_ONE, false
+        variables.put("flowFlags", Map.of(LIP_CASE, true,
+                WELSH_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, false
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendBulkPrintForClaimant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
-            "SendDORToClaimantLIP",
-            variables
+                sendBulkPrintForClaimant,
+                PROCESS_CASE_EVENT,
+                "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
+                "SendDORToClaimantLIP",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
+        );
+
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -210,40 +249,59 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
-                                          LIP_CASE, true,
-                                          WELSH_ENABLED, false,
-                                          UNREPRESENTED_DEFENDANT_ONE, false
+        variables.put("flowFlags", Map.of(LIP_CASE, true,
+                WELSH_ENABLED, false,
+                UNREPRESENTED_DEFENDANT_ONE, false
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
+        );
+
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -263,131 +321,69 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
-                                          LIP_CASE, false,
-                                          WELSH_ENABLED, true,
-                                          UNREPRESENTED_DEFENDANT_ONE, true
+        variables.put("flowFlags", Map.of(LIP_CASE, false,
+                WELSH_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendBulkPrintForDefendant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_DEFENDANT",
-            "SendToDefendantLIP",
-            variables
+                sendBulkPrintForDefendant,
+                PROCESS_CASE_EVENT,
+                "SEND_DRO_ORDER_TO_LIP_DEFENDANT",
+                "SendToDefendantLIP",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
         );
 
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationClaimant",
-            variables
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
         );
 
         //complete the dashboard notification for Respondent
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationDefendant",
-            variables
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyTriggerBulkPrintForOnlyDefendantWithoutDashboardEvents() {
-
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(UNREPRESENTED_DEFENDANT_ONE, true,
-                                          WELSH_ENABLED, true
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
-        );
-
-        //complete trigger Bulk Print for Claimant
-        ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendBulkPrintForDefendant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_DEFENDANT",
-            "SendToDefendantLIP",
-            variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -408,37 +404,57 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(UNREPRESENTED_DEFENDANT_ONE, true,
-                                          WELSH_ENABLED, false
+                WELSH_ENABLED, false
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
+        );
+
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -458,80 +474,79 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
-                                          LIP_CASE, true,
-                                          WELSH_ENABLED, true,
-                                          UNREPRESENTED_DEFENDANT_ONE, true
+        variables.put("flowFlags", Map.of(LIP_CASE, true,
+                WELSH_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, true
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendBulkPrintForClaimant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
-            "SendDORToClaimantLIP",
-            variables
+                sendBulkPrintForClaimant,
+                PROCESS_CASE_EVENT,
+                "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
+                "SendDORToClaimantLIP",
+                variables
         );
 
         //complete trigger Bulk Print for Defendant
         ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendBulkPrintForDefendant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_DEFENDANT",
-            "SendToDefendantLIP",
-            variables
+                sendBulkPrintForDefendant,
+                PROCESS_CASE_EVENT,
+                "SEND_DRO_ORDER_TO_LIP_DEFENDANT",
+                "SendToDefendantLIP",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
         );
 
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationClaimant",
-            variables
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
         );
 
         //complete the dashboard notification for Respondent
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationDefendant",
-            variables
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -551,69 +566,68 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, true,
-                                          LIP_CASE, true,
-                                          WELSH_ENABLED, true
+        variables.put("flowFlags", Map.of(LIP_CASE, true,
+                WELSH_ENABLED, true
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            sendBulkPrintForDefendant,
-            PROCESS_CASE_EVENT,
-            "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
-            "SendDORToClaimantLIP",
-            variables
+                sendBulkPrintForDefendant,
+                PROCESS_CASE_EVENT,
+                "SEND_DRO_ORDER_TO_LIP_CLAIMANT",
+                "SendDORToClaimantLIP",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
         );
 
         //complete the dashboard notification for Claimant
         ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationClaimant",
-            variables
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
         );
 
         //complete the dashboard notification for Respondent
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentDashboardNotification,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
-            "GenerateDashboardNotificationDecisionReconsiderationDefendant",
-            variables
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process
@@ -633,40 +647,59 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(CASE_PROGRESSION_ENABLED, false,
-                                          LIP_CASE, false,
-                                          WELSH_ENABLED, true,
-                                          UNREPRESENTED_DEFENDANT_ONE, false
-                                          ));
+        variables.put("flowFlags", Map.of(LIP_CASE, false,
+                WELSH_ENABLED, true,
+                UNREPRESENTED_DEFENDANT_ONE, false
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification to Claimant
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-            "Activity_0nyrqab",
-            variables
+                respondentNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
+                "Activity_0nyrqab",
+                variables
         );
 
         //complete the notification to Respondent
         ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-            "Activity_0txb7dk",
-            variables
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
+                "Activity_0txb7dk",
+                variables
+        );
+
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                claimantDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
+                variables
         );
 
         //end business process

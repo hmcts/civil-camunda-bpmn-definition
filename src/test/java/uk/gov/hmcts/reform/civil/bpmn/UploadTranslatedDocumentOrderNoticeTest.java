@@ -41,8 +41,7 @@ class UploadTranslatedDocumentOrderNoticeTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             UNREPRESENTED_DEFENDANT_ONE, lipDefendant,
             LIP_CASE, lipClaimant,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true
+            DASHBOARD_SERVICE_ENABLED, true
         ));
 
         //complete the start business process
