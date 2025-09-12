@@ -28,6 +28,8 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationJudgementByAdmissionClaimant";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER_ID = "PostClaimantLIPJBALetter";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER = "POST_CLAIMANT_LIP_JBA_LETTER";
 
     public RequestNonDivergentJudgmentByAdmissionTest() {
         super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -141,6 +143,15 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
                 variables
             );
         }
+
+        ExternalTask notifyRPAFeed = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRPAFeed,
+            PROCESS_CASE_EVENT,
+            POST_CLAIMANT_LIP_JBA_LETTER,
+            POST_CLAIMANT_LIP_JBA_LETTER_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
