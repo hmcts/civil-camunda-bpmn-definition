@@ -31,7 +31,6 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     private static final String POST_CLAIMANT_LIP_JBA_LETTER_ID = "PostClaimantLIPJBALetter";
     private static final String POST_CLAIMANT_LIP_JBA_LETTER = "POST_CLAIMANT_LIP_JBA_LETTER";
 
-
     public RequestNonDivergentJudgmentByAdmissionTest() {
         super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
     }
