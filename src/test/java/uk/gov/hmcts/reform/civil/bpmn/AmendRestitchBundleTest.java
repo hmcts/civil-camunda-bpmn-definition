@@ -25,15 +25,15 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     private static final String NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID = "AmendRestitchBundleNotify";
 
     public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT
-        = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
+            = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT
-        = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT";
+            = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID
-        = "CreateAmendRestitchBundleDashboardNotificationsForClaimant";
+            = "CreateAmendRestitchBundleDashboardNotificationsForClaimant";
     private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID
-        = "CreateAmendRestitchBundleDashboardNotificationsForDefendant";
+            = "CreateAmendRestitchBundleDashboardNotificationsForDefendant";
 
     public AmendRestitchBundleTest() {
         super("amend_restitch_bundle.bpmn", PROCESS_ID);
@@ -41,24 +41,24 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
     private static Stream<Arguments> provideArgumentSource() {
         return Stream.of(
-            Arguments.of(
-                true, false
-            ),
-            Arguments.of(
-                false, false
-            ),
-            Arguments.of(
-                true, true
-            ),
-            Arguments.of(
-                false, true
-            )
+                Arguments.of(
+                        true, false
+                ),
+                Arguments.of(
+                        false, false
+                ),
+                Arguments.of(
+                        true, true
+                ),
+                Arguments.of(
+                        false, true
+                )
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideArgumentSource")
-    void shouldSuccessfullyCompleteAmendRestitchBundle(boolean caseProgressionEnabled, boolean twoRespondents) {
+    void shouldSuccessfullyCompleteAmendRestitchBundle(boolean twoRespondents) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -67,17 +67,16 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, caseProgressionEnabled,
-            ONE_RESPONDENT_REPRESENTATIVE, !twoRespondents,
-            TWO_RESPONDENT_REPRESENTATIVES, twoRespondents
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                DASHBOARD_SERVICE_ENABLED, true,
+                ONE_RESPONDENT_REPRESENTATIVE, !twoRespondents,
+                TWO_RESPONDENT_REPRESENTATIVES, twoRespondents
         ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
+                START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables
         );
 
         ExternalTask notificationTask;
@@ -85,28 +84,26 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_EVENT,
-                                   NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
-                                   variables
+                NOTIFY_EVENT,
+                NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID,
+                variables
         );
 
-        if (caseProgressionEnabled) {
-            //complete the claimant dashboard notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
-                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
-                                       variables
-            );
+        //complete the claimant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
+                variables
+        );
 
-            //complete the defendant dashboard notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
-                                       CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
-                                       variables
-            );
-        }
+        //complete the defendant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
+                variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

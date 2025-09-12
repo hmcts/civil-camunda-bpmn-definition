@@ -30,42 +30,41 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification for all parties
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_EVENT",
-                                   "BundleCreationNotify"
+                PROCESS_CASE_EVENT,
+                "NOTIFY_EVENT",
+                "BundleCreationNotify"
         );
 
         //complete the Dashboard creation for defendant
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(defendantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
-                                   "CreateBundleCreatedDashboardNotificationsForDefendant1"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
+                "CreateBundleCreatedDashboardNotificationsForDefendant1"
         );
 
         //complete the Dashboard creation for claimant
         ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantDashboard,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
-                                   "CreateBundleCreatedDashboardNotificationsForClaimant1"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
+                "CreateBundleCreatedDashboardNotificationsForClaimant1"
         );
 
         //end business process
