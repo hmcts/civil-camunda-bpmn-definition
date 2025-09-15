@@ -28,10 +28,9 @@ jobs:
 
     - name: Check BPMN processes have camunda:historyTimeToLive
       run: |
-          for file in src/main/resources/camunda/*.bpmn;
-          do
-            if ! yq -r -p xml '.["bpmn:definitions"]["bpmn:process"]["@camunda:historyTimeToLive"]' "$file"; then
-              echo "Process $file does not have camunda:historyTimeToLive attribute" >&2
-              exit 1
-            fi
-          done
+        export missing_files=$(grep -L 'historyTimeToLive' src/main/resources/camunda/*.bpmn)
+        if [ -n "$missing_files" ]; then
+          echo "The following BPMN files are missing 'historyTimeToLive':" >&2;
+          echo "$missing_files" >&2;
+          exit 1;
+        fi
