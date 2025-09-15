@@ -297,7 +297,6 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.putValue(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             UNREPRESENTED_DEFENDANT_ONE, false,
             DASHBOARD_SERVICE_ENABLED, true,
             LIP_CASE, false,

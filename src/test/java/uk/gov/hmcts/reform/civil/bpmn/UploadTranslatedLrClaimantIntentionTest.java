@@ -80,6 +80,25 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the GA events
+        ExternalTask updateGaStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateGaStatus,
+            PROCESS_CASE_EVENT,
+            "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE",
+            "UpdateGeneralApplicationStatus1",
+            variables
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            "APPLICATION_OFFLINE_UPDATE_CLAIM",
+            "UpdateClaimWithApplicationStatus1"
+        );
+
         //complete the notification to respondent
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -97,6 +116,14 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
+        );
+
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
         );
         createDefendantDashboardNotification();
 
@@ -147,6 +174,25 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
+        //complete the GA events
+        ExternalTask updateGaStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateGaStatus,
+            PROCESS_CASE_EVENT,
+            "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE",
+            "UpdateGeneralApplicationStatus1",
+            variables
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            "APPLICATION_OFFLINE_UPDATE_CLAIM",
+            "UpdateClaimWithApplicationStatus1"
+        );
+
         //complete the notification to respondent
         ExternalTask notifyRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -164,6 +210,14 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
+        );
+
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
         );
         createDefendantDashboardNotification();
 
@@ -185,7 +239,6 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
-            GENERAL_APPLICATION_ENABLED, true,
             "SDO_ENABLED", true,
             DASHBOARD_SERVICE_ENABLED, true
         ));
@@ -276,7 +329,6 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
         variables.put(FLOW_FLAGS, Map.of(
             AGREED_TO_MEDIATION, false,
-            GENERAL_APPLICATION_ENABLED, true,
             "SDO_ENABLED", true,
             DASHBOARD_SERVICE_ENABLED, true
         ));
@@ -356,60 +408,6 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation() {
-
-        assertFalse(processInstance.isEnded());
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.IN_MEDIATION");
-        variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            DASHBOARD_SERVICE_ENABLED, true,
-            GENERAL_APPLICATION_ENABLED, false));
-
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        ExternalTask updateClaimState = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            updateClaimState,
-            PROCESS_CASE_EVENT,
-            UPDATE_CLAIM_STATE_EVENT,
-            UPDATE_CLAIM_STATE_EVENT_ACTIVITY_ID
-        );
-
-        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyParties,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            "ClaimantDefendantAgreedMediationNotify"
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
-        );
-        createDefendantDashboardNotification();
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
     void shouldSuccessfullyCompleteClaimantResponse_WhenInMediation1v2DifferentSol() {
 
         assertFalse(processInstance.isEnded());
@@ -455,6 +453,14 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
             variables
+        );
+
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
         );
 
         createDefendantDashboardNotification();

@@ -44,8 +44,7 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
                 ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
                 TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
-                UNREPRESENTED_DEFENDANT_ONE, false,
-                GENERAL_APPLICATION_ENABLED, false));
+                UNREPRESENTED_DEFENDANT_ONE, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -55,6 +54,24 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY,
                 variables
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
         //complete the RPA notification
@@ -94,8 +111,7 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
                 UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
-                UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-                GENERAL_APPLICATION_ENABLED, false
+                UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2
         ));
 
         //complete the start business process
@@ -106,6 +122,24 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
                 START_BUSINESS_EVENT,
                 START_BUSINESS_ACTIVITY,
                 variables
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID
         );
 
         //complete the RPA notification
@@ -146,7 +180,6 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
                 ONE_RESPONDENT_REPRESENTATIVE, !twoRepresentatives,
                 TWO_RESPONDENT_REPRESENTATIVES, twoRepresentatives,
                 UNREPRESENTED_DEFENDANT_ONE, false,
-                GENERAL_APPLICATION_ENABLED, true,
                 DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
@@ -248,7 +281,6 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
                 UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
                 UNREPRESENTED_DEFENDANT_TWO, unrepresentedDefendant2,
-                GENERAL_APPLICATION_ENABLED, true,
                 DASHBOARD_SERVICE_ENABLED, true
         ));
 
