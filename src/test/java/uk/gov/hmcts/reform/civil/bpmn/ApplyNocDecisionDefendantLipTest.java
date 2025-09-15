@@ -296,7 +296,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
-        
+
         //complete notify parties
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -461,7 +461,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             "UPDATE_CASE_DETAILS_AFTER_NOC",
             "UpdateCaseDetailsAfterNoC"
         );
-        
+
         //complete notify parties
         ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -548,8 +548,7 @@ public class ApplyNocDecisionDefendantLipTest extends BpmnBaseTest {
             LIP_CASE, true,
             DEFENDANT_NOC_ONLINE, true,
             JBA_ISSUED_BEFORE_NOC, true,
-            CLAIM_STATE_DURING_NOC, false,
-            GENERAL_APPLICATION_ENABLED, true));
+            CLAIM_STATE_DURING_NOC, false));
 
         //assert process has started
         assertFalse(processInstance.isEnded());

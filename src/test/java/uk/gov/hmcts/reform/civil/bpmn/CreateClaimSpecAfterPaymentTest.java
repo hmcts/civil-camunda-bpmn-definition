@@ -413,7 +413,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
             variables.put(FLOW_FLAGS, Map.of(
                     BULK_CLAIM_ENABLED, true,
                     LIP_CASE, true,
-                    GENERAL_APPLICATION_ENABLED, true,
                     UNREPRESENTED_DEFENDANT_ONE, true,
                     PIP_ENABLED, true,
                     DASHBOARD_SERVICE_ENABLED, true
@@ -527,7 +526,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
                 BULK_CLAIM_ENABLED, true,
                 LIP_CASE, true,
-                GENERAL_APPLICATION_ENABLED, true,
                 UNREPRESENTED_DEFENDANT_ONE, true,
                 PIP_ENABLED, true,
                 CLAIM_ISSUE_BILINGUAL, true,
