@@ -47,8 +47,6 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
 
-
-
     public UploadTranslatedDocumentGaFinalOrderTest() {
         super("upload_translated_document_ga_final_order.bpmn", "UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID");
     }
