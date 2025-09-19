@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tyi3u6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:message id="Message_1opqhjn" name="MAKE_DECISION" />
+  <bpmn:message id="Message_1lvd10f" name="UPLOAD_TRANSLATED_DOCUMENT_FINAL_ORDER" />
+  <bpmn:collaboration id="GenerateDirectionsOrder">
+    <bpmn:participant id="Participant_058zit7" name="Upload Translated Document Final Order" processRef="UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID" />
+  </bpmn:collaboration>
+  <bpmn:process id="UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID" name="GA generate directions order" isExecutable="true" camunda:historyTimeToLive="P90D">
+    <bpmn:sequenceFlow id="Flow_1bgft9o" sourceRef="respondentNotificationForOrderMadeByJudge" targetRef="BulkPrintOrderRespondent" />
+    <bpmn:sequenceFlow id="Flow_1yg2hgc" sourceRef="LinkDocumentToParentCase" targetRef="Gateway_0m4i6qo" />
+    <bpmn:sequenceFlow id="Flow_041g7uu" name="Yes" sourceRef="Gateway_0m4i6qo" targetRef="applicantNotificationForOrderMadeByJudge">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0t75ukk" name="No" sourceRef="Gateway_1wekfjk" targetRef="Activity_0sa4hmt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1u69kcw" name="Yes" sourceRef="Gateway_1wekfjk" targetRef="respondentNotificationForOrderMadeByJudge">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.LIP_RESPONDENT &amp;&amp; flowFlags.LIP_RESPONDENT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1yzn09e" sourceRef="applicantNotificationForOrderMadeByJudge" targetRef="BulkPrintOrderApplicant" />
+    <bpmn:sequenceFlow id="Flow_03vqbjk" name="No" sourceRef="Gateway_0m4i6qo" targetRef="Gateway_1wekfjk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1830oky" sourceRef="Activity_0sa4hmt" targetRef="Event_0tam17y" />
+    <bpmn:callActivity id="Activity_0vuxatn" name="Start Business Process" calledElement="GA_StartGeneralApplicationBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1karrfz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qchrvw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1u4hj3q</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1qchrvw" sourceRef="Activity_0vuxatn" targetRef="LinkDocumentToParentCase" />
+    <bpmn:boundaryEvent id="Event_0qc2eoy" name="Abort" attachedToRef="Activity_0vuxatn">
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_002mhpf" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_1s3ugpj">
+      <bpmn:incoming>Flow_1u4hj3q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1u4hj3q" sourceRef="Activity_0vuxatn" targetRef="Event_1s3ugpj" />
+    <bpmn:startEvent id="Event_0ks94xn" name="Start">
+      <bpmn:outgoing>Flow_1karrfz</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_117z71u" messageRef="Message_1lvd10f" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1karrfz" sourceRef="Event_0ks94xn" targetRef="Activity_0vuxatn" />
+    <bpmn:serviceTask id="LinkDocumentToParentCase" name="Link Document To Parent Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">ADD_PDF_TO_MAIN_CASE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qchrvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yg2hgc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0m4i6qo" name="LiP applicant ?">
+      <bpmn:incoming>Flow_1yg2hgc</bpmn:incoming>
+      <bpmn:outgoing>Flow_041g7uu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_03vqbjk</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0h108w3" sourceRef="BulkPrintOrderRespondent" targetRef="Activity_0sa4hmt" />
+    <bpmn:endEvent id="Event_0tam17y">
+      <bpmn:incoming>Flow_1830oky</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Activity_0sa4hmt" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0t75ukk</bpmn:incoming>
+      <bpmn:incoming>Flow_0h108w3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1830oky</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="BulkPrintOrderRespondent" name="Bulk Print Order Respondent" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bgft9o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h108w3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="respondentNotificationForOrderMadeByJudge" name="Create dashboard notification for respondent" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1u69kcw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bgft9o</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="applicantNotificationForOrderMadeByJudge" name="Create Dahsboard notification for applicant" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_041g7uu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yzn09e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1wekfjk" name="LiP respondent ?">
+      <bpmn:incoming>Flow_03vqbjk</bpmn:incoming>
+      <bpmn:incoming>Flow_08mashq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0t75ukk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1u69kcw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="BulkPrintOrderApplicant" name="Bulk Print Order Applicant" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yzn09e</bpmn:incoming>
+      <bpmn:outgoing>Flow_08mashq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_08mashq" sourceRef="BulkPrintOrderApplicant" targetRef="Gateway_1wekfjk" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GenerateDirectionsOrder">
+      <bpmndi:BPMNShape id="Participant_058zit7_di" bpmnElement="Participant_058zit7" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1820" height="390" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vuxatn_di" bpmnElement="Activity_0vuxatn">
+        <dc:Bounds x="309" y="228" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1s3ugpj_di" bpmnElement="Event_1s3ugpj">
+        <dc:Bounds x="341" y="120" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ks94xn_di" bpmnElement="Event_0ks94xn">
+        <dc:Bounds x="231" y="250" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="238" y="293" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1iluc48_di" bpmnElement="LinkDocumentToParentCase">
+        <dc:Bounds x="510" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0m4i6qo_di" bpmnElement="Gateway_0m4i6qo" isMarkerVisible="true">
+        <dc:Bounds x="675" y="243" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="665" y="300" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tam17y_di" bpmnElement="Event_0tam17y">
+        <dc:Bounds x="1782" y="250" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sa4hmt_di" bpmnElement="Activity_0sa4hmt">
+        <dc:Bounds x="1580" y="228" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jxvg0m_di" bpmnElement="BulkPrintOrderRespondent">
+        <dc:Bounds x="1400" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13l7ejy_di" bpmnElement="respondentNotificationForOrderMadeByJudge">
+        <dc:Bounds x="1230" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pj9989_di" bpmnElement="applicantNotificationForOrderMadeByJudge">
+        <dc:Bounds x="760" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wekfjk_di" bpmnElement="Gateway_1wekfjk" isMarkerVisible="true">
+        <dc:Bounds x="1115" y="243" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1098" y="223" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mokfg3_di" bpmnElement="BulkPrintOrderApplicant">
+        <dc:Bounds x="900" y="228" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qc2eoy_di" bpmnElement="Event_0qc2eoy">
+        <dc:Bounds x="341" y="210" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="366" y="180" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1bgft9o_di" bpmnElement="Flow_1bgft9o">
+        <di:waypoint x="1330" y="268" />
+        <di:waypoint x="1400" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yg2hgc_di" bpmnElement="Flow_1yg2hgc">
+        <di:waypoint x="610" y="268" />
+        <di:waypoint x="675" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_041g7uu_di" bpmnElement="Flow_041g7uu">
+        <di:waypoint x="725" y="268" />
+        <di:waypoint x="760" y="268" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734" y="250" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t75ukk_di" bpmnElement="Flow_0t75ukk">
+        <di:waypoint x="1140" y="293" />
+        <di:waypoint x="1140" y="350" />
+        <di:waypoint x="1630" y="350" />
+        <di:waypoint x="1630" y="308" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1382" y="332" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u69kcw_di" bpmnElement="Flow_1u69kcw">
+        <di:waypoint x="1165" y="268" />
+        <di:waypoint x="1230" y="268" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="250" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yzn09e_di" bpmnElement="Flow_1yzn09e">
+        <di:waypoint x="860" y="268" />
+        <di:waypoint x="900" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03vqbjk_di" bpmnElement="Flow_03vqbjk">
+        <di:waypoint x="700" y="243" />
+        <di:waypoint x="700" y="180" />
+        <di:waypoint x="1060" y="180" />
+        <di:waypoint x="1060" y="268" />
+        <di:waypoint x="1115" y="268" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="873" y="162" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1830oky_di" bpmnElement="Flow_1830oky">
+        <di:waypoint x="1680" y="268" />
+        <di:waypoint x="1782" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qchrvw_di" bpmnElement="Flow_1qchrvw">
+        <di:waypoint x="409" y="268" />
+        <di:waypoint x="510" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u4hj3q_di" bpmnElement="Flow_1u4hj3q">
+        <di:waypoint x="359" y="228" />
+        <di:waypoint x="359" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1karrfz_di" bpmnElement="Flow_1karrfz">
+        <di:waypoint x="267" y="268" />
+        <di:waypoint x="309" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h108w3_di" bpmnElement="Flow_0h108w3">
+        <di:waypoint x="1500" y="268" />
+        <di:waypoint x="1580" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08mashq_di" bpmnElement="Flow_08mashq">
+        <di:waypoint x="1000" y="268" />
+        <di:waypoint x="1115" y="268" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
