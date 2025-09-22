@@ -17,11 +17,11 @@ class RequestForReconsiderationCuiDefendantTest extends BpmnBaseTest {
 
     //CCD CASE EVENT
     public static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT
-        = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT";
+            = "CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT";
 
     //ACTIVITY IDs
     private static final String CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID
-        = "CreateNotificationRequestForReconsiderationClaimant";
+            = "CreateNotificationRequestForReconsiderationClaimant";
 
     public RequestForReconsiderationCuiDefendantTest() {
         super("request_for_reconsideration_cui_defendant.bpmn", PROCESS_ID);
@@ -36,49 +36,22 @@ class RequestForReconsiderationCuiDefendantTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            CASE_PROGRESSION_ENABLED, true));
+        variables.put("flowFlags", Map.of());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+                START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
 
         //complete the claimant notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT,
-                                   CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID,
-                                   variables
+                CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT,
+                CREATE_NOTIFICATION_REQUEST_FOR_RECONSIDERATION_CLAIMANT_ACTIVITY_ID,
+                variables
         );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteRequestForReconsiderationNotCP() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            CASE_PROGRESSION_ENABLED, false));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
-
-        ExternalTask notificationTask;
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
