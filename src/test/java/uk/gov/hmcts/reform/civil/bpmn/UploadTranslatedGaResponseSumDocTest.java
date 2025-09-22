@@ -22,6 +22,9 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
     private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
     private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
     private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_ID = "dashboardNotificationId";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_TOPIC = "applicationProcessCaseEventGASpec";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_EVENT = "CREATE_APPLICATION_RESPONDED_DASHBOARD_NOTIFICATION";
     public static final String NOTIFY_EVENT = "processExternalCaseEventGASpec";
     private static final String APPLICATION_EVENT_GA_SPEC = "applicationEventGASpec";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
@@ -83,6 +86,16 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
             );
 
         }
+
+        //Complete Dashboard Notification case event
+        ExternalTask dashboardNotificationCreated = assertNextExternalTask(CREATE_DASHBOARD_NOTIFICATION_TOPIC);
+        assertCompleteExternalTask(
+            dashboardNotificationCreated,
+            CREATE_DASHBOARD_NOTIFICATION_TOPIC,
+            CREATE_DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
