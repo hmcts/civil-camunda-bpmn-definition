@@ -13,19 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.MAKE_DECISION_CASE_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.UPDATE_FROM_GA_CASE_EVENT;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.WELSH_ENABLED;
 
-public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseGASpecTest {
+public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest {
 
-    private static final String MESSAGE_NAME = "GENERATE_DIRECTIONS_ORDER";
-    private static final String PROCESS_ID = "GA_GENERATE_DIRECTIONS_ORDER_ID";
+    private static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_FINAL_ORDER";
+    private static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID";
     //start
     public static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_EVENT = "START_GA_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
-    //Create PDF
-    private static final String CREATE_PDF_EVENT = "GENERATE_JUDGES_FORM";
-    private static final String CREATE_PDF_ID = "CreatePDFDocument";
     //Add PDF document to main case
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
@@ -39,42 +35,44 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
     private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
 
+    private static final String BULK_PRINT_APPLICANT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
+    private static final String BULK_PRINT_APPLICANT_ACTIVITY = "BulkPrintOrderApplicant";
+
+    private static final String BULK_PRINT_RESPONDENT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
+    private static final String BULK_PRINT_RESPONDENT_ACTIVITY = "BulkPrintOrderRespondent";
+
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
 
-    public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
-        super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
+    public UploadTranslatedDocumentGaFinalOrderTest() {
+        super("upload_translated_document_ga_final_order.bpmn", "UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID");
     }
 
     @BeforeEach
     void setup() {
         //deploy process
         startBusinessProcessDeployment = engine.getRepositoryService()
-                .createDeployment()
-                .addClasspathResource(String.format(DIAGRAM_PATH,
-                        "start_business_process_in_general_application.bpmn"))
-                .deploy();
-        endBusinessProcessDeployment = engine.getRepositoryService()
-                .createDeployment()
-                .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
-                .deploy();
-        endBusinessProcessWithoutTaskDeployment = engine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process_without_WA_task.bpmn"))
+            .addClasspathResource(String.format(DIAGRAM_PATH,
+                                                "start_business_process_in_general_application.bpmn"))
+            .deploy();
+        endBusinessProcessDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
             .deploy();
         deployment = engine.getRepositoryService()
-                .createDeployment()
-                .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
-                .deploy();
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
+            .deploy();
         processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
     @ParameterizedTest
     @CsvSource({"false,false", "true,false", "true,true", "false,true"})
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
+    void shouldSuccessfullyCompleteNotifications_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -89,31 +87,21 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-                startBusiness,
-                START_BUSINESS_TOPIC,
-                START_BUSINESS_EVENT,
-                START_BUSINESS_ACTIVITY,
-                variables
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-        assertCompleteExternalTask(
-                documentGeneration,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_PDF_EVENT,
-                CREATE_PDF_ID,
-                variables
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
         );
 
         //Complete add pdf to main case event
         ExternalTask addDocumentToMainCase = assertNextExternalTask(UPDATE_FROM_GA_CASE_EVENT);
         assertCompleteExternalTask(
-                addDocumentToMainCase,
-                UPDATE_FROM_GA_CASE_EVENT,
-                ADD_PDF_EVENT,
-                ADD_PDF_ID,
-                variables
+            addDocumentToMainCase,
+            UPDATE_FROM_GA_CASE_EVENT,
+            ADD_PDF_EVENT,
+            ADD_PDF_ID,
+            variables
         );
 
         if (isLipApplicant) {
@@ -125,6 +113,15 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
                 CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
                 variables
             );
+
+            ExternalTask bulkPrintApplicant = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintApplicant,
+                MAKE_DECISION_CASE_EVENT,
+                BULK_PRINT_APPLICANT_EVENT,
+                BULK_PRINT_APPLICANT_ACTIVITY,
+                variables
+            );
         }
 
         if (isLipRespondent) {
@@ -134,6 +131,15 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
                 MAKE_DECISION_CASE_EVENT,
                 CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
                 CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
+                variables
+            );
+
+            ExternalTask bulkPrintRespondent = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+            assertCompleteExternalTask(
+                bulkPrintRespondent,
+                MAKE_DECISION_CASE_EVENT,
+                BULK_PRINT_RESPONDENT_EVENT,
+                BULK_PRINT_RESPONDENT_ACTIVITY,
                 variables
             );
         }
@@ -162,43 +168,6 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
             );
         }
 
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
-    void shouldSuccessfullyCompleteCreatePDFDocumentIfWelshApplication_whenCalled() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            WELSH_ENABLED, true));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
-            MAKE_DECISION_CASE_EVENT,
-            CREATE_PDF_EVENT,
-            CREATE_PDF_ID,
-            variables
-        );
-
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS_WITHOUT_TASK);
-        completeBusinessProcessForGADocUpload(endBusinessProcess);
         assertNoExternalTasksLeft();
     }
 
