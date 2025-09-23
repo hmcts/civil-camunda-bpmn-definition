@@ -36,6 +36,7 @@ public abstract class BpmnBaseGASpecTest {
     public static final String CREATE_APPLICATION_CASE_EVENT = "createApplicationEventGASpec";
     public static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
+    public static final String END_BUSINESS_PROCESS_WITHOUT_TASK = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     public static final String END_GA_HWF_NOTIFY_PROCESS = "END_GA_HWF_NOTIFY_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
 
@@ -43,6 +44,7 @@ public abstract class BpmnBaseGASpecTest {
     public final String processId;
     public Deployment deployment;
     public Deployment endBusinessProcessDeployment;
+    public Deployment endBusinessProcessWithoutTaskDeployment;
     public Deployment startBusinessProcessDeployment;
     public static ProcessEngine engine;
 
@@ -72,6 +74,11 @@ public abstract class BpmnBaseGASpecTest {
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process.bpmn"))
             .deploy();
+
+        endBusinessProcessWithoutTaskDeployment = engine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(String.format(DIAGRAM_PATH, "end_general_application_business_process_without_WA_task.bpmn"))
+            .deploy();
         deployment = engine.getRepositoryService()
             .createDeployment()
             .addClasspathResource(String.format(DIAGRAM_PATH, bpmnFileName))
@@ -83,6 +90,9 @@ public abstract class BpmnBaseGASpecTest {
     void tearDown() {
         engine.getRepositoryService().deleteDeployment(startBusinessProcessDeployment.getId());
         engine.getRepositoryService().deleteDeployment(endBusinessProcessDeployment.getId());
+        if (endBusinessProcessWithoutTaskDeployment != null) {
+            engine.getRepositoryService().deleteDeployment(endBusinessProcessWithoutTaskDeployment.getId());
+        }
         engine.getRepositoryService().deleteDeployment(deployment.getId());
     }
 

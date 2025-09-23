@@ -57,6 +57,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_ACTIVITY_ID = "PostPINInLetterLIPDefendant";
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID = "ClaimantConfirmProceedNotifyParties";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER_ID = "PostClaimantLIPJBALetter";
+    private static final String POST_CLAIMANT_LIP_JBA_LETTER = "POST_CLAIMANT_LIP_JBA_LETTER";
 
     public UploadTranslatedClaimantIntentionDocumentTest() {
         super("upload_translated_claimant_intention_document_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION");
@@ -352,6 +354,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID
         );
 
+        postClaimantLipJbaLetter();
+
         ExternalTask pinAndPostLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             pinAndPostLetter,
@@ -398,6 +402,10 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
     private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
         assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
+    }
+
+    private void postClaimantLipJbaLetter() {
+        assertCompletedCaseEvent(POST_CLAIMANT_LIP_JBA_LETTER, POST_CLAIMANT_LIP_JBA_LETTER_ID);
     }
 
     private void generateClaimantLipApplicationOfflineDashboardNotification() {

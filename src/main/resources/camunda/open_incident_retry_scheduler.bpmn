@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0bnkctn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="INCIDENT_RETRY_SCHEDULER" name="Incident retry scheduler" isExecutable="true" camunda:historyTimeToLive="P90D">
+    <bpmn:startEvent id="Event_1tq0lqc">
+      <bpmn:outgoing>Flow_0hj21ai</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0y9pici">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 1 23 * * ?</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0hj21ai" sourceRef="Event_1tq0lqc" targetRef="Activity_0quu8p1" />
+    <bpmn:endEvent id="Event_0icrt69">
+      <bpmn:incoming>Flow_1cz7ch6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_0quu8p1" name="Incident Retry Scheduler" camunda:type="external" camunda:topic="INCIDENT_RETRY_EVENT">
+      <bpmn:incoming>Flow_0hj21ai</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cz7ch6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cz7ch6" sourceRef="Activity_0quu8p1" targetRef="Event_0icrt69" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="INCIDENT_RETRY_SCHEDULER">
+      <bpmndi:BPMNEdge id="Flow_1cz7ch6_di" bpmnElement="Flow_1cz7ch6">
+        <di:waypoint x="340" y="160" />
+        <di:waypoint x="392" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hj21ai_di" bpmnElement="Flow_0hj21ai">
+        <di:waypoint x="188" y="160" />
+        <di:waypoint x="240" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1tq0lqc_di" bpmnElement="Event_1tq0lqc">
+        <dc:Bounds x="152" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0icrt69_di" bpmnElement="Event_0icrt69">
+        <dc:Bounds x="392" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0quu8p1_di" bpmnElement="Activity_0quu8p1">
+        <dc:Bounds x="240" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
