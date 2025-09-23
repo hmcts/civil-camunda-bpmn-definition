@@ -287,7 +287,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCjesServiceEnabled) {
+    void  shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
@@ -330,14 +330,16 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID
         );
 
-        ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendJudgmentToCjesService,
-            PROCESS_CASE_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES_EVENT,
-            SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
-        );
-
+        if (isCjesServiceEnabled) {
+            //Send judgement details to CJES service
+            ExternalTask sendJudgmentToCjesService = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                sendJudgmentToCjesService,
+                PROCESS_CASE_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES_EVENT,
+                SEND_JUDGMENT_DETAILS_CJES_EVENT_ID
+            );
+        }
         ExternalTask generateJudgmentByAdmissionClaimantDocument = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             generateJudgmentByAdmissionClaimantDocument,
