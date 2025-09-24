@@ -37,28 +37,10 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCreateLipClaim_QMOff() {
-        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-                          "CLAIM_ISSUE_HWF", false,
-                      "PUBLIC_QUERIES_ENABLED", false));
-        startBusinessProcess(variables);
-        completeClaimIssue(variables);
-        notifyApplicant1ClaimSubmitted(variables);
-        generateDraftForm(variables);
-        createServiceRequestCui(variables);
-        generateDashboardNotificationClaimFeeRequired(variables);
-        completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
-    }
-
-    @Test
     void shouldSuccessfullyCreateLipClaim() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", false,
-                      "PUBLIC_QUERIES_ENABLED", true));
+        variables.put(FLOW_FLAGS, Map.of("CLAIM_ISSUE_HWF", false));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
@@ -70,27 +52,10 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldPauseServiceRequestApiCall_WhenHwFAppliedQMOff() {
-        assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
-        VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-            "CLAIM_ISSUE_HWF", true,
-            "PUBLIC_QUERIES_ENABLED", false));
-        startBusinessProcess(variables);
-        completeClaimIssue(variables);
-        notifyApplicant1ClaimSubmitted(variables);
-        generateDraftForm(variables);
-        generateDashboardNotificationHwfRequested(variables);
-        completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
-    }
-
-    @Test
     void shouldPauseServiceRequestApiCall_WhenHwFApplied() {
         assertProcessStartedWithMessage(MESSAGE_NAME, PROCESS_ID);
         VariableMap variables = Variables.createVariables();
-        variables.put(FLOW_FLAGS, Map.of(
-                "CLAIM_ISSUE_HWF", true,
-                "PUBLIC_QUERIES_ENABLED", true));
+        variables.put(FLOW_FLAGS, Map.of("CLAIM_ISSUE_HWF", true));
         startBusinessProcess(variables);
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
