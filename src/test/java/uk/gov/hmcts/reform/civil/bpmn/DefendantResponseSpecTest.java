@@ -50,90 +50,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyTriggerDashboardNotification_whenRespondentFullDefenceResponse() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE");
-        variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            GENERAL_APPLICATION_ENABLED, false,
-            DASHBOARD_SERVICE_ENABLED, true
-        ));
-
-        //complete the start business process
-        ExternalTask startBusinessTask = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusinessTask,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        //complete the full defence
-        ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            fullDefenceResponse,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_RESPONSE_EVENT,
-            FULL_DEFENCE_RESPONSE_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            LR_FULL_DEFENCE_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
-            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
-            variables
-        );
-
-        //complete generate sealed form
-        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            generateSealedForm,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_GENERATE_SEALED_FORM,
-            FULL_DEFENCE_GENERATE_SEALED_FORM_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
-        );
-
-        createDefendantDashboardNotification();
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
     void shouldSuccessfullyTriggerDashboardNotification_whenRespondentNonFullDefenceResponse() {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -145,7 +61,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.COUNTER_CLAIM");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            GENERAL_APPLICATION_ENABLED, false,
             "COUNTER_CLAIM", true,
             DASHBOARD_SERVICE_ENABLED, true
         ));
@@ -168,6 +83,24 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             "PROCEEDS_IN_HERITAGE_SYSTEM",
             "ProceedOfflineForNonDefenceResponse",
             variables
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            "Activity_0drqld6"
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            "Activity_12sc57s"
         );
 
         //complete the notification to respondent
@@ -224,7 +157,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.AWAITING_RESPONSES_FULL_DEFENCE_RECEIVED");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, false,
-            GENERAL_APPLICATION_ENABLED, true,
             TWO_RESPONDENT_REPRESENTATIVES, true,
             DASHBOARD_SERVICE_ENABLED, false
         ));
@@ -274,90 +206,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldNotTriggerDashboardNotification_whenDashboardNotEnabled() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE");
-        variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            "FULL_DEFENCE", true,
-            GENERAL_APPLICATION_ENABLED, false,
-            DASHBOARD_SERVICE_ENABLED, false
-        ));
-
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        //complete the full defence
-        ExternalTask fullDefenceResponse = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            fullDefenceResponse,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_RESPONSE_EVENT,
-            FULL_DEFENCE_RESPONSE_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyApplicant,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            LR_FULL_DEFENCE_FULL_ADMIT_PART_ADMIT_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE,
-            FULL_DEFENCE_GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
-            variables
-        );
-
-        //complete generate sealed form
-        ExternalTask generateSealedForm = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            generateSealedForm,
-            PROCESS_CASE_EVENT,
-            FULL_DEFENCE_GENERATE_SEALED_FORM,
-            FULL_DEFENCE_GENERATE_SEALED_FORM_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED,
-            NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    @Test
     void shouldNotTriggerDashboardNotification_whenRespondentNonFullDefenceResponseDashboardNotEnabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -369,7 +217,6 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
         variables.putValue("flowState", "MAIN.COUNTER_CLAIM");
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
-            GENERAL_APPLICATION_ENABLED, false,
             "COUNTER_CLAIM", true,
             DASHBOARD_SERVICE_ENABLED, false
         ));
@@ -391,6 +238,24 @@ class DefendantResponseSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "PROCEEDS_IN_HERITAGE_SYSTEM",
             "ProceedOfflineForNonDefenceResponse"
+        );
+
+        //Update General Application Status
+        ExternalTask updateApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateApplicationStatus,
+            PROCESS_CASE_EVENT,
+            TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE,
+            "Activity_0drqld6"
+        );
+
+        //Update Claim Details with General Application Status
+        ExternalTask updateClaimWithApplicationStatus = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateClaimWithApplicationStatus,
+            PROCESS_CASE_EVENT,
+            APPLICATION_OFFLINE_UPDATE_CLAIM,
+            "Activity_12sc57s"
         );
 
         ExternalTask notifyApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
