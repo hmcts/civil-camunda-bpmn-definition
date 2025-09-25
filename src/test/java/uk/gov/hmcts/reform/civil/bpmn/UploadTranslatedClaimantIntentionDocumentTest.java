@@ -186,6 +186,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         );
 
         //create dashboard notification
+        generateClaimantLipApplicationOfflineDashboardNotification();
+        generateDefendantLipApplicationOfflineDashboardNotification();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
         generateDefendantDashboardNotificationForCCJClaimantResponse();
 
@@ -285,7 +287,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCjesServiceEnabled) {
+    void  shouldRunProcessWhenJudgementOnlineLiveEnabled(boolean isRpaLiveFeed, boolean isCjesServiceEnabled) {
         //assert process has started
         assertFalse(processInstance.isEnded());
         //complete the start business process
@@ -406,6 +408,14 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
     private void postClaimantLipJbaLetter() {
         assertCompletedCaseEvent(POST_CLAIMANT_LIP_JBA_LETTER, POST_CLAIMANT_LIP_JBA_LETTER_ID);
+    }
+
+    private void generateClaimantLipApplicationOfflineDashboardNotification() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT", "claimantLipApplicationOfflineDashboardNotification");
+    }
+
+    private void generateDefendantLipApplicationOfflineDashboardNotification() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
     }
 
     private void    assertCompletedCaseEvent(String eventName, String activityId) {
