@@ -4,10 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,10 +12,6 @@ class RaiseQueryTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "queryManagementRaiseQuery";
     public static final String PROCESS_ID = "queryManagementRaiseQuery";
-    private static final String GENERATE_QUERY_DOCUMENT = "GENERATE_QUERY_DOCUMENT";
-    private static final String GENERATE_QUERY_DOCUMENT_ACTIVITY_ID = "GenerateQueryDocument";
-    private static final String DELETE_QUERY_DOCUMENT = "DELETE_QUERY_DOCUMENT";
-    private static final String DELETE_QUERY_DOCUMENT_ACTIVITY_ID = "DeleteQueryDocument";
     private static final String NOTIFY_LR = "NOTIFY_RAISED_QUERY";
     private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_FOR_RAISED_QUERY";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryRaisedNotify";
@@ -30,10 +22,8 @@ class RaiseQueryTest extends BpmnBaseTest {
         super("raise_query.bpmn", PROCESS_ID);
     }
 
-    @ParameterizedTest
-    @CsvSource({"true,false", "false,false", "true,true", "false,true"})
-    void shouldSuccessfullyCompleteRaiseQueryProcess_whenCalled(boolean publicQueriesEnabled,
-                                                                boolean removeDocument) {
+    @Test
+    void shouldSuccessfullyCompleteRaiseQueryProcess_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -41,11 +31,6 @@ class RaiseQueryTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put(
-            FLOW_FLAGS, Map.of(
-                PUBLIC_QUERIES_ENABLED, publicQueriesEnabled
-            ));
-        variables.put("removeDocument", removeDocument);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -56,28 +41,6 @@ class RaiseQueryTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY,
             variables
         );
-
-        if (!publicQueriesEnabled) {
-            //generate the query document
-            ExternalTask generateQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                generateQueryDocumentTask,
-                PROCESS_CASE_EVENT,
-                GENERATE_QUERY_DOCUMENT,
-                GENERATE_QUERY_DOCUMENT_ACTIVITY_ID
-            );
-
-            if (removeDocument) {
-                //delete the query document
-                ExternalTask deleteQueryDocumentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    deleteQueryDocumentTask,
-                    PROCESS_CASE_EVENT,
-                    DELETE_QUERY_DOCUMENT,
-                    DELETE_QUERY_DOCUMENT_ACTIVITY_ID
-                );
-            }
-        }
 
         //complete the email notification
         ExternalTask notifyLrTask = assertNextExternalTask(PROCESS_CASE_EVENT);

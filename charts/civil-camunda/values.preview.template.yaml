@@ -126,7 +126,7 @@ java:
         enabled: false
       resources:
         requests:
-          cpu: 25m
+          cpu: 500m
       initdb:
         scripts:
           init.sql: |
@@ -278,8 +278,10 @@ ccd:
     java:
       imagePullPolicy: Always
       devcpuRequests: 500m
-      devmemoryRequests: 2048Mi
-      devmemoryLimits: 4096Mi
+      devmemoryRequests: 4096Mi
+      devmemoryLimits: 8192Mi
+      autoscaling:
+        enabled: false
       environment:
         CASE_DOCUMENT_AM_API_ATTACH_DOCUMENT_ENABLED: false
         DATA_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
@@ -312,13 +314,12 @@ ccd:
     java:
       imagePullPolicy: Always
       devcpuRequests: 500m
-      devmemoryRequests: 512Mi
-      devcpuLimits: 2
-      devmemoryLimits: 1Gi
+      devmemoryRequests: 4096Mi
+      devmemoryLimits: 8192Mi
       environment:
         APPLICATION_LOGGING_LEVEL: DEBUG
         SPRING_DATASOURCE_HIKARI_CONNECTIONTIMEOUT: 90000
-        DEFINITION_STORE_TX_TIMEOUT_DEFAULT: 60
+        DEFINITION_STORE_TX_TIMEOUT_DEFAULT: 120
         WELSH_TRANSLATION_ENABLED: false
         DEFINITION_STORE_DB_HOST: ${SERVICE_NAME}-postgresql
         DEFINITION_STORE_DB_OPTIONS: "?stringtype=unspecified"
