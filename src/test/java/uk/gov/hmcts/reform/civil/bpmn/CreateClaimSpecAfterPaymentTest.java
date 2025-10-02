@@ -96,8 +96,7 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
             VariableMap variables = Variables.createVariables();
             variables.put(FLOW_FLAGS, Map.of(
-                    "PIP_ENABLED", true,
-                    "DASHBOARD_SERVICE_ENABLED", true));
+                "DASHBOARD_SERVICE_ENABLED", true));
 
             startBusinessProcess(variables);
 
@@ -414,7 +413,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     BULK_CLAIM_ENABLED, true,
                     LIP_CASE, true,
                     UNREPRESENTED_DEFENDANT_ONE, true,
-                    PIP_ENABLED, true,
                     DASHBOARD_SERVICE_ENABLED, true
             ));
 
@@ -527,7 +525,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                 BULK_CLAIM_ENABLED, true,
                 LIP_CASE, true,
                 UNREPRESENTED_DEFENDANT_ONE, true,
-                PIP_ENABLED, true,
                 CLAIM_ISSUE_BILINGUAL, true,
                 WELSH_ENABLED, welshEnabled
         ));

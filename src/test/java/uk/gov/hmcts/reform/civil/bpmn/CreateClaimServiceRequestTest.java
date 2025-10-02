@@ -59,8 +59,7 @@ public class CreateClaimServiceRequestTest extends BpmnBaseTest {
             assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
             VariableMap variables = Variables.createVariables();
-            variables.put(FLOW_FLAGS, Map.of(
-                "PIP_ENABLED", true));
+            variables.put(FLOW_FLAGS, null);
 
             startBusinessProcess(variables);
 
