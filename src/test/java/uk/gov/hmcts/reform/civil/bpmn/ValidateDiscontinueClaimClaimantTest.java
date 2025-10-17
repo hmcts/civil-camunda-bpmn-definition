@@ -51,7 +51,6 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         //assert message start event
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-
         VariableMap variables = Variables.createVariables();
         variables.put("discontinuanceValidationSuccess", discontinuanceValidationSuccess);
         variables.put(FLOW_FLAGS, Map.of(UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendant1,
