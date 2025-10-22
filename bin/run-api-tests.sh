@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 compare_ft_groups() {
   local ft_groups_csv pr_ft_groups_csv
