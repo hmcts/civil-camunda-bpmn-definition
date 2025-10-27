@@ -100,7 +100,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
             WELSH_ENABLED, true,
             CLAIM_ISSUE_BILINGUAL, claimantBilingual
@@ -118,11 +117,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (!claimantBilingual) {
             notifyPartiesClaimantConfirmsToProceed();
         }
-        assertCompletedCaseEvent(
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         if (!claimantBilingual) {
             updateClaimState();
@@ -159,6 +154,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (!claimantBilingual) {
             notifyPartiesClaimantConfirmsToProceed();
         }
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         if (!claimantBilingual) {
             generateRPAContinuousFeed();
@@ -197,6 +193,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyPartiesClaimantConfirmsToProceed();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
+        generateDashboardNotificationForApplicantProceedOfflineClaim();
+        generateDashboardNotificationForDefendantProceedOfflineClaim();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
         generateDefendantDashboardNotificationForCCJClaimantResponse();
         endBusinessProcess();
@@ -231,6 +229,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyPartiesClaimantConfirmsToProceed();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
+        generateDashboardNotificationForApplicantProceedOfflineClaim();
+        generateDashboardNotificationForDefendantProceedOfflineClaim();
         generateClaimantDashboardNotificationForCCJClaimantResponse();
         generateDefendantDashboardNotificationForCCJClaimantResponse();
         endBusinessProcess();
@@ -270,6 +270,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -307,6 +308,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -343,6 +345,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -377,6 +380,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateManualDeterminationPdf();
         requestInterlockJudgement();
         generateJudgmentByDeterminationPdf();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -394,7 +398,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             SETTLE_THE_CLAIM, true,
@@ -411,11 +414,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
-        assertCompletedCaseEvent(
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
+        triggerUpdateGaLocation(variables);
         if (!defendantNocOnline) {
             generateDQPdf();
         }
@@ -435,7 +434,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            GENERAL_APPLICATION_ENABLED, true,
             IS_MULTI_TRACK, true,
             CLAIM_ISSUE_BILINGUAL, false,
             WELSH_ENABLED, true,
@@ -454,11 +452,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (!defendantBilingual) {
             notifyPartiesClaimantConfirmsToProceed();
         }
-        assertCompletedCaseEvent(
-            TRIGGER_UPDATE_GA_LOCATION,
-            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
-            variables
-        );
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         if (!defendantBilingual) {
             updateClaimState();
@@ -492,6 +486,9 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+
+        triggerUpdateGaLocation(variables);
+
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -524,6 +521,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -557,6 +555,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -587,6 +586,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -614,6 +614,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -643,6 +644,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
                 variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
         createClaimantDashboardNotification();
@@ -676,6 +678,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         updateClaimState();
         createClaimantDashboardNotification();
         createDefendantDashboardNotification();
@@ -838,6 +841,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             variables
         );
         notifyPartiesClaimantConfirmsToProceed();
+        triggerUpdateGaLocation(variables);
         if (!defendantNocOnline) {
             generateDQPdf();
         }
@@ -930,6 +934,14 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
     }
 
+    private void generateDashboardNotificationForApplicantProceedOfflineClaim() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT", "claimantLipApplicationOfflineDashboardNotification");
+    }
+
+    private void generateDashboardNotificationForDefendantProceedOfflineClaim() {
+        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
+    }
+
     private void generateClaimantDashboardNotificationForCCJClaimantResponse() {
         assertCompletedCaseEvent("CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateClaimantCCJDashboardNotificationClaimantResponse");
     }
@@ -976,5 +988,13 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void postClaimantLipJbaLetter() {
         assertCompletedCaseEvent(POST_CLAIMANT_LIP_JBA_LETTER, POST_CLAIMANT_LIP_JBA_LETTER_ID);
+    }
+
+    private void triggerUpdateGaLocation(VariableMap variables) {
+        assertCompletedCaseEvent(
+            TRIGGER_UPDATE_GA_LOCATION,
+            TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID,
+            variables
+        );
     }
 }

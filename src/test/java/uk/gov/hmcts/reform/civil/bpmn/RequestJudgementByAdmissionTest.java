@@ -95,6 +95,14 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
+        ExternalTask dashboardNotificationApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationApplicant,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
+        );
+
         ExternalTask dashboardNotificationRespondent1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotificationRespondent1,
@@ -164,6 +172,14 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardNotification,
             PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
+            "claimantLipApplicationOfflineDashboardNotification"
+        );
+
+        ExternalTask dashboardNotificationCcj = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationCcj,
+            PROCESS_CASE_EVENT,
             CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1,
             CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1_ACTIVITY_ID
         );
@@ -176,6 +192,15 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
+
+        ExternalTask dashboardLipApplicantOfflineDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardLipApplicantOfflineDashboardNotification,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
+        );
+
         ExternalTask dashboardNotificationRespondent1 = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             dashboardNotificationRespondent1,

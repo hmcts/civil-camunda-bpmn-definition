@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -90,7 +90,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0012tae</bpmn:incoming>
-      <bpmn:outgoing>Flow_1dbj8ri</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1l3y4a4</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="GenerateDashboardNotificationClaimIssueHwfClaimant1" name="Generate Dashboard Notification HWF Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -99,8 +99,9 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ad6bt0</bpmn:incoming>
-      <bpmn:outgoing>Flow_00q32js</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0l5s632</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1sogo2g" sourceRef="GenerateMessageTaskItems" targetRef="Activity_19rrcw0" />
     <bpmn:endEvent id="Event_1irqmkk">
       <bpmn:incoming>Flow_17vsjp4</bpmn:incoming>
     </bpmn:endEvent>
@@ -109,33 +110,20 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1sogo2g</bpmn:incoming>
-      <bpmn:incoming>Flow_1m466jl</bpmn:incoming>
       <bpmn:outgoing>Flow_17vsjp4</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_1sogo2g" sourceRef="GenerateMessageTaskItems" targetRef="Activity_19rrcw0" />
-    <bpmn:exclusiveGateway id="Gateway_12vfqgs" name="Public queries enabled">
-      <bpmn:incoming>Flow_1dbj8ri</bpmn:incoming>
-      <bpmn:incoming>Flow_00q32js</bpmn:incoming>
-      <bpmn:outgoing>Flow_0glzwj8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1m466jl</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1dbj8ri" sourceRef="GenerateDashboardNotificationClaimFeeRequired" targetRef="Gateway_12vfqgs" />
-    <bpmn:sequenceFlow id="Flow_00q32js" sourceRef="GenerateDashboardNotificationClaimIssueHwfClaimant1" targetRef="Gateway_12vfqgs" />
-    <bpmn:sequenceFlow id="Flow_0glzwj8" name="Yes" sourceRef="Gateway_12vfqgs" targetRef="GenerateMessageTaskItems">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.PUBLIC_QUERIES_ENABLED &amp;&amp; flowFlags.PUBLIC_QUERIES_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1l3y4a4" sourceRef="GenerateDashboardNotificationClaimFeeRequired" targetRef="GenerateMessageTaskItems" />
+    <bpmn:sequenceFlow id="Flow_0l5s632" sourceRef="GenerateDashboardNotificationClaimIssueHwfClaimant1" targetRef="GenerateMessageTaskItems" />
     <bpmn:serviceTask id="GenerateMessageTaskItems" name="Generate dashboard message task items" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_MESSAGES_TASK_CATEGORIES</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0glzwj8</bpmn:incoming>
+      <bpmn:incoming>Flow_1l3y4a4</bpmn:incoming>
+      <bpmn:incoming>Flow_0l5s632</bpmn:incoming>
       <bpmn:outgoing>Flow_1sogo2g</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1m466jl" name="No" sourceRef="Gateway_12vfqgs" targetRef="Activity_19rrcw0">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.PUBLIC_QUERIES_ENABLED &amp;&amp; !flowFlags.PUBLIC_QUERIES_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CreateClaim">
@@ -143,6 +131,10 @@
         <dc:Bounds x="160" y="60" width="2038" height="660" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1sogo2g_di" bpmnElement="Flow_1sogo2g">
+        <di:waypoint x="1600" y="380" />
+        <di:waypoint x="1710" y="380" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ad6bt0_di" bpmnElement="Flow_0ad6bt0">
         <di:waypoint x="1090" y="405" />
         <di:waypoint x="1090" y="480" />
@@ -179,8 +171,8 @@
         <di:waypoint x="590" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17vsjp4_di" bpmnElement="Flow_17vsjp4">
-        <di:waypoint x="1750" y="390" />
-        <di:waypoint x="1802" y="390" />
+        <di:waypoint x="1810" y="380" />
+        <di:waypoint x="1852" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o4v7r8_di" bpmnElement="Flow_0o4v7r8">
         <di:waypoint x="470" y="322" />
@@ -190,34 +182,14 @@
         <di:waypoint x="318" y="380" />
         <di:waypoint x="420" y="380" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sogo2g_di" bpmnElement="Flow_1sogo2g">
-        <di:waypoint x="1680" y="270" />
-        <di:waypoint x="1700" y="270" />
-        <di:waypoint x="1700" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1dbj8ri_di" bpmnElement="Flow_1dbj8ri">
+      <bpmndi:BPMNEdge id="Flow_1l3y4a4_di" bpmnElement="Flow_1l3y4a4">
         <di:waypoint x="1390" y="380" />
-        <di:waypoint x="1475" y="380" />
+        <di:waypoint x="1500" y="380" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00q32js_di" bpmnElement="Flow_00q32js">
+      <bpmndi:BPMNEdge id="Flow_0l5s632_di" bpmnElement="Flow_0l5s632">
         <di:waypoint x="1390" y="480" />
-        <di:waypoint x="1500" y="480" />
-        <di:waypoint x="1500" y="405" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0glzwj8_di" bpmnElement="Flow_0glzwj8">
-        <di:waypoint x="1500" y="355" />
-        <di:waypoint x="1500" y="270" />
-        <di:waypoint x="1580" y="270" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1511" y="253" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m466jl_di" bpmnElement="Flow_1m466jl">
-        <di:waypoint x="1525" y="380" />
-        <di:waypoint x="1650" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1580" y="383" width="15" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="1550" y="480" />
+        <di:waypoint x="1550" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0yfoky6_di" bpmnElement="Event_0yfoky6">
         <dc:Bounds x="282" y="362" width="36" height="36" />
@@ -260,19 +232,13 @@
         <dc:Bounds x="1290" y="440" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1irqmkk_di" bpmnElement="Event_1irqmkk">
-        <dc:Bounds x="1802" y="372" width="36" height="36" />
+        <dc:Bounds x="1852" y="362" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19rrcw0_di" bpmnElement="Activity_19rrcw0">
-        <dc:Bounds x="1650" y="350" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_12vfqgs_di" bpmnElement="Gateway_12vfqgs" isMarkerVisible="true">
-        <dc:Bounds x="1475" y="355" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1505" y="336" width="70" height="27" />
-        </bpmndi:BPMNLabel>
+        <dc:Bounds x="1710" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_082uuok_di" bpmnElement="GenerateMessageTaskItems">
-        <dc:Bounds x="1580" y="230" width="100" height="80" />
+        <dc:Bounds x="1500" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0x002k6_di" bpmnElement="Event_0x002k6">
         <dc:Bounds x="452" y="322" width="36" height="36" />

@@ -38,11 +38,9 @@ public abstract class BpmnBaseTest {
     public static final String FLOW_FLAGS = "flowFlags";
     public static final String ONE_RESPONDENT_REPRESENTATIVE = "ONE_RESPONDENT_REPRESENTATIVE";
     public static final String TWO_RESPONDENT_REPRESENTATIVES = "TWO_RESPONDENT_REPRESENTATIVES";
-    public static final String GENERAL_APPLICATION_ENABLED = "GENERAL_APPLICATION_ENABLED";
     public static final String AGREED_TO_MEDIATION = "AGREED_TO_MEDIATION";
     public static final String UNREPRESENTED_DEFENDANT_ONE = "UNREPRESENTED_DEFENDANT_ONE";
     public static final String UNREPRESENTED_DEFENDANT_TWO = "UNREPRESENTED_DEFENDANT_TWO";
-    public static final String PUBLIC_QUERIES_ENABLED = "PUBLIC_QUERIES_ENABLED";
     public static final String FLOW_STATE = "flowState";
     public static final String IS_MULTI_TRACK = "IS_MULTI_TRACK";
     public static final String BULK_CLAIM_ENABLED = "BULK_CLAIM_ENABLED";
