@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 compare_ft_groups() {
   local ft_groups_csv pr_ft_groups_csv
@@ -80,8 +80,14 @@ run_failed_not_executed_functional_tests() {
 TEST_FILES_REPORT="test-results/functional/testFilesReport.json"
 PREV_TEST_FILES_REPORT="test-results/functional/prevTestFilesReport.json"
 
-  # Check if testFilesReport.json exists and is non-empty
-if [ ! -f "$TEST_FILES_REPORT" ] || [ ! -s "$TEST_FILES_REPORT" ]; then
+#Check if RUN_ALL_FUNCTIONAL_TESTS is set to true
+if [ "$RUN_ALL_FUNCTIONAL_TESTS" = "true" ]; then
+  echo "The label 'runAllFunctionalTests' exists on the PR."
+  echo "Running all fucntional tests."
+  run_functional_tests
+
+#Check if testFilesReport.json exists and is non-empty
+elif [ ! -f "$TEST_FILES_REPORT" ] || [ ! -s "$TEST_FILES_REPORT" ]; then
   echo "testFilesReport.json not found or is empty."
   run_functional_tests
 
