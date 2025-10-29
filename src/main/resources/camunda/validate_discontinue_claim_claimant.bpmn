@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
   <bpmn:process id="VALIDATE_DISCONTINUE_CLAIM_CLAIMANT" name="Validate Discontinue Claim Claimant" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="ValidateDiscontinueClaimClaimant" name="Start">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
@@ -13,9 +13,9 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0gitrv4</bpmn:incoming>
-      <bpmn:incoming>Flow_0txpf2p</bpmn:incoming>
       <bpmn:incoming>Flow_02a1r9o</bpmn:incoming>
+      <bpmn:incoming>Flow_15io19y</bpmn:incoming>
+      <bpmn:incoming>Flow_04nwyba</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_0y089q8" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -35,26 +35,16 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
     <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="ValidateDiscontinueClaimClaimant" targetRef="Activity_0y089q8" />
-    <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="UpdateVisibilityNoticeOfDiscontinuance" />
+    <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="DiscontinuanceClaimNotifyParties" />
     <bpmn:exclusiveGateway id="Gateway_00bae9b">
       <bpmn:incoming>Flow_0evp3v5</bpmn:incoming>
       <bpmn:outgoing>Flow_15io19y</bpmn:outgoing>
       <bpmn:outgoing>Flow_1n9ug08</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_15io19y" name="Discontinuance validation failed" sourceRef="Gateway_00bae9b" targetRef="NotifyValidationFailureClaimant">
+    <bpmn:sequenceFlow id="Flow_15io19y" name="Discontinuance validation failed" sourceRef="Gateway_00bae9b" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!discontinuanceValidationSuccess}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="NotifyValidationFailureClaimant" name="Notify Validation Failure" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_VALIDATION_DICONTINUANCE_FAILURE_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_15io19y</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gitrv4</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0gitrv4" sourceRef="NotifyValidationFailureClaimant" targetRef="Activity_0wretog" />
-    <bpmn:sequenceFlow id="Flow_1n9ug08" name="Discontinuance validated successfully" sourceRef="Gateway_00bae9b" targetRef="NotifyDiscontinuanceDefendant1">
+    <bpmn:sequenceFlow id="Flow_1n9ug08" name="Discontinuance validated successfully" sourceRef="Gateway_00bae9b" targetRef="Gateway_1uwtxqc">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${discontinuanceValidationSuccess}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="UpdateVisibilityNoticeOfDiscontinuance" name="Update Visibility Notice of Discontinuance" camunda:type="external" camunda:topic="processCaseEvent">
@@ -63,28 +53,15 @@
           <camunda:inputParameter name="caseEvent">UPDATE_VISIBILITY_NOTICE_OF_DISCONTINUANCE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qffyiy</bpmn:incoming>
+      <bpmn:incoming>Flow_1hhtf7e</bpmn:incoming>
       <bpmn:outgoing>Flow_0evp3v5</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0evp3v5" sourceRef="UpdateVisibilityNoticeOfDiscontinuance" targetRef="Gateway_00bae9b" />
-    <bpmn:serviceTask id="NotifyDiscontinuanceDefendant1" name="Notify Discontinuance Defendant 1 (LR/LiP)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DISCONTINUANCE_DEFENDANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1n9ug08</bpmn:incoming>
-      <bpmn:outgoing>Flow_050q4bi</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_050q4bi" sourceRef="NotifyDiscontinuanceDefendant1" targetRef="Gateway_1uwtxqc" />
     <bpmn:exclusiveGateway id="Gateway_1uwtxqc">
-      <bpmn:incoming>Flow_050q4bi</bpmn:incoming>
-      <bpmn:outgoing>Flow_0dlaffe</bpmn:outgoing>
+      <bpmn:incoming>Flow_1n9ug08</bpmn:incoming>
       <bpmn:outgoing>Flow_12d1lyq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0dlaffe</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0dlaffe" name="LR Defendant 1" sourceRef="Gateway_1uwtxqc" targetRef="NotifyDiscontinuanceClaimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="PostNoticeOfDiscontinuanceDefendant1LiP" name="Post notice of Discontinuance Defendant1 LiP" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -94,35 +71,15 @@
       <bpmn:incoming>Flow_12d1lyq</bpmn:incoming>
       <bpmn:outgoing>Flow_0enmo9z</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyDiscontinuanceClaimant" name="Notify Discontinuance Claimant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DISCONTINUANCE_CLAIMANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0dlaffe</bpmn:incoming>
-      <bpmn:incoming>Flow_13kivia</bpmn:incoming>
-      <bpmn:outgoing>Flow_19493u9</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_19493u9" sourceRef="NotifyDiscontinuanceClaimant" targetRef="Gateway_09rp7qh" />
     <bpmn:exclusiveGateway id="Gateway_09rp7qh">
-      <bpmn:incoming>Flow_19493u9</bpmn:incoming>
+      <bpmn:incoming>Flow_13kivia</bpmn:incoming>
+      <bpmn:incoming>Flow_0dlaffe</bpmn:incoming>
       <bpmn:outgoing>Flow_04nwyba</bpmn:outgoing>
       <bpmn:outgoing>Flow_02a1r9o</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_04nwyba" name="LR Defendant 2" sourceRef="Gateway_09rp7qh" targetRef="NotifyDiscontinuanceDefendant2">
+    <bpmn:sequenceFlow id="Flow_04nwyba" name="LR Defendant 2" sourceRef="Gateway_09rp7qh" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="NotifyDiscontinuanceDefendant2" name="Notify Discontinuance Defendant 2" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DISCONTINUANCE_DEFENDANT2</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_04nwyba</bpmn:incoming>
-      <bpmn:outgoing>Flow_0txpf2p</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0txpf2p" sourceRef="NotifyDiscontinuanceDefendant2" targetRef="Activity_0wretog" />
     <bpmn:sequenceFlow id="Flow_02a1r9o" name="No Defendant 2 / LiP Defendant 2" sourceRef="Gateway_09rp7qh" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES  &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_TWO || !flowFlags.UNREPRESENTED_DEFENDANT_TWO))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -139,7 +96,20 @@
       <bpmn:incoming>Flow_0enmo9z</bpmn:incoming>
       <bpmn:outgoing>Flow_13kivia</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_13kivia" sourceRef="CreateDefendantDashboardNotificationsForDiscontinuance" targetRef="NotifyDiscontinuanceClaimant" />
+    <bpmn:sequenceFlow id="Flow_0dlaffe" name="LR Defendant 1" sourceRef="Gateway_1uwtxqc" targetRef="Gateway_09rp7qh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13kivia" sourceRef="CreateDefendantDashboardNotificationsForDiscontinuance" targetRef="Gateway_09rp7qh" />
+    <bpmn:serviceTask id="DiscontinuanceClaimNotifyParties" name="Notify Discontinuance Parties" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qffyiy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hhtf7e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1hhtf7e" sourceRef="DiscontinuanceClaimNotifyParties" targetRef="UpdateVisibilityNoticeOfDiscontinuance" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -156,37 +126,6 @@
           <dc:Bounds x="149" y="285" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_0y089q8">
-        <dc:Bounds x="230" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1mtqud7_di" bpmnElement="Event_1mtqud7">
-        <dc:Bounds x="262" y="122" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
-        <dc:Bounds x="505" y="235" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="738" y="412" width="87" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="NotifyValidationFailureClaimant">
-        <dc:Bounds x="690" y="220" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_026gkzu" bpmnElement="UpdateVisibilityNoticeOfDiscontinuance">
-        <dc:Bounds x="370" y="220" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_10odg3r" bpmnElement="NotifyDiscontinuanceDefendant1">
-        <dc:Bounds x="550" y="400" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1uwtxqc_di" bpmnElement="Gateway_1uwtxqc" isMarkerVisible="true">
-        <dc:Bounds x="685" y="415" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0dc7ct0" bpmnElement="PostNoticeOfDiscontinuanceDefendant1LiP">
-        <dc:Bounds x="750" y="510" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_0r8yo0r">
         <dc:Bounds x="1612" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -196,19 +135,38 @@
       <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_0wretog">
         <dc:Bounds x="1440" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1f61i9r" bpmnElement="NotifyDiscontinuanceDefendant2">
-        <dc:Bounds x="1370" y="400" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0y089q8_di" bpmnElement="Activity_0y089q8">
+        <dc:Bounds x="230" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mtqud7_di" bpmnElement="Event_1mtqud7">
+        <dc:Bounds x="262" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1uwtxqc_di" bpmnElement="Gateway_1uwtxqc" isMarkerVisible="true">
+        <dc:Bounds x="685" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0dc7ct0" bpmnElement="PostNoticeOfDiscontinuanceDefendant1LiP">
+        <dc:Bounds x="750" y="510" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_09rp7qh_di" bpmnElement="Gateway_09rp7qh" isMarkerVisible="true">
         <dc:Bounds x="1205" y="415" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_03l4me0" bpmnElement="NotifyDiscontinuanceClaimant">
-        <dc:Bounds x="1050" y="400" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1h85bvi" bpmnElement="CreateDefendantDashboardNotificationsForDiscontinuance">
         <dc:Bounds x="920" y="510" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0hdpgwf" bpmnElement="Gateway_00bae9b" isMarkerVisible="true">
+        <dc:Bounds x="685" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="412" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_026gkzu" bpmnElement="UpdateVisibilityNoticeOfDiscontinuance">
+        <dc:Bounds x="510" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="DiscontinuanceClaimNotifyParties">
+        <dc:Bounds x="370" y="220" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
@@ -234,54 +192,37 @@
         <di:waypoint x="370" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15io19y_di" bpmnElement="Flow_15io19y">
-        <di:waypoint x="555" y="260" />
-        <di:waypoint x="690" y="260" />
+        <di:waypoint x="735" y="260" />
+        <di:waypoint x="1440" y="260" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="566" y="226" width="76" height="27" />
+          <dc:Bounds x="802" y="226" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gitrv4_di" bpmnElement="Flow_0gitrv4">
-        <di:waypoint x="790" y="260" />
-        <di:waypoint x="1440" y="260" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1n9ug08_di" bpmnElement="Flow_1n9ug08">
-        <di:waypoint x="530" y="285" />
-        <di:waypoint x="530" y="440" />
-        <di:waypoint x="550" y="440" />
+        <di:waypoint x="710" y="285" />
+        <di:waypoint x="710" y="415" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="542" y="310" width="76" height="40" />
+          <dc:Bounds x="722" y="293" width="76" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0evp3v5_di" bpmnElement="Flow_0evp3v5">
-        <di:waypoint x="470" y="260" />
-        <di:waypoint x="505" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_050q4bi_di" bpmnElement="Flow_050q4bi">
-        <di:waypoint x="650" y="440" />
-        <di:waypoint x="685" y="440" />
+        <di:waypoint x="610" y="260" />
+        <di:waypoint x="685" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dlaffe_di" bpmnElement="Flow_0dlaffe">
         <di:waypoint x="735" y="440" />
-        <di:waypoint x="1050" y="440" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="857" y="422" width="78" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19493u9_di" bpmnElement="Flow_19493u9">
-        <di:waypoint x="1150" y="440" />
         <di:waypoint x="1205" y="440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="864" y="422" width="78" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04nwyba_di" bpmnElement="Flow_04nwyba">
         <di:waypoint x="1255" y="440" />
-        <di:waypoint x="1370" y="440" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1271" y="413" width="78" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0txpf2p_di" bpmnElement="Flow_0txpf2p">
-        <di:waypoint x="1470" y="440" />
         <di:waypoint x="1490" y="440" />
         <di:waypoint x="1490" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1289" y="413" width="78" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02a1r9o_di" bpmnElement="Flow_02a1r9o">
         <di:waypoint x="1230" y="415" />
@@ -304,9 +245,13 @@
         <di:waypoint x="920" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13kivia_di" bpmnElement="Flow_13kivia">
-        <di:waypoint x="1020" y="550" />
-        <di:waypoint x="1100" y="550" />
-        <di:waypoint x="1100" y="480" />
+        <di:waypoint x="970" y="510" />
+        <di:waypoint x="970" y="440" />
+        <di:waypoint x="1205" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hhtf7e_di" bpmnElement="Flow_1hhtf7e">
+        <di:waypoint x="470" y="260" />
+        <di:waypoint x="510" y="260" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
