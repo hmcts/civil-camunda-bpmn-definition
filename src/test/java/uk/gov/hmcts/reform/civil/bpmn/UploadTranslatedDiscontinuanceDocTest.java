@@ -19,13 +19,13 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        //send notification to defendant lip
+        //send notification to parties
         ExternalTask notifyDefendantLip = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notifyDefendantLip,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DISCONTINUANCE_DEFENDANT1",
-            "NotifyDiscontinuancetDefendant1"
+            "NOTIFY_EVENT",
+            "DiscontinuanceClaimNotifyParties"
         );
 
         //Post Notice of Discontinuance
@@ -44,15 +44,6 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE",
             "CreateDefendantDashboardNotificationsForDiscontinuance"
-        );
-
-        //send Notification to claimant
-        ExternalTask sendNotificationToClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            sendNotificationToClaimant,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DISCONTINUANCE_CLAIMANT1",
-            "NotifyDiscontinuanceClaimant"
         );
 
         //end business process

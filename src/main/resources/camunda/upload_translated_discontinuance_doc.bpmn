@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DISCONTINUANCE_DOC" name="Upload translated discontinuance doc" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:callActivity id="UPLOADTRANSLATEDDISCONTINUANCEDOC" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -21,7 +21,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0l9oeua</bpmn:incoming>
+      <bpmn:incoming>Flow_1m0ctpe</bpmn:incoming>
       <bpmn:outgoing>Flow_1og0z75</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:endEvent id="Event_0jlhskg">
@@ -33,10 +33,10 @@
     <bpmn:sequenceFlow id="Flow_1x45kty" sourceRef="Event_0x1sw6o" targetRef="UPLOADTRANSLATEDDISCONTINUANCEDOC" />
     <bpmn:sequenceFlow id="Flow_0nvdd4d" sourceRef="UPLOADTRANSLATEDDISCONTINUANCEDOC" targetRef="Event_0a6upqc" />
     <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
-    <bpmn:serviceTask id="NotifyDiscontinuancetDefendant1" name="Notify Discontinuance Defendant 1 (LR/LIP)" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="DiscontinuanceClaimNotifyParties" name="Notify parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DISCONTINUANCE_DEFENDANT1</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1um1d2w</bpmn:incoming>
@@ -51,7 +51,7 @@
       <bpmn:incoming>Flow_11uua4d</bpmn:incoming>
       <bpmn:outgoing>Flow_1843434</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_11uua4d" sourceRef="NotifyDiscontinuancetDefendant1" targetRef="PostNoticeOfDiscontinuanceDefendant1LIP" />
+    <bpmn:sequenceFlow id="Flow_11uua4d" sourceRef="DiscontinuanceClaimNotifyParties" targetRef="PostNoticeOfDiscontinuanceDefendant1LIP" />
     <bpmn:serviceTask id="CreateDefendantDashboardNotificationsForDiscontinuance" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -62,18 +62,8 @@
       <bpmn:outgoing>Flow_1m0ctpe</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1843434" sourceRef="PostNoticeOfDiscontinuanceDefendant1LIP" targetRef="CreateDefendantDashboardNotificationsForDiscontinuance" />
-    <bpmn:serviceTask id="NotifyDiscontinuanceClaimant" name="Notify Discontinuance  Claimant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DISCONTINUANCE_CLAIMANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m0ctpe</bpmn:incoming>
-      <bpmn:outgoing>Flow_0l9oeua</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1m0ctpe" sourceRef="CreateDefendantDashboardNotificationsForDiscontinuance" targetRef="NotifyDiscontinuanceClaimant" />
-    <bpmn:sequenceFlow id="Flow_0l9oeua" sourceRef="NotifyDiscontinuanceClaimant" targetRef="Activity_0pqcpvc" />
-    <bpmn:sequenceFlow id="Flow_1um1d2w" sourceRef="UPLOADTRANSLATEDDISCONTINUANCEDOC" targetRef="NotifyDiscontinuancetDefendant1" />
+    <bpmn:sequenceFlow id="Flow_1m0ctpe" sourceRef="CreateDefendantDashboardNotificationsForDiscontinuance" targetRef="Activity_0pqcpvc" />
+    <bpmn:sequenceFlow id="Flow_1um1d2w" sourceRef="UPLOADTRANSLATEDDISCONTINUANCEDOC" targetRef="DiscontinuanceClaimNotifyParties" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -95,13 +85,7 @@
           <dc:Bounds x="158" y="205" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="1140" y="140" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="1302" y="162" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="NotifyDiscontinuancetDefendant1">
+      <bpmndi:BPMNShape id="BPMNShape_1ur71m1" bpmnElement="DiscontinuanceClaimNotifyParties">
         <dc:Bounds x="450" y="140" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -113,9 +97,11 @@
         <dc:Bounds x="810" y="140" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_03mfssw" bpmnElement="NotifyDiscontinuanceClaimant">
-        <dc:Bounds x="970" y="140" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
+        <dc:Bounds x="1010" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
+        <dc:Bounds x="1212" y="162" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
         <dc:Bounds x="292" y="122" width="36" height="36" />
@@ -132,8 +118,8 @@
         <di:waypoint x="310" y="78" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
-        <di:waypoint x="1240" y="180" />
-        <di:waypoint x="1302" y="180" />
+        <di:waypoint x="1110" y="180" />
+        <di:waypoint x="1212" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11uua4d_di" bpmnElement="Flow_11uua4d">
         <di:waypoint x="550" y="180" />
@@ -145,11 +131,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m0ctpe_di" bpmnElement="Flow_1m0ctpe">
         <di:waypoint x="910" y="180" />
-        <di:waypoint x="970" y="180" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0l9oeua_di" bpmnElement="Flow_0l9oeua">
-        <di:waypoint x="1070" y="180" />
-        <di:waypoint x="1140" y="180" />
+        <di:waypoint x="1010" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1um1d2w_di" bpmnElement="Flow_1um1d2w">
         <di:waypoint x="360" y="180" />
