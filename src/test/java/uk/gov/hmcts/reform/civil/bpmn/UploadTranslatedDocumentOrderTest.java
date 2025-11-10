@@ -47,8 +47,7 @@ class UploadTranslatedDocumentOrderTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            CASE_PROGRESSION_ENABLED, true));
+            UNREPRESENTED_DEFENDANT_ONE, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -114,8 +113,7 @@ class UploadTranslatedDocumentOrderTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.put("flowFlags", Map.of(
-            CASE_PROGRESSION_ENABLED, true));
+        variables.put("flowFlags", Map.of());
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -156,8 +154,7 @@ class UploadTranslatedDocumentOrderTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, lipDefendant,
-            LIP_CASE, lipClaimant,
-            CASE_PROGRESSION_ENABLED, true));
+            LIP_CASE, lipClaimant));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -214,8 +211,7 @@ class UploadTranslatedDocumentOrderTest extends BpmnBaseTest {
         variables.put("flowFlags", Map.of(
             UNREPRESENTED_DEFENDANT_ONE, true,
             LIP_CASE, true,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+            DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

@@ -18,17 +18,17 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
     //CCD CASE EVENT
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
-        = "GENERATE_TRIAL_READY_FORM_APPLICANT";
+            = "GENERATE_TRIAL_READY_FORM_APPLICANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
-        = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
+            = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
-        = "ApplicantNotifyOthersTrialReady";
+            = "ApplicantNotifyOthersTrialReady";
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
-        = "GenerateTrialReadyFormApplicant";
+            = "GenerateTrialReadyFormApplicant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
-        = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
+            = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
 
     public ApplicantTrialReadyNotifyOthersTest() {
         super("applicant_trial_ready_notify_others.bpmn", PROCESS_ID);
@@ -44,38 +44,37 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, false,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                UNREPRESENTED_DEFENDANT_ONE, false,
+                DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+                START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
 
         //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_EVENT,
-                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
-                                   variables
+                NOTIFY_EVENT,
+                APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
+                variables
         );
 
         //complete the hearing form process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
-                                   variables
+                GENERATE_TRIAL_READY_FORM_APPLICANT,
+                GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
+                variables
         );
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
-                                   variables
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
+                variables
         );
 
         //end business process
@@ -95,38 +94,37 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            UNREPRESENTED_DEFENDANT_ONE, true,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                UNREPRESENTED_DEFENDANT_ONE, true,
+                DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+                START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
 
         //complete the notifications
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   NOTIFY_EVENT,
-                                   APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
-                                   variables
+                NOTIFY_EVENT,
+                APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID,
+                variables
         );
 
         //complete the hearing form process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
-                                   variables
+                GENERATE_TRIAL_READY_FORM_APPLICANT,
+                GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID,
+                variables
         );
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
-                                   variables
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID,
+                variables
         );
 
         //end business process
