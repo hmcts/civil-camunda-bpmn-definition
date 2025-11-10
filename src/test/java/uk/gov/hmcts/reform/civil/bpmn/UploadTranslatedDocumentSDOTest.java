@@ -40,33 +40,13 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables);
 
-        //complete the notification to applicant(s) solicitor
+        //complete the notification to parties
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 applicantsNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-                "CreateSDONotifyApplicantsSolicitor",
-                variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor1",
-                variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor2",
+                "NOTIFY_EVENT",
+                "CreateSDONotify",
                 variables
         );
 
@@ -98,33 +78,13 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables);
 
-        //complete the notification to applicant(s) solicitor
+        //complete the notification to parties
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 applicantsNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-                "CreateSDONotifyApplicantsSolicitor",
-                variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor1",
-                variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor2",
+                "NOTIFY_EVENT",
+                "CreateSDONotify",
                 variables
         );
 
@@ -158,13 +118,13 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables);
 
-        //complete the notification to applicant(s) solicitor
+        //complete the notification to parties
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 applicantsNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-                "CreateSDONotifyApplicantsSolicitor",
+                "NOTIFY_EVENT",
+                "CreateSDONotify",
                 variables
         );
 
@@ -184,26 +144,6 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "SEND_SDO_ORDER_TO_LIP_DEFENDANT",
                 "SendSDOToDefendantLIP",
-                variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor1",
-                variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor2",
                 variables
         );
 
@@ -237,13 +177,13 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables);
 
-        //complete the notification to applicant(s) solicitor
+        //complete the notification to parties
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 applicantsNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-                "CreateSDONotifyApplicantsSolicitor",
+                "NOTIFY_EVENT",
+                "CreateSDONotify",
                 variables
         );
 
@@ -254,26 +194,6 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "SEND_SDO_ORDER_TO_LIP_CLAIMANT",
                 "SendSDOToClaimantLIP",
-                variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor1",
-                variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor2",
                 variables
         );
 
@@ -307,33 +227,13 @@ class UploadTranslatedDocumentSDOTest extends BpmnBaseTest {
                 START_BUSINESS_ACTIVITY,
                 variables);
 
-        //complete the notification to applicant(s) solicitor
+        //complete the notification to parties
         ExternalTask applicantsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
                 applicantsNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANTS_SOLICITOR_SDO_TRIGGERED",
-                "CreateSDONotifyApplicantsSolicitor",
-                variables
-        );
-
-        //complete the notification to respondent 1 solicitor
-        ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor1",
-                variables
-        );
-
-        //complete the notification to respondent 2 solicitor
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR2_SDO_TRIGGERED",
-                "CreateSDONotifyRespondentSolicitor2",
+                "NOTIFY_EVENT",
+                "CreateSDONotify",
                 variables
         );
 
