@@ -390,12 +390,12 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_PART_ADMISSION_spec</bpmn:incoming>
       <bpmn:incoming>Flow_1nre60m</bpmn:incoming>
+      <bpmn:incoming>Flow_1c71lgn</bpmn:incoming>
       <bpmn:outgoing>Flow_1tgi30k</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1tgi30k" sourceRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" targetRef="Gateway_0f0iy1j" />
-    <bpmn:sequenceFlow id="Flow_PART_ADMISSION_spec" sourceRef="Gateway_1af2aly" targetRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties">
+    <bpmn:sequenceFlow id="Flow_PART_ADMISSION_spec" sourceRef="Gateway_1af2aly" targetRef="PartAdmissionResponse">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState == "MAIN.PART_ADMISSION"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1nre60m" sourceRef="FullDefenceResponse" targetRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" />
@@ -410,8 +410,18 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_15mh645" sourceRef="Activity_1phjbuy" targetRef="Activity_1m5szz9" />
     <bpmn:sequenceFlow id="Flow_0ewki5y" sourceRef="ProceedOfflineForNonDefenceResponse" targetRef="Activity_0drqld6" />
+    <bpmn:serviceTask id="PartAdmissionResponse" name="Part admission response" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">PROCESS_PART_ADMISSION_DEFENCE_SPEC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_PART_ADMISSION_spec</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c71lgn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1c71lgn" sourceRef="PartAdmissionResponse" targetRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" />
     <bpmn:textAnnotation id="TextAnnotation_0yaoqdd">
-      <bpmn:text>Full Defence, Part Admission Responses</bpmn:text>
+      <bpmn:text>Full Defence</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0qe08cc" sourceRef="TextAnnotation_0yaoqdd" targetRef="Gateway_1af2aly" />
     <bpmn:textAnnotation id="TextAnnotation_1auzlvm">
@@ -577,8 +587,13 @@
         <dc:Bounds x="930" y="1120" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1mk9o9h" bpmnElement="PartAdmissionResponse">
+        <dc:Bounds x="930" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0yaoqdd_di" bpmnElement="TextAnnotation_0yaoqdd">
-        <dc:Bounds x="810" y="500" width="100" height="53" />
+        <dc:Bounds x="810" y="500" width="100" height="30" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1auzlvm_di" bpmnElement="TextAnnotation_1auzlvm">
         <dc:Bounds x="770" y="280" width="100" height="40" />
@@ -850,8 +865,7 @@
       <bpmndi:BPMNEdge id="Flow_0ig3v2q_di" bpmnElement="Flow_PART_ADMISSION_spec">
         <di:waypoint x="760" y="582" />
         <di:waypoint x="760" y="660" />
-        <di:waypoint x="1250" y="660" />
-        <di:waypoint x="1250" y="597" />
+        <di:waypoint x="930" y="660" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="623" y="605" width="74" height="40" />
         </bpmndi:BPMNLabel>
@@ -869,8 +883,13 @@
         <di:waypoint x="956" y="160" />
         <di:waypoint x="1072" y="160" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c71lgn_di" bpmnElement="Flow_1c71lgn">
+        <di:waypoint x="1030" y="660" />
+        <di:waypoint x="1250" y="660" />
+        <di:waypoint x="1250" y="597" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0qe08cc_di" bpmnElement="Association_0qe08cc">
-        <di:waypoint x="810" y="539" />
+        <di:waypoint x="834" y="530" />
         <di:waypoint x="779" y="551" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1jch8bi_di" bpmnElement="Association_1jch8bi">
