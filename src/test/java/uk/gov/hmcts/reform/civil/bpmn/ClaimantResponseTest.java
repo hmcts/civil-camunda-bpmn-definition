@@ -27,9 +27,6 @@ class ClaimantResponseTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID
         = "ProceedOfflineForResponseToDefence";
-
-    public static final String PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID_MULTITRACK
-        = "ProceedOfflineForResponseToDefenceMultitrack";
     public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
     private static final String APPLICATION_PROCEEDS_IN_HERITAGE_ACTIVITY_ID = "UpdateGeneralApplicationStatus";
     public static final String APPLICATION_OFFLINE_UPDATE_CLAIM = "APPLICATION_OFFLINE_UPDATE_CLAIM";
@@ -40,7 +37,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteClaimantResponsewithDQAndProcessGALocationUpdate_WhenApplicantConfirmsToProceed() {
+    void shouldSuccessfullyCompleteClaimantResponsewithDQAndProcessGALocationUpdate_WhenApplicantConfirmsToProceed_WithSdo() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -123,7 +120,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteClaimantResponsewithDQAndProcessGALocationUpdateMultiClaim_WhenApplicantConfirmsToProceedMintiEnabled() {
+    void shouldSuccessfullyCompleteClaimantResponsewithDQAndProcessGALocationUpdateMultiClaim_WhenApplicantConfirmsToProceed() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -136,9 +133,7 @@ class ClaimantResponseTest extends BpmnBaseTest {
         variables.put(FLOW_FLAGS, Map.of(
             ONE_RESPONDENT_REPRESENTATIVE, true,
             TWO_RESPONDENT_REPRESENTATIVES, false,
-            "SDO_ENABLED", true,
-            IS_MULTI_TRACK, true,
-            MINTI_ENABLED, true
+            IS_MULTI_TRACK, true
         ));
 
         //complete the start business process
@@ -197,81 +192,6 @@ class ClaimantResponseTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
-            variables
-        );
-
-        //end business process
-        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
-        completeBusinessProcess(endBusinessProcess);
-
-        assertNoExternalTasksLeft();
-    }
-
-    //  claimant response with intention to proceed and claim is Multi track
-    @Test
-    void shouldSuccessfullyCompleteClaimantResponsewithDQAndMultiClaim_WhenApplicantConfirmsToProceedMintiNotEnabled() {
-        //assert process has started
-        assertFalse(processInstance.isEnded());
-
-        //assert message start event
-        assertThat(getProcessDefinitionByMessage("CLAIMANT_RESPONSE").getKey())
-            .isEqualTo("CLAIMANT_RESPONSE_PROCESS_ID");
-
-        VariableMap variables = Variables.createVariables();
-        variables.putValue("flowState", "MAIN.FULL_DEFENCE_PROCEED");
-        variables.put(FLOW_FLAGS, Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, true,
-            TWO_RESPONDENT_REPRESENTATIVES, false,
-            IS_MULTI_TRACK, true,
-            MINTI_ENABLED, false
-        ));
-
-        //complete the start business process
-        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
-        );
-
-        //complete the take offline event
-        ExternalTask takeOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            takeOffline,
-            PROCESS_CASE_EVENT,
-            PROCEED_OFFLINE_EVENT,
-            PROCEED_OFFLINE_FOR_RESPONSE_TO_DEFENCE_ACTIVITY_ID_MULTITRACK,
-            variables
-        );
-
-        //complete the document generation
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
-            PROCESS_CASE_EVENT,
-            GENERATE_DIRECTIONS_QUESTIONNAIRE,
-            GENERATE_DIRECTIONS_QUESTIONNAIRE_ACTIVITY_ID,
-            variables
-        );
-
-        //complete the notification to parties
-        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyParties,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_EVENT",
-            "ClaimantConfirmsToProceedNotify"
-        );
-
-        //complete the Robotics notification
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE,
-            NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
 
