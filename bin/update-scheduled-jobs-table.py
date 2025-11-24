@@ -68,12 +68,15 @@ def describe_cron(expr: str) -> str:
         return f"{frequency} at {join_times(times)}"
 
     base = None
-    if dom == "1" and month == "*" and dow in {"?", "*"}:
-        base = "First day of each month"
+    def append_year(text: str) -> str:
         if year not in (None, "*", "?"):
-            base += f" in {year}"
+            return f"{text} until {year}"
+        return text
+
+    if dom == "1" and month == "*" and dow in {"?", "*"}:
+        base = append_year("First day of each month")
     elif dom in {"*", "?"} and dow in {"*", "?"} and month == "*":
-        base = "Daily"
+        base = append_year("Daily")
 
     time_text = fmt_time(hour, minute)
     if base:
