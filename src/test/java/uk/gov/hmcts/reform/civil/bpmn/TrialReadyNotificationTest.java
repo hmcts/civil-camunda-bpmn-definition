@@ -34,63 +34,60 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            ONE_RESPONDENT_REPRESENTATIVE, defendantLip == false && defendant2Lip == false
-                ? !twoRepresentatives : false,
-            TWO_RESPONDENT_REPRESENTATIVES, defendantLip == false && defendant2Lip == false
-                ? twoRepresentatives : false,
-            UNREPRESENTED_DEFENDANT_ONE, defendantLip,
-            UNREPRESENTED_DEFENDANT_TWO, defendant2Lip,
-            DASHBOARD_SERVICE_ENABLED, true,
-            CASE_PROGRESSION_ENABLED, true));
+                ONE_RESPONDENT_REPRESENTATIVE, !defendantLip && !defendant2Lip && !twoRepresentatives,
+                TWO_RESPONDENT_REPRESENTATIVES, !defendantLip && !defendant2Lip && twoRepresentatives,
+                UNREPRESENTED_DEFENDANT_ONE, defendantLip,
+                UNREPRESENTED_DEFENDANT_TWO, defendant2Lip,
+                DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(
-            startBusiness,
-            START_BUSINESS_TOPIC,
-            START_BUSINESS_EVENT,
-            START_BUSINESS_ACTIVITY,
-            variables
+                startBusiness,
+                START_BUSINESS_TOPIC,
+                START_BUSINESS_EVENT,
+                START_BUSINESS_ACTIVITY,
+                variables
         );
 
         //complete the notification for respondent 1
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_RESPONDENT_SOLICITOR1_FOR_TRIAL_READY",
-                                   "TrialReadyNotifyRespondentSolicitor1"
+                PROCESS_CASE_EVENT,
+                "NOTIFY_RESPONDENT_SOLICITOR1_FOR_TRIAL_READY",
+                "TrialReadyNotifyRespondentSolicitor1"
         );
 
         if (twoRepresentatives || defendant2Lip) {
             //complete the notification for respondent 2
             ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(respondent2Notification,
-                                       PROCESS_CASE_EVENT,
-                                       "NOTIFY_RESPONDENT_SOLICITOR2_FOR_TRIAL_READY",
-                                       "TrialReadyNotifyRespondentSolicitor2"
+                    PROCESS_CASE_EVENT,
+                    "NOTIFY_RESPONDENT_SOLICITOR2_FOR_TRIAL_READY",
+                    "TrialReadyNotifyRespondentSolicitor2"
             );
         }
 
         //complete the notification for applicant solicitor
         ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_SOLICITOR1_FOR_TRIAL_READY",
-                                   "TrialReadyNotifyApplicantSolicitor1"
+                PROCESS_CASE_EVENT,
+                "NOTIFY_APPLICANT_SOLICITOR1_FOR_TRIAL_READY",
+                "TrialReadyNotifyApplicantSolicitor1"
         );
         //complete the dashboard notification for Respondent
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentDashboardNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_DEFENDANT",
-                                   "GenerateDefendantDashboardNotificationTrialArrangements"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_DEFENDANT",
+                "GenerateDefendantDashboardNotificationTrialArrangements"
         );
         //complete the dashboard notification for Applicant
         ExternalTask applicantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(applicantDashboardNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_CLAIMANT",
-                                   "GenerateClaimantDashboardNotificationTrialArrangements"
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_CP_TRIAL_ARRANGEMENTS_CLAIMANT",
+                "GenerateClaimantDashboardNotificationTrialArrangements"
         );
 
         //end business process
