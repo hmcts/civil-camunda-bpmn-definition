@@ -1,0 +1,31 @@
+name: Verify scheduled jobs table
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/main/resources/camunda/**/*.bpmn'
+      - 'config/scheduled-jobs.json'
+      - 'bin/update-scheduled-jobs-table.py'
+      - 'README.md'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Generate scheduled jobs table
+        run: |
+          python3 bin/update-scheduled-jobs-table.py
+      - name: Ensure README is in sync
+        run: |
+          git status -sb
+          if ! git diff --quiet README.md; then
+            echo 'README.md is out of date. Run python3 bin/update-scheduled-jobs-table.py locally and re-commit.' >&2
+            exit 1
+          fi
