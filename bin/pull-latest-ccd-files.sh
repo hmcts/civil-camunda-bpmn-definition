@@ -17,6 +17,8 @@ cp -r ./civil-ccd-definition/playwright-e2e .
 cp -r ./civil-ccd-definition/plugins .
 cp -r ./civil-ccd-definition/package.json .
 cp -r ./civil-ccd-definition/yarn.lock .
+cp -r ./civil-ccd-definition/.yarnrc.yml .
+cp -r ./civil-ccd-definition/.yarn .
 cp -r ./civil-ccd-definition/playwright.config.ts .
 cp -r ./civil-ccd-definition/codecept.conf.js .
 echo *

@@ -45,7 +45,6 @@ public abstract class BpmnBaseTest {
     public static final String IS_MULTI_TRACK = "IS_MULTI_TRACK";
     public static final String BULK_CLAIM_ENABLED = "BULK_CLAIM_ENABLED";
     public static final String LIP_CASE = "LIP_CASE";
-    public static final String PIP_ENABLED = "PIP_ENABLED";
     public static final String LIP_JUDGMENT_ADMISSION = "LIP_JUDGMENT_ADMISSION";
     public static final String CLAIM_ISSUE_BILINGUAL = "CLAIM_ISSUE_BILINGUAL";
     public static final String RESPONDENT_BILINGUAL = "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL";
@@ -56,7 +55,6 @@ public abstract class BpmnBaseTest {
     public static final String IS_CJES_SERVICE_ENABLED = "IS_CJES_SERVICE_ENABLED";
     public static final String DASHBOARD_SERVICE_ENABLED = "DASHBOARD_SERVICE_ENABLED";
     public static final String MINTI_ENABLED = "MINTI_ENABLED";
-    public static final String CASE_PROGRESSION_ENABLED = "CASE_PROGRESSION_ENABLED";
     public static final String IS_JO_LIVE_FEED_ACTIVE = "IS_JO_LIVE_FEED_ACTIVE";
     public static final String DEFENDANT_NOC_ONLINE = "DEFENDANT_NOC_ONLINE";
     public static final String CLAIM_STATE_DURING_NOC = "CLAIM_STATE_DURING_NOC";
