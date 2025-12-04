@@ -14,7 +14,6 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1mcw97n</bpmn:incoming>
-      <bpmn:incoming>Flow_1ui9efm</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:serviceTask id="ApplicantNotifyOthersTrialReady" name="Notify Respondent solicitors" camunda:type="external" camunda:topic="processCaseEvent">
@@ -51,31 +50,20 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1gsn98m</bpmn:incoming>
-      <bpmn:outgoing>Flow_0g0jkyp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xrqxk3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0g0jkyp" sourceRef="GenerateTrialReadyFormApplicant" targetRef="Gateway_01l4u29" />
     <bpmn:serviceTask id="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" name="Generate Dashboard Notification For Defendant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1lr6m8a</bpmn:incoming>
+      <bpmn:incoming>Flow_0xrqxk3</bpmn:incoming>
       <bpmn:outgoing>Flow_1mcw97n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1mcw97n" sourceRef="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" targetRef="Activity_0wretog" />
-    <bpmn:exclusiveGateway id="Gateway_01l4u29">
-      <bpmn:incoming>Flow_0g0jkyp</bpmn:incoming>
-      <bpmn:outgoing>Flow_1lr6m8a</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1ui9efm</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1lr6m8a" name="Case Progression CUI Enabled" sourceRef="Gateway_01l4u29" targetRef="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.CASE_PROGRESSION_ENABLED &amp;&amp; flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1ui9efm" name="Case Progression CUI Disabled" sourceRef="Gateway_01l4u29" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.CASE_PROGRESSION_ENABLED || !flowFlags.CASE_PROGRESSION_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0cs65bm" sourceRef="TrialReadyProcess" targetRef="ApplicantNotifyOthersTrialReady" />
+    <bpmn:sequenceFlow id="Flow_0xrqxk3" sourceRef="GenerateTrialReadyFormApplicant" targetRef="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -105,14 +93,11 @@
         <dc:Bounds x="262" y="92" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_07kc2xy_di" bpmnElement="GenerateTrialReadyFormApplicant">
-        <dc:Bounds x="770" y="170" width="100" height="80" />
+        <dc:Bounds x="740" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0axnyik" bpmnElement="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty">
-        <dc:Bounds x="1050" y="170" width="100" height="80" />
+        <dc:Bounds x="990" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_01l4u29_di" bpmnElement="Gateway_01l4u29" isMarkerVisible="true">
-        <dc:Bounds x="905" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="262" y="152" width="36" height="36" />
@@ -126,7 +111,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gsn98m_di" bpmnElement="Flow_1gsn98m">
         <di:waypoint x="580" y="210" />
-        <di:waypoint x="770" y="210" />
+        <di:waypoint x="740" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_0yvpi10">
         <di:waypoint x="280" y="152" />
@@ -136,33 +121,17 @@
         <di:waypoint x="188" y="210" />
         <di:waypoint x="230" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g0jkyp_di" bpmnElement="Flow_0g0jkyp">
-        <di:waypoint x="870" y="210" />
-        <di:waypoint x="905" y="210" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mcw97n_di" bpmnElement="Flow_1mcw97n">
-        <di:waypoint x="1150" y="210" />
+        <di:waypoint x="1090" y="210" />
         <di:waypoint x="1230" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lr6m8a_di" bpmnElement="Flow_1lr6m8a">
-        <di:waypoint x="955" y="210" />
-        <di:waypoint x="1050" y="210" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="946" y="216" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ui9efm_di" bpmnElement="Flow_1ui9efm">
-        <di:waypoint x="930" y="185" />
-        <di:waypoint x="930" y="80" />
-        <di:waypoint x="1280" y="80" />
-        <di:waypoint x="1280" y="170" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="936" y="86" width="88" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cs65bm_di" bpmnElement="Flow_0cs65bm">
         <di:waypoint x="330" y="210" />
         <di:waypoint x="480" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xrqxk3_di" bpmnElement="Flow_0xrqxk3">
+        <di:waypoint x="840" y="210" />
+        <di:waypoint x="990" y="210" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
