@@ -193,46 +193,17 @@ class CaseProceedsInCasemanTest extends BpmnBaseTest {
 
         //Dashboard notification
         notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                notification,
-                PROCESS_CASE_EVENT,
-                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateClaimantDashboardNotificationCaseProceedOffline"
+        assertCompleteExternalTask(notification, PROCESS_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            "GenerateDashboardNotificationsCaseProceedsInCaseman",
+            variables
         );
-
-        notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                notification,
-                PROCESS_CASE_EVENT,
-                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateDefendantDashboardNotificationCaseProceedOffline"
-        );
-
-        completeGaDashboardEvents();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
-    }
-
-    private void completeGaDashboardEvents() {
-        ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
-            "claimantLipApplicationOfflineDashboardNotification"
-        );
-
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantGaDashboard,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-            "defendantLipApplicationOfflineDashboardNotification"
-        );
     }
 
     private void completeGaEvents() {

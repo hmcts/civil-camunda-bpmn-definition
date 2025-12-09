@@ -418,7 +418,7 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
     }
 
-    private void    assertCompletedCaseEvent(String eventName, String activityId) {
+    private void assertCompletedCaseEvent(String eventName, String activityId) {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,

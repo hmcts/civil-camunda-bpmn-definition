@@ -51,19 +51,11 @@ public class DismissCaseTest extends BpmnBaseTest {
                                    variables
         );
 
-        //complete the claimant dashboard notification
+        //complete the dashboard notification event
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_DISMISS_CASE_CLAIMANT",
-                                   "DashboardNotifyClaimant",
-                                   variables
-        );
-
-        //complete the defendant dashboard notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   "CREATE_DASHBOARD_NOTIFICATION_DISMISS_CASE_DEFENDANT",
-                                   "DashboardNotifyDefendant",
+            DASHBOARD_NOTIFICATION_EVENT,
+                                   "GenerateDashboardNotificationsDismissCase",
                                    variables
         );
 
