@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static uk.gov.hmcts.reform.civil.bpmn.NotifyClaimTest.NOTIFY_EVENT;
+
 public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
 
     public static final String TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE = "TRIGGER_APPLICATION_PROCEEDS_IN_HERITAGE";
@@ -15,9 +17,7 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPApplicantClaimantConfirmToProceed";
-    private static final String NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED
-        = "NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED";
+        = "DefendantResponseSpecLipvLRFullOrPartAdmit";
 
     public UploadTranslatedSealedFormForLipVsLrTest() {
         super("upload_translated_defendant_sealed_form.bpmn", "UPLOAD_TRANSLATED_DEFENDANT_SEALED_FORM");
@@ -81,7 +81,7 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notifyApplicant,
                 PROCESS_CASE_EVENT,
-                NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED,
+                NOTIFY_EVENT,
                 NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
             );
         }
@@ -100,8 +100,8 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 notifyApplicant,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE",
-                "DefendantResponseFullDefenceNotifyApplicantSolicitor1"
+                "NOTIFY_EVENT",
+                "DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties"
             );
         }
         //complete the notification to LR respondent
@@ -109,8 +109,8 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notifyRespondent,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC",
-            "Notify",
+            "NOTIFY_EVENT",
+            "DefendantResponseUnspecFullDefenceNotifyParties",
             variables
         );
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DEFENDANT_SEALED_FORM" name="Upload translated defendant sealed claim form" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:callActivity id="UPLOADTRANSLATEDDISCONTINUANCEDOC" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -69,20 +69,20 @@
       <bpmn:incoming>Flow_1axf4zx</bpmn:incoming>
       <bpmn:outgoing>Flow_0k04xdu</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Notify" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="DefendantResponseUnspecFullDefenceNotifyParties" name="Notify respondent solicitor 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE_CC</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1foo1br</bpmn:incoming>
       <bpmn:incoming>Flow_04pl7l1</bpmn:incoming>
       <bpmn:outgoing>Flow_05fanh8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyLiPApplicantClaimantConfirmToProceed" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="DefendantResponseSpecLipvLRFullOrPartAdmit" name="Notify Applicant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_APPLICANT_CLAIMANT_CONFIRM_TO_PROCEED</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17h58ro</bpmn:incoming>
@@ -122,20 +122,20 @@
       <bpmn:outgoing>Flow_17h58ro</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0k04xdu" sourceRef="UpdateClaimWithApplicationStatus" targetRef="Activity_0ncmkab" />
-    <bpmn:serviceTask id="DefendantResponseFullDefenceNotifyApplicantSolicitor1" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" name="Notify applicant solicitor 1" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_DEFENDANT_RESPONSE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ihhzy4</bpmn:incoming>
       <bpmn:outgoing>Flow_04pl7l1</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ihhzy4" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1" />
-    <bpmn:sequenceFlow id="Flow_1foo1br" sourceRef="NotifyLiPApplicantClaimantConfirmToProceed" targetRef="Notify" />
-    <bpmn:sequenceFlow id="Flow_17h58ro" sourceRef="Activity_0ncmkab" targetRef="NotifyLiPApplicantClaimantConfirmToProceed" />
-    <bpmn:sequenceFlow id="Flow_04pl7l1" sourceRef="DefendantResponseFullDefenceNotifyApplicantSolicitor1" targetRef="Notify" />
-    <bpmn:sequenceFlow id="Flow_05fanh8" sourceRef="Notify" targetRef="GenerateClaimantDashboardNotificationDefendantResponse" />
+    <bpmn:sequenceFlow id="Flow_0ihhzy4" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" />
+    <bpmn:sequenceFlow id="Flow_1foo1br" sourceRef="DefendantResponseSpecLipvLRFullOrPartAdmit" targetRef="DefendantResponseUnspecFullDefenceNotifyParties" />
+    <bpmn:sequenceFlow id="Flow_17h58ro" sourceRef="Activity_0ncmkab" targetRef="DefendantResponseSpecLipvLRFullOrPartAdmit" />
+    <bpmn:sequenceFlow id="Flow_04pl7l1" sourceRef="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties" targetRef="DefendantResponseUnspecFullDefenceNotifyParties" />
+    <bpmn:sequenceFlow id="Flow_05fanh8" sourceRef="DefendantResponseUnspecFullDefenceNotifyParties" targetRef="GenerateClaimantDashboardNotificationDefendantResponse" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -157,6 +157,12 @@
           <dc:Bounds x="158" y="205" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
+        <dc:Bounds x="1670" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
+        <dc:Bounds x="1802" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ja7bv0_di" bpmnElement="Gateway_0ja7bv0" isMarkerVisible="true">
         <dc:Bounds x="435" y="155" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -170,14 +176,12 @@
       <bpmndi:BPMNShape id="Activity_12h8f4v_di" bpmnElement="UpdateClaimWithApplicationStatus">
         <dc:Bounds x="910" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="1670" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0d29bxu" bpmnElement="DefendantResponseUnspecFullDefenceNotifyParties">
+        <dc:Bounds x="1330" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="1802" y="162" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0xn2iuu" bpmnElement="Activity_0ncmkab">
-        <dc:Bounds x="1050" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="DefendantResponseSpecLipvLRFullOrPartAdmit">
+        <dc:Bounds x="1190" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0vmdxhb_di" bpmnElement="GenerateClaimantDashboardNotificationDefendantResponse">
         <dc:Bounds x="1470" y="140" width="100" height="80" />
@@ -185,15 +189,11 @@
       <bpmndi:BPMNShape id="Activity_09bk2j0_di" bpmnElement="NotifyRoboticsOnContinuousFeed">
         <dc:Bounds x="1180" y="320" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="DefendantResponseFullDefenceNotifyApplicantSolicitor1">
+      <bpmndi:BPMNShape id="BPMNShape_0xn2iuu" bpmnElement="Activity_0ncmkab">
+        <dc:Bounds x="1050" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ipbyde_di" bpmnElement="DefendantResponseSpecFullDefenceFullPartAdmitNotifyParties">
         <dc:Bounds x="1330" y="320" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0oq939d_di" bpmnElement="NotifyLiPApplicantClaimantConfirmToProceed">
-        <dc:Bounds x="1190" y="140" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0d29bxu" bpmnElement="Notify">
-        <dc:Bounds x="1330" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
         <dc:Bounds x="292" y="122" width="36" height="36" />
