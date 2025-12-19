@@ -17,17 +17,17 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
 
     //CCD CASE EVENT
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
-        = "GENERATE_TRIAL_READY_FORM_APPLICANT";
+            = "GENERATE_TRIAL_READY_FORM_APPLICANT";
 
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
-        = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
+            = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
 
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
-        = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
+            = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
 
     //ACTIVITY IDs
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
-        = "GenerateTrialReadyFormApplicant";
+            = "GenerateTrialReadyFormApplicant";
 
     public GenerateTrialReadyDocumentApplicantTest() {
         super("generate_trial_ready_document_applicant.bpmn", PROCESS_ID);
@@ -42,27 +42,26 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
         assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
         VariableMap variables = Variables.createVariables();
-        variables.putValue("flowFlags", Map.of("DASHBOARD_SERVICE_ENABLED", true,
-                                               "CASE_PROGRESSION_ENABLED", true));
+        variables.putValue("flowFlags", Map.of(DASHBOARD_SERVICE_ENABLED, true));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
-                                   START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
+                START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
 
         ExternalTask notificationTask;
 
         //complete the hearing form process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT,
-                                   GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
+                GENERATE_TRIAL_READY_FORM_APPLICANT,
+                GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
         );
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
         );
 
         //end business process
