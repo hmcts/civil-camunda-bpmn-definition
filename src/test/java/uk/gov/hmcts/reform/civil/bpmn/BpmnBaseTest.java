@@ -62,7 +62,7 @@ public abstract class BpmnBaseTest {
     public static final String WELSH_ENABLED = "WELSH_ENABLED";
     public static final String PROCESS_CASE_EVENT_CONFIRM_ORDER_REVIEW = "processConfirmOrderReview";
     public static final String SETTLE_THE_CLAIM = "SETTLE_THE_CLAIM";
-
+    public static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
     public final String bpmnFileName;
     public final String processId;
     public Deployment deployment;

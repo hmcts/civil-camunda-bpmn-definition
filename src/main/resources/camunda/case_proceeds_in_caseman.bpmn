@@ -14,7 +14,7 @@
         <camunda:in variables="all" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ozvyhu</bpmn:incoming>
-      <bpmn:incoming>Flow_0n61xqe</bpmn:incoming>
+      <bpmn:incoming>Flow_1xenm35</bpmn:incoming>
       <bpmn:outgoing>Flow_NextEndEvent</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="Activity_StartBusinessProcess" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -89,52 +89,22 @@
       <bpmn:outgoing>Flow_0rfdl2o</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ozvyhu</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="GenerateClaimantDashboardNotificationCaseProceedOffline" name="Generate Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsCaseProceedsInCaseman" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0rfdl2o</bpmn:incoming>
       <bpmn:outgoing>Flow_1xenm35</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0rfdl2o" name="Dashboard Service Enabled" sourceRef="Gateway_0sx9s0b" targetRef="GenerateClaimantDashboardNotificationCaseProceedOffline">
+    <bpmn:sequenceFlow id="Flow_0rfdl2o" name="Dashboard Service Enabled" sourceRef="Gateway_0sx9s0b" targetRef="GenerateDashboardNotificationsCaseProceedsInCaseman">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1xenm35" sourceRef="GenerateClaimantDashboardNotificationCaseProceedOffline" targetRef="GenerateDefendantDashboardNotificationCaseProceedOffline" />
-    <bpmn:serviceTask id="GenerateDefendantDashboardNotificationCaseProceedOffline" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1xenm35</bpmn:incoming>
-      <bpmn:outgoing>Flow_1m0uccg</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1xenm35" sourceRef="GenerateDashboardNotificationsCaseProceedsInCaseman" targetRef="Activity_EndBusinessProcess" />
     <bpmn:sequenceFlow id="Flow_1ozvyhu" name="Dashboard Service Disabled" sourceRef="Gateway_0sx9s0b" targetRef="Activity_EndBusinessProcess">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="claimantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m0uccg</bpmn:incoming>
-      <bpmn:outgoing>Flow_17716q5</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="defendantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17716q5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0n61xqe</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_17716q5" sourceRef="claimantLipApplicationOfflineDashboardNotification" targetRef="defendantLipApplicationOfflineDashboardNotification" />
-    <bpmn:sequenceFlow id="Flow_0n61xqe" sourceRef="defendantLipApplicationOfflineDashboardNotification" targetRef="Activity_EndBusinessProcess" />
-    <bpmn:sequenceFlow id="Flow_1m0uccg" sourceRef="GenerateDefendantDashboardNotificationCaseProceedOffline" targetRef="claimantLipApplicationOfflineDashboardNotification" />
     <bpmn:sequenceFlow id="Flow_0wg9vqw" sourceRef="ProceedOffline" targetRef="UpdateGeneralApplicationStatus" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="CASE_PROCEEDS_IN_CASEMAN" />
@@ -146,12 +116,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="158" y="235" width="24" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
-        <dc:Bounds x="2392" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
-        <dc:Bounds x="2240" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0emdthr_di" bpmnElement="Activity_StartBusinessProcess">
         <dc:Bounds x="230" y="170" width="100" height="80" />
@@ -178,21 +142,15 @@
       <bpmndi:BPMNShape id="Gateway_0sx9s0b_di" bpmnElement="Gateway_0sx9s0b" isMarkerVisible="true">
         <dc:Bounds x="1435" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01op09a_di" bpmnElement="GenerateClaimantDashboardNotificationCaseProceedOffline">
+      <bpmndi:BPMNShape id="Activity_01op09a_di" bpmnElement="GenerateDashboardNotificationsCaseProceedsInCaseman">
         <dc:Bounds x="1570" y="310" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_15vvbke" bpmnElement="GenerateDefendantDashboardNotificationCaseProceedOffline">
-        <dc:Bounds x="1760" y="310" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Activity_1x5rl4x_di" bpmnElement="Activity_EndBusinessProcess">
+        <dc:Bounds x="1900" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1rtq8df" bpmnElement="claimantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="1940" y="310" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0w5znbg" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="2130" y="310" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Event_0r8yo0r_di" bpmnElement="Event_EndClaimTakenOffline">
+        <dc:Bounds x="2122" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="262" y="152" width="36" height="36" />
@@ -201,8 +159,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1hce35l_di" bpmnElement="Flow_NextEndEvent">
-        <di:waypoint x="2340" y="210" />
-        <di:waypoint x="2392" y="210" />
+        <di:waypoint x="2000" y="210" />
+        <di:waypoint x="2122" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yvpi10_di" bpmnElement="Flow_StartBusinessProcessAbort">
         <di:waypoint x="280" y="152" />
@@ -242,27 +200,16 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xenm35_di" bpmnElement="Flow_1xenm35">
         <di:waypoint x="1670" y="350" />
-        <di:waypoint x="1760" y="350" />
+        <di:waypoint x="1800" y="350" />
+        <di:waypoint x="1800" y="210" />
+        <di:waypoint x="1900" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ozvyhu_di" bpmnElement="Flow_1ozvyhu">
         <di:waypoint x="1485" y="210" />
-        <di:waypoint x="2240" y="210" />
+        <di:waypoint x="1900" y="210" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1557" y="176" width="83" height="27" />
+          <dc:Bounds x="1506" y="176" width="83" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17716q5_di" bpmnElement="Flow_17716q5">
-        <di:waypoint x="2040" y="350" />
-        <di:waypoint x="2130" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0n61xqe_di" bpmnElement="Flow_0n61xqe">
-        <di:waypoint x="2230" y="350" />
-        <di:waypoint x="2290" y="350" />
-        <di:waypoint x="2290" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m0uccg_di" bpmnElement="Flow_1m0uccg">
-        <di:waypoint x="1860" y="350" />
-        <di:waypoint x="1940" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wg9vqw_di" bpmnElement="Flow_0wg9vqw">
         <di:waypoint x="470" y="210" />
