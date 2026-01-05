@@ -1,0 +1,46 @@
+name: Render BPMN diagrams
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/main/resources/camunda/**/*.bpmn'
+  pull_request:
+    paths:
+      - 'src/main/resources/camunda/**/*.bpmn'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Render BPMN diagrams
+        run: |
+          set -euo pipefail
+          mkdir -p docs/bpmn-diagrams
+          find src/main/resources/camunda -name '*.bpmn' -print0 \
+            | sort -z \
+            | while IFS= read -r -d '' diagram; do
+                filename=$(basename "${diagram%.bpmn}")
+                out_base="docs/bpmn-diagrams/${filename}"
+                npx --yes bpmn-to-image@0.10.0 \
+                  "${diagram}:${out_base}.png"
+              done
+
+      - name: Upload rendered diagrams
+        uses: actions/upload-artifact@v4
+        with:
+          name: bpmn-diagrams
+          path: docs/bpmn-diagrams
+          if-no-files-found: error
