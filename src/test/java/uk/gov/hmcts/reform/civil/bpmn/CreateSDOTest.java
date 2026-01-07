@@ -18,6 +18,7 @@ class CreateSDOTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "CREATE_SDO";
     private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
     private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
+    public static final String GENERATE_DASHBOARD_NOTIFICATION_SDO = "GenerateDashboardNotificationSDO";
 
     public CreateSDOTest() {
         super("create_sdo.bpmn", PROCESS_ID);
@@ -142,24 +143,13 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification dashboard
-        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardClaimant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
-            "GenerateDashboardNotificationSDOClaimant",
-            variables
-        );
-
-        //complete the notification dashboard
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardDefendant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
-            "GenerateDashboardNotificationSDODefendant",
-            variables
+        //complete the Dashboard creation
+        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardTask,
+                                   PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   variables
         );
 
         //complete the notification to respondent 1 dashboard
@@ -241,24 +231,13 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification dashboard
-        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardClaimant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
-            "GenerateDashboardNotificationSDOClaimant",
-            variables
-        );
-
-        //complete the notification dashboard
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardDefendant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
-            "GenerateDashboardNotificationSDODefendant",
-            variables
+        //complete the Dashboard creation
+        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardTask,
+                                   PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   variables
         );
 
         //complete the notification to respondent 1 dashboard
@@ -330,24 +309,13 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification dashboard
-        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardClaimant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
-            "GenerateDashboardNotificationSDOClaimant",
-            variables
-        );
-
-        //complete the notification dashboard
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardDefendant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
-            "GenerateDashboardNotificationSDODefendant",
-            variables
+        //complete the Dashboard creation
+        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardTask,
+                                   PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   variables
         );
 
         //complete the notification to respondent 1 dashboard
@@ -429,24 +397,13 @@ class CreateSDOTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification dashboard
-        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardClaimant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
-            "GenerateDashboardNotificationSDOClaimant",
-            variables
-        );
-
-        //complete the notification dashboard
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardDefendant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
-            "GenerateDashboardNotificationSDODefendant",
-            variables
+        //complete the Dashboard creation
+        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardTask,
+                                   PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   variables
         );
 
         //complete the notification to respondent 1 dashboard
@@ -510,24 +467,13 @@ class CreateSDOTest extends BpmnBaseTest {
                                    START_BUSINESS_ACTIVITY,
                                    variables);
 
-        //complete the notification dashboard
-        ExternalTask dashboardClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardClaimant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_CLAIMANT",
-            "GenerateDashboardNotificationSDOClaimant",
-            variables
-        );
-
-        //complete the notification dashboard
-        ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardDefendant,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_SDO_DEFENDANT",
-            "GenerateDashboardNotificationSDODefendant",
-            variables
+        //complete the Dashboard creation
+        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardTask,
+                                   PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   variables
         );
 
         //complete the notification to respondent 1 dashboard
