@@ -43,27 +43,28 @@
       <bpmn:outgoing>Flow_0vb1rtv</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ffw39w" sourceRef="BundleCreationProcess" targetRef="BundleCreationNotify" />
-    <bpmn:serviceTask id="CreateBundleCreatedDashboardNotificationsForDefendant1" name="Create Defendant1 Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
+    <bpmn:exclusiveGateway id="Gateway_0wyd9e8">
       <bpmn:incoming>Flow_0vb1rtv</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ubtncf</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1ubtncf" sourceRef="CreateBundleCreatedDashboardNotificationsForDefendant1" targetRef="CreateBundleCreatedDashboardNotificationsForClaimant1" />
-    <bpmn:serviceTask id="CreateBundleCreatedDashboardNotificationsForClaimant1" name="Create Claimant1 Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:outgoing>Flow_0b014v0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0r6f4hl</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="GenerateDashboardNotificationsBundleCreation" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1ubtncf</bpmn:incoming>
+      <bpmn:incoming>Flow_0b014v0</bpmn:incoming>
       <bpmn:outgoing>Flow_1utz42u</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1utz42u" sourceRef="CreateBundleCreatedDashboardNotificationsForClaimant1" targetRef="Activity_0wretog" />
-    <bpmn:sequenceFlow id="Flow_0vb1rtv" sourceRef="BundleCreationNotify" targetRef="CreateBundleCreatedDashboardNotificationsForDefendant1" />
+    <bpmn:sequenceFlow id="Flow_0b014v0" name="Dashboard Service Enabled" sourceRef="Gateway_0wyd9e8" targetRef="GenerateDashboardNotificationsBundleCreation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0r6f4hl" name="Dashboard Service Disabled" sourceRef="Gateway_0wyd9e8" targetRef="Activity_0wretog">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1utz42u" sourceRef="GenerateDashboardNotificationsBundleCreation" targetRef="Activity_0wretog" />
+    <bpmn:sequenceFlow id="Flow_0vb1rtv" sourceRef="BundleCreationNotify" targetRef="Gateway_0wyd9e8" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -86,11 +87,10 @@
         <dc:Bounds x="490" y="160" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0fexuk7" bpmnElement="CreateBundleCreatedDashboardNotificationsForDefendant1">
-        <dc:Bounds x="700" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Gateway_0wyd9e8_di" bpmnElement="Gateway_0wyd9e8" isMarkerVisible="true">
+        <dc:Bounds x="720" y="180" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0vvhf7v" bpmnElement="CreateBundleCreatedDashboardNotificationsForClaimant1">
+      <bpmndi:BPMNShape id="Activity_0ae4ya1_di" bpmnElement="GenerateDashboardNotificationsBundleCreation">
         <dc:Bounds x="900" y="160" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -122,9 +122,15 @@
         <di:waypoint x="320" y="200" />
         <di:waypoint x="490" y="200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ubtncf_di" bpmnElement="Flow_1ubtncf">
-        <di:waypoint x="800" y="200" />
+      <bpmndi:BPMNEdge id="Flow_0b014v0_di" bpmnElement="Flow_0b014v0">
+        <di:waypoint x="770" y="205" />
         <di:waypoint x="900" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r6f4hl_di" bpmnElement="Flow_0r6f4hl">
+        <di:waypoint x="745" y="230" />
+        <di:waypoint x="745" y="310" />
+        <di:waypoint x="1090" y="310" />
+        <di:waypoint x="1090" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1utz42u_di" bpmnElement="Flow_1utz42u">
         <di:waypoint x="1000" y="200" />
@@ -132,7 +138,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vb1rtv_di" bpmnElement="Flow_0vb1rtv">
         <di:waypoint x="590" y="200" />
-        <di:waypoint x="700" y="200" />
+        <di:waypoint x="745" y="205" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
@@ -14,13 +16,15 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "BUNDLE_CREATION_NOTIFICATION";
     public static final String PROCESS_ID = "BUNDLE_CREATION_NOTIFICATION";
+    private static final String BUNDLE_CREATION = "GenerateDashboardNotificationsBundleCreation";
 
     public BundleCreationNotificationTest() {
         super("bundle_creation_notification.bpmn", "BUNDLE_CREATION_NOTIFICATION");
     }
 
-    @Test
-    void shouldSuccessfullyCompleteBundleCreatedMultiparty() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteBundleCreatedMultiparty(boolean dashboardServiceEnabled) {
 
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -31,7 +35,7 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
                 UNREPRESENTED_DEFENDANT_ONE, false,
-                DASHBOARD_SERVICE_ENABLED, true));
+                DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -51,21 +55,16 @@ class BundleCreationNotificationTest extends BpmnBaseTest {
                 "BundleCreationNotify"
         );
 
-        //complete the Dashboard creation for defendant
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(defendantDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_DEFENDANT1",
-                "CreateBundleCreatedDashboardNotificationsForDefendant1"
-        );
-
-        //complete the Dashboard creation for claimant
-        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_FOR_BUNDLE_CREATED_FOR_CLAIMANT1",
-                "CreateBundleCreatedDashboardNotificationsForClaimant1"
-        );
+        if (dashboardServiceEnabled) {
+            //complete the Dashboard creation
+            ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(dashboardTask,
+                    PROCESS_CASE_EVENT,
+                    DASHBOARD_NOTIFICATION_EVENT,
+                    BUNDLE_CREATION,
+                    variables
+            );
+        }
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
