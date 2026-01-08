@@ -16,14 +16,8 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "COURT_OFFICER_ORDER_ID";
 
     public static final String MESSAGE_NAME = "COURT_OFFICER_ORDER";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT
-        = "CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT
-        = "CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID
-        = "GenerateDashboardNotificationCOOClaimant";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID
-        = "GenerateDashboardNotificationCOODefendant";
+    public static final String CREATE_DASHBOARD_NOTIFICATIONS_COURT_OFFICER_ACTIVITY_ID
+        = "GenerateDashboardNotificationsCourtOfficerOrder";
     public static final String NOTIFY_EVENT
         = "NOTIFY_EVENT";
     public static final String NOTIFY_PARTIES_FOR_COURT_OFFICER_ORDER_TASK_ID
@@ -64,20 +58,11 @@ public class CourtOfficerOrderTest extends BpmnBaseTest {
         );
 
         if (dashboardServiceFlag) {
-            //complete the dashboard form process
             notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 notificationTask, PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT,
-                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_CLAIMANT_ACTIVITY_ID,
-                variables
-            );
-            //complete the hearing form process
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationTask, PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT,
-                CREATE_DASHBOARD_NOTIFICATION_COURT_OFFICER_ORDER_DEFENDANT_ACTIVITY_ID,
+                DASHBOARD_NOTIFICATION_EVENT,
+                CREATE_DASHBOARD_NOTIFICATIONS_COURT_OFFICER_ACTIVITY_ID,
                 variables
             );
         }
