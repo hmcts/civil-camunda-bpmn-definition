@@ -24,7 +24,16 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
     //ACTIVITY IDs
     private static final String NOTIFY_AMEND_RESTITCH_BUNDLE_ACTIVITY_ID = "AmendRestitchBundleNotify";
 
-    private static final String AMEND_RESTITCH_BUNDLE = "GenerateDashboardNotificationsAmendRestitchBundle";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT
+            = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT
+            = "CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT";
+
+    //ACTIVITY IDs
+    private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID
+            = "CreateAmendRestitchBundleDashboardNotificationsForClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID
+            = "CreateAmendRestitchBundleDashboardNotificationsForDefendant";
 
     public AmendRestitchBundleTest() {
         super("amend_restitch_bundle.bpmn", PROCESS_ID);
@@ -49,7 +58,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @MethodSource("provideArgumentSource")
-    void shouldSuccessfullyCompleteAmendRestitchBundle(boolean twoRespondents, boolean dashboardServiceEnabled) {
+    void shouldSuccessfullyCompleteAmendRestitchBundle(boolean twoRespondents) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -59,7 +68,7 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
                 UNREPRESENTED_DEFENDANT_ONE, false,
-                DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
+                DASHBOARD_SERVICE_ENABLED, true,
                 ONE_RESPONDENT_REPRESENTATIVE, !twoRespondents,
                 TWO_RESPONDENT_REPRESENTATIVES, twoRespondents
         ));
@@ -80,15 +89,21 @@ public class AmendRestitchBundleTest extends BpmnBaseTest {
                 variables
         );
 
-        if (dashboardServiceEnabled) {
-            //complete the dashboard notification
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                    DASHBOARD_NOTIFICATION_EVENT,
-                    AMEND_RESTITCH_BUNDLE,
-                    variables
-            );
-        }
+        //complete the claimant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT_ACTIVITY_ID,
+                variables
+        );
+
+        //complete the defendant dashboard notification
+        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT,
+                CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT_ACTIVITY_ID,
+                variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

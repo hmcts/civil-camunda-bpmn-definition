@@ -46,28 +46,27 @@
     <bpmn:sequenceFlow id="Flow_778754554" sourceRef="Event_0kza4it" targetRef="Event_55878855778" />
     <bpmn:sequenceFlow id="Flow_87785545545" sourceRef="Event_191090" targetRef="Activity_7842144454" />
     <bpmn:sequenceFlow id="Flow_78545522545" sourceRef="Activity_7842144454" targetRef="AmendRestitchBundleNotify" />
-    <bpmn:exclusiveGateway id="Gateway_00zpx9y">
-      <bpmn:incoming>Flow_0ll5jlv</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qc5ra8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_01o53x1</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="GenerateDashboardNotificationsAmendRestitchBundle" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="CreateAmendRestitchBundleDashboardNotificationsForClaimant" name="Create Dashboard Notification For Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_CLAIMANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qc5ra8</bpmn:incoming>
+      <bpmn:incoming>Flow_0ll5jlv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qw3fa2545</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1qw3fa2545" sourceRef="CreateAmendRestitchBundleDashboardNotificationsForClaimant" targetRef="CreateAmendRestitchBundleDashboardNotificationsForDefendant" />
+    <bpmn:serviceTask id="CreateAmendRestitchBundleDashboardNotificationsForDefendant" name="Create Dashboard Notification For Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_AMEND_RESTITCH_BUNDLE_DEFENDANT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qw3fa2545</bpmn:incoming>
       <bpmn:outgoing>Flow_0qh9s34</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0qc5ra8" name="Dashboard Service Enabled" sourceRef="Gateway_00zpx9y" targetRef="GenerateDashboardNotificationsAmendRestitchBundle">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01o53x1" name="Dashboard Service Disabled" sourceRef="Gateway_00zpx9y" targetRef="Activity_120199855">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0qh9s34" sourceRef="GenerateDashboardNotificationsAmendRestitchBundle" targetRef="Activity_120199855" />
-    <bpmn:sequenceFlow id="Flow_0ll5jlv" sourceRef="AmendRestitchBundleNotify" targetRef="Gateway_00zpx9y" />
+    <bpmn:sequenceFlow id="Flow_0qh9s34" sourceRef="CreateAmendRestitchBundleDashboardNotificationsForDefendant" targetRef="Activity_120199855" />
+    <bpmn:sequenceFlow id="Flow_0ll5jlv" sourceRef="AmendRestitchBundleNotify" targetRef="CreateAmendRestitchBundleDashboardNotificationsForClaimant" />
   </bpmn:process>
   <bpmn:error id="Error_0lou1w7" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:message id="Message_07sm7e9" name="AMEND_RESTITCH_BUNDLE" />
@@ -95,11 +94,12 @@
       <bpmndi:BPMNShape id="Event_1n2x861_di" bpmnElement="Event_55878855778">
         <dc:Bounds x="262" y="79" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_00zpx9y_di" bpmnElement="Gateway_00zpx9y" isMarkerVisible="true">
-        <dc:Bounds x="770" y="187" width="50" height="50" />
+      <bpmndi:BPMNShape id="BPMNShape_1qfub25" bpmnElement="CreateAmendRestitchBundleDashboardNotificationsForClaimant">
+        <dc:Bounds x="770" y="167" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0hg4cbd_di" bpmnElement="GenerateDashboardNotificationsAmendRestitchBundle">
-        <dc:Bounds x="950" y="167" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0qwga33" bpmnElement="CreateAmendRestitchBundleDashboardNotificationsForDefendant">
+        <dc:Bounds x="1010" y="167" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kza4it_di" bpmnElement="Event_0kza4it">
@@ -124,23 +124,17 @@
         <di:waypoint x="330" y="207" />
         <di:waypoint x="520" y="207" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qc5ra8_di" bpmnElement="Flow_0qc5ra8">
-        <di:waypoint x="820" y="212" />
-        <di:waypoint x="950" y="207" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01o53x1_di" bpmnElement="Flow_01o53x1">
-        <di:waypoint x="795" y="237" />
-        <di:waypoint x="795" y="310" />
-        <di:waypoint x="1270" y="310" />
-        <di:waypoint x="1270" y="246" />
+      <bpmndi:BPMNEdge id="Flow_1qw3fa2_di" bpmnElement="Flow_1qw3fa2545">
+        <di:waypoint x="870" y="207" />
+        <di:waypoint x="1010" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qh9s34_di" bpmnElement="Flow_0qh9s34">
-        <di:waypoint x="1050" y="206" />
+        <di:waypoint x="1110" y="206" />
         <di:waypoint x="1270" y="206" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ll5jlv_di" bpmnElement="Flow_0ll5jlv">
         <di:waypoint x="620" y="207" />
-        <di:waypoint x="795" y="212" />
+        <di:waypoint x="770" y="207" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
