@@ -11,8 +11,10 @@ public class EvidenceUploadedTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "EVIDENCE_UPLOADED";
     private static final String PROCESS_ID = "EVIDENCE_UPLOADED_PROCESS_ID";
 
-    private static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
-    private static final String GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID = "GenerateDashboardNotificationsEvidenceUploaded";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationEvidenceUploadedClaimant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT_ACTIVITY_ID = "GenerateDashboardNotificationEvidenceUploadedDefendant";
 
     public EvidenceUploadedTest() {
         super("evidence_uploaded.bpmn", "EVIDENCE_UPLOADED_PROCESS_ID");
@@ -33,12 +35,19 @@ public class EvidenceUploadedTest extends BpmnBaseTest {
                                    START_BUSINESS_EVENT,
                                    START_BUSINESS_ACTIVITY);
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardNotification,
+        //complete the notification to applicant
+        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(documentGeneration,
                                    PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID);
+                                   CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_CLAIMANT_ACTIVITY_ID);
+
+        //complete the notification to defendant
+        ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notification,
+                                   PROCESS_CASE_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT,
+                                   CREATE_DASHBOARD_NOTIFICATION_EVIDENCE_UPLOADED_DEFENDANT_ACTIVITY_ID);
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
