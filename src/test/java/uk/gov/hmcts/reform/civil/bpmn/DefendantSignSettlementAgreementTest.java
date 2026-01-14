@@ -17,9 +17,9 @@ class DefendantSignSettlementAgreementTest extends BpmnBaseTest {
     private static final String NOTIFY_EVENT =
         "NOTIFY_EVENT";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_EVENT_ID =
-        "CREATE_DASHBOARD_NOTIFICATION_FOR_SETTLEMENT_DEFENDANT_RESPONSE";
+        "DASHBOARD_NOTIFICATION_EVENT";
     private static final String DASHBOARD_NOTIFICATION_FOR_SIGN_SETTLEMENT_AGREEMENT_ACTIVITY_ID =
-        "GenerateDashboardNotificationSignSettlementAgreement";
+        "GenerateDashboardNotificationsSignSettlementAgreement";
     private static final String NOTIFY_EVENT_ID =
         "DefendantSignSettlementNotify";
 
