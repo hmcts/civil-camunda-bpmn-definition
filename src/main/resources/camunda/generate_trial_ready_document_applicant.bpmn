@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0">
   <bpmn:process id="GENERATE_TRIAL_READY_DOCUMENT_APPLICANT" name="Generate trial ready document applicant" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Event_0t2zome" name="Start">
       <bpmn:outgoing>Flow_08myj65</bpmn:outgoing>
@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0mn574t</bpmn:incoming>
+      <bpmn:incoming>Flow_16muzq2</bpmn:incoming>
       <bpmn:outgoing>Flow_1hce35l</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:callActivity id="TrialReadyProcess" name="Start Business Process" calledElement="StartBusinessProcess">
@@ -33,27 +33,17 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0yvpi10" sourceRef="Event_1fn0bf1" targetRef="Event_1nsmt51" />
     <bpmn:sequenceFlow id="Flow_08myj65" sourceRef="Event_0t2zome" targetRef="TrialReadyProcess" />
-    <bpmn:serviceTask id="GenerateTrialReadyFormApplicant" name="Generate Trial Ready Form Applicant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateTrialReadyDocumentApplicant" name="Generate Trial Ready Document Applicant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">GENERATE_TRIAL_READY_FORM_APPLICANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">GENERATE_TRIAL_READY_DOCUMENT_APPLICANT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0w5oqgt</bpmn:incoming>
       <bpmn:outgoing>Flow_16muzq2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0w5oqgt" sourceRef="TrialReadyProcess" targetRef="GenerateTrialReadyFormApplicant" />
-    <bpmn:serviceTask id="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" name="Generate Dashboard Notification For Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_16muzq2</bpmn:incoming>
-      <bpmn:outgoing>Flow_0mn574t</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0mn574t" sourceRef="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" targetRef="Activity_0wretog" />
-    <bpmn:sequenceFlow id="Flow_16muzq2" sourceRef="GenerateTrialReadyFormApplicant" targetRef="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty" />
+    <bpmn:sequenceFlow id="Flow_0w5oqgt" sourceRef="TrialReadyProcess" targetRef="GenerateTrialReadyDocumentApplicant" />
+    <bpmn:sequenceFlow id="Flow_16muzq2" sourceRef="GenerateTrialReadyDocumentApplicant" targetRef="Activity_0wretog" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -78,11 +68,8 @@
       <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
         <dc:Bounds x="262" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07kc2xy_di" bpmnElement="GenerateTrialReadyFormApplicant">
-        <dc:Bounds x="420" y="160" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0axnyik" bpmnElement="GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty">
-        <dc:Bounds x="650" y="160" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_07kc2xy_di" bpmnElement="GenerateTrialReadyDocumentApplicant">
+        <dc:Bounds x="520" y="160" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
@@ -105,15 +92,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0w5oqgt_di" bpmnElement="Flow_0w5oqgt">
         <di:waypoint x="330" y="200" />
-        <di:waypoint x="420" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mn574t_di" bpmnElement="Flow_0mn574t">
-        <di:waypoint x="750" y="200" />
-        <di:waypoint x="910" y="200" />
+        <di:waypoint x="520" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16muzq2_di" bpmnElement="Flow_16muzq2">
-        <di:waypoint x="520" y="200" />
-        <di:waypoint x="650" y="200" />
+        <di:waypoint x="620" y="200" />
+        <di:waypoint x="910" y="200" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
