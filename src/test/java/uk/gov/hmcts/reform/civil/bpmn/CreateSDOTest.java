@@ -18,7 +18,7 @@ class CreateSDOTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "CREATE_SDO";
     private static final String TRIGGER_UPDATE_GA_LOCATION = "TRIGGER_UPDATE_GA_LOCATION";
     private static final String TRIGGER_UPDATE_GA_LOCATION_ACTIVITY_ID = "TriggerAndUpdateGenAppLocation";
-    public static final String GENERATE_DASHBOARD_NOTIFICATION_SDO = "GenerateDashboardNotificationSDO";
+    public static final String GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO = "GenerateDashboardNotificationCreateSDO";
 
     public CreateSDOTest() {
         super("create_sdo.bpmn", PROCESS_ID);
@@ -148,7 +148,7 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(dashboardTask,
                                    PROCESS_CASE_EVENT,
                                    DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO,
                                    variables
         );
 
@@ -236,7 +236,7 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(dashboardTask,
                                    PROCESS_CASE_EVENT,
                                    DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO,
                                    variables
         );
 
@@ -314,7 +314,7 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(dashboardTask,
                                    PROCESS_CASE_EVENT,
                                    DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO,
                                    variables
         );
 
@@ -402,7 +402,7 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(dashboardTask,
                                    PROCESS_CASE_EVENT,
                                    DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO,
                                    variables
         );
 
@@ -472,7 +472,7 @@ class CreateSDOTest extends BpmnBaseTest {
         assertCompleteExternalTask(dashboardTask,
                                    PROCESS_CASE_EVENT,
                                    DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_SDO,
+                                   GENERATE_DASHBOARD_NOTIFICATION_CREATE_SDO,
                                    variables
         );
 
