@@ -28,7 +28,7 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID =
         "PostNoticeOfDiscontinuanceDefendant1LIP";
     public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID =
-        "GenerateDashboardNotificationsDiscontinuance";
+        "GenerateDashboardNotificationsDiscontinueClaimClaimant";
 
     public DiscontinueClaimClaimantTest() {
         super("discontinue_claim_claimant.bpmn", PROCESS_ID);

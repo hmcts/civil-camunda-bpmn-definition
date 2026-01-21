@@ -43,7 +43,7 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
             generateDashboardNotification,
             PROCESS_CASE_EVENT,
             "DASHBOARD_NOTIFICATION_EVENT",
-            "GenerateDashboardNotificationsDiscontinuance"
+            "GenerateDashboardNotificationsDiscontinueClaimClaimant"
         );
 
         //end business process

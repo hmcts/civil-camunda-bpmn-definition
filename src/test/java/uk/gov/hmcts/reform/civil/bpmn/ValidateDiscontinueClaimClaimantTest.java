@@ -29,7 +29,7 @@ public class ValidateDiscontinueClaimClaimantTest extends BpmnBaseTest {
         = "UpdateVisibilityNoticeOfDiscontinuance";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID = "PostNoticeOfDiscontinuanceDefendant1LiP";
     public static final String NOTIFY_DISCONTINUANCE_PARTIES_ACTIVITY_ID = "DiscontinuanceClaimNotifyParties";
-    public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID = "GenerateDashboardNotificationsDiscontinuance";
+    public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID = "GenerateDashboardNotificationsDiscontinueClaimClaimant";
 
     public ValidateDiscontinueClaimClaimantTest() {
         super("validate_discontinue_claim_claimant.bpmn", PROCESS_ID);
