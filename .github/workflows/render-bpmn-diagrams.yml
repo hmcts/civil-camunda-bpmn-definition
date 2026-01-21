@@ -25,18 +25,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install npm dependencies
+        run: npm ci
+
       - name: Render BPMN diagrams
-        run: |
-          set -euo pipefail
-          mkdir -p docs/bpmn-diagrams
-          find src/main/resources/camunda -name '*.bpmn' -print0 \
-            | sort -z \
-            | while IFS= read -r -d '' diagram; do
-                filename=$(basename "${diagram%.bpmn}")
-                out_base="docs/bpmn-diagrams/${filename}"
-                npx --yes bpmn-to-image@0.10.0 \
-                  "${diagram}:${out_base}.png"
-              done
+        run: npm run render:bpmn
 
       - name: Upload rendered diagrams
         uses: actions/upload-artifact@v4
