@@ -6,8 +6,6 @@ import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,20 +28,8 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
-    private static final String LIP_APPLICANT = "LIP_APPLICANT";
-    private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
-
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "applicantNotificationForOrderMadeByJudge";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
-
-    private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
-    private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
-    private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
-    private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
-    private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    private static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY = "GenerateDashboardNotificationsGenerateDirectionsOrder";
 
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
         super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
@@ -72,9 +58,8 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
         processInstance = engine.getRuntimeService().startProcessInstanceByKey(processId);
     }
 
-    @ParameterizedTest
-    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
-    void shouldSuccessfullyCompleteCreatePDFDocument_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
+    @Test
+    void shouldCompleteGenerateDirectionsOrder_whenWelshDisabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -83,8 +68,7 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, isLipApplicant,
-            LIP_RESPONDENT, isLipRespondent));
+            WELSH_ENABLED, false));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -116,57 +100,24 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
                 variables
         );
 
-        if (isLipApplicant) {
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-        }
-
-        if (isLipRespondent) {
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-        }
+        ExternalTask dashboardNotifications = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotifications,
+            MAKE_DECISION_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
-        if (isLipApplicant || isLipRespondent) {
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_CLAIMANT_DASHBOARD_GA_EVENT,
-                GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID,
-                variables
-            );
-
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                APPLICATION_EVENT_GASPEC,
-                UPDATE_RESPONDENT_DASHBOARD_GA_EVENT,
-                GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID,
-                variables
-            );
-        }
-
         assertNoExternalTasksLeft();
     }
 
     @Test
-    void shouldSuccessfullyCompleteCreatePDFDocumentIfWelshApplication_whenCalled() {
+    void shouldCompleteGenerateDirectionsOrder_whenWelshEnabled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 

@@ -7,7 +7,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,14 +26,10 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "LinkDocumentToParentCase";
 
-    private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
 
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "applicantNotificationForOrderMadeByJudge";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
+    private static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY = "GenerateDashboardNotificationsGenerateDirectionsOrder";
 
     private static final String BULK_PRINT_APPLICANT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
     private static final String BULK_PRINT_APPLICANT_ACTIVITY = "BulkPrintOrderApplicant";
@@ -71,8 +67,8 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     }
 
     @ParameterizedTest
-    @CsvSource({"false,false", "true,false", "true,true", "false,true"})
-    void shouldSuccessfullyCompleteNotifications_whenCalled(boolean isLipApplicant, boolean isLipRespondent) {
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteNotifications_whenCalled(boolean isLipRespondent) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -81,7 +77,6 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
 
         VariableMap variables = Variables.createVariables();
         variables.put("flowFlags", Map.of(
-            LIP_APPLICANT, isLipApplicant,
             LIP_RESPONDENT, isLipRespondent));
 
         //complete the start business process
@@ -104,36 +99,25 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
             variables
         );
 
-        if (isLipApplicant) {
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
+        ExternalTask dashboardNotifications = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotifications,
+            MAKE_DECISION_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY,
+            variables
+        );
 
-            ExternalTask bulkPrintApplicant = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                bulkPrintApplicant,
-                MAKE_DECISION_CASE_EVENT,
-                BULK_PRINT_APPLICANT_EVENT,
-                BULK_PRINT_APPLICANT_ACTIVITY,
-                variables
-            );
-        }
+        ExternalTask bulkPrintApplicant = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+        assertCompleteExternalTask(
+            bulkPrintApplicant,
+            MAKE_DECISION_CASE_EVENT,
+            BULK_PRINT_APPLICANT_EVENT,
+            BULK_PRINT_APPLICANT_ACTIVITY,
+            variables
+        );
 
         if (isLipRespondent) {
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-
             ExternalTask bulkPrintRespondent = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
             assertCompleteExternalTask(
                 bulkPrintRespondent,
@@ -148,7 +132,7 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
-        if (isLipApplicant || isLipRespondent) {
+        if (isLipRespondent) {
             ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
                 updateCuiClaimantDashboard,
