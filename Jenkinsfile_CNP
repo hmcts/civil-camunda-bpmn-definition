@@ -40,6 +40,14 @@ def getFunctionalTestsGroups() {
   return functionalTestGroups.join(",")
 }
 
+def getCivilServiceImage() {
+  def githubApi = new GithubAPI(this)
+  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "civilServicePr:") ) {
+    return "pr-" + label.minus("civilServicePr:").trim()
+  }
+  return "latest"
+}
+
 static Map<String, Object> secret(String secretName, String envVariable) {
   [$class     : 'AzureKeyVaultSecret',
    secretType : 'Secret',
@@ -129,6 +137,7 @@ withPipeline(type, product, component) {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
     env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    env.CIVIL_SERVICE_IMAGE = getCivilServiceImage()
   }
   onMaster {
     env.ENVIRONMENT = "aat"
@@ -183,7 +192,7 @@ withPipeline(type, product, component) {
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.WIREMOCK_URL="https://wiremock-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    env.CIVIL_GENERAL_APPLICATIONS_URL = "https://ga-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.CIVIL_GENERAL_APPLICATIONS_URL = "https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
