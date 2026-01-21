@@ -35,8 +35,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC
         = "GENERATE_JUDGMENT_BY_DETERMINATION_RESPONSE_DOC";
 
-    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE
-        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        = "GenerateDashboardNotificationsClaimantResponseCui";
 
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
@@ -69,14 +69,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
     private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT_ID = "SendJudgmentDetailsToCJES";
     private static final String UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID = "updateClaimantClaimStateID";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDefendantCCJDashboardNotification";
-    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
-    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateClaimantCCJDashboardNotification";
-    private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-        = "GenerateClaimantDashboardNotificationClaimantResponse";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
     public static final String JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER_EVENT_ID = "JUDGMENT_BY_ADMISSION_DEFENDANT1_PIN_IN_LETTER";
@@ -121,8 +113,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         if (!claimantBilingual) {
             updateClaimState();
-            createClaimantDashboardNotification();
-            createDefendantDashboardNotification();
+            generateDashboardNotifications();
         }
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -159,8 +150,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (!claimantBilingual) {
             generateRPAContinuousFeed();
             updateClaimState();
-            createClaimantDashboardNotification();
-            createDefendantDashboardNotification();
+            generateDashboardNotifications();
         }
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -193,10 +183,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyPartiesClaimantConfirmsToProceed();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
-        generateDashboardNotificationForApplicantProceedOfflineClaim();
-        generateDashboardNotificationForDefendantProceedOfflineClaim();
-        generateClaimantDashboardNotificationForCCJClaimantResponse();
-        generateDefendantDashboardNotificationForCCJClaimantResponse();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -229,10 +216,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyPartiesClaimantConfirmsToProceed();
         proceedCaseOffline();
         notifyRPACaseHandledOffline();
-        generateDashboardNotificationForApplicantProceedOfflineClaim();
-        generateDashboardNotificationForDefendantProceedOfflineClaim();
-        generateClaimantDashboardNotificationForCCJClaimantResponse();
-        generateDefendantDashboardNotificationForCCJClaimantResponse();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -273,8 +257,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -383,8 +366,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -419,8 +401,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
             generateDQPdf();
         }
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -456,8 +437,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateDQPdf();
         if (!defendantBilingual) {
             updateClaimState();
-            createClaimantDashboardNotification();
-            createDefendantDashboardNotification();
+            generateDashboardNotifications();
         }
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -491,8 +471,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
         generateDQPdf();
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -524,8 +503,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -647,8 +625,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         triggerUpdateGaLocation(variables);
         generateDQPdf();
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -680,8 +657,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         notifyPartiesClaimantConfirmsToProceed();
         triggerUpdateGaLocation(variables);
         updateClaimState();
-        createClaimantDashboardNotification();
-        createDefendantDashboardNotification();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -723,8 +699,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
-        createClaimantDashboardNotificationForJOIssued();
-        createDefendantDashboardNotificationForJOIssued();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -766,8 +741,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
-        createClaimantDashboardNotificationForJOIssued();
-        createDefendantDashboardNotificationForJOIssued();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -808,8 +782,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         if (isRpaLiveFeed) {
             generateJoRPAContinuousFeed();
         }
-        createClaimantDashboardNotificationForJOIssued();
-        createDefendantDashboardNotificationForJOIssued();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -851,8 +824,7 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         generateJudgmentByAdmissionDefendantDocument();
         sendPinInPOstLetterForJudgmentByAdmission();
         postClaimantLipJbaLetter();
-        createClaimantDashboardNotificationForJOIssued();
-        createDefendantDashboardNotificationForJOIssued();
+        generateDashboardNotifications();
         endBusinessProcess();
         assertNoExternalTasksLeft();
     }
@@ -873,10 +845,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_CONFIRM_PROCEED_ACTIVITY_ID);
     }
 
-    private void createClaimantDashboardNotification() {
-        assertCompletedCaseEvent(CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID);
-    }
-
     private void generateDQPdf() {
         assertCompletedCaseEvent(DQ_PDF_EVENT, DQ_PDF_ACTIVITY_ID);
     }
@@ -893,8 +861,8 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT_ID);
     }
 
-    private void createDefendantDashboardNotification() {
-        assertCompletedCaseEvent(CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE, CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID);
+    private void generateDashboardNotifications() {
+        assertCompletedCaseEvent(DASHBOARD_NOTIFICATION_EVENT, DASHBOARD_NOTIFICATION_ACTIVITY_ID);
     }
 
     private void assertCompletedCaseEvent(String eventName, String activityId) {
@@ -934,22 +902,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
         assertCompletedCaseEvent(NOTIFY_RPA_ON_CASE_HANDED_OFFLINE, NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID);
     }
 
-    private void generateDashboardNotificationForApplicantProceedOfflineClaim() {
-        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT", "claimantLipApplicationOfflineDashboardNotification");
-    }
-
-    private void generateDashboardNotificationForDefendantProceedOfflineClaim() {
-        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
-    }
-
-    private void generateClaimantDashboardNotificationForCCJClaimantResponse() {
-        assertCompletedCaseEvent("CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateClaimantCCJDashboardNotificationClaimantResponse");
-    }
-
-    private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
-        assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
-    }
-
     private void proceedCaseOffline() {
         assertCompletedCaseEvent(PROCEED_OFFLINE_EVENT, PROCEED_OFFLINE_EVENT_ACTIVITY_ID);
     }
@@ -972,14 +924,6 @@ public class ClaimantResponseCuiTest extends BpmnBaseTest {
 
     private void updateClaimantClaimState() {
         assertCompletedCaseEvent(UPDATE_CLAIMANT_INTENTION_CLAIM_STATE_EVENT, UPDATE_CLAIMANT_CLAIM_STATE_EVENT_ID);
-    }
-
-    private void createDefendantDashboardNotificationForJOIssued() {
-        assertCompletedCaseEvent(CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT, CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID);
-    }
-
-    private void createClaimantDashboardNotificationForJOIssued() {
-        assertCompletedCaseEvent(DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT, DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID);
     }
 
     private void generateJoRPAContinuousFeed() {
