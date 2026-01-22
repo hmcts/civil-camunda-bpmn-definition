@@ -26,6 +26,7 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
     private static final String APPLICATION_OFFLINE_UPDATE_CLAIM_ACTIVITY_ID = "UpdateClaimWithApplicationStatus";
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String TAKE_CASE_OFFLINE_NOTIFIER = "TakeCaseOfflineNotifier";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsTakeCaseOffline";
 
     public TakeCaseOfflineTest() {
         super("take_case_offline.bpmn", "TAKE_CASE_OFFLINE");
@@ -232,32 +233,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         assertCompleteExternalTask(
                 mainCaseNotification,
                 PROCESS_CASE_EVENT,
-                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateClaimantDashboardNotificationCaseProceedOffline"
-        );
-
-        mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                mainCaseNotification,
-                PROCESS_CASE_EVENT,
-                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateDefendantDashboardNotificationCaseProceedOffline"
-        );
-
-        ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                claimantGaDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
-                "claimantLipApplicationOfflineDashboardNotification"
-        );
-
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                defendantGaDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-                "defendantLipApplicationOfflineDashboardNotification"
+                DASHBOARD_NOTIFICATION_EVENT,
+                DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
@@ -334,32 +311,8 @@ class TakeCaseOfflineTest extends BpmnBaseTest {
         assertCompleteExternalTask(
                 mainCaseNotification,
                 PROCESS_CASE_EVENT,
-                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateClaimantDashboardNotificationCaseProceedOffline"
-        );
-
-        mainCaseNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                mainCaseNotification,
-                PROCESS_CASE_EVENT,
-                "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CASE_PROCEED_OFFLINE",
-                "GenerateDefendantDashboardNotificationCaseProceedOffline"
-        );
-
-        ExternalTask claimantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                claimantGaDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT",
-                "claimantLipApplicationOfflineDashboardNotification"
-        );
-
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                defendantGaDashboard,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
-                "defendantLipApplicationOfflineDashboardNotification"
+                DASHBOARD_NOTIFICATION_EVENT,
+                DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
