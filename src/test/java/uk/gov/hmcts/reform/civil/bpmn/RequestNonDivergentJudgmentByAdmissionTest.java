@@ -24,12 +24,12 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocDefendant";
     public static final String SEND_JUDGMENT_DETAILS_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
-    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
-    public static final String DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationJudgementByAdmissionClaimant";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
     private static final String POST_CLAIMANT_LIP_JBA_LETTER_ID = "PostClaimantLIPJBALetter";
     private static final String POST_CLAIMANT_LIP_JBA_LETTER = "POST_CLAIMANT_LIP_JBA_LETTER";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID =
+        "GenerateDashboardNotificationsJudgementByAdmissionNonDivergentSpec";
 
     public RequestNonDivergentJudgmentByAdmissionTest() {
         super("judgment_by_admission_non_divergent_spec.bpmn", PROCESS_ID);
@@ -128,18 +128,8 @@ class RequestNonDivergentJudgmentByAdmissionTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 dashboardClaimant,
                 PROCESS_CASE_EVENT,
-                DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID,
-                DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_ACTIVITY_ID,
-                variables
-            );
-
-            //complete the notification dashboard
-            ExternalTask dashboardDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                dashboardDefendant,
-                PROCESS_CASE_EVENT,
-                "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT",
-                "GenerateDashboardNotificationJudgementByAdmissionDefendant",
+                DASHBOARD_NOTIFICATION_EVENT,
+                DASHBOARD_NOTIFICATION_ACTIVITY_ID,
                 variables
             );
         }
