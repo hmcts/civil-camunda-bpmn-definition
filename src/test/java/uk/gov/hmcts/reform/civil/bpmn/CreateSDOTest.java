@@ -265,7 +265,6 @@ class CreateSDOTest extends BpmnBaseTest {
                                    variables
         );
 
-
         //complete the Trigger and Update GA Location event
         ExternalTask triggerAndUpdateGenAppLocation = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
