@@ -16,8 +16,7 @@ class RespondToQueryTest extends BpmnBaseTest {
     private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_QUERY_HAS_RESPONSE";
     private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
     private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "NotifyOtherPartyQueryHasResponse";
-    private static final String CREATE_DASHBOARD_NOTIFICATION = "UPDATE_DASHBOARD_NOTIFICATIONS_RESPONSE_TO_QUERY";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID = "UpdateDashboardNotificationsResponseToQuery";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsRespondToQuery";
 
     public RespondToQueryTest() {
         super("respond_to_query.bpmn", PROCESS_ID);
@@ -64,9 +63,9 @@ class RespondToQueryTest extends BpmnBaseTest {
         //create dashboard notification
         ExternalTask createDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notifyOtherParty,
+            createDashboardNotification,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION,
+            DASHBOARD_NOTIFICATION_EVENT,
             CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
