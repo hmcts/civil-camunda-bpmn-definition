@@ -34,6 +34,7 @@ public abstract class BpmnBaseGAAfterPaymentTest {
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String END_DOC_UPLOAD_BUSINESS_PROCESS = "END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC";
     public static final String ERROR_CODE = "TEST_CODE";
+    public static final String DASHBOARD_NOTIFICATION_GA_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
 
     public final String bpmnFileName;
     public final String processId;
