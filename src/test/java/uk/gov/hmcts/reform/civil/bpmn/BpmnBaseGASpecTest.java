@@ -39,6 +39,7 @@ public abstract class BpmnBaseGASpecTest {
     public static final String END_BUSINESS_PROCESS_WITHOUT_TASK = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     public static final String END_GA_HWF_NOTIFY_PROCESS = "END_GA_HWF_NOTIFY_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
+    public static final String DASHBOARD_NOTIFICATION_GA_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
 
     public final String bpmnFileName;
     public final String processId;
