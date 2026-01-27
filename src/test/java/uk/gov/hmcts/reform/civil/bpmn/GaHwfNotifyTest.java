@@ -15,9 +15,10 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
     private static final String ACTIVITY_ID = "Notify_App_Lip_Hwf";
     private static final String START_BUSINESS_TOPIC = "START_GA_BUSINESS_PROCESS";
     public static final String NOTIFY_EVENT = "applicationProcessCaseEventGASpec";
-    private static final String CASE_EVENT_NAME_DASHBOARD = "APPLICANT_LIP_HWF_DASHBOARD_NOTIFICATION";
-    private static final String ACTIVITY_ID_DASHBOARD = "applicantLipHwFDashboardNotification";
     public static final String NOTIFY_EVENT_DASHBOARD = "processExternalCaseEventGASpec";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_GA_LIP_HWF_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGALiPHwF";
 
     public GaHwfNotifyTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -69,8 +70,8 @@ public class GaHwfNotifyTest extends BpmnBaseGASpecTest {
         assertCompleteExternalTask(
             notifyTaskDashboard,
             NOTIFY_EVENT_DASHBOARD,
-            CASE_EVENT_NAME_DASHBOARD,
-            ACTIVITY_ID_DASHBOARD
+            DASHBOARD_NOTIFICATION_GA_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_GA_LIP_HWF_ACTIVITY_ID
         );
 
         //end business process
