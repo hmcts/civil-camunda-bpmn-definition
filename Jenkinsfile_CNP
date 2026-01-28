@@ -31,6 +31,31 @@ def copyPrevFailedAndNotExecutedTestFilesJson() {
   }
 }
 
+def copyPreviousAllureHistory() {
+  def buildFound = false
+  def buildNumber = currentBuild.previousBuild ? currentBuild.previousBuild.number : 0
+  def minBuildNumber = ((buildNumber - 8) > 0) ? buildNumber - 8 : 0
+  def targetDir = "test-results/functional/allure-results/history"
+
+  while (!buildFound && buildNumber > minBuildNumber) {
+    try {
+      copyArtifacts(
+        projectName: env.JOB_NAME,
+        selector: specific("${buildNumber}"),
+        filter: "test-results/functional/allure-report/history/*",
+        target: targetDir,
+        flatten: true
+      )
+      
+      buildFound = true
+      echo "Successfully imported Allure history from build ${buildNumber}"
+    } catch (Exception error) {
+      echo "Allure history artifact not found in build ${buildNumber}. Trying previous..."
+      buildNumber--
+    }
+  }
+}
+
 def getFunctionalTestsGroups() {
   def githubApi = new GithubAPI(this)
   def functionalTestGroups = []
@@ -208,6 +233,7 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
+    copyPreviousAllureHistory();
     if(checkForRunAllFunctionalTests(env.BRANCH_NAME)) {
       env.RUN_ALL_FUNCTIONAL_TESTS = true
     } else {
@@ -216,6 +242,15 @@ withPipeline(type, product, component) {
   }
 
   afterAlways('functionalTest:preview') {
+    steps.sh 'npx allure generate test-results/functional/allure-results --clean -o test-results/functional/allure-report'
+    publishHTML([
+      allowMissing: false,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'test-results/functional/allure-report',
+      reportFiles: 'index.html',
+      reportName: 'Non-Prod E2E Allure Report'
+    ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
@@ -246,6 +281,7 @@ withPipeline(type, product, component) {
 
   before('functionalTest:aat') {
     copyPrevFailedAndNotExecutedTestFilesJson();
+    copyPreviousAllureHistory();
   }
 
   afterSuccess('functionalTest:aat') {
@@ -255,6 +291,15 @@ withPipeline(type, product, component) {
   }
 
   afterAlways('functionalTest:aat') {
+    steps.sh 'npx allure generate test-results/functional/allure-results --clean -o test-results/functional/allure-report'
+    publishHTML([
+      allowMissing: false,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'test-results/functional/allure-report',
+      reportFiles: 'index.html',
+      reportName: 'Non-Prod E2E Allure Report'
+    ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 }
