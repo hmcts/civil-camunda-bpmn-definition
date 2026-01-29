@@ -42,8 +42,8 @@ public class UploadTranslatedDiscontinuanceDocTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             generateDashboardNotification,
             PROCESS_CASE_EVENT,
-            "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE",
-            "CreateDefendantDashboardNotificationsForDiscontinuance"
+            "DASHBOARD_NOTIFICATION_EVENT",
+            "GenerateDashboardNotificationsDiscontinueClaimClaimant"
         );
 
         //end business process
