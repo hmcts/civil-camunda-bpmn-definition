@@ -12,13 +12,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   render:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,12 +30,55 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Determine changed BPMN files
+        id: changed
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git fetch origin "${{ github.base_ref }}"
+            CHANGED=$(git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}")
+          else
+            CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+          fi
+
+          BPMN_CHANGED=$(echo "$CHANGED" | grep -E '^src/main/resources/camunda/.*\.bpmn$' || true)
+
+          if [[ -z "$BPMN_CHANGED" ]]; then
+            echo "bpmn_list=" >> "$GITHUB_OUTPUT"
+            echo "No BPMN changes detected."
+            exit 0
+          fi
+
+          # Convert list to comma-separated filters understood by render script
+          BPMN_LIST=$(echo "$BPMN_CHANGED" | tr '\n' ',' | sed 's/,$//')
+          echo "bpmn_list=$BPMN_LIST" >> "$GITHUB_OUTPUT"
+          echo "BPMN files to render: $BPMN_LIST"
+
       - name: Render BPMN diagrams
+        if: steps.changed.outputs.bpmn_list != ''
         run: npm run render:bpmn
+        env:
+          BPMN_RENDER_ONLY: ${{ steps.changed.outputs.bpmn_list }}
 
       - name: Upload rendered diagrams
+        if: steps.changed.outputs.bpmn_list != ''
         uses: actions/upload-artifact@v4
         with:
           name: bpmn-diagrams
           path: docs/bpmn-diagrams
           if-no-files-found: error
+
+      - name: Commit rendered diagrams
+        if: steps.changed.outputs.bpmn_list != '' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/bpmn-diagrams/*.png
+
+          if git diff --cached --quiet; then
+            echo "No diagram changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update BPMN diagrams"
+          git push
