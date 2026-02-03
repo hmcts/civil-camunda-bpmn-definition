@@ -2,7 +2,6 @@
 
 Civil Camunda BPMN Definition
 
-
 ### Contents:
 - [Building and deploying application](#building-and-deploying-the-application)
 - [Camunda](#camunda)
