@@ -22,10 +22,10 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
     public static final String JUDGMENT_SET_ASIDE_ERROR = "JUDGMENT_SET_ASIDE_ERROR";
 
     //CCD CASE EVENT
-    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT";
+    public static final String CREATE_DASHBOARD_NOTIFICATIONS_SET_ASIDE_JUDGEMENT = "DASHBOARD_NOTIFICATION_EVENT";
 
     //ACTIVITY IDs
-    public static final String CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID = "GenerateDashboardNotificationSetAsideJudgmentClaimant";
+    public static final String CREATE_DASHBOARD_NOTIFICATIONS_SET_ASIDE_JUDGEMENT_ACTIVITY_ID = "GenerateDashboardNotificationsSetAsideJudgement";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     public static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ID = "NotifyRoboticsOnContinuousFeed";
 
@@ -107,8 +107,8 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 claimant1DashboardNotification,
                 PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT,
-                CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGEMENT_CLAIMANT_ACTIVITY_ID,
+                CREATE_DASHBOARD_NOTIFICATIONS_SET_ASIDE_JUDGEMENT,
+                CREATE_DASHBOARD_NOTIFICATIONS_SET_ASIDE_JUDGEMENT_ACTIVITY_ID,
                 variables
             );
 
@@ -154,17 +154,6 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
                     "SendSetAsideLiPLetterDef1",
                     variables
                 );
-                if (dashboardServiceEnabled) {
-                    //complete generate dashboard notification to defendant
-                    ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                    assertCompleteExternalTask(
-                        respondent1DashboardNotification,
-                        PROCESS_CASE_EVENT,
-                        "CREATE_DASHBOARD_NOTIFICATION_SET_ASIDE_JUDGMENT_DEFENDANT",
-                        "GenerateDashboardNotificationSetAsideDefendant",
-                        variables
-                    );
-                }
             }
         }
 
