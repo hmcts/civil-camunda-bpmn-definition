@@ -4,198 +4,193 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class GenerateSpecDjFormTest extends BpmnBaseTest {
+class GenerateSpecDJFormTest extends BpmnBaseTest {
 
-    private static final String MESSAGE_NAME = "DEFAULT_JUDGEMENT_SPEC";
-    private static final String PROCESS_ID = "GENERATE_DJ_FORM_SPEC";
+    public static final String MESSAGE_NAME = "DEFAULT_JUDGEMENT_SPEC";
+    public static final String PROCESS_ID = "GENERATE_DJ_FORM_SPEC";
 
-    private static final String GENERATE_DJ_FORM_SPEC_EVENT = "GENERATE_DJ_FORM_SPEC";
-    private static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
-    private static final String NOTIFY_APPLICANT_EVENT = "NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED";
-    private static final String NOTIFY_APPLICANT_ACTIVITY_ID = "NotifyApplicantSolicitorDJReceived";
-    private static final String NOTIFY_RESPONDENT_EVENT = "NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED";
-    private static final String NOTIFY_RESPONDENT_ACTIVITY_ID = "NotifyRespondentSolicitorDJReceived";
-    private static final String NOTIFY_RPA_EVENT = "NOTIFY_RPA_DJ_SPEC";
-    private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPADJSPEC";
-    private static final String DASHBOARD_APPLICATION_OFFLINE_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT";
-    private static final String DASHBOARD_APPLICATION_OFFLINE_CLAIMANT_ACTIVITY_ID = "claimantLipApplicationOfflineDashboardNotification";
-    private static final String DASHBOARD_APPLICATION_OFFLINE_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT";
-    private static final String DASHBOARD_APPLICATION_OFFLINE_DEFENDANT_ACTIVITY_ID = "defendantLipApplicationOfflineDashboardNotification";
-    private static final String DASHBOARD_CCJ_APPLICANT = "CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_APPLICANT1";
-    private static final String DASHBOARD_CCJ_APPLICANT_ACTIVITY_ID = "GenerateDashboardNotificationClaimantIntentCCJRequestedForApplicant1";
-    private static final String DASHBOARD_CCJ_RESPONDENT = "CREATE_DASHBOARD_NOTIFICATION_FOR_CCJ_REQUEST_FOR_RESPONDENT1";
-    private static final String DASHBOARD_CCJ_RESPONDENT_ACTIVITY_ID = "GenerateDashboardNotificationClaimantIntentCCJRequestedForRespondent1_1";
+    public static final String GENERATE_DJ_FORM_SPEC_EVENT = "GENERATE_DJ_FORM_SPEC";
+    public static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
+    public static final String NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED = "NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED";
+    public static final String NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID = "NotifyApplicantSolicitorDJReceived";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED = "NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED";
+    public static final String NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID = "NotifyRespondentSolicitorDJReceived";
+    public static final String NOTIFY_RPA_DJ_SPEC = "NOTIFY_RPA_DJ_SPEC";
+    public static final String NOTIFY_RPA_DJ_SPEC_ACTIVITY_ID = "NotifyRPADJSPEC";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsDjFormSpec";
 
-    GenerateSpecDjFormTest() {
+    public GenerateSpecDJFormTest() {
         super("generate_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
-    @Test
-    void shouldSuccessfullyComplete_whenJoFlagEnabledAndDashboardDisabled() {
-        VariableMap variables = flowFlags(true, false, false, false);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteWhenJoEnabled(boolean dashboardServiceEnabled) {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
 
-        startAndAssertProcess();
-        startBusinessProcess(variables);
-        completeDocGeneration(variables);
-        completePrimaryNotifications(variables);
-        assertProcessClosed();
-    }
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
 
-    @Test
-    void shouldSuccessfullyComplete_whenDashboardEnabledAndClaimantRepresented() {
-        VariableMap variables = flowFlags(false, true, false, false);
-
-        startAndAssertProcess();
-        startBusinessProcess(variables);
-        completeDocGeneration(variables);
-        completePrimaryNotifications(variables);
-
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantDashboard,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_APPLICATION_OFFLINE_DEFENDANT,
-            DASHBOARD_APPLICATION_OFFLINE_DEFENDANT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask respondentDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentDashboard,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_CCJ_RESPONDENT,
-            DASHBOARD_CCJ_RESPONDENT_ACTIVITY_ID,
-            variables
-        );
-
-        assertProcessClosed();
-    }
-
-    @Test
-    void shouldSuccessfullyComplete_whenLipVLipAndDashboardEnabled() {
-        VariableMap variables = flowFlags(false, true, true, true);
-
-        startAndAssertProcess();
-        startBusinessProcess(variables);
-        completePrimaryNotifications(variables);
-
-        ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantDashboard,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_APPLICATION_OFFLINE_CLAIMANT,
-            DASHBOARD_APPLICATION_OFFLINE_CLAIMANT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask applicantCcjNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            applicantCcjNotification,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_CCJ_APPLICANT,
-            DASHBOARD_CCJ_APPLICANT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantDashboard,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_APPLICATION_OFFLINE_DEFENDANT,
-            DASHBOARD_APPLICATION_OFFLINE_DEFENDANT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask respondentDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentDashboard,
-            PROCESS_CASE_EVENT,
-            DASHBOARD_CCJ_RESPONDENT,
-            DASHBOARD_CCJ_RESPONDENT_ACTIVITY_ID,
-            variables
-        );
-
-        assertProcessClosed();
-    }
-
-    @Test
-    void shouldAbort_whenStartBusinessProcessThrowsAnError() {
-        startAndAssertProcess();
+        VariableMap variables = Variables.createVariables();
+        variables.put(FLOW_FLAGS, Map.of(
+            JO_ONLINE_LIVE_ENABLED, true,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
+            LIP_CASE, false,
+            UNREPRESENTED_DEFENDANT_ONE, false
+        ));
 
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
-        assertFailExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
-
-        assertNoExternalTasksLeft();
-    }
-
-    private void completePrimaryNotifications(VariableMap variables) {
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            applicantNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_EVENT,
-            NOTIFY_APPLICANT_ACTIVITY_ID,
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
             variables
         );
 
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask generateDJFormSpecTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_EVENT,
-            NOTIFY_RESPONDENT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask roboticsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            roboticsNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RPA_EVENT,
-            NOTIFY_RPA_ACTIVITY_ID,
-            variables
-        );
-    }
-
-    private void completeDocGeneration(VariableMap variables) {
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            documentGeneration,
+            generateDJFormSpecTask,
             PROCESS_CASE_EVENT,
             GENERATE_DJ_FORM_SPEC_EVENT,
             GENERATE_DJ_FORM_SPEC_ACTIVITY_ID,
             variables
         );
-    }
 
-    private void startAndAssertProcess() {
-        assertFalse(processInstance.isEnded());
-        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
-    }
+        ExternalTask notifyApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED,
+            NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID,
+            variables
+        );
 
-    private void assertProcessClosed() {
+        ExternalTask notifyRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED,
+            NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask notifyRpaTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRpaTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_DJ_SPEC,
+            NOTIFY_RPA_DJ_SPEC_ACTIVITY_ID,
+            variables
+        );
+
+        if (dashboardServiceEnabled) {
+            ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardNotificationTask,
+                PROCESS_CASE_EVENT,
+                DASHBOARD_NOTIFICATION_EVENT,
+                DASHBOARD_NOTIFICATION_ACTIVITY_ID,
+                variables
+            );
+        }
+
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
+
         assertNoExternalTasksLeft();
     }
 
-    private VariableMap flowFlags(boolean joLiveEnabled,
-                                  boolean dashboardEnabled,
-                                  boolean lipCase,
-                                  boolean unrepresentedDefendantOne) {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSuccessfullyCompleteLipVlipWhenJoDisabled(boolean dashboardServiceEnabled) {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
         VariableMap variables = Variables.createVariables();
-        variables.putValue(FLOW_FLAGS, Map.of(
-            JO_ONLINE_LIVE_ENABLED, joLiveEnabled,
-            DASHBOARD_SERVICE_ENABLED, dashboardEnabled,
-            LIP_CASE, lipCase,
-            UNREPRESENTED_DEFENDANT_ONE, unrepresentedDefendantOne
+        variables.put(FLOW_FLAGS, Map.of(
+            JO_ONLINE_LIVE_ENABLED, false,
+            DASHBOARD_SERVICE_ENABLED, dashboardServiceEnabled,
+            LIP_CASE, true,
+            UNREPRESENTED_DEFENDANT_ONE, true
         ));
-        return variables;
+
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertCompleteExternalTask(
+            startBusiness,
+            START_BUSINESS_TOPIC,
+            START_BUSINESS_EVENT,
+            START_BUSINESS_ACTIVITY,
+            variables
+        );
+
+        ExternalTask notifyApplicantTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyApplicantTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED,
+            NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask notifyRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED,
+            NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask notifyRpaTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyRpaTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_RPA_DJ_SPEC,
+            NOTIFY_RPA_DJ_SPEC_ACTIVITY_ID,
+            variables
+        );
+
+        if (dashboardServiceEnabled) {
+            ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                dashboardNotificationTask,
+                PROCESS_CASE_EVENT,
+                DASHBOARD_NOTIFICATION_EVENT,
+                DASHBOARD_NOTIFICATION_ACTIVITY_ID,
+                variables
+            );
+        }
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
+
+        assertNoExternalTasksLeft();
+    }
+
+    @Test
+    void shouldAbort_whenStartBusinessProcessThrowsAnError() {
+        //assert process has started
+        assertFalse(processInstance.isEnded());
+
+        //assert message start event
+        assertThat(getProcessDefinitionByMessage(MESSAGE_NAME).getKey()).isEqualTo(PROCESS_ID);
+
+        ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
+        assertFailExternalTask(startBusiness, START_BUSINESS_TOPIC, START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY);
+
+        assertNoExternalTasksLeft();
     }
 }
