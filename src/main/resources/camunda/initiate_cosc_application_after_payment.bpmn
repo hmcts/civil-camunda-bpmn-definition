@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_038vuuf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:message id="Message_0yl8iuc" name="INITIATE_COSC_APPLICATION_AFTER_PAYMENT" />
   <bpmn:collaboration id="INITIATE_COSC_APPLICATION_AFTER_PAYMENT_ID">
     <bpmn:extensionElements />
     <bpmn:participant id="Participant_11shrki" name="Initiate Cosc Application After Payment" processRef="COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID" />
+    <bpmn:textAnnotation id="TextAnnotation_1wf3ata">
+      <bpmn:text>Does claimant have Legal Rep?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_085fw3j">
+      <bpmn:text>Has claimant confirmed they paid in full?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0j2lab9" sourceRef="Gateway_0mtvw8c" targetRef="TextAnnotation_085fw3j" />
+    <bpmn:association id="Association_0v0zfl0" sourceRef="Gateway_0mklnyz" targetRef="TextAnnotation_1wf3ata" />
   </bpmn:collaboration>
   <bpmn:process id="COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID" name="COSC initiate after payment process" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:endEvent id="Event_0pltq59">
@@ -31,101 +39,18 @@
       <bpmn:outgoing>Flow_1lowlui</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_024hrqa" messageRef="Message_0yl8iuc" />
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_0mtvw8c">
-      <bpmn:incoming>Flow_0mb7441</bpmn:incoming>
-      <bpmn:outgoing>Flow_0h4yfkt</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1uur8y5</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_0mklnyz">
-      <bpmn:incoming>Flow_1uur8y5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0btuuaz</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1m3lguv</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="DefendantDashboardNotificationMarkNotPaidInFull" name="Defendant Dashboard Notification mark not paid in full" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ssurpk</bpmn:incoming>
-      <bpmn:incoming>Flow_1y3pb8j</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ucazsq</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyApplicantSolicitorCoscApplication" name="Notify Claimant solicitor 1" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m3lguv</bpmn:incoming>
-      <bpmn:outgoing>Flow_1y3pb8j</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="ClaimantDashboardNotificationMarkNotPaidInFull" name="Claimant Dashboard Notification mark not paid in full" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0btuuaz</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ssurpk</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="GenerateCoscDocument" name="Generate CoSC Document" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">GENERATE_COSC_DOCUMENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0h4yfkt</bpmn:incoming>
-      <bpmn:outgoing>Flow_0p1m0k0</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="DefendantDashboardNotificationCertificateGenerated" name="Defendant Dashboard Notification Certificate Generated" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0p1m0k0</bpmn:incoming>
-      <bpmn:outgoing>Flow_1y21muj</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_1u1okod">
-      <bpmn:incoming>Flow_1y21muj</bpmn:incoming>
-      <bpmn:outgoing>JoOnlineEnabled</bpmn:outgoing>
-      <bpmn:outgoing>JoOnlineDisabled</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
-      <bpmn:extensionElements>
-        <camunda:in variables="all" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1ucazsq</bpmn:incoming>
-      <bpmn:incoming>Flow_0bcqh3z</bpmn:incoming>
-      <bpmn:incoming>JoOnlineDisabled</bpmn:incoming>
-      <bpmn:outgoing>Flow_0n6ts4r</bpmn:outgoing>
-    </bpmn:callActivity>
-    <bpmn:endEvent id="Event_0ii7uzg">
-      <bpmn:incoming>Flow_0n6ts4r</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="NotifyRPA" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>JoOnlineEnabled</bpmn:incoming>
-      <bpmn:outgoing>Flow_0bcqh3z</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_1r5gva6" name="Abort" attachedToRef="Activity_099a8bs">
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl9008" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1m3lguv" name="Yes" sourceRef="Gateway_0mklnyz" targetRef="NotifyApplicantSolicitorCoscApplication">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isClaimantLR==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1y3pb8j" sourceRef="NotifyApplicantSolicitorCoscApplication" targetRef="DefendantDashboardNotificationMarkNotPaidInFull" />
-    <bpmn:sequenceFlow id="Flow_0ssurpk" sourceRef="ClaimantDashboardNotificationMarkNotPaidInFull" targetRef="DefendantDashboardNotificationMarkNotPaidInFull" />
-    <bpmn:sequenceFlow id="Flow_0btuuaz" name="No" sourceRef="Gateway_0mklnyz" targetRef="ClaimantDashboardNotificationMarkNotPaidInFull">
+    <bpmn:sequenceFlow id="Flow_1y3pb8j" sourceRef="NotifyApplicantSolicitorCoscApplication" targetRef="GenerateDashboardNotificationsInitiateCOSC" />
+    <bpmn:sequenceFlow id="Flow_0btuuaz" name="No" sourceRef="Gateway_0mklnyz" targetRef="GenerateDashboardNotificationsInitiateCOSC">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isClaimantLR==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0p1m0k0" sourceRef="GenerateCoscDocument" targetRef="DefendantDashboardNotificationCertificateGenerated" />
-    <bpmn:sequenceFlow id="Flow_1ucazsq" sourceRef="DefendantDashboardNotificationMarkNotPaidInFull" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_0p1m0k0" sourceRef="GenerateCoscDocument" targetRef="Gateway_1u1okod" />
+    <bpmn:sequenceFlow id="Flow_1ucazsq" sourceRef="GenerateDashboardNotificationsInitiateCOSC" targetRef="Activity_0eo8p2p" />
     <bpmn:sequenceFlow id="Flow_1uur8y5" name="NO" sourceRef="Gateway_0mtvw8c" targetRef="Gateway_0mklnyz">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isJudgmentMarkedPaidInFull==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -137,123 +62,84 @@
     <bpmn:sequenceFlow id="Flow_0n6ts4r" sourceRef="Activity_0eo8p2p" targetRef="Event_0ii7uzg" />
     <bpmn:sequenceFlow id="Flow_0nufgia" sourceRef="Activity_099a8bs" targetRef="Event_0pltq59" />
     <bpmn:sequenceFlow id="Flow_1lowlui" sourceRef="Event_19ttrus" targetRef="Activity_099a8bs" />
-    <bpmn:sequenceFlow id="Flow_1y21muj" sourceRef="DefendantDashboardNotificationCertificateGenerated" targetRef="Gateway_1u1okod" />
-    <bpmn:sequenceFlow id="Flow_0bcqh3z" sourceRef="NotifyRPA" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_0bcqh3z" sourceRef="NotifyRPA" targetRef="GenerateDashboardNotificationsInitiateCOSC" />
     <bpmn:sequenceFlow id="JoOnlineEnabled" name="Jo Live Feed  Enabled" sourceRef="Gateway_1u1okod" targetRef="NotifyRPA">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="JoOnlineDisabled" name="Jo Live Feed  Disabled" sourceRef="Gateway_1u1okod" targetRef="Activity_0eo8p2p">
+    <bpmn:sequenceFlow id="JoOnlineDisabled" name="Jo Live Feed  Disabled" sourceRef="Gateway_1u1okod" targetRef="GenerateDashboardNotificationsInitiateCOSC">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:textAnnotation id="TextAnnotation_085fw3j">
-      <bpmn:text>Has claimant confirmed they paid in full?</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_1wf3ata">
-      <bpmn:text>Does claimant have Legal Rep?</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_0j2lab9" sourceRef="Gateway_0mtvw8c" targetRef="TextAnnotation_085fw3j" />
-    <bpmn:association id="Association_0v0zfl0" sourceRef="Gateway_0mklnyz" targetRef="TextAnnotation_1wf3ata" />
+    <bpmn:exclusiveGateway id="Gateway_0mtvw8c">
+      <bpmn:incoming>Flow_0mb7441</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h4yfkt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1uur8y5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="GenerateCoscDocument" name="Generate CoSC Document" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">GENERATE_COSC_DOCUMENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0h4yfkt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0p1m0k0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0mklnyz">
+      <bpmn:incoming>Flow_1uur8y5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0btuuaz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1m3lguv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="NotifyApplicantSolicitorCoscApplication" name="Notify Claimant solicitor 1" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1m3lguv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y3pb8j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1u1okod">
+      <bpmn:incoming>Flow_0p1m0k0</bpmn:incoming>
+      <bpmn:outgoing>JoOnlineEnabled</bpmn:outgoing>
+      <bpmn:outgoing>JoOnlineDisabled</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="NotifyRPA" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="coscApplicationAfterPayment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CONTINUOUS_FEED</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>JoOnlineEnabled</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bcqh3z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GenerateDashboardNotificationsInitiateCOSC" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1y3pb8j</bpmn:incoming>
+      <bpmn:incoming>Flow_0btuuaz</bpmn:incoming>
+      <bpmn:incoming>JoOnlineDisabled</bpmn:incoming>
+      <bpmn:incoming>Flow_0bcqh3z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ucazsq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ucazsq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n6ts4r</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0ii7uzg">
+      <bpmn:incoming>Flow_0n6ts4r</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="INITIATE_COSC_APPLICATION_AFTER_PAYMENT_ID">
       <bpmndi:BPMNShape id="Participant_11shrki_di" bpmnElement="Participant_11shrki" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1608" height="570" />
+        <dc:Bounds x="160" y="80" width="1560" height="570" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_04m6x5t_di" bpmnElement="JoOnlineDisabled">
-        <di:waypoint x="1250" y="275" />
-        <di:waypoint x="1250" y="348" />
-        <di:waypoint x="1500" y="348" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1269" y="316" width="63" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ugd903_di" bpmnElement="JoOnlineEnabled">
-        <di:waypoint x="1275" y="250" />
-        <di:waypoint x="1390" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1294" y="216" width="63" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bcqh3z_di" bpmnElement="Flow_0bcqh3z">
-        <di:waypoint x="1490" y="250" />
-        <di:waypoint x="1550" y="250" />
-        <di:waypoint x="1550" y="308" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y21muj_di" bpmnElement="Flow_1y21muj">
-        <di:waypoint x="1160" y="250" />
-        <di:waypoint x="1225" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
-        <di:waypoint x="248" y="348" />
-        <di:waypoint x="290" y="348" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
-        <di:waypoint x="340" y="308" />
-        <di:waypoint x="340" y="236" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0n6ts4r_di" bpmnElement="Flow_0n6ts4r">
-        <di:waypoint x="1600" y="348" />
-        <di:waypoint x="1632" y="348" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ewf3pg_di" bpmnElement="Flow_0ewf3pg">
-        <di:waypoint x="390" y="348" />
-        <di:waypoint x="490" y="348" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mb7441_di" bpmnElement="Flow_0mb7441">
-        <di:waypoint x="590" y="348" />
-        <di:waypoint x="765" y="348" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0h4yfkt_di" bpmnElement="Flow_0h4yfkt">
-        <di:waypoint x="790" y="323" />
-        <di:waypoint x="790" y="250" />
-        <di:waypoint x="900" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="799" y="283" width="23" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1uur8y5_di" bpmnElement="Flow_1uur8y5">
-        <di:waypoint x="790" y="373" />
-        <di:waypoint x="790" y="470" />
-        <di:waypoint x="925" y="470" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="801" y="413" width="17" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ucazsq_di" bpmnElement="Flow_1ucazsq">
-        <di:waypoint x="1440" y="470" />
-        <di:waypoint x="1560" y="470" />
-        <di:waypoint x="1560" y="388" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0p1m0k0_di" bpmnElement="Flow_0p1m0k0">
-        <di:waypoint x="1000" y="250" />
-        <di:waypoint x="1060" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0btuuaz_di" bpmnElement="Flow_0btuuaz">
-        <di:waypoint x="975" y="470" />
-        <di:waypoint x="1060" y="470" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1011" y="452" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ssurpk_di" bpmnElement="Flow_0ssurpk">
-        <di:waypoint x="1160" y="470" />
-        <di:waypoint x="1340" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y3pb8j_di" bpmnElement="Flow_1y3pb8j">
-        <di:waypoint x="1160" y="380" />
-        <di:waypoint x="1250" y="380" />
-        <di:waypoint x="1250" y="470" />
-        <di:waypoint x="1340" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m3lguv_di" bpmnElement="Flow_1m3lguv">
-        <di:waypoint x="950" y="445" />
-        <di:waypoint x="950" y="380" />
-        <di:waypoint x="1060" y="380" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1011" y="363" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0pltq59_di" bpmnElement="Event_0pltq59">
         <dc:Bounds x="322" y="200" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -270,47 +156,33 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0mtvw8c_di" bpmnElement="Gateway_0mtvw8c" isMarkerVisible="true">
-        <dc:Bounds x="765" y="323" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0mklnyz_di" bpmnElement="Gateway_0mklnyz" isMarkerVisible="true">
-        <dc:Bounds x="925" y="445" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0zyn626" bpmnElement="DefendantDashboardNotificationMarkNotPaidInFull">
-        <dc:Bounds x="1340" y="430" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0obqop3_di" bpmnElement="NotifyApplicantSolicitorCoscApplication">
-        <dc:Bounds x="1060" y="340" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0evdlkm" bpmnElement="ClaimantDashboardNotificationMarkNotPaidInFull">
-        <dc:Bounds x="1060" y="430" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="705" y="323" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tmuxby_di" bpmnElement="GenerateCoscDocument">
-        <dc:Bounds x="900" y="210" width="100" height="80" />
+        <dc:Bounds x="820" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1efltfa_di" bpmnElement="DefendantDashboardNotificationCertificateGenerated">
-        <dc:Bounds x="1060" y="210" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_0mklnyz_di" bpmnElement="Gateway_0mklnyz" isMarkerVisible="true">
+        <dc:Bounds x="841" y="445" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0obqop3_di" bpmnElement="NotifyApplicantSolicitorCoscApplication">
+        <dc:Bounds x="950" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1u1okod_di" bpmnElement="Gateway_1u1okod" isMarkerVisible="true">
-        <dc:Bounds x="1225" y="225" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1500" y="308" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
-        <dc:Bounds x="1632" y="330" width="36" height="36" />
+        <dc:Bounds x="1065" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1gytcx1_di" bpmnElement="NotifyRPA">
-        <dc:Bounds x="1390" y="210" width="100" height="80" />
+        <dc:Bounds x="1200" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_085fw3j_di" bpmnElement="TextAnnotation_085fw3j">
-        <dc:Bounds x="630" y="220" width="120" height="55" />
+      <bpmndi:BPMNShape id="BPMNShape_0zyn626" bpmnElement="GenerateDashboardNotificationsInitiateCOSC">
+        <dc:Bounds x="1350" y="308" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1wf3ata_di" bpmnElement="TextAnnotation_1wf3ata">
-        <dc:Bounds x="850" y="390" width="111" height="37" />
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="1510" y="308" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii7uzg_di" bpmnElement="Event_0ii7uzg">
+        <dc:Bounds x="1662" y="330" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1r5gva6_di" bpmnElement="Event_1r5gva6">
         <dc:Bounds x="322" y="290" width="36" height="36" />
@@ -318,14 +190,108 @@
           <dc:Bounds x="347" y="260" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1m3lguv_di" bpmnElement="Flow_1m3lguv">
+        <di:waypoint x="866" y="445" />
+        <di:waypoint x="866" y="380" />
+        <di:waypoint x="950" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="911" y="363" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y3pb8j_di" bpmnElement="Flow_1y3pb8j">
+        <di:waypoint x="1050" y="380" />
+        <di:waypoint x="1130" y="380" />
+        <di:waypoint x="1130" y="470" />
+        <di:waypoint x="1400" y="470" />
+        <di:waypoint x="1400" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0btuuaz_di" bpmnElement="Flow_0btuuaz">
+        <di:waypoint x="891" y="470" />
+        <di:waypoint x="1400" y="470" />
+        <di:waypoint x="1400" y="388" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="982" y="451" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p1m0k0_di" bpmnElement="Flow_0p1m0k0">
+        <di:waypoint x="920" y="250" />
+        <di:waypoint x="1065" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ucazsq_di" bpmnElement="Flow_1ucazsq">
+        <di:waypoint x="1450" y="348" />
+        <di:waypoint x="1510" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uur8y5_di" bpmnElement="Flow_1uur8y5">
+        <di:waypoint x="730" y="373" />
+        <di:waypoint x="730" y="470" />
+        <di:waypoint x="841" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="741" y="413" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h4yfkt_di" bpmnElement="Flow_0h4yfkt">
+        <di:waypoint x="730" y="323" />
+        <di:waypoint x="730" y="250" />
+        <di:waypoint x="820" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="739" y="283" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mb7441_di" bpmnElement="Flow_0mb7441">
+        <di:waypoint x="590" y="348" />
+        <di:waypoint x="705" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ewf3pg_di" bpmnElement="Flow_0ewf3pg">
+        <di:waypoint x="390" y="348" />
+        <di:waypoint x="490" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n6ts4r_di" bpmnElement="Flow_0n6ts4r">
+        <di:waypoint x="1610" y="348" />
+        <di:waypoint x="1662" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nufgia_di" bpmnElement="Flow_0nufgia">
+        <di:waypoint x="340" y="308" />
+        <di:waypoint x="340" y="236" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lowlui_di" bpmnElement="Flow_1lowlui">
+        <di:waypoint x="248" y="348" />
+        <di:waypoint x="290" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bcqh3z_di" bpmnElement="Flow_0bcqh3z">
+        <di:waypoint x="1300" y="250" />
+        <di:waypoint x="1400" y="250" />
+        <di:waypoint x="1400" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ugd903_di" bpmnElement="JoOnlineEnabled">
+        <di:waypoint x="1115" y="250" />
+        <di:waypoint x="1200" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1121" y="216" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04m6x5t_di" bpmnElement="JoOnlineDisabled">
+        <di:waypoint x="1090" y="275" />
+        <di:waypoint x="1090" y="348" />
+        <di:waypoint x="1350" y="348" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1111" y="316" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0j2lab9_di" bpmnElement="Association_0j2lab9">
-        <di:waypoint x="778" y="335" />
-        <di:waypoint x="719" y="275" />
+        <di:waypoint x="719" y="334" />
+        <di:waypoint x="675" y="285" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0v0zfl0_di" bpmnElement="Association_0v0zfl0">
-        <di:waypoint x="939" y="456" />
-        <di:waypoint x="917" y="427" />
+        <di:waypoint x="855" y="484" />
+        <di:waypoint x="828" y="520" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_085fw3j_di" bpmnElement="TextAnnotation_085fw3j">
+        <dc:Bounds x="590" y="230" width="120" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1wf3ata_di" bpmnElement="TextAnnotation_1wf3ata">
+        <dc:Bounds x="760" y="520" width="111" height="37" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
