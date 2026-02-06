@@ -38,10 +38,6 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
             = "SEND_HEARING_TO_LIP_DEFENDANT_HMC";
     public static final String SEND_HEARING_TO_LIP_CLAIMANT
             = "SEND_HEARING_TO_LIP_CLAIMANT_HMC";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT
-            = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_HMC";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT
-            = "CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT";
 
     //ACTIVITY IDs
     public static final String START_BUSINESS_ACTIVITY
@@ -60,10 +56,8 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
             = "SendAutomaticHearingToDefendantLIP";
     private static final String SEND_HEARING_TO_LIP_CLAIMANT_ACTIVITY_ID
             = "SendAutomaticHearingToClaimantLIP";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID
-            = "GenerateDashboardNotificationHearingScheduledClaimant";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID
-            = "GenerateDashboardNotificationHearingScheduledDefendant";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID
+            = "GenerateDashboardNotificationsHearingScheduledHmc";
 
     public GenerateHearingNoticeTest() {
         super("generate_hearing_notice.bpmn", PROCESS_ID);
@@ -178,15 +172,8 @@ public class GenerateHearingNoticeTest extends BpmnBaseTest {
         //complete the dashboard notification process
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT,
-                CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_CLAIMANT_ACTIVITY_ID, variables
-        );
-
-        //complete the dashboard notification process
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT,
-                CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_DEFENDANT_ACTIVITY_ID, variables
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   CREATE_DASHBOARD_NOTIFICATION_HEARING_SCHEDULED_ACTIVITY_ID, variables
         );
 
         if (caseState.equals("CASE_PROGRESSION")) {
