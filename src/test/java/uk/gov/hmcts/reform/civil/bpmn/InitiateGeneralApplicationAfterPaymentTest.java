@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -35,17 +36,15 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
     //Update CUI dashboard
     //Notifying respondents
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
-    private static final String UPDATE_DASHBOARD_NOTIFICATIONS = "UPDATE_GA_DASHBOARD_NOTIFICATION";
-    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT = "CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT";
-    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID = "respondentDashboardNotification";
-
-    private static final String UPDATE_DASHBOARD_NOTIFICATIONS_ID = "UpdateDashboardNotifications";
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
 
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_SUBMITTED_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaApplicationSubmitted";
 
     public InitiateGeneralApplicationAfterPaymentTest() {
         super("initiate_general_application_after_payment.bpmn",
@@ -118,29 +117,15 @@ class InitiateGeneralApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentT
             variables
         );
 
-        if (isLipApplicant) {
-            //update dashboard
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                UPDATE_DASHBOARD_NOTIFICATIONS,
-                UPDATE_DASHBOARD_NOTIFICATIONS_ID,
-                variables
-            );
-        }
-
-        if (isLipRespondent) {
-            //update dashboard
-            ExternalTask updateCuiRespondentDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                updateCuiRespondentDashboard,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT,
-                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID,
-                variables
-            );
-        }
+        //update dashboard
+        ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            updateCuiDashboard,
+            APPLICATION_PROCESS_EVENT_GASPEC,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_SUBMITTED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
