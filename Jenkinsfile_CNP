@@ -1,7 +1,7 @@
 #!groovy
 properties([
   copyArtifactPermission('/HMCTS_a_to_c/civil-camunda-bpmn-definition/*'),
-]);
+])
 
 @Library("Infrastructure")
 import uk.gov.hmcts.contino.AppPipelineConfig
@@ -26,6 +26,31 @@ def copyPrevFailedAndNotExecutedTestFilesJson() {
       buildFound = true
     } catch (Exception error) {
       echo "artifact not found: " + error.toString()
+      buildNumber--
+    }
+  }
+}
+
+def copyPreviousAllureHistory() {
+  def buildFound = false
+  def buildNumber = currentBuild.previousBuild ? currentBuild.previousBuild.number : 0
+  def minBuildNumber = ((buildNumber - 8) > 0) ? buildNumber - 8 : 0
+  def targetDir = "test-results/functional/allure-results/history"
+
+  while (!buildFound && buildNumber > minBuildNumber) {
+    try {
+      copyArtifacts(
+        projectName: env.JOB_NAME,
+        selector: specific("${buildNumber}"),
+        filter: "test-results/functional/allure-report/history/*",
+        target: targetDir,
+        flatten: true
+      )
+
+      buildFound = true
+      echo "Successfully imported Allure history from build ${buildNumber}"
+    } catch (Exception error) {
+      echo "Allure history artifact not found in build ${buildNumber}. Trying previous..."
       buildNumber--
     }
   }
@@ -136,7 +161,7 @@ withPipeline(type, product, component) {
   onPR {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
-    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     env.CIVIL_SERVICE_IMAGE = getCivilServiceImage()
   }
   onMaster {
@@ -192,7 +217,6 @@ withPipeline(type, product, component) {
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.WIREMOCK_URL="https://wiremock-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    env.CIVIL_GENERAL_APPLICATIONS_URL = "https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -208,14 +232,24 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
+    copyPreviousAllureHistory()
     if(checkForRunAllFunctionalTests(env.BRANCH_NAME)) {
       env.RUN_ALL_FUNCTIONAL_TESTS = true
     } else {
-      copyPrevFailedAndNotExecutedTestFilesJson();
+      copyPrevFailedAndNotExecutedTestFilesJson()
     }
   }
 
   afterAlways('functionalTest:preview') {
+    steps.sh 'npx allure generate test-results/functional/allure-results --clean -o test-results/functional/allure-report'
+    publishHTML([
+      allowMissing: false,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'test-results/functional/allure-report',
+      reportFiles: 'index.html',
+      reportName: 'Non-Prod E2E Allure Report'
+    ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 
@@ -228,7 +262,7 @@ withPipeline(type, product, component) {
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-nonprod.json,*-COS-nonprod.json,*-shuttered.json"
     """
-    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
@@ -245,7 +279,8 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:aat') {
-    copyPrevFailedAndNotExecutedTestFilesJson();
+    copyPrevFailedAndNotExecutedTestFilesJson()
+    copyPreviousAllureHistory()
   }
 
   afterSuccess('functionalTest:aat') {
@@ -255,6 +290,15 @@ withPipeline(type, product, component) {
   }
 
   afterAlways('functionalTest:aat') {
+    steps.sh 'npx allure generate test-results/functional/allure-results --clean -o test-results/functional/allure-report'
+    publishHTML([
+      allowMissing: false,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'test-results/functional/allure-report',
+      reportFiles: 'index.html',
+      reportName: 'Non-Prod E2E Allure Report'
+    ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/functional/**/*'
   }
 }
