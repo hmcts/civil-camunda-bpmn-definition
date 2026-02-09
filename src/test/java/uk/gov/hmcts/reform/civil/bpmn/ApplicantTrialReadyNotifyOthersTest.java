@@ -20,7 +20,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
             = "GENERATE_TRIAL_READY_FORM_APPLICANT";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
-            = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
+            = "DASHBOARD_NOTIFICATION_EVENT";
 
     //ACTIVITY IDs
     private static final String APPLICANT_NOTIFY_OTHERS_TRIAL_READY_ACTIVITY_ID
@@ -28,7 +28,7 @@ class ApplicantTrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
             = "GenerateTrialReadyFormApplicant";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
-            = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
+            = "GenerateDashboardNotificationsTrialArrangementsNotifyParty";
 
     public ApplicantTrialReadyNotifyOthersTest() {
         super("applicant_trial_ready_notify_others.bpmn", PROCESS_ID);

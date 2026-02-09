@@ -19,10 +19,7 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
 
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String UNPAID_HEARING_FEE_NOTIFIER = "UnpaidHearingFeeNotifier";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT1";
-    public static final String CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1 = "CreateHearingFeeUnpaidDashboardNotificationsForDefendant1";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1 = "CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT1";
-    public static final String CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1 = "CreateHearingFeeUnpaidDashboardNotificationsForClaimant1";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID = "GenerateDashboardNotificationsHearingFeeUnpaid";
 
     public HearingFeeUnpaidTest() {
         super("hearing_fee_unpaid.bpmn", "HEARING_FEE_UNPAID");
@@ -63,20 +60,10 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                 UNPAID_HEARING_FEE_NOTIFIER
         );
 
-        //complete the notification to applicant
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(defendantDashboard,
-                PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1,
-                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1
-        );
-
-        //complete the notification to applicant
-        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantDashboard,
-                PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1,
-                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1
+        //complete dashboard notifications
+        ExternalTask dashboardNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardNotifications,
+                PROCESS_CASE_EVENT, DASHBOARD_NOTIFICATION_EVENT, CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID
         );
 
         //end business process
@@ -118,20 +105,10 @@ class HearingFeeUnpaidTest extends BpmnBaseTest {
                 UNPAID_HEARING_FEE_NOTIFIER
         );
 
-        //complete the notification to applicant
-        ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(defendantDashboard,
-                PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_DEFENDANT_1,
-                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_DEFENDANT_1
-        );
-
-        //complete the notification to applicant
-        ExternalTask applicantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantDashboard,
-                PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID_FOR_CLAIMANT_1,
-                CREATE_HEARING_FEE_UNPAID_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT_1
+        //complete dashboard notifications
+        ExternalTask dashboardNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardNotifications,
+                PROCESS_CASE_EVENT, DASHBOARD_NOTIFICATION_EVENT, CREATE_DASHBOARD_NOTIFICATION_FOR_HEARING_FEE_UNPAID
         );
 
         //end business process
