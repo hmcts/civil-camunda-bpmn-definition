@@ -8,6 +8,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Map;
 
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
+
 public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPaymentTest {
 
     private static final String VARY_JUDGE_GA_BY_RESP = "VARY_JUDGE_GA_BY_RESP";
@@ -22,15 +24,15 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
     private static final String WAIT_PDF_UPDATE_ID = "WaitCivilDraftDocumentUpdatedId";
     private static final String WAIT_PDF_UPDATE_TOPIC = "WAIT_CIVIL_DOC_UPDATED_GASPEC";
     private static final String WAIT_PDF_UPDATE_EVENT = "WAIT_GA_DRAFT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_ID = "dashboardNotificationId";
     private static final String CREATE_DASHBOARD_NOTIFICATION_TOPIC = "applicationProcessCaseEventGASpec";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_EVENT = "CREATE_APPLICATION_RESPONDED_DASHBOARD_NOTIFICATION";
     public static final String NOTIFY_EVENT = "processExternalCaseEventGASpec";
     private static final String APPLICATION_EVENT_GA_SPEC = "applicationEventGASpec";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_RESPONDED_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaApplicationResponded";
 
     public UploadTranslatedGaResponseSumDocTest() {
         super("upload_translated_document_ga_summary_response_doc.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_RESPONSE_DOC");
@@ -92,8 +94,8 @@ public class UploadTranslatedGaResponseSumDocTest extends BpmnBaseGAAfterPayment
         assertCompleteExternalTask(
             dashboardNotificationCreated,
             CREATE_DASHBOARD_NOTIFICATION_TOPIC,
-            CREATE_DASHBOARD_NOTIFICATION_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_ID,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_RESPONDED_ACTIVITY_ID,
             variables
         );
 
