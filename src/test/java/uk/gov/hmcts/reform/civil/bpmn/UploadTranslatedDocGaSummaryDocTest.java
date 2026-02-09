@@ -11,6 +11,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.START_GA_BUSINESS_ACTIVITY;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.START_GA_BUSINESS_EVENT;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -26,18 +27,13 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
     private static final String NOTIFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIFYING_ID = "GeneralApplicationNotifying";
     public static final String APPLICATION_PROCESS_EVENT_GA_SPEC = "applicationProcessCaseEventGASpec";
-    private static final String UPDATE_DASHBOARD_NOTIFICATIONS = "UPDATE_GA_DASHBOARD_NOTIFICATION";
-    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT = "CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT";
-    private static final String CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID = "respondentDashboardNotification";
-
-    private static final String UPDATE_DASHBOARD_NOTIFICATIONS_ID = "UpdateDashboardNotifications";
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
-
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
-    public static final String NOTIFY_EVENT = "processExternalCaseEventGASpec";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_SUBMITTED_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaApplicationSubmitted";
 
     public UploadTranslatedDocGaSummaryDocTest() {
         super("upload_translated_document_ga_summary_doc.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_DOC");
@@ -84,29 +80,15 @@ public class UploadTranslatedDocGaSummaryDocTest extends BpmnBaseGAAfterPaymentT
             variables
         );
 
-        if (isLipApplicant) {
-            //update dashboard
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GA_SPEC);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                APPLICATION_PROCESS_EVENT_GA_SPEC,
-                UPDATE_DASHBOARD_NOTIFICATIONS,
-                UPDATE_DASHBOARD_NOTIFICATIONS_ID,
-                variables
-            );
-        }
-
-        if (isLipRespondent) {
-            //update dashboard
-            ExternalTask updateCuiRespondentDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GA_SPEC);
-            assertCompleteExternalTask(
-                updateCuiRespondentDashboard,
-                APPLICATION_PROCESS_EVENT_GA_SPEC,
-                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_EVENT,
-                CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT_ACTIVITY_ID,
-                variables
-            );
-        }
+        //update dashboard
+        ExternalTask updateCuiDashboard = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GA_SPEC);
+        assertCompleteExternalTask(
+            updateCuiDashboard,
+            APPLICATION_PROCESS_EVENT_GA_SPEC,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_SUBMITTED_ACTIVITY_ID,
+            variables
+        );
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
