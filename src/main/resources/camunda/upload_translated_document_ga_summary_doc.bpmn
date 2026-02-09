@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.41.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_DOC" name="Upload translated document GA summary Doc" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
@@ -26,29 +26,6 @@
     <bpmn:sequenceFlow id="Flow_13dgz5v" sourceRef="Event_1p3emre" targetRef="Event_0nc34kd" />
     <bpmn:sequenceFlow id="Flow_0g2t112" sourceRef="StartEvent_1" targetRef="Activity_0gt1863" />
     <bpmn:sequenceFlow id="Flow_07n1ssi" sourceRef="Activity_0gt1863" targetRef="AddDraftDocToMainCaseID" />
-    <bpmn:exclusiveGateway id="Gateway_0nb8bqq">
-      <bpmn:incoming>Flow_1uafcbh</bpmn:incoming>
-      <bpmn:outgoing>Flow_1u52am6</bpmn:outgoing>
-      <bpmn:outgoing>Flow_06pv761</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1u52am6" name="LR applicant" sourceRef="Gateway_0nb8bqq" targetRef="Gateway_14xtsk2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_APPLICANT || !flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_06pv761" name="LiP Applicant" sourceRef="Gateway_0nb8bqq" targetRef="UpdateDashboardNotifications">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_APPLICANT &amp;&amp; flowFlags.LIP_APPLICANT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_14xtsk2">
-      <bpmn:incoming>Flow_1u52am6</bpmn:incoming>
-      <bpmn:incoming>Flow_00j9g6p</bpmn:incoming>
-      <bpmn:outgoing>Flow_05b0ay8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0zobuvp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_05b0ay8" name="LR Respondent" sourceRef="Gateway_14xtsk2" targetRef="Activity_0eo8p2p">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_RESPONDENT || !flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0zobuvp" name="LiP Respondent" sourceRef="Gateway_14xtsk2" targetRef="respondentDashboardNotification">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_RESPONDENT &amp;&amp; flowFlags.LIP_RESPONDENT}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="AddDraftDocToMainCaseID" name="Add Draft Document to Parent Case" camunda:type="external" camunda:topic="updateFromGACaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -68,36 +45,25 @@
       <bpmn:incoming>Flow_152d168</bpmn:incoming>
       <bpmn:outgoing>Flow_1uafcbh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1uafcbh" sourceRef="GeneralApplicationNotifying" targetRef="Gateway_0nb8bqq" />
-    <bpmn:serviceTask id="UpdateDashboardNotifications" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsGaApplicationSubmitted" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">UPDATE_GA_DASHBOARD_NOTIFICATION</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_06pv761</bpmn:incoming>
-      <bpmn:outgoing>Flow_00j9g6p</bpmn:outgoing>
+      <bpmn:incoming>Flow_1uafcbh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kc5nl3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_00j9g6p" sourceRef="UpdateDashboardNotifications" targetRef="Gateway_14xtsk2" />
-    <bpmn:serviceTask id="respondentDashboardNotification" name="Create Dashboard Notification for Respondent" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_APPLICATION_SUBMITTED_DASHBOARD_NOTIFICATION_FOR_RESPONDENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0zobuvp</bpmn:incoming>
-      <bpmn:outgoing>Flow_02zbmca</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_02zbmca" sourceRef="respondentDashboardNotification" targetRef="Activity_0eo8p2p" />
     <bpmn:callActivity id="Activity_0eo8p2p" name="End Business Process" calledElement="GA_EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05b0ay8</bpmn:incoming>
-      <bpmn:incoming>Flow_02zbmca</bpmn:incoming>
+      <bpmn:incoming>Flow_1kc5nl3</bpmn:incoming>
       <bpmn:outgoing>Flow_12hy528</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_12hy528" sourceRef="Activity_0eo8p2p" targetRef="Event_07ek9xj" />
+    <bpmn:sequenceFlow id="Flow_1uafcbh" sourceRef="GeneralApplicationNotifying" targetRef="GenerateDashboardNotificationsGaApplicationSubmitted" />
+    <bpmn:sequenceFlow id="Flow_1kc5nl3" sourceRef="GenerateDashboardNotificationsGaApplicationSubmitted" targetRef="Activity_0eo8p2p" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_DOC" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -122,28 +88,15 @@
       <bpmndi:BPMNShape id="BPMNShape_1rnrlhi" bpmnElement="GeneralApplicationNotifying">
         <dc:Bounds x="530" y="173" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
-        <dc:Bounds x="1302" y="195" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0qt8tph" bpmnElement="UpdateDashboardNotifications">
-        <dc:Bounds x="780" y="300" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0nb8bqq_di" bpmnElement="Gateway_0nb8bqq" isMarkerVisible="true">
-        <dc:Bounds x="705" y="188" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1167" y="155" width="27" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_14xtsk2_di" bpmnElement="Gateway_14xtsk2" isMarkerVisible="true">
-        <dc:Bounds x="905" y="188" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1erkovz" bpmnElement="respondentDashboardNotification">
-        <dc:Bounds x="990" y="300" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0qt8tph" bpmnElement="GenerateDashboardNotificationsGaApplicationSubmitted">
+        <dc:Bounds x="680" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1080" y="173" width="100" height="80" />
+        <dc:Bounds x="840" y="176" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
+        <dc:Bounds x="982" y="198" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="262" y="152" width="36" height="36" />
@@ -163,57 +116,21 @@
         <di:waypoint x="330" y="210" />
         <di:waypoint x="390" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1u52am6_di" bpmnElement="Flow_1u52am6">
-        <di:waypoint x="755" y="213" />
-        <di:waypoint x="905" y="213" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="799" y="195" width="63" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06pv761_di" bpmnElement="Flow_06pv761">
-        <di:waypoint x="730" y="238" />
-        <di:waypoint x="730" y="340" />
-        <di:waypoint x="780" y="340" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="738" y="265" width="65" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05b0ay8_di" bpmnElement="Flow_05b0ay8">
-        <di:waypoint x="955" y="213" />
-        <di:waypoint x="1080" y="213" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="989" y="195" width="78" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zobuvp_di" bpmnElement="Flow_0zobuvp">
-        <di:waypoint x="930" y="238" />
-        <di:waypoint x="930" y="340" />
-        <di:waypoint x="990" y="340" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="942" y="275" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_152d168_di" bpmnElement="Flow_152d168">
         <di:waypoint x="490" y="213" />
         <di:waypoint x="530" y="213" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1uafcbh_di" bpmnElement="Flow_1uafcbh">
         <di:waypoint x="630" y="213" />
-        <di:waypoint x="705" y="213" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00j9g6p_di" bpmnElement="Flow_00j9g6p">
-        <di:waypoint x="880" y="340" />
-        <di:waypoint x="930" y="340" />
-        <di:waypoint x="930" y="238" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02zbmca_di" bpmnElement="Flow_02zbmca">
-        <di:waypoint x="1090" y="340" />
-        <di:waypoint x="1130" y="340" />
-        <di:waypoint x="1130" y="253" />
+        <di:waypoint x="680" y="213" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12hy528_di" bpmnElement="Flow_12hy528">
-        <di:waypoint x="1180" y="213" />
-        <di:waypoint x="1302" y="213" />
+        <di:waypoint x="940" y="216" />
+        <di:waypoint x="982" y="216" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kc5nl3_di" bpmnElement="Flow_1kc5nl3">
+        <di:waypoint x="780" y="213" />
+        <di:waypoint x="840" y="213" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
