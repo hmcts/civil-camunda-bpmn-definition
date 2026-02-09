@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
   <bpmn:process id="DECISION_ON_RECONSIDERATION_REQUEST" name="Decision on reconsideration request" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:callActivity id="NotifyDecisionOnReconsiderationRequest" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -53,26 +53,16 @@
       <bpmn:incoming>Flow_1737ozj</bpmn:incoming>
       <bpmn:outgoing>Flow_1yfyxrt</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="GenerateDashboardNotificationDecisionReconsiderationClaimant" name="Generate Dashboard Notification for Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsDecisionReconsideration" name="Generate Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1yfyxrt</bpmn:incoming>
-      <bpmn:outgoing>Flow_1g080e0</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1g080e0" sourceRef="GenerateDashboardNotificationDecisionReconsiderationClaimant" targetRef="GenerateDashboardNotificationDecisionReconsiderationDefendant" />
-    <bpmn:serviceTask id="GenerateDashboardNotificationDecisionReconsiderationDefendant" name="Generate Dashboard Notification for Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1g080e0</bpmn:incoming>
       <bpmn:outgoing>Flow_1r02v0z</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1r02v0z" sourceRef="GenerateDashboardNotificationDecisionReconsiderationDefendant" targetRef="Activity_0pqcpvc" />
+    <bpmn:sequenceFlow id="Flow_1r02v0z" sourceRef="GenerateDashboardNotificationsDecisionReconsideration" targetRef="Activity_0pqcpvc" />
     <bpmn:exclusiveGateway id="Gateway_1fhcsxk">
       <bpmn:incoming>Flow_0tocigs</bpmn:incoming>
       <bpmn:outgoing>Flow_10kpido</bpmn:outgoing>
@@ -117,7 +107,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1737ozj" sourceRef="SendToDefendantLIP" targetRef="Activity_0txb7dk" />
-    <bpmn:sequenceFlow id="Flow_1yfyxrt" sourceRef="Activity_0txb7dk" targetRef="GenerateDashboardNotificationDecisionReconsiderationClaimant" />
+    <bpmn:sequenceFlow id="Flow_1yfyxrt" sourceRef="Activity_0txb7dk" targetRef="GenerateDashboardNotificationsDecisionReconsideration" />
     <bpmn:textAnnotation id="TextAnnotation_1kl1nm4">
       <bpmn:text>LR or LiPclaimant ?</bpmn:text>
     </bpmn:textAnnotation>
@@ -147,26 +137,12 @@
           <dc:Bounds x="129" y="245" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="1260" y="180" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="1492" y="202" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="Activity_0nyrqab">
         <dc:Bounds x="350" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="Activity_0txb7dk">
         <dc:Bounds x="710" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1cd6l1x" bpmnElement="GenerateDashboardNotificationDecisionReconsiderationClaimant">
-        <dc:Bounds x="920" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0mksa1f" bpmnElement="GenerateDashboardNotificationDecisionReconsiderationDefendant">
-        <dc:Bounds x="1080" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1fhcsxk_di" bpmnElement="Gateway_1fhcsxk" isMarkerVisible="true">
@@ -182,6 +158,16 @@
       <bpmndi:BPMNShape id="Activity_1k6crm0_di" bpmnElement="SendToDefendantLIP">
         <dc:Bounds x="710" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0mksa1f" bpmnElement="GenerateDashboardNotificationsDecisionReconsideration">
+        <dc:Bounds x="960" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
+        <dc:Bounds x="1190" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
+        <dc:Bounds x="1432" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1kl1nm4_di" bpmnElement="TextAnnotation_1kl1nm4">
         <dc:Bounds x="490" y="95" width="100" height="41" />
@@ -206,20 +192,16 @@
         <di:waypoint x="200" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
-        <di:waypoint x="1360" y="220" />
-        <di:waypoint x="1492" y="220" />
+        <di:waypoint x="1290" y="220" />
+        <di:waypoint x="1432" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vs00o9_di" bpmnElement="Flow_1vs00o9">
         <di:waypoint x="300" y="220" />
         <di:waypoint x="350" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1g080e0_di" bpmnElement="Flow_1g080e0">
-        <di:waypoint x="1020" y="220" />
-        <di:waypoint x="1080" y="220" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r02v0z_di" bpmnElement="Flow_1r02v0z">
-        <di:waypoint x="1180" y="220" />
-        <di:waypoint x="1260" y="220" />
+        <di:waypoint x="1060" y="220" />
+        <di:waypoint x="1190" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tocigs_di" bpmnElement="Flow_0tocigs">
         <di:waypoint x="450" y="220" />
@@ -258,6 +240,10 @@
         <di:waypoint x="760" y="370" />
         <di:waypoint x="760" y="260" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yfyxrt_di" bpmnElement="Flow_1yfyxrt">
+        <di:waypoint x="810" y="220" />
+        <di:waypoint x="960" y="220" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_19p5yrb_di" bpmnElement="Association_19p5yrb">
         <di:waypoint x="540" y="195" />
         <di:waypoint x="540" y="150" />
@@ -266,10 +252,6 @@
       <bpmndi:BPMNEdge id="Association_09l6czo_di" bpmnElement="Association_09l6czo">
         <di:waypoint x="650" y="195" />
         <di:waypoint x="650" y="142" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yfyxrt_di" bpmnElement="Flow_1yfyxrt">
-        <di:waypoint x="810" y="220" />
-        <di:waypoint x="920" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
