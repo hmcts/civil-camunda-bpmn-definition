@@ -1,7 +1,7 @@
 #!groovy
 properties([
   copyArtifactPermission('/HMCTS_a_to_c/civil-camunda-bpmn-definition/*'),
-]);
+])
 
 @Library("Infrastructure")
 import uk.gov.hmcts.contino.AppPipelineConfig
@@ -46,7 +46,7 @@ def copyPreviousAllureHistory() {
         target: targetDir,
         flatten: true
       )
-      
+
       buildFound = true
       echo "Successfully imported Allure history from build ${buildNumber}"
     } catch (Exception error) {
@@ -161,7 +161,7 @@ withPipeline(type, product, component) {
   onPR {
     env.ENVIRONMENT = "preview"
     loadVaultSecrets(secrets)
-    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     env.CIVIL_SERVICE_IMAGE = getCivilServiceImage()
   }
   onMaster {
@@ -217,7 +217,6 @@ withPipeline(type, product, component) {
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.WIREMOCK_URL="https://wiremock-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    env.CIVIL_GENERAL_APPLICATIONS_URL = "https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     dir("${WORKSPACE}/bin") {
       sh """
         eval \$(./variables/load-preview-environment-variables.sh ${CHANGE_ID})
@@ -233,11 +232,11 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
-    copyPreviousAllureHistory();
+    copyPreviousAllureHistory()
     if(checkForRunAllFunctionalTests(env.BRANCH_NAME)) {
       env.RUN_ALL_FUNCTIONAL_TESTS = true
     } else {
-      copyPrevFailedAndNotExecutedTestFilesJson();
+      copyPrevFailedAndNotExecutedTestFilesJson()
     }
   }
 
@@ -263,7 +262,7 @@ withPipeline(type, product, component) {
       ./bin/pull-latest-ccd-files.sh ${ccdBranch}
       ./bin/import-ccd-definition.sh "-e *-nonprod.json,*-COS-nonprod.json,*-shuttered.json"
     """
-    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     env.IDAM_API_URL = "https://idam-api.aat.platform.hmcts.net"
     env.SERVICE_AUTH_PROVIDER_API_BASE_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
     env.CCD_DATA_STORE_URL = "https://civil-camunda-data-store-staging-aat.service.core-compute-aat.internal"
@@ -280,8 +279,8 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:aat') {
-    copyPrevFailedAndNotExecutedTestFilesJson();
-    copyPreviousAllureHistory();
+    copyPrevFailedAndNotExecutedTestFilesJson()
+    copyPreviousAllureHistory()
   }
 
   afterSuccess('functionalTest:aat') {
