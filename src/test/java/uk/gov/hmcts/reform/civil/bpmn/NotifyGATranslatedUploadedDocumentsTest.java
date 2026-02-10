@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest {
 
@@ -19,6 +20,9 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC_WITHOUT_WA_TASK";
     public static final String MAIN_CASE_TOPIC = "updateFromGACaseEvent";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_TRANSLATED_DOCUMENT_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaTranslatedDocument";
 
     public NotifyGATranslatedUploadedDocumentsTest() {
         super("upload_translated_document_ga_lip_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_GA_LIP_ID");
@@ -90,22 +94,13 @@ public class NotifyGATranslatedUploadedDocumentsTest extends BpmnBaseGASpecTest 
             "NotifyTranslatedDocumentUploadedToRespondentGA",
             variables
         );
-        //complete the applicant dashboard notification
-        ExternalTask notificationDashboardApplicantTask = assertNextExternalTask(NOTIFY_EVENT);
-        assertCompleteExternalTask(
-            notificationDashboardApplicantTask,
-            NOTIFY_EVENT,
-            "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_TRANSLATED_DOC",
-            "ApplicantDashboardTranslatedDocUploadedGA",
-            variables
-        );
         //complete the respondent dashboard notification
-        ExternalTask notificationDashboardRespondentTask = assertNextExternalTask(NOTIFY_EVENT);
+        ExternalTask notificationDashboardTask = assertNextExternalTask(NOTIFY_EVENT);
         assertCompleteExternalTask(
-            notificationDashboardRespondentTask,
+            notificationDashboardTask,
             NOTIFY_EVENT,
-            "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_TRANSLATED_DOC",
-            "RespondentDashboardTranslatedDocUploadedGA",
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_TRANSLATED_DOCUMENT_ACTIVITY_ID,
             variables
         );
         if (lipApplicant) {
