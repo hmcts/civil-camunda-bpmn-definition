@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
   <bpmn:message id="Message_0slk3de" name="CREATE_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
   <bpmn:error id="Error_1237qii" name="StartBusinessAbort" errorCode="ABORT" />
@@ -36,7 +36,7 @@
       <bpmn:outgoing>Flow_0zmuneb</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1i6z3nu" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0paxcik" name="Dashboard Service Enabled" sourceRef="Gateway_1wy38h2" targetRef="GenerateDashboardNotificationClaimantMediationSuccessful">
+    <bpmn:sequenceFlow id="Flow_0paxcik" name="Dashboard Service Enabled" sourceRef="Gateway_1wy38h2" targetRef="GenerateDashboardNotificationsMediationSuccessful">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1tov26x" sourceRef="MediationSuccessfulNotifyParties" targetRef="Gateway_1wy38h2" />
@@ -44,7 +44,7 @@
     <bpmn:sequenceFlow id="Flow_0ocywq9" sourceRef="Activity_102t47i" targetRef="MediationSuccessfulNotifyParties" />
     <bpmn:sequenceFlow id="Flow_0vd4pw7" sourceRef="Activity_146wk8x" targetRef="Event_16pydp2" />
     <bpmn:sequenceFlow id="Flow_18nnml0" sourceRef="Event_19fyqxq" targetRef="Activity_102t47i" />
-    <bpmn:sequenceFlow id="Flow_19xzy8i" sourceRef="GenerateDashboardNotificationDefendantMediationSuccessful" targetRef="Activity_146wk8x" />
+    <bpmn:sequenceFlow id="Flow_19xzy8i" sourceRef="GenerateDashboardNotificationsMediationSuccessful" targetRef="Activity_146wk8x" />
     <bpmn:endEvent id="Event_16pydp2">
       <bpmn:incoming>Flow_0vd4pw7</bpmn:incoming>
     </bpmn:endEvent>
@@ -54,25 +54,6 @@
       <bpmn:outgoing>Flow_0paxcik</bpmn:outgoing>
       <bpmn:outgoing>Flow_04wo0t7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="GenerateDashboardNotificationDefendantMediationSuccessful" name="Generate Dashboard Notification Respondent" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_RESPONDENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1cr6c0y</bpmn:incoming>
-      <bpmn:outgoing>Flow_19xzy8i</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="GenerateDashboardNotificationClaimantMediationSuccessful" name="Generate Dashboard Notification Applicant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_APPLICANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0paxcik</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cr6c0y</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1cr6c0y" sourceRef="GenerateDashboardNotificationClaimantMediationSuccessful" targetRef="GenerateDashboardNotificationDefendantMediationSuccessful" />
     <bpmn:callActivity id="Activity_146wk8x" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -81,6 +62,15 @@
       <bpmn:incoming>Flow_04wo0t7</bpmn:incoming>
       <bpmn:outgoing>Flow_0vd4pw7</bpmn:outgoing>
     </bpmn:callActivity>
+    <bpmn:serviceTask id="GenerateDashboardNotificationsMediationSuccessful" name="Generate Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0paxcik</bpmn:incoming>
+      <bpmn:outgoing>Flow_19xzy8i</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MediationSuccessful">
@@ -88,52 +78,6 @@
         <dc:Bounds x="160" y="80" width="1350" height="730" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_19xzy8i_di" bpmnElement="Flow_19xzy8i">
-        <di:waypoint x="1170" y="300" />
-        <di:waypoint x="1250" y="300" />
-        <di:waypoint x="1250" y="430" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18nnml0_di" bpmnElement="Flow_18nnml0">
-        <di:waypoint x="278" y="470" />
-        <di:waypoint x="317" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vd4pw7_di" bpmnElement="Flow_0vd4pw7">
-        <di:waypoint x="1300" y="470" />
-        <di:waypoint x="1442" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ocywq9_di" bpmnElement="Flow_0ocywq9">
-        <di:waypoint x="417" y="470" />
-        <di:waypoint x="460" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zmuneb_di" bpmnElement="Flow_0zmuneb">
-        <di:waypoint x="367" y="412" />
-        <di:waypoint x="367" y="318" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tov26x_di" bpmnElement="Flow_1tov26x">
-        <di:waypoint x="560" y="470" />
-        <di:waypoint x="645" y="470" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0paxcik_di" bpmnElement="Flow_0paxcik">
-        <di:waypoint x="670" y="445" />
-        <di:waypoint x="670" y="300" />
-        <di:waypoint x="740" y="300" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="589" y="346" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04wo0t7_di" bpmnElement="Flow_04wo0t7">
-        <di:waypoint x="670" y="495" />
-        <di:waypoint x="670" y="620" />
-        <di:waypoint x="1250" y="620" />
-        <di:waypoint x="1250" y="510" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="934" y="602" width="83" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cr6c0y_di" bpmnElement="Flow_1cr6c0y">
-        <di:waypoint x="840" y="300" />
-        <di:waypoint x="1070" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0c2x1tx_di" bpmnElement="MediationSuccessfulNotifyParties">
         <dc:Bounds x="460" y="430" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -156,14 +100,12 @@
       <bpmndi:BPMNShape id="Gateway_1wy38h2_di" bpmnElement="Gateway_1wy38h2" isMarkerVisible="true">
         <dc:Bounds x="645" y="445" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jo2ink_di" bpmnElement="GenerateDashboardNotificationDefendantMediationSuccessful">
-        <dc:Bounds x="1070" y="260" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1iu7j5p" bpmnElement="GenerateDashboardNotificationClaimantMediationSuccessful">
-        <dc:Bounds x="740" y="260" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0yj82kf" bpmnElement="Activity_146wk8x">
         <dc:Bounds x="1200" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jo2ink_di" bpmnElement="GenerateDashboardNotificationsMediationSuccessful">
+        <dc:Bounds x="880" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1k9m1sq" bpmnElement="Event_183wgjg">
         <dc:Bounds x="349" y="412" width="36" height="36" />
@@ -171,6 +113,48 @@
           <dc:Bounds x="384" y="393" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0paxcik_di" bpmnElement="Flow_0paxcik">
+        <di:waypoint x="670" y="445" />
+        <di:waypoint x="670" y="290" />
+        <di:waypoint x="880" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="296" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tov26x_di" bpmnElement="Flow_1tov26x">
+        <di:waypoint x="560" y="470" />
+        <di:waypoint x="645" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zmuneb_di" bpmnElement="Flow_0zmuneb">
+        <di:waypoint x="367" y="412" />
+        <di:waypoint x="367" y="318" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ocywq9_di" bpmnElement="Flow_0ocywq9">
+        <di:waypoint x="417" y="470" />
+        <di:waypoint x="460" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vd4pw7_di" bpmnElement="Flow_0vd4pw7">
+        <di:waypoint x="1300" y="470" />
+        <di:waypoint x="1442" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18nnml0_di" bpmnElement="Flow_18nnml0">
+        <di:waypoint x="278" y="470" />
+        <di:waypoint x="317" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19xzy8i_di" bpmnElement="Flow_19xzy8i">
+        <di:waypoint x="980" y="290" />
+        <di:waypoint x="1250" y="290" />
+        <di:waypoint x="1250" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04wo0t7_di" bpmnElement="Flow_04wo0t7">
+        <di:waypoint x="670" y="495" />
+        <di:waypoint x="670" y="620" />
+        <di:waypoint x="1250" y="620" />
+        <di:waypoint x="1250" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="934" y="602" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
