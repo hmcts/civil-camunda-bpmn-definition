@@ -69,16 +69,15 @@ public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAf
             variables
         );
 
-            //applicant notification
-            ExternalTask dashboardNotificationForGa = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                dashboardNotificationForGa,
-                APPLICATION_EVENT_GASPEC,
-                DASHBOARD_NOTIFICATION_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID,
-                variables
-            );
-
+        //applicant notification
+        ExternalTask dashboardNotificationForGa = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+        assertCompleteExternalTask(
+            dashboardNotificationForGa,
+            APPLICATION_EVENT_GASPEC,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
