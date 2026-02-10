@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTest {
 
@@ -18,14 +19,6 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
     //Add PDF document to main case
     private static final String ADD_PDF_EVENT = "ADD_PDF_TO_MAIN_CASE";
     private static final String ADD_PDF_ID = "AddPDFDocumentToMainCase";
-
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
-        = "makeDecisionCreateDashboardNotificationForApplicant";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
-        = "makeDecisionCreateDashboardNotificationForRespondent";
 
     private static final String BULK_PRINT_ORDER_APPLICANT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
     private static final String BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID
@@ -43,6 +36,9 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
 
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaMakeDecision";
 
     public UploadTranslatedDocumentGaJudgeDecisionTest() {
         super("upload_translated_document_ga_judge_decision.bpmn", "UPLOAD_TRANSLATED_DOC_GA_DECISION_PROCESS_ID");
@@ -106,8 +102,8 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
         assertCompleteExternalTask(
             dashboardNotificationTask,
             PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID,
             variables
         );
 
@@ -117,15 +113,6 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
             PROCESS_EXTERNAL_CASE_EVENT,
             BULK_PRINT_ORDER_APPLICANT,
             BULK_PRINT_ORDER_APPLICANT_ACTIVITY_ID,
-            variables
-        );
-
-        dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardNotificationTask,
-            PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
             variables
         );
 
@@ -221,8 +208,8 @@ class UploadTranslatedDocumentGaJudgeDecisionTest extends BpmnBaseJudgeGASpecTes
         assertCompleteExternalTask(
             dashboardNotificationTask,
             PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID,
             variables
         );
 
