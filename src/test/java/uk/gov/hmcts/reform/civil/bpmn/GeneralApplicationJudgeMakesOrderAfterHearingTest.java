@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.MAKE_DECISION_CASE_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.UPDATE_FROM_GA_CASE_EVENT;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.WELSH_ENABLED;
 
 public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseGASpecTest {
@@ -33,17 +34,13 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
 
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "applicantNotificationForOrderMadeByJudge";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
-
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaFinalOrder";
 
     public GeneralApplicationJudgeMakesOrderAfterHearingTest() {
         super("general_application_judge_makes_order_after_hearing.bpmn", "GA_GENERATE_DIRECTIONS_ORDER_ID");
@@ -116,27 +113,14 @@ public class GeneralApplicationJudgeMakesOrderAfterHearingTest extends BpmnBaseG
                 variables
         );
 
-        if (isLipApplicant) {
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-        }
-
-        if (isLipRespondent) {
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-        }
+        ExternalTask updateCuiDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateCuiDashboard,
+            MAKE_DECISION_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_ACTIVITY_ID,
+            variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
