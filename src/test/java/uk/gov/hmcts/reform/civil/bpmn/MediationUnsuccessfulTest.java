@@ -17,15 +17,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
     private static final String NOTIFY_MEDIATION_UNSUCCESSFUL_ACTIVITY_ID
         = "MediationUnsuccessfulNotifyParties";
 
-    private static final String GENERATE_DASHBOARD_NOTIFICATION_DEFENDANT_MEDIATION_UNSUCCESSFUL
-        = "GenerateDashboardNotificationDefendantMediationUnsuccessful";
-    private static final String GENERATE_DASHBOARD_NOTIFICATION_MEDIATION_UNSUCCESSFUL_REQUESTED_FOR_APPLICANT_1
-        = "GenerateDashboardNotificationMediationUnsuccessfulRequestedForApplicant1";
-
-    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
-        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
-        = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL";
+    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL
+        = "GenerateDashboardNotificationsMediationUnsuccessful";
 
     public MediationUnsuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -50,16 +43,8 @@ public class MediationUnsuccessfulTest extends BpmnBaseTest {
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
-                                   GENERATE_DASHBOARD_NOTIFICATION_MEDIATION_UNSUCCESSFUL_REQUESTED_FOR_APPLICANT_1,
-                                   variables
-        );
-
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
-                                   PROCESS_CASE_EVENT,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
-                                   GENERATE_DASHBOARD_NOTIFICATION_DEFENDANT_MEDIATION_UNSUCCESSFUL,
+                                   "DASHBOARD_NOTIFICATION_EVENT",
+                                   CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_UNSUCCESSFUL,
                                    variables
         );
 
