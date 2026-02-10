@@ -11,6 +11,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseGASpecTest.APPLICATION_EVENT_GASPEC;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -25,11 +26,8 @@ public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAf
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
-
-    private static final String GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID = "GenerateGANotificationForApplicantFeeRequired";
-    private static final String GA_NOTIFICATION_RESPONDENT_FREE_APPLICATION_TASK_LIST_ID = "GenerateGANotificationForRespondentFreeApplication";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT = "CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT = "CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaApplicationIssued";
 
     public UploadTranslatedDocumentFreeFeeApplicationTest() {
         super("upload_translated_document_free_fee_application.bpmn", PROCESS_ID);
@@ -70,29 +68,17 @@ public class UploadTranslatedDocumentFreeFeeApplicationTest extends BpmnBaseGAAf
             GENERAL_APPLICATION_NOTIYFYING_ID,
             variables
         );
-        if (isLipApplicant) {
-            //applicant notification
-            ExternalTask dashboardNotificationForGaApplicant = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                dashboardNotificationForGaApplicant,
-                APPLICATION_EVENT_GASPEC,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_GA_APPLICANT,
-                GA_NOTIFICATION_FEE_REQUIRED_TASK_LIST_ID,
-                variables
-            );
-        }
 
-        if (isLipRespondent) {
-            //respondent notification
-            ExternalTask dashboardNotificationForGaRespondent = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
+            //applicant notification
+            ExternalTask dashboardNotificationForGa = assertNextExternalTask(APPLICATION_EVENT_GASPEC);
             assertCompleteExternalTask(
-                dashboardNotificationForGaRespondent,
+                dashboardNotificationForGa,
                 APPLICATION_EVENT_GASPEC,
-                CREATE_DASHBOARD_NOTIFICATION_FOR_GA_RESPONDENT,
-                GA_NOTIFICATION_RESPONDENT_FREE_APPLICATION_TASK_LIST_ID,
+                DASHBOARD_NOTIFICATION_EVENT,
+                CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID,
                 variables
             );
-        }
+
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
