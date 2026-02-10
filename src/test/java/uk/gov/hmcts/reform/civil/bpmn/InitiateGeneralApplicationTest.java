@@ -40,7 +40,6 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     //Make Service Request
     private static final String GENERATE_DRAFT_DOC_EVENT = "GENERATE_DRAFT_DOCUMENT";
     private static final String GENERATE_DRAFT_DOC_ID = "DraftDocumentGenerator";
-
     //Notifying respondents
     private static final String NOTYFYING_RESPONDENTS_EVENT = "NOTIFY_GENERAL_APPLICATION_RESPONDENT";
     private static final String GENERAL_APPLICATION_NOTIYFYING_ID = "GeneralApplicationNotifying";
@@ -48,12 +47,11 @@ class InitiateGeneralApplicationTest extends BpmnBaseGASpecTest {
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
     //Update CUI dashboard
-    //Notifying respondents
     private static final String UPDATE_CLAIMANT_DASHBOARD_GA_EVENT = "UPDATE_CLAIMANT_TASK_LIST_GA";
     private static final String UPDATE_RESPONDENT_DASHBOARD_GA_EVENT = "UPDATE_RESPONDENT_TASK_LIST_GA";
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
-     private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID
+    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_ISSUED_ACTIVITY_ID
         = "GenerateDashboardNotificationsGaApplicationIssued";
 
     public InitiateGeneralApplicationTest() {
