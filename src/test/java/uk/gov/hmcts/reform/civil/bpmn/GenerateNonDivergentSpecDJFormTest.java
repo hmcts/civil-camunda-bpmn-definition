@@ -71,7 +71,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             IS_JO_LIVE_FEED_ACTIVE, isJoFeedLive,
             IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled,
             LIP_CASE, isLiPClaimant
-            ));
+        ));
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);

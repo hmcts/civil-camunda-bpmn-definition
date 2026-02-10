@@ -82,6 +82,11 @@
     <bpmn:exclusiveGateway id="Gateway_1frg9g5">
       <bpmn:incoming>Flow_0ucx9m0</bpmn:incoming>
       <bpmn:incoming>Flow_1v4sd7z</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gateway_To_Dashboard_Check</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_16zd6v2">
+      <bpmn:incoming>Flow_Gateway_To_Dashboard_Check</bpmn:incoming>
+      <bpmn:outgoing>Flow_Dashboard_Enabled_Defendant</bpmn:outgoing>
       <bpmn:outgoing>Flow_1xpcq0u</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="Gateway_1hijbaf">
@@ -111,7 +116,6 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Dashboard_Enabled_Defendant</bpmn:incoming>
-      <bpmn:incoming>Flow_0bxssc2</bpmn:incoming>
       <bpmn:outgoing>Flow_0bwsqqe</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_0o3sg3o" name="Abort" attachedToRef="Activity_0y089q8">
@@ -146,7 +150,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_Dashboard_Enabled_Defendant" name="Dashboard Service Enabled" sourceRef="Gateway_16zd6v2" targetRef="GenerateDashboardNotificationsDJNonDivergent">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; (!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE || !empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0kd68ii">
       <bpmn:incoming>Flow_19foubv</bpmn:incoming>
@@ -182,10 +186,10 @@
       <bpmn:outgoing>Flow_10ujgz7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0o1d6v6" name="Defendant 2 is represented" sourceRef="Gateway_19b5dvl" targetRef="NotifyDJNonDivergentDefendant2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_10ujgz7" name="No Defendant 2 / Defendant 2 unrepresented" sourceRef="Gateway_19b5dvl" targetRef="Gateway_0kd68ii">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(!empty flowFlags.ONE_RESPONDENT_REPRESENTATIVE &amp;&amp; flowFlags.ONE_RESPONDENT_REPRESENTATIVE) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_TWO &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_TWO) || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; empty flowFlags.UNREPRESENTED_DEFENDANT_TWO)}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES || !flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:callActivity id="Activity_0wretog" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
@@ -200,7 +204,7 @@
     <bpmn:sequenceFlow id="JOLiveFeedDisabled" name="JO Live Feed is Disabled" sourceRef="Gateway_0kd68ii" targetRef="Activity_0wretog">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE|| !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0bwsqqe" sourceRef="GenerateDashboardNotificationsDJNonDivergent" targetRef="Gateway_19b5dvl" />
+    <bpmn:sequenceFlow id="Flow_0bwsqqe" sourceRef="GenerateDashboardNotificationsDJNonDivergent" targetRef="NotifyDJNonDivergentClaimant" />
     <bpmn:serviceTask id="NotifyDJNonDivergentClaimant" name="Notify DJ Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -208,13 +212,15 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1xpcq0u</bpmn:incoming>
+      <bpmn:incoming>Flow_0bwsqqe</bpmn:incoming>
       <bpmn:outgoing>Flow_0bxssc2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDJNonDivergentClaimant" targetRef="GenerateDashboardNotificationsDJNonDivergent" />
-    <bpmn:sequenceFlow id="Flow_1xpcq0u" sourceRef="Gateway_1frg9g5" targetRef="NotifyDJNonDivergentClaimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE || empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDJNonDivergentClaimant" targetRef="Gateway_19b5dvl" />
+    <bpmn:sequenceFlow id="Flow_1xpcq0u" name="Dashboard Service Disabled or Not LiP" sourceRef="Gateway_16zd6v2" targetRef="NotifyDJNonDivergentClaimant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED || (empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE) &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1v4sd7z" sourceRef="PostPINInLetterLIPDefendant1" targetRef="Gateway_1frg9g5" />
+    <bpmn:sequenceFlow id="Flow_Gateway_To_Dashboard_Check" sourceRef="Gateway_1frg9g5" targetRef="Gateway_16zd6v2" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -272,6 +278,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1s4b5bz" bpmnElement="Gateway_1frg9g5" isMarkerVisible="true">
         <dc:Bounds x="1485" y="245" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_16zd6v2" bpmnElement="Gateway_16zd6v2" isMarkerVisible="true">
+        <dc:Bounds x="1575" y="245" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_19cr48b" bpmnElement="Gateway_1hijbaf" isMarkerVisible="true">
         <dc:Bounds x="725" y="245" width="50" height="50" />
@@ -365,10 +374,14 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_13ddy0n" bpmnElement="Flow_0bxssc2">
         <di:waypoint x="1760" y="270" />
-        <di:waypoint x="1900" y="270" />
+        <di:waypoint x="2079" y="271" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Gateway_To_Dashboard" bpmnElement="Flow_Gateway_To_Dashboard_Check">
+        <di:waypoint x="1535" y="270" />
+        <di:waypoint x="1575" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_1ckq4m2" bpmnElement="Flow_1xpcq0u">
-        <di:waypoint x="1535" y="270" />
+        <di:waypoint x="1625" y="270" />
         <di:waypoint x="1660" y="270" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1558" y="282" width="83" height="40" />
@@ -414,9 +427,18 @@
           <dc:Bounds x="979" y="373" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Dashboard_Enabled" bpmnElement="Flow_Dashboard_Enabled_Defendant">
+        <di:waypoint x="1625" y="270" />
+        <di:waypoint x="1900" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1700" y="233" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0bwsqqe_di" bpmnElement="Flow_0bwsqqe">
-        <di:waypoint x="2000" y="271" />
-        <di:waypoint x="2079" y="271" />
+        <di:waypoint x="1900" y="270" />
+        <di:waypoint x="1820" y="270" />
+        <di:waypoint x="1820" y="270" />
+        <di:waypoint x="1760" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_09qfq1h" bpmnElement="Flow_1hce35l">
         <di:waypoint x="2604" y="271" />
