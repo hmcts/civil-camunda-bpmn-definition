@@ -19,12 +19,6 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT
             = "GENERATE_TRIAL_READY_FORM_APPLICANT";
 
-    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT
-            = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT";
-
-    public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
-            = "GenerateDefendantDashboardNotificationTrialArrangementsNotifyParty";
-
     //ACTIVITY IDs
     public static final String GENERATE_TRIAL_READY_FORM_APPLICANT_ACTIVITY_ID
             = "GenerateTrialReadyFormApplicant";
@@ -51,7 +45,7 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
 
         ExternalTask notificationTask;
 
-        //complete the hearing form process
+        //complete the dashboard notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                 GENERATE_TRIAL_READY_FORM_APPLICANT,
@@ -60,8 +54,8 @@ class GenerateTrialReadyDocumentApplicantTest extends BpmnBaseTest {
 
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT,
-                CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_DEFENDANT_ACTIVITY_ID
+                "DASHBOARD_NOTIFICATION_EVENT",
+                "GenerateDashboardNotificationsTrialArrangementsNotifyParty"
         );
 
         //end business process
