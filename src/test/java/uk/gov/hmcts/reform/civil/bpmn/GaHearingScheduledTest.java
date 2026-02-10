@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
 
@@ -26,16 +27,11 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
     private static final String NOTIFY_HEARING_NOTICE_DEFENDANT_EVENT = "NOTIFY_HEARING_NOTICE_DEFENDANT";
     private static final String NOTIFY_HEARING_NOTICE_DEFENDANT_ACTIVITY_ID = "NotifyHearingNoticeDefendant";
 
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
-        = "hearingScheduledCreateDashboardNotificationForApplicant";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID
-        = "hearingScheduledCreateDashboardNotificationForRespondent";
-
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
+
+    private static final String CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaMakeDecision";
 
     public GaHearingScheduledTest() {
         super("ga_hearing_scheduled_access.bpmn", PROCESS_ID);
@@ -166,6 +162,16 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             variables
         );
 
+        //dashboard Hearing Notice
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_EXTERNAL_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID,
+            variables
+        );
+
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -236,23 +242,13 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
             variables
         );
 
-        //dashboard Hearing Notice Applicant
-        ExternalTask dashboardNotificationTaskApplicant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        //dashboard Hearing Notice
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            dashboardNotificationTaskApplicant,
+            dashboardNotificationTask,
             PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_APPLICANT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
-            variables
-        );
-
-        //dashboard Hearing Notice Defendant
-        ExternalTask dashboardNotificationTaskDefendant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardNotificationTaskDefendant,
-            PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID,
             variables
         );
 
@@ -327,12 +323,12 @@ class GaHearingScheduledTest extends BpmnBaseHearingScheduledGATest {
         );
 
         //dashboard Hearing Notice Defendant
-        ExternalTask dashboardNotificationTaskDefendant = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_EXTERNAL_CASE_EVENT);
         assertCompleteExternalTask(
-            dashboardNotificationTaskDefendant,
+            dashboardNotificationTask,
             PROCESS_EXTERNAL_CASE_EVENT,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION,
-            CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_FOR_MAKE_DECISION_ACTIVITY_ID,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_MAKE_DECISION_ACTIVITY_ID,
             variables
         );
 
