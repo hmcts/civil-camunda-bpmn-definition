@@ -33,8 +33,8 @@ public class NotifyClaimantHwFOutComeTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardNotificationTask,
             PROCESS_CASE_EVENT,
-            "CLAIMANT1_HWF_DASHBOARD_NOTIFICATION",
-            "Claimant1HwFDashboardNotification"
+            "DASHBOARD_NOTIFICATION_EVENT",
+            "GenerateDashboardNotificationsNotifyLipClaimantHwfOutcome"
         );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
