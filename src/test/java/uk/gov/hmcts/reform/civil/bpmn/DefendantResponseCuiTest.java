@@ -19,13 +19,24 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
     private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
+    private static final String GENERATE_CLAIMANT_DASHBOARD
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE";
+
+    private static final String GENERATE_DEFENDANT_DASHBOARD
+        = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH
+        = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE_WELSH";
 
     //ACTIVITY IDs
     private static final String NOTIFY_EVENT_ACTIVITY = "DefendantResponseCUINotify";
     private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
-    private static final String GENERATE_DASHBOARD_ACTIVITY
-        = "GenerateDashboardNotificationsDefendantResponse";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_ACTIVITY
+        = "GenerateClaimantDashboardNotificationDefendantResponse";
+    private static final String GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
+        = "GenerateDefendantDashboardNotificationDefendantResponse";
+    private static final String GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
+        = "GenerateClaimantDashboardNotificationDefendantResponseWelsh";
 
     public DefendantResponseCuiTest() {
         super(
@@ -53,7 +64,8 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertBusinessProcessHasStarted(variables);
 
         verifyNotifyPartiesCompleted();
-        verifyGenerateDashboardNotifications();
+        verifyGenerateDashboardNotificationClaimant();
+        verifyGenerateDashboardNotificationDefendant();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -80,7 +92,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
 
-        verifyGenerateDashboardNotifications();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -103,7 +115,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
             "RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL", true));
 
         assertBusinessProcessHasStarted(variables);
-        verifyGenerateDashboardNotifications();
+        verifyGenerateDashboardNotificationClaimantForWelsh();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -150,10 +162,24 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         );
     }
 
-    private void verifyGenerateDashboardNotifications() {
+    private void verifyGenerateDashboardNotificationClaimant() {
         verifyTaskIsComplete(
-            DASHBOARD_NOTIFICATION_EVENT,
-            GENERATE_DASHBOARD_ACTIVITY
+            GENERATE_CLAIMANT_DASHBOARD,
+            GENERATE_CLAIMANT_DASHBOARD_ACTIVITY
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationDefendant() {
+        verifyTaskIsComplete(
+            GENERATE_DEFENDANT_DASHBOARD,
+            GENERATE_DEFENDANT_DASHBOARD_ACTIVITY
+        );
+    }
+
+    private void verifyGenerateDashboardNotificationClaimantForWelsh() {
+        verifyTaskIsComplete(
+            GENERATE_CLAIMANT_DASHBOARD_WELSH,
+            GENERATE_CLAIMANT_DASHBOARD_WELSH_ACTIVITY
         );
     }
 

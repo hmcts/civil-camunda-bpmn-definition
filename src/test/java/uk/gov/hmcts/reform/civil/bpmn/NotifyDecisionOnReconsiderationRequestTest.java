@@ -61,13 +61,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -120,13 +130,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -192,13 +212,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -254,13 +284,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -326,13 +366,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -387,13 +437,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -469,13 +529,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -540,13 +610,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 
@@ -602,13 +682,23 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the dashboard notification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the dashboard notification for Claimant
+        ExternalTask claimantDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                dashboardNotification,
+                claimantDashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
-                "GenerateDashboardNotificationsDecisionReconsideration",
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_CLAIMANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationClaimant",
+                variables
+        );
+
+        //complete the dashboard notification for Respondent
+        ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+                respondentDashboardNotification,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_DECISION_RECONSIDERATION_DEFENDANT1",
+                "GenerateDashboardNotificationDecisionReconsiderationDefendant",
                 variables
         );
 

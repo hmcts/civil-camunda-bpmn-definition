@@ -25,9 +25,6 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
     public static final String GENERATE_PIP_LETTER = "GENERATE_PIP_LETTER";
     public static final String GENERATE_PIP_LETTER_ID = "GeneratePipLetter";
 
-    private static final String CREATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_ACTIVITY_ID
-        = "GenerateDashboardNotificationsClaimIssue";
-
     public UploadTranslatedClaimIssueDocumentTest() {
         super("upload_translated_document_claim_issue_notify.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_LIP_ID");
     }
@@ -93,8 +90,16 @@ public class UploadTranslatedClaimIssueDocumentTest extends BpmnBaseTest {
         ExternalTask notificationTaskForDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTaskForDashboard,
                 PROCESS_CASE_EVENT,
-                DASHBOARD_NOTIFICATION_EVENT,
-                CREATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_ACTIVITY_ID
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1",
+                "CreateIssueClaimDashboardNotificationsForApplicant1"
+        );
+
+        //complete the case state update
+        ExternalTask notificationTaskForRespondentDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTaskForRespondentDashboard,
+                PROCESS_CASE_EVENT,
+                "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1",
+                "CreateIssueClaimDashboardNotificationsForDefendant1"
         );
 
         //complete the Robotics notification

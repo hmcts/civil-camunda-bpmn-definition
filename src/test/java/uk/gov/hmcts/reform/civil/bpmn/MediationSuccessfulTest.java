@@ -17,8 +17,6 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
 
     private static final String NOTIFY_MEDIATION_SUCCESSFUL_ACTIVITY_ID
         = "MediationSuccessfulNotifyParties";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL
-        = "GenerateDashboardNotificationsMediationSuccessful";
 
     public MediationSuccessfulTest() {
         super(FILE_NAME, PROCESS_ID);
@@ -41,13 +39,22 @@ public class MediationSuccessfulTest extends BpmnBaseTest {
                                    variables
         );
 
-        //dashboardNotification
-        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //dashboardNotification applicant
+        ExternalTask dashboardApplicant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            dashboardNotification,
+            dashboardApplicant,
             PROCESS_CASE_EVENT,
-            "DASHBOARD_NOTIFICATION_EVENT",
-            CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL
+            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_APPLICANT",
+            "GenerateDashboardNotificationClaimantMediationSuccessful"
+        );
+
+        //dashboardNotification respondent
+        ExternalTask dashboardRespondent = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardRespondent,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_FOR_MEDIATION_SUCCESSFUL_FOR_RESPONDENT",
+            "GenerateDashboardNotificationDefendantMediationSuccessful"
         );
 
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));

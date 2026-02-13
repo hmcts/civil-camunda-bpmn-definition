@@ -21,7 +21,12 @@ public class CreateClaimLipTest extends BpmnBaseTest {
     private static final String CREATE_SERVICE_REQUEST_CUI_ACTIVITY_ID = "CreateServiceRequestCUI";
     private static final String GENERATE_PDF_FORM_EVENT = "GENERATE_DRAFT_FORM";
     private static final String GENERATE_PDF_FORM_ACTIVITY_ID = "GenerateDraftForm";
-    private static final String GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID = "GenerateDashboardNotificationsCreateLipClaim";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CUI_EVENT = "GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CLAIMANT1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CUI_ACTIVITY_ID = "GenerateDashboardNotificationClaimFeeRequired";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1 = "GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1";
+    private static final String GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1_ACTIVITY_ID = "GenerateDashboardNotificationClaimIssueHwfClaimant1";
+    private static final String ADD_MESSAGES_TASK_LIST_CATEGORIES = "CREATE_MESSAGES_TASK_CATEGORIES";
+    private static final String ADD_MESSAGES_TASK_LIST_CATEGORIES_ACTIVITY_ID = "GenerateMessageTaskItems";
 
     //Notify applicant 1 claim submitted
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
@@ -41,7 +46,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
         createServiceRequestCui(variables);
-        generateDashboardNotifications(variables);
+        generateDashboardNotificationClaimFeeRequired(variables);
+        setAddMessagesTaskListCategories(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
@@ -54,7 +60,8 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         completeClaimIssue(variables);
         notifyApplicant1ClaimSubmitted(variables);
         generateDraftForm(variables);
-        generateDashboardNotifications(variables);
+        generateDashboardNotificationHwfRequested(variables);
+        setAddMessagesTaskListCategories(variables);
         completeBusinessProcess(assertNextExternalTask(END_BUSINESS_PROCESS));
     }
 
@@ -106,13 +113,35 @@ public class CreateClaimLipTest extends BpmnBaseTest {
         );
     }
 
-    private void generateDashboardNotifications(final VariableMap variables) {
+    private void generateDashboardNotificationClaimFeeRequired(final VariableMap variables) {
         ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             assignTask,
             PROCESS_CASE_EVENT,
-            DASHBOARD_NOTIFICATION_EVENT,
-            GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID,
+            GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CUI_EVENT,
+            GENERATE_DASHBOARD_NOTIFICATION_CLAIM_FEE_REQUIRED_CUI_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void generateDashboardNotificationHwfRequested(final VariableMap variables) {
+        ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignTask,
+            PROCESS_CASE_EVENT,
+            GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1,
+            GENERATE_DASHBOARD_NOTIFICATION_CLAIM_ISSUE_HWF_CLAIMANT1_ACTIVITY_ID,
+            variables
+        );
+    }
+
+    private void setAddMessagesTaskListCategories(final VariableMap variables) {
+        ExternalTask assignTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            assignTask,
+            PROCESS_CASE_EVENT,
+            ADD_MESSAGES_TASK_LIST_CATEGORIES,
+            ADD_MESSAGES_TASK_LIST_CATEGORIES_ACTIVITY_ID,
             variables
         );
     }
