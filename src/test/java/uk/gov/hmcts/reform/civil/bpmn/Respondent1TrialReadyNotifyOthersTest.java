@@ -27,7 +27,7 @@ class Respondent1TrialReadyNotifyOthersTest extends BpmnBaseTest {
     public static final String GENERATE_TRIAL_READY_FORM_RESPONDENT1_ACTIVITY_ID
             = "GenerateTrialReadyFormRespondent1";
     public static final String CREATE_DASHBOARD_NOTIFICATION_TRIAL_ARRANGEMENTS_NOTIFY_CLAIMANT_ACTIVITY_ID
-            = "GenerateClaimantDashboardNotificationsTrialArrangementsNotifyParty";
+            = "GenerateDashboardNotificationsRespondent1TrialReadyNotifyOthers";
 
     public Respondent1TrialReadyNotifyOthersTest() {
         super("respondent1_trial_ready_notify_others.bpmn", PROCESS_ID);
