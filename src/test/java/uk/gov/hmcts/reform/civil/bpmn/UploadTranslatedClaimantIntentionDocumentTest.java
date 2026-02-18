@@ -35,20 +35,11 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             = "NotifyRoboticsOnContinuousFeed";
     private static final String NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
         = "NotifyJoRoboticsOnContinuousFeed";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-    private static final String CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE
-            = "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
-    private static final String GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-            = "GenerateClaimantDashboardNotificationClaimantResponse";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID
+            = "GenerateDashboardNotificationsUploadTranslatedDocumentClaimantIntention";
     private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String SEND_JUDGMENT_DETAILS_CJES_EVENT_ID = "SendJudgmentDetailsToCJES";
     private static final String UPDATE_CLAIMANT_CLAIM_STATE_ACTIVITY_ID = "UpdateClaimStateAfterTranslatedDocUpload";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID = "GenerateClaimantCCJDashboardNotification";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID = "GenerateDefendantCCJDashboardNotification";
-
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
@@ -113,16 +104,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             generateDashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-        );
-
-        //complete the Generate Dashboard Notification Respondent 1
-        ExternalTask notificationTaskForDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTaskForDashboardNotification,
-                                   PROCESS_CASE_EVENT,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
@@ -185,11 +168,13 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID
         );
 
-        //create dashboard notification
-        generateClaimantLipApplicationOfflineDashboardNotification();
-        generateDefendantLipApplicationOfflineDashboardNotification();
-        generateClaimantDashboardNotificationForCCJClaimantResponse();
-        generateDefendantDashboardNotificationForCCJClaimantResponse();
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationsTask,
+            PROCESS_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -266,16 +251,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             generateDashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-            GENERATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID
-        );
-
-        //complete the Generate Dashboard Notification Respondent 1
-        ExternalTask notificationTaskForDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTaskForDashboardNotification,
-                                   PROCESS_CASE_EVENT,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-                                   CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
 
         //end business process
@@ -376,21 +353,13 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
                 NOTIFY_JO_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID
             );
         }
-        //complete the Generate Dashboard Notification Claimant 1
-        ExternalTask notificationClaimantTaskJoIssued = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the Generate Dashboard Notification
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            notificationClaimantTaskJoIssued,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT,
-            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT_EVENT_ID
-        );
-        //complete the Generate Dashboard Notification Respondent 1
-        ExternalTask notificationRespondentTaskJoIssued = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationRespondentTaskJoIssued,
-            PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT_EVENT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -398,33 +367,17 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertNoExternalTasksLeft();
     }
 
-    private void generateClaimantDashboardNotificationForCCJClaimantResponse() {
-        assertCompletedCaseEvent("CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateClaimantCCJDashboardNotificationClaimantResponse");
-    }
-
-    private void generateDefendantDashboardNotificationForCCJClaimantResponse() {
-        assertCompletedCaseEvent("CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE", "GenerateDefendantCCJDashboardNotificationForClaimantResponse");
-    }
-
     private void postClaimantLipJbaLetter() {
-        assertCompletedCaseEvent(POST_CLAIMANT_LIP_JBA_LETTER, POST_CLAIMANT_LIP_JBA_LETTER_ID);
+        assertCompletedCaseEvent();
     }
 
-    private void generateClaimantLipApplicationOfflineDashboardNotification() {
-        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT", "claimantLipApplicationOfflineDashboardNotification");
-    }
-
-    private void generateDefendantLipApplicationOfflineDashboardNotification() {
-        assertCompletedCaseEvent("CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT", "defendantLipApplicationOfflineDashboardNotification");
-    }
-
-    private void assertCompletedCaseEvent(String eventName, String activityId) {
+    private void assertCompletedCaseEvent() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            eventName,
-            activityId
+                UploadTranslatedClaimantIntentionDocumentTest.POST_CLAIMANT_LIP_JBA_LETTER,
+                UploadTranslatedClaimantIntentionDocumentTest.POST_CLAIMANT_LIP_JBA_LETTER_ID
         );
     }
 }
