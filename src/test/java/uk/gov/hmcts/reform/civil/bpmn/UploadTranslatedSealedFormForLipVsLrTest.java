@@ -118,8 +118,8 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_DEFENDANT_RESPONSE",
-            "GenerateClaimantDashboardNotificationDefendantResponse"
+            DASHBOARD_NOTIFICATION_EVENT,
+            "GenerateDashboardNotificationsDefendantResponse"
         );
 
         //end business process
