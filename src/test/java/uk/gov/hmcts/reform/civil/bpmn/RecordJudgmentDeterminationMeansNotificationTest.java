@@ -94,13 +94,13 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
             );
 
             if (dashboardServiceEnabled) {
-                //complete generate dashboard notifications
+                //complete generate dashboard notification to defendant
                 ExternalTask respondent1DashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
                 assertCompleteExternalTask(
                     respondent1DashboardNotification,
                     PROCESS_CASE_EVENT,
-                    "DASHBOARD_NOTIFICATION_EVENT",
-                    "GenerateDashboardNotificationsRecordJudgment",
+                    "CREATE_DASHBOARD_NOTIFICATION_RECORD_JUDGMENT_DEFENDANT",
+                    "GenerateDashboardNotificationRecordJudgmentDefendant",
                     variables
                 );
             }
