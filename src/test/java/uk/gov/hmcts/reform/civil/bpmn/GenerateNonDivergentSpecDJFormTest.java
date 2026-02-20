@@ -22,6 +22,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     private static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
     private static final String SEND_JUDGMENT_DETAILS_TO_CJES = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String NOTIFY_RPA_DJ_SPEC = "NOTIFY_RPA_DJ_SPEC";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     //ACTIVITY IDs
     private static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
@@ -128,7 +129,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 respondent1Notification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LR",
+                NOTIFY_EVENT,
                 "NotifyDJNonDivergentDefendant1",
                 variables
             );
@@ -171,7 +172,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             claimantNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_DJ_NON_DIVERGENT_SPEC_CLAIMANT",
+            NOTIFY_EVENT,
             "NotifyDJNonDivergentClaimant"
         );
 
