@@ -12,7 +12,7 @@ fi
 # Check if RUN_FAILED_AND_PREV_NOT_EXECUTED_TEST_FILES is set to "true"
 if [ "$RUN_PREV_FAILED_AND_NOT_EXECUTED_TEST_FILES" != "true" ]; then
   yarn playwright install
-  yarn test:api-nightly-prod
+  yarn test:civil-camunda-nightly
 else 
   # Define path to failedTestFiles.json and prevTestFilesReport.json
   TEST_FILES_REPORT="test-results/functional/testFilesReport.json"
@@ -44,7 +44,7 @@ else
     export PREV_NOT_EXECUTED_TEST_FILES="$PREV_NOT_EXECUTED_TEST_FILES"
       
     yarn playwright install
-    yarn test:api-nightly-prod
+    yarn test:civil-camunda-nightly
   fi
 fi
 
