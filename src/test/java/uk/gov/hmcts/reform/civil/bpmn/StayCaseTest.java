@@ -23,10 +23,6 @@ public class StayCaseTest extends BpmnBaseTest {
         = "NOTIFY_DEFENDANT_STAY_CASE";
     public static final String NOTIFY_DEFENDANT_TWO_STAY_CASE
         = "NOTIFY_DEFENDANT_TWO_STAY_CASE";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT
-        = "CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT";
-    public static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT
-        = "CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT";
 
     //ACTIVITY IDs
     private static final String NOTIFY_CLAIMANT_STAY_CASE_ACTIVITY_ID
@@ -35,10 +31,6 @@ public class StayCaseTest extends BpmnBaseTest {
         = "NotifyDefendantStayCase";
     private static final String NOTIFY_DEFENDANT_TWO_STAY_CASE_ACTIVITY_ID
         = "NotifyDefendant2StayCase";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT_ACTIVITY_ID
-        = "GenerateDashboardNotificationStayCaseClaimant";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT_ACTIVITY_ID
-        = "GenerateDashboardNotificationStayCaseDefendant";
 
     public StayCaseTest() {
         super("stay_case.bpmn", PROCESS_ID);
@@ -94,19 +86,11 @@ public class StayCaseTest extends BpmnBaseTest {
                                    variables
         );
 
-        //complete the claimant dashboard notification
+        //complete the dashboard notification
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_CLAIMANT_ACTIVITY_ID,
-                                   variables
-        );
-
-        //complete the defendant dashboard notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
-                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT,
-                                   CREATE_DASHBOARD_NOTIFICATION_STAY_CASE_DEFENDANT_ACTIVITY_ID,
+                                   "DASHBOARD_NOTIFICATION_EVENT",
+                                   "GenerateDashboardNotificationsStayCase",
                                    variables
         );
 
