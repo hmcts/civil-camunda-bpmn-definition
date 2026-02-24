@@ -125,13 +125,11 @@
     <bpmn:sequenceFlow id="Flow_1if0h68" sourceRef="Event_NonDivergentSpec" targetRef="Activity_0y089q8" />
     <bpmn:sequenceFlow id="Flow_1qffyiy" sourceRef="Activity_0y089q8" targetRef="GenerateDJFormNondivergentSpecClaimant" />
     <bpmn:sequenceFlow id="Flow_0h072ea" sourceRef="Event_0o3sg3o" targetRef="Event_1mtqud7" />
-    <bpmn:sequenceFlow id="Flow_01vfemo" name="Not Lip Claimant" sourceRef="Gateway_0spo9hn" targetRef="Gateway_00bae9b">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01vfemo" name="Not Lip Claimant" sourceRef="Gateway_0spo9hn" targetRef="Gateway_00bae9b" />
+
     <bpmn:sequenceFlow id="Flow_1d1ri5c" sourceRef="PostClaimantDJCoverLetterAndDocument" targetRef="Gateway_00bae9b" />
-    <bpmn:sequenceFlow id="Flow_0e6m2vd" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDJNonDivergentDefendant1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0e6m2vd" name="Not LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDJNonDivergentDefendant1" />
+
     <bpmn:sequenceFlow id="Flow_1g00tur" name="LiP Defendant" sourceRef="Gateway_00bae9b" targetRef="NotifyDJNonDivergentDefendant1LiP">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; flowFlags.UNREPRESENTED_DEFENDANT_ONE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -143,9 +141,8 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_CJES_SERVICE_ENABLED &amp;&amp; flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1lwtzuv" sourceRef="SendJudgmentDetailsToCJES" targetRef="Gateway_0spo9hn" />
-    <bpmn:sequenceFlow id="Flow_0dxyifw" name="CJES Service Disabled" sourceRef="Gateway_1hijbaf" targetRef="Gateway_0spo9hn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_CJES_SERVICE_ENABLED || !flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0dxyifw" name="CJES Service Disabled" sourceRef="Gateway_1hijbaf" targetRef="Gateway_0spo9hn" />
+
     <bpmn:sequenceFlow id="Flow_1wb4otq" name="Lip Claimant" sourceRef="Gateway_0spo9hn" targetRef="PostClaimantDJCoverLetterAndDocument">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -188,9 +185,8 @@
     <bpmn:sequenceFlow id="Flow_0o1d6v6" name="Defendant 2 is represented" sourceRef="Gateway_19b5dvl" targetRef="NotifyDJNonDivergentDefendant2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES &amp;&amp; flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_10ujgz7" name="No Defendant 2 / Defendant 2 unrepresented" sourceRef="Gateway_19b5dvl" targetRef="Gateway_0kd68ii">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.TWO_RESPONDENT_REPRESENTATIVES || !flowFlags.TWO_RESPONDENT_REPRESENTATIVES}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10ujgz7" name="No Defendant 2 / Defendant 2 unrepresented" sourceRef="Gateway_19b5dvl" targetRef="Gateway_0kd68ii" />
+
     <bpmn:callActivity id="Activity_0wretog" name="End Business Process" calledElement="EndBusinessProcess">
       <bpmn:extensionElements>
         <camunda:in variables="all" />
@@ -201,9 +197,8 @@
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1hce35l" sourceRef="Activity_0wretog" targetRef="Event_0r8yo0r" />
     <bpmn:sequenceFlow id="Flow_0y28arg" sourceRef="NotifyRPADJSPECID" targetRef="Activity_0wretog" />
-    <bpmn:sequenceFlow id="JOLiveFeedDisabled" name="JO Live Feed is Disabled" sourceRef="Gateway_0kd68ii" targetRef="Activity_0wretog">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE|| !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="JOLiveFeedDisabled" name="JO Live Feed is Disabled" sourceRef="Gateway_0kd68ii" targetRef="Activity_0wretog" />
+
     <bpmn:sequenceFlow id="Flow_0bwsqqe" sourceRef="GenerateDashboardNotificationsDJNonDivergent" targetRef="NotifyDJNonDivergentClaimant" />
     <bpmn:serviceTask id="NotifyDJNonDivergentClaimant" name="Notify DJ Claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
@@ -216,9 +211,8 @@
       <bpmn:outgoing>Flow_0bxssc2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0bxssc2" sourceRef="NotifyDJNonDivergentClaimant" targetRef="Gateway_19b5dvl" />
-    <bpmn:sequenceFlow id="Flow_1xpcq0u" name="Dashboard Service Disabled or Not LiP" sourceRef="Gateway_16zd6v2" targetRef="NotifyDJNonDivergentClaimant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.DASHBOARD_SERVICE_ENABLED || !flowFlags.DASHBOARD_SERVICE_ENABLED || (empty flowFlags.LIP_CASE || !flowFlags.LIP_CASE) &amp;&amp; (empty flowFlags.UNREPRESENTED_DEFENDANT_ONE || !flowFlags.UNREPRESENTED_DEFENDANT_ONE)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xpcq0u" name="Dashboard Service Disabled or Not LiP" sourceRef="Gateway_16zd6v2" targetRef="NotifyDJNonDivergentClaimant" />
+
     <bpmn:sequenceFlow id="Flow_1v4sd7z" sourceRef="PostPINInLetterLIPDefendant1" targetRef="Gateway_1frg9g5" />
     <bpmn:sequenceFlow id="Flow_Gateway_To_Dashboard_Check" sourceRef="Gateway_1frg9g5" targetRef="Gateway_16zd6v2" />
   </bpmn:process>
