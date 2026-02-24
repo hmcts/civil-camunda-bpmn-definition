@@ -138,7 +138,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 respondent1LIpNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
+                NOTIFY_EVENT,
                 "NotifyDJNonDivergentDefendant1LiP",
                 variables
             );
@@ -182,7 +182,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 respondent2Notification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
+                NOTIFY_EVENT,
                 "NotifyDJNonDivergentDefendant2",
                 variables
             );
