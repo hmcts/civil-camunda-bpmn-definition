@@ -4,7 +4,6 @@ import org.camunda.bpm.engine.externaltask.ExternalTask;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
 import org.camunda.bpm.engine.impl.calendar.CronExpression;
 import org.camunda.bpm.engine.management.JobDefinition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -24,7 +23,6 @@ class RequestForReconsiderationNotificationCheckSchedulerTest extends BpmnBaseTe
     }
 
     @Test
-    @Disabled
     void schedulerShouldRaiseRequestForReconsiderationCheckExternalTask_whenStarted() throws ParseException {
         //assert process has started
         assertFalse(processInstance.isEnded());
@@ -40,12 +38,12 @@ class RequestForReconsiderationNotificationCheckSchedulerTest extends BpmnBaseTe
         assertThat(jobDefinitions.get(0).getJobType()).isEqualTo("timer-start-event");
 
         //scheduler set to run every 10 minutes to ease testing.
-        String cronString = "0 0 0 * * ?";
+        String cronString = "0 10 0 * * ?";
         assertThat(jobDefinitions.get(0).getJobConfiguration()).isEqualTo("CYCLE: " + cronString);
         assertCronTriggerFiresAtExpectedTime(
             new CronExpression(cronString),
-            LocalDateTime.of(2024, 11, 30, 0, 0, 0),
-            LocalDateTime.of(2024, 12, 1, 0, 0, 0)
+            LocalDateTime.of(2024, 11, 30, 0, 10, 0),
+            LocalDateTime.of(2024, 12, 1, 0, 10, 0)
         );
 
         //get external tasks
