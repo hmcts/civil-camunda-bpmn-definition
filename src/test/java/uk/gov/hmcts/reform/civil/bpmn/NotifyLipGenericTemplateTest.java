@@ -14,8 +14,7 @@ class NotifyLipGenericTemplateTest extends BpmnBaseTest {
     private static final String NOTIFY_APPLICANT1_GENERIC_TEMPLATE_ACTIVITY_ID = "NotifyLipGenericTemplateNotifier";
 
     private static final String GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID =
-        "GenerateDashboardNotificationHearingFeePaidClaimant";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_HEARING_FEE_PAID_CLAIMANT";
+        "GenerateDashboardNotificationsCitizenHearingFeePayment";
 
     NotifyLipGenericTemplateTest() {
         super("notify_lip_generic_template.bpmn", PROCESS_ID);
@@ -41,7 +40,7 @@ class NotifyLipGenericTemplateTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             generateDashboardNotifications,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_CLAIMANT,
+            DASHBOARD_NOTIFICATION_EVENT,
             GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID
         );
 
