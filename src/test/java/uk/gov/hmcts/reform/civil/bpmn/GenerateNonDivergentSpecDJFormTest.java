@@ -140,7 +140,7 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             allPartiesNotification,
             PROCESS_CASE_EVENT,
             NOTIFY_EVENT,
-            "DjNonDivergentNotifier",
+            "DJ_NON_DIVERGENT_NOTIFIER",
             variables
         );
 
