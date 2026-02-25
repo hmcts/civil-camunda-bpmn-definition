@@ -17,10 +17,8 @@ class GenerateSpecDjFormTest extends BpmnBaseTest {
 
     private static final String GENERATE_DJ_FORM_SPEC_EVENT = "GENERATE_DJ_FORM_SPEC";
     private static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
-    private static final String NOTIFY_APPLICANT_EVENT = "NOTIFY_APPLICANT_SOLICITOR_DJ_RECEIVED";
-    private static final String NOTIFY_APPLICANT_ACTIVITY_ID = "NotifyApplicantSolicitorDJReceived";
-    private static final String NOTIFY_RESPONDENT_EVENT = "NOTIFY_RESPONDENT_SOLICITOR_DJ_RECEIVED";
-    private static final String NOTIFY_RESPONDENT_ACTIVITY_ID = "NotifyRespondentSolicitorDJReceived";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    private static final String NOTIFY_EVENT_ACTIVITY_ID = "GenerateSpecDjFormNotifier";
     private static final String NOTIFY_RPA_EVENT = "NOTIFY_RPA_DJ_SPEC";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPADJSPEC";
     private static final String DASHBOARD_APPLICATION_OFFLINE_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT";
@@ -135,21 +133,12 @@ class GenerateSpecDjFormTest extends BpmnBaseTest {
     }
 
     private void completePrimaryNotifications(VariableMap variables) {
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            applicantNotification,
+            notification,
             PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_EVENT,
-            NOTIFY_APPLICANT_ACTIVITY_ID,
-            variables
-        );
-
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondentNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_EVENT,
-            NOTIFY_RESPONDENT_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_EVENT_ACTIVITY_ID,
             variables
         );
 
