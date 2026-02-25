@@ -14,13 +14,9 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "LIP_CLAIM_SETTLED";
     private static final String PROCESS_ID = "LIP_CLAIM_SETTLED_PROCESS_ID";
 
-    //CCD Case Event
-    private static final String NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM
-        = "NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM";
-
     //Activity IDs
     private static final String NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM_ACTIVITY_ID
-        = "NotifyDefendantClaimantSettleTheClaim";
+        = "NotifyDefendantClaimantSettleTheClaimNotify";
 
     private static final String CLAIM_SETTLED = "GenerateDashboardNotificationsClaimSettled";
 
@@ -47,7 +43,7 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM,
+            GENERIC_NOTIFY_EVENT,
             NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM_ACTIVITY_ID,
             variables
         );
