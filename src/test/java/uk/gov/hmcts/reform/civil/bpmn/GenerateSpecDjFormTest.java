@@ -18,7 +18,7 @@ class GenerateSpecDjFormTest extends BpmnBaseTest {
     private static final String GENERATE_DJ_FORM_SPEC_EVENT = "GENERATE_DJ_FORM_SPEC";
     private static final String GENERATE_DJ_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormSpec";
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-    private static final String NOTIFY_EVENT_ACTIVITY_ID = "GenerateSpecDjFormNotifier";
+    private static final String NOTIFY_EVENT_ACTIVITY_ID = "GenerateSpecDJFormNotifier";
     private static final String NOTIFY_RPA_EVENT = "NOTIFY_RPA_DJ_SPEC";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPADJSPEC";
     private static final String DASHBOARD_APPLICATION_OFFLINE_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT";
