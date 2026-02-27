@@ -14,11 +14,10 @@ serviceToken=$(${dir}/idam-lease-service-token.sh ccd_gw $(docker run --rm toolb
 
 version="n/a"
 newVersion="n/a"
-caseTypeId=${CCD_CASE_TYPE_ID:-CIVIL}
 
 if [ "${ENVIRONMENT}" == "preview" ] || [ "${ENVIRONMENT}" == "aat" ]; then
   version=$(curl --insecure --silent --show-error -X GET \
-    ${CCD_DEFINITION_STORE_API_BASE_URL:-http://localhost:4451}/api/data/case-type/${caseTypeId}/version \
+    ${CCD_DEFINITION_STORE_API_BASE_URL:-http://localhost:4451}/api/data/case-type/CIVIL/version \
     -H "Authorization: Bearer ${userToken}" \
     -H "ServiceAuthorization: Bearer ${serviceToken}" || echo 'bypass-if-error')
 
@@ -40,7 +39,7 @@ if [ "${ENVIRONMENT}" == "preview" ] || [ "${ENVIRONMENT}" == "aat" ]; then
   sleep 45
 
   newVersion=$(curl --insecure --silent --show-error -X GET \
-    ${CCD_DEFINITION_STORE_API_BASE_URL:-http://localhost:4451}/api/data/case-type/${caseTypeId}/version \
+    ${CCD_DEFINITION_STORE_API_BASE_URL:-http://localhost:4451}/api/data/case-type/CIVIL/version \
     -H "Authorization: Bearer ${userToken}" \
     -H "ServiceAuthorization: Bearer ${serviceToken}" || echo 'bypass-if-error')
 
