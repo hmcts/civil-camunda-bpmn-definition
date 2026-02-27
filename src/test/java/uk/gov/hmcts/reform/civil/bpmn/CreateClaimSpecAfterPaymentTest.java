@@ -42,17 +42,13 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
 
     public static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_EVENT = "SET_LIP_RESPONDENT_RESPONSE_DEADLINE";
     private static final String SET_LIP_RESPONDENT_RESPONSE_DEADLINE_ACTIVITY_ID = "SetRespondent1Deadline";
-    private static final String CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_ACTIVITY_ID = "CreateIssueClaimDashboardNotificationsForApplicant1";
-    private static final String CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_EVENT = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_APPLICANT1";
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_CLAIMANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipClaimantClaimFormForSpec";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_EVENT = "GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC";
     private static final String GENERATE_LIP_DEFENDANT_CLAIM_FORM_SPEC_ACTIVITY_ID = "GenerateLipDefendantClaimFormForSpec";
 
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_EVENT
-            = "CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT1";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
-            = "CreateIssueClaimDashboardNotificationsForDefendant1";
+    private static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsCreateClaimAfterPayment";
 
     private static final String REMOVE_PAYMENT_DASHBOARD_NOTIFICATION_EVENT
             = "REMOVE_PAYMENT_DASHBOARD_NOTIFICATION";
@@ -117,13 +113,13 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     variables
             );
 
-            // complete the defendant dashboard notification
-            ExternalTask dashboardNotificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            // complete the dashboard notifications
+            ExternalTask dashboardNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    dashboardNotificationRespondentTask,
+                    dashboardNotifications,
                     PROCESS_CASE_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
+                    DASHBOARD_NOTIFICATION_EVENT,
+                    DASHBOARD_NOTIFICATION_ACTIVITY_ID
             );
 
             //complete the notifications
@@ -456,13 +452,13 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     variables
             );
 
-            // complete the defendant dashboard notification
-            ExternalTask dashboardNotificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+            // complete the dashboard notifications
+            ExternalTask dashboardNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
-                    dashboardNotificationRespondentTask,
+                    dashboardNotifications,
                     PROCESS_CASE_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_EVENT,
-                    CREATE_DASHBOARD_NOTIFICATION_FOR_CLAIM_ISSUE_FOR_RESPONDENT_ACTIVITY_ID
+                    DASHBOARD_NOTIFICATION_EVENT,
+                    DASHBOARD_NOTIFICATION_ACTIVITY_ID
             );
 
             //complete the respondent notification
@@ -481,15 +477,6 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
                     PROCESS_CASE_EVENT,
                     GENERATE_PIP_LETTER,
                     GENERATE_PIP_LETTER_ID
-            );
-
-            //complete the claimant dashboard notification
-            ExternalTask claimantDashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                    claimantDashboardNotificationTask,
-                    PROCESS_CASE_EVENT,
-                    CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_EVENT,
-                    CREATE_ISSUE_CLAIM_DASHBOARD_NOTIFICATIONS_FOR_CLAIMANT1_ACTIVITY_ID
             );
 
             ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -599,4 +586,3 @@ public class CreateClaimSpecAfterPaymentTest extends BpmnBaseTest {
         );
     }
 }
-
