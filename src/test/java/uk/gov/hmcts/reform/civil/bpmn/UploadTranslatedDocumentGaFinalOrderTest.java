@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.MAKE_DECISION_CASE_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseJudgeGASpecTest.UPDATE_FROM_GA_CASE_EVENT;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 
 public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest {
 
@@ -29,15 +30,8 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     private static final String LIP_APPLICANT = "LIP_APPLICANT";
     private static final String LIP_RESPONDENT = "LIP_RESPONDENT";
 
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "applicantNotificationForOrderMadeByJudge";
-
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT = "CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE";
-    private static final String CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY = "respondentNotificationForOrderMadeByJudge";
-
     private static final String BULK_PRINT_APPLICANT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_APPLICANT";
     private static final String BULK_PRINT_APPLICANT_ACTIVITY = "BulkPrintOrderApplicant";
-
     private static final String BULK_PRINT_RESPONDENT_EVENT = "SEND_TRANSLATED_ORDER_TO_LIP_RESPONDENT";
     private static final String BULK_PRINT_RESPONDENT_ACTIVITY = "BulkPrintOrderRespondent";
 
@@ -46,6 +40,8 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
     private static final String GENERAL_APPLICATION_CLAIMANT_TASK_LIST_ID = "GeneralApplicationClaimantTaskList";
     private static final String GENERAL_APPLICATION_RESPONDENT_TASK_LIST_ID = "GeneralApplicationRespondentTaskList";
     private static final String APPLICATION_EVENT_GASPEC = "applicationEventGASpec";
+    private static final String CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_ACTIVITY_ID
+        = "GenerateDashboardNotificationsGaFinalOrder";
 
     public UploadTranslatedDocumentGaFinalOrderTest() {
         super("upload_translated_document_ga_final_order.bpmn", "UPLOAD_TRANSLATED_DOC_GA_FINAL_ORDER_PROCESS_ID");
@@ -104,16 +100,16 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
             variables
         );
 
-        if (isLipApplicant) {
-            ExternalTask updateCuiClaimantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiClaimantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_APPLICANT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
+        ExternalTask updateCuiDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
+        assertCompleteExternalTask(
+            updateCuiDashboard,
+            MAKE_DECISION_CASE_EVENT,
+            DASHBOARD_NOTIFICATION_EVENT,
+            CREATE_DASHBOARD_NOTIFICATION_FINAL_ORDER_ACTIVITY_ID,
+            variables
+        );
 
+        if (isLipApplicant) {
             ExternalTask bulkPrintApplicant = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
             assertCompleteExternalTask(
                 bulkPrintApplicant,
@@ -125,15 +121,6 @@ public class UploadTranslatedDocumentGaFinalOrderTest extends BpmnBaseGASpecTest
         }
 
         if (isLipRespondent) {
-            ExternalTask updateCuiDefendantDashboard = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
-            assertCompleteExternalTask(
-                updateCuiDefendantDashboard,
-                MAKE_DECISION_CASE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_EVENT,
-                CREATE_RESPONDENT_DASHBOARD_NOTIFICATION_ORDER_MADE_ACTIVITY,
-                variables
-            );
-
             ExternalTask bulkPrintRespondent = assertNextExternalTask(MAKE_DECISION_CASE_EVENT);
             assertCompleteExternalTask(
                 bulkPrintRespondent,
