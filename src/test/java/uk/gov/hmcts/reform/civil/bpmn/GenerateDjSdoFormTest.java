@@ -11,12 +11,8 @@ class GenerateDjSdoFormTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "STANDARD_DIRECTION_ORDER_DJ";
     private static final String PROCESS_ID = "GENERATE_DJ_SDO_FORM";
 
-    private static final String NOTIFY_CLAIMANT_EVENT = "NOTIFY_DIRECTION_ORDER_DJ_CLAIMANT";
-    private static final String NOTIFY_CLAIMANT_ACTIVITY_ID = "Activity_0nyrqab";
-    private static final String NOTIFY_DEFENDANT_EVENT = "NOTIFY_DIRECTION_ORDER_DJ_DEFENDANT";
-    private static final String NOTIFY_DEFENDANT_ACTIVITY_ID = "Activity_0txb7dk";
-    private static final String NOTIFY_DEFENDANT2_EVENT = "NOTIFY_DIRECTION_ORDER_DJ_DEFENDANT2";
-    private static final String NOTIFY_DEFENDANT2_ACTIVITY_ID = "Activity_0v7eexn";
+    private static final String NOTIFY_PARTIES_EVENT = "NOTIFY_EVENT";
+    private static final String NOTIFY_PARTIES_ACTIVITY_ID = "StandardDirectionOrderDJNotifyParties";
     private static final String NOTIFY_RPA_EVENT = "NOTIFY_RPA_DJ_UNSPEC";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPADJ";
 
@@ -37,28 +33,12 @@ class GenerateDjSdoFormTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask notifyParties = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            claimantNotification,
+            notifyParties,
             PROCESS_CASE_EVENT,
-            NOTIFY_CLAIMANT_EVENT,
-            NOTIFY_CLAIMANT_ACTIVITY_ID
-        );
-
-        ExternalTask defendantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_DEFENDANT_EVENT,
-            NOTIFY_DEFENDANT_ACTIVITY_ID
-        );
-
-        ExternalTask defendantTwoNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            defendantTwoNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_DEFENDANT2_EVENT,
-            NOTIFY_DEFENDANT2_ACTIVITY_ID
+            NOTIFY_PARTIES_EVENT,
+            NOTIFY_PARTIES_ACTIVITY_ID
         );
 
         ExternalTask roboticsNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
