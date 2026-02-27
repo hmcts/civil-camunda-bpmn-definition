@@ -11,4 +11,4 @@ definition_input_dir=$(realpath "ccd-definition/generalapplication")
 definition_output_file="$(realpath ".")/build/ccd-development-config/ccd-civil-apps-dev.xlsx"
 params="$@"
 
-./bin/utils/import-ccd-definition.sh "${definition_input_dir}" "${definition_output_file}" "${params}"
+CCD_CASE_TYPE_ID=GENERALAPPLICATION ./bin/utils/import-ccd-definition.sh "${definition_input_dir}" "${definition_output_file}" "${params}"
