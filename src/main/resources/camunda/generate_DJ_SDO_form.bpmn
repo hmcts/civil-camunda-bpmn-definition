@@ -33,47 +33,27 @@
       <bpmn:incoming>Flow_1og0z75</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
-    <bpmn:sequenceFlow id="Flow_1vs00o9" sourceRef="Activity_0x0o0ha" targetRef="Activity_0nyrqab" />
-    <bpmn:serviceTask id="Activity_0nyrqab" name="Notify DJ SDO Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1vs00o9" sourceRef="Activity_0x0o0ha" targetRef="StandardDirectionOrderDJNotifyParties" />
+    <bpmn:serviceTask id="StandardDirectionOrderDJNotifyParties" name="Notify Relevant Parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DIRECTION_ORDER_DJ_CLAIMANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1vs00o9</bpmn:incoming>
-      <bpmn:outgoing>Flow_0posdss</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0generic</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="Activity_0nyrqab" targetRef="Activity_0txb7dk" />
-    <bpmn:serviceTask id="Activity_0txb7dk" name="Notify DJ SDO Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DIRECTION_ORDER_DJ_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0posdss</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ut7dif</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ut7dif" sourceRef="Activity_0txb7dk" targetRef="Activity_0v7eexn" />
+    <bpmn:sequenceFlow id="Flow_0generic" sourceRef="StandardDirectionOrderDJNotifyParties" targetRef="NotifyRPADJ" />
     <bpmn:serviceTask id="NotifyRPADJ" name="Notify Robotic " camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_DJ_UNSPEC</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17q0v6o</bpmn:incoming>
+      <bpmn:incoming>Flow_0generic</bpmn:incoming>
       <bpmn:outgoing>Flow_0p1nq0y</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0p1nq0y" sourceRef="NotifyRPADJ" targetRef="Activity_0pqcpvc" />
-    <bpmn:serviceTask id="Activity_0v7eexn" name="Notify DJ SDO Defendant2" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DIRECTION_ORDER_DJ_DEFENDANT2</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ut7dif</bpmn:incoming>
-      <bpmn:outgoing>Flow_17q0v6o</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_17q0v6o" sourceRef="Activity_0v7eexn" targetRef="NotifyRPADJ" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -95,26 +75,18 @@
           <dc:Bounds x="178" y="245" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="Activity_0nyrqab">
+      <bpmndi:BPMNShape id="StandardDirectionOrderDJNotifyParties_di" bpmnElement="StandardDirectionOrderDJNotifyParties">
         <dc:Bounds x="430" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="Activity_0txb7dk">
-        <dc:Bounds x="577" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1hi38ry" bpmnElement="Activity_0v7eexn">
-        <dc:Bounds x="730" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="NotifyRPADJ_di" bpmnElement="NotifyRPADJ">
-        <dc:Bounds x="890" y="180" width="100" height="80" />
+        <dc:Bounds x="580" y="180" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="1030" y="180" width="100" height="80" />
+        <dc:Bounds x="720" y="180" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="1152" y="202" width="36" height="36" />
+        <dc:Bounds x="842" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_065sy6f_di" bpmnElement="Event_065sy6f">
         <dc:Bounds x="312" y="162" width="36" height="36" />
@@ -134,25 +106,17 @@
         <di:waypoint x="380" y="220" />
         <di:waypoint x="430" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0posdss_di" bpmnElement="Flow_0posdss">
+      <bpmndi:BPMNEdge id="Flow_0generic_di" bpmnElement="Flow_0generic">
         <di:waypoint x="530" y="220" />
-        <di:waypoint x="577" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ut7dif_di" bpmnElement="Flow_0ut7dif">
-        <di:waypoint x="677" y="220" />
-        <di:waypoint x="730" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17q0v6o_di" bpmnElement="Flow_17q0v6o">
-        <di:waypoint x="830" y="220" />
-        <di:waypoint x="890" y="220" />
+        <di:waypoint x="580" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0p1nq0y_di" bpmnElement="Flow_0p1nq0y">
-        <di:waypoint x="990" y="220" />
-        <di:waypoint x="1030" y="220" />
+        <di:waypoint x="680" y="220" />
+        <di:waypoint x="720" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1og0z75_di" bpmnElement="Flow_1og0z75">
-        <di:waypoint x="1130" y="220" />
-        <di:waypoint x="1152" y="220" />
+        <di:waypoint x="820" y="220" />
+        <di:waypoint x="842" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
