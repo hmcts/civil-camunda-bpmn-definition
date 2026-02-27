@@ -43,7 +43,7 @@ public class ClaimSettledLiPTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            GENERIC_NOTIFY_EVENT,
+            NOTIFY_EVENT,
             NOTIFY_DEFENDANT_CLAIMANT_SETTLE_THE_CLAIM_ACTIVITY_ID,
             variables
         );
