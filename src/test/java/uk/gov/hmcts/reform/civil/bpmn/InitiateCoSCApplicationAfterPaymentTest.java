@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.IS_JO_LIVE_FEED_ACTIVE;
-import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.PROCESS_CASE_EVENT;
 
 class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
 
@@ -112,8 +111,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
         }
 
         //complete the dashboard notifications
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+        ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+        assertCompleteExternalTask(notificationTask, APPLICATION_PROCESS_EVENT_GASPEC,
                                    DASHBOARD_NOTIFICATION_EVENT,
                                    GENERATE_DASHBOARD_NOTIFICATIONS_INITIATE_COSC,
                                    variables
