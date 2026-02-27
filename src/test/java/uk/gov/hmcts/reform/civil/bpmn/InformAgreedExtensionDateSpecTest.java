@@ -19,9 +19,9 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
-    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1 = "CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID
-        = "GenerateDashboardNotificationMoreTimeRequestedForRespondent1";
+    private static final String CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST_ACTIVITY_ID
+        = "GenerateDashboardNotificationsInformAgreedExtensionDateSpec";
 
     enum FlowState {
         PENDING_CLAIM_ISSUED;
@@ -76,15 +76,6 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
                 "AgreedExtensionDateNotifyApplicantLipForSpec",
                 variables
             );
-
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
-                "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_DEFENDANT_RESPONSE_DATE",
-                "GenerateClaimantDashboardNotificationClaimantNewResponseDeadlineLiPvLR",
-                variables
-            );
         } else {
             ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
@@ -125,6 +116,15 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             NOTIFY_RPA_ON_CONTINUOUS_FEED,
             NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID,
+            variables
+        );
+
+        ExternalTask dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            dashboardNotificationTask,
+            PROCESS_CASE_EVENT,
+            CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST,
+            CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST_ACTIVITY_ID,
             variables
         );
 
@@ -181,17 +181,8 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             dashboardNotificationTask,
             PROCESS_CASE_EVENT,
-            "CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_DEFENDANT_RESPONSE_DATE",
-            "GenerateClaimantDashboardNotificationClaimantNewResponseDeadline",
-            variables
-        );
-
-        dashboardNotificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            dashboardNotificationTask,
-            PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1,
-            CREATE_DASHBOARD_NOTIFICATION_MORE_TIME_REQUEST_FOR_RESPONDENT1_ACTIVITY_ID,
+            CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST,
+            CREATE_DASHBOARD_NOTIFICATIONS_MORE_TIME_REQUEST_ACTIVITY_ID,
             variables
         );
 
