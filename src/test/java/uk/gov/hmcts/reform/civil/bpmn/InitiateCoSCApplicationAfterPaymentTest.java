@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.DASHBOARD_NOTIFICATION_EVENT;
 import static uk.gov.hmcts.reform.civil.bpmn.BpmnBaseTest.IS_JO_LIVE_FEED_ACTIVE;
 
 class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest {
@@ -17,19 +18,14 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     public static final String PROCESS_ID = "COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID = "ClaimantDashboardNotificationMarkNotPaidInFull";
     public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationMarkNotPaidInFull";
     private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoscDocument";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID = "DefendantDashboardNotificationCertificateGenerated";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC = "NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC_ACTIVITY_ID = "NotifyApplicantSolicitorCoscApplication";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
+    private static final String GENERATE_DASHBOARD_NOTIFICATIONS_INITIATE_COSC = "GenerateDashboardNotificationsInitiateCOSC";
 
     public InitiateCoSCApplicationAfterPaymentTest() {
         super("initiate_cosc_application_after_payment.bpmn", PROCESS_ID);
@@ -76,7 +72,6 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
             variables
         );
 
-        //complete the Defendant notification
         if (!isJudgmentMarkedPaidInFull) {
             if (isClaimantLR) {
                 // email notification for claimant
@@ -88,26 +83,7 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                     NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC_ACTIVITY_ID,
                     variables
                 );
-            } else {
-                // dashboard notification for claimant
-                ExternalTask claimantNotificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-                assertCompleteExternalTask(
-                    claimantNotificationTask,
-                    APPLICATION_PROCESS_EVENT_GASPEC,
-                    CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT,
-                    CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_CLAIMANT_ACTIVITY_ID,
-                    variables
-                );
             }
-
-            ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                notificationTask,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_NOT_PAID_FULL_DEFENDANT_ACTIVITY_ID,
-                variables
-            );
         }
 
         //complete the CC notification
@@ -119,16 +95,6 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 APPLICATION_PROCESS_EVENT_GASPEC,
                 GENERATE_COSC_DOCUMENT,
                 GENERATE_COSC_DOCUMENT_ACTIVITY_ID,
-                variables
-            );
-
-            //complete the Defendant notification for certification generated
-            ExternalTask generateDocNotification = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-            assertCompleteExternalTask(
-                generateDocNotification,
-                APPLICATION_PROCESS_EVENT_GASPEC,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT,
-                CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT_ACTIVITY_ID,
                 variables
             );
         }
@@ -143,6 +109,14 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
                 variables
             );
         }
+
+        //complete the dashboard notifications
+        ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
+        assertCompleteExternalTask(notificationTask, APPLICATION_PROCESS_EVENT_GASPEC,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATIONS_INITIATE_COSC,
+                                   variables
+        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
