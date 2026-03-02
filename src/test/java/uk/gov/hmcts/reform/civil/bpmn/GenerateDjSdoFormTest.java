@@ -12,7 +12,7 @@ class GenerateDjSdoFormTest extends BpmnBaseTest {
     private static final String PROCESS_ID = "GENERATE_DJ_SDO_FORM";
 
     private static final String NOTIFY_PARTIES_EVENT = "NOTIFY_EVENT";
-    private static final String NOTIFY_PARTIES_ACTIVITY_ID = "StandardDirectionOrderDJNotifyParties";
+    private static final String NOTIFY_PARTIES_ACTIVITY_ID = "STANDARD_DIRECTION_ORDER_DJ_NOTIFY_PARTIES";
     private static final String NOTIFY_RPA_EVENT = "NOTIFY_RPA_DJ_UNSPEC";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPADJ";
 
