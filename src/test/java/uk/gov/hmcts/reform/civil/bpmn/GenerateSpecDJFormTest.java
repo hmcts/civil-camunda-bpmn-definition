@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class GenerateSpecDjFormTest extends BpmnBaseTest {
+class GenerateSpecDJFormTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DEFAULT_JUDGEMENT_SPEC";
     public static final String PROCESS_ID = "GENERATE_DJ_FORM_SPEC";
@@ -27,7 +27,7 @@ class GenerateSpecDjFormTest extends BpmnBaseTest {
     public static final String NOTIFY_RPA_DJ_SPEC_ACTIVITY_ID = "NotifyRPADJSPEC";
     private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsDjFormSpec";
 
-    public GenerateSpecDjFormTest() {
+    public GenerateSpecDJFormTest() {
         super("generate_spec_DJ_form.bpmn", PROCESS_ID);
     }
 
