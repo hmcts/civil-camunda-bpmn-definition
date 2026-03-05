@@ -18,7 +18,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
     public static final String PROCESS_ID = "COSC_INITIATE_AFTER_PAYMENT_PROCESS_ID";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE = "CHECK_PAID_IN_FULL_SCHED_DEADLINE";
     private static final String CHECK_PAID_IN_FULL_SCHED_DEADLINE_ACTIVITY_ID = "CheckMarkPaidInFullAndAddSchedulerDeadline";
-    public static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
+    private static final String APPLICATION_PROCESS_EVENT_GASPEC = "coscApplicationAfterPayment";
+    private static final String APPLICATION_PROCESS_CASE_EVENT_GASPEC = "applicationProcessCaseEventGASpec";
     private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoscDocument";
     private static final String NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC = "NOTIFY_APPLICANT_SOLICITOR1_FOR_PAID_IN_FULL_COSC";
@@ -111,8 +112,8 @@ class InitiateCoSCApplicationAfterPaymentTest extends BpmnBaseGAAfterPaymentTest
         }
 
         //complete the dashboard notifications
-        ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_EVENT_GASPEC);
-        assertCompleteExternalTask(notificationTask, APPLICATION_PROCESS_EVENT_GASPEC,
+        ExternalTask notificationTask = assertNextExternalTask(APPLICATION_PROCESS_CASE_EVENT_GASPEC);
+        assertCompleteExternalTask(notificationTask, APPLICATION_PROCESS_CASE_EVENT_GASPEC,
                                    DASHBOARD_NOTIFICATION_EVENT,
                                    GENERATE_DASHBOARD_NOTIFICATIONS_INITIATE_COSC,
                                    variables
