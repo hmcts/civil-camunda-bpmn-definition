@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_18h9iji" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.41.0">
   <bpmn:process id="UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_RESPONSE_DOC" name="Upload translated document GA summary response doc" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_0g2t112</bpmn:outgoing>
@@ -71,21 +71,21 @@
       <bpmn:incoming>Flow_0ho04ze</bpmn:incoming>
       <bpmn:outgoing>Flow_0jyncjd</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_18u8w9p" name="No" sourceRef="Gateway_1so1uwc" targetRef="dashboardNotificationId">
+    <bpmn:sequenceFlow id="Flow_18u8w9p" name="No" sourceRef="Gateway_1so1uwc" targetRef="GenerateDashboardNotificationsGaApplicationResponded">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.VARY_JUDGE_GA_BY_RESP || !flowFlags.VARY_JUDGE_GA_BY_RESP)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="dashboardNotificationId" name="Create Dashboard Notification" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsGaApplicationResponded" name="Create Dashboard Notification" camunda:type="external" camunda:topic="applicationProcessCaseEventGASpec">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_APPLICATION_RESPONDED_DASHBOARD_NOTIFICATION</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18u8w9p</bpmn:incoming>
       <bpmn:incoming>Flow_0jyncjd</bpmn:incoming>
       <bpmn:outgoing>Flow_13rgugv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_13rgugv" sourceRef="dashboardNotificationId" targetRef="Activity_0eo8p2p" />
-    <bpmn:sequenceFlow id="Flow_0jyncjd" sourceRef="TriggerMainCaseToMoveOfflineId" targetRef="dashboardNotificationId" />
+    <bpmn:sequenceFlow id="Flow_13rgugv" sourceRef="GenerateDashboardNotificationsGaApplicationResponded" targetRef="Activity_0eo8p2p" />
+    <bpmn:sequenceFlow id="Flow_0jyncjd" sourceRef="TriggerMainCaseToMoveOfflineId" targetRef="GenerateDashboardNotificationsGaApplicationResponded" />
   </bpmn:process>
   <bpmn:message id="Message_0ttrrz3" name="UPLOAD_TRANSLATED_DOCUMENT_GA_SUMMARY_RESPONSE_DOC" />
   <bpmn:error id="Error_1alq6sw" name="StartBusinessAbort" errorCode="ABORT" />
@@ -97,6 +97,9 @@
           <dc:Bounds x="158" y="238" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
+        <dc:Bounds x="1352" y="195" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0gt1863_di" bpmnElement="Activity_0gt1863">
         <dc:Bounds x="230" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -106,6 +109,9 @@
       <bpmndi:BPMNShape id="BPMNShape_1cajp65" bpmnElement="AddDraftDocToMainCaseID">
         <dc:Bounds x="390" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
+        <dc:Bounds x="1180" y="173" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0stc1rq" bpmnElement="WaitCivilDraftDocumentUpdatedId">
         <dc:Bounds x="540" y="173" width="100" height="80" />
@@ -121,15 +127,9 @@
         <dc:Bounds x="790" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07ek9xj_di" bpmnElement="Event_07ek9xj">
-        <dc:Bounds x="1352" y="195" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1erkovz" bpmnElement="dashboardNotificationId">
+      <bpmndi:BPMNShape id="BPMNShape_1erkovz" bpmnElement="GenerateDashboardNotificationsGaApplicationResponded">
         <dc:Bounds x="980" y="173" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eo8p2p_di" bpmnElement="Activity_0eo8p2p">
-        <dc:Bounds x="1180" y="173" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3emre_di" bpmnElement="Event_1p3emre">
         <dc:Bounds x="262" y="152" width="36" height="36" />
