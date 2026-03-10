@@ -39,15 +39,12 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         "ClaimantResponseAgreedSettledPartAdmitNotify";
     private static final String CLAIMANT_RESPONSE_NOT_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseNotAgreedRepaymentNotify";
     private static final String CLAIMANT_RESPONSE_AGREED_REPAYMENT_ACTIVITY_ID = "ClaimantResponseAgreedRepaymentNotify";
-    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsClaimantResponseSpec";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
+    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
     private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantResponseConfirmsNotToProceedNotify";
 
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-
-    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_RESPONDENT1_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
-    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_APPLICANT_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
-    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "DefendantPartAdmitPayImmediatelyNotification";
-    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "ClaimantPartAdmitPayImmediatelyNotification";
+    private static final String NOTIFY_PARTIES_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "ClaimantResponsePartAdmitPayImmediatelyNotifier";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -104,7 +101,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -158,7 +156,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -193,7 +192,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -242,7 +242,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -327,7 +328,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -370,7 +372,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             NOTIFY_LIP_RESP_FOR_CLAIMANT_CONFIRMS_NOT_TO_PROCEED_ACTIVITY_ID
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -480,7 +483,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             variables
         );
 
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -519,7 +523,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_EVENT,
             CLAIMANT_RESPONSE_AGREED_SETTLED_PART_ADMIT_NOTIFY_ACTIVITY_ID
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -640,19 +645,13 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
-            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_PARTIES_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
             variables
         );
 
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
-            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
-            variables
-        );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -701,7 +700,8 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
             NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID,
             variables
         );
-        generateDashboardNotifications();
+        createDefendantGaDashboardNotification();
+        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -753,13 +753,23 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertNoExternalTasksLeft();
     }
 
-    private void generateDashboardNotifications() {
+    private void createDefendantDashboardNotification() {
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            DASHBOARD_NOTIFICATION_EVENT,
-            DASHBOARD_NOTIFICATION_ACTIVITY_ID
+            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
+            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
+        );
+    }
+
+    private void createDefendantGaDashboardNotification() {
+        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            defendantGaDashboard,
+            PROCESS_CASE_EVENT,
+            "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT",
+            "defendantLipApplicationOfflineDashboardNotification"
         );
     }
 }
