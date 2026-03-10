@@ -44,11 +44,7 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
     private static final String NOTIFY_RESPONDENT_SOLICITOR1_CONFIRMS_NOT_TO_PROCEED_EVENT_ID = "ClaimantResponseConfirmsNotToProceedNotify";
 
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
-
-    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_RESPONDENT1_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
-    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED = "NOTIFY_APPLICANT_PART_ADMIT_PAY_IMMEDIATELY_AGREED";
-    private static final String NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "DefendantPartAdmitPayImmediatelyNotification";
-    private static final String NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "ClaimantPartAdmitPayImmediatelyNotification";
+    private static final String NOTIFY_PARTIES_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID = "ClaimantResponsePartAdmitPayImmediatelyNotifier";
 
     public ClaimantResponseSpecTest() {
         super("claimant_response_spec.bpmn", "CLAIMANT_RESPONSE_PROCESS_ID_SPEC");
@@ -649,18 +645,11 @@ class ClaimantResponseSpecTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
-            NOTIFY_RESPONDENT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
+            NOTIFY_EVENT,
+            NOTIFY_PARTIES_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
             variables
         );
 
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED,
-            NOTIFY_APPLICANT_1_PART_ADMIT_PAY_IMMEDIATELY_AGREED_ACTIVITY_ID,
-            variables
-        );
         createDefendantGaDashboardNotification();
         createDefendantDashboardNotification();
 
