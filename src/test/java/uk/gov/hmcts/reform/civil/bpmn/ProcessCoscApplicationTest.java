@@ -17,6 +17,7 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
     private static final String SEND_DETAILS_CJES = "sendDetailsToCJES";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
+    private static final String GENERATE_DASHBOARD_NOTIFICATIONS_PROCESS_COSC = "GenerateDashboardNotificationsProcessCOSC";
 
     public ProcessCoscApplicationTest() {
         super("process_cosc_application.bpmn", PROCESS_ID);
@@ -78,12 +79,12 @@ class ProcessCoscApplicationTest extends BpmnBaseTest {
             "GenerateCoSCDocument"
         );
 
-        ExternalTask notifyCertGenerated = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notifyCertGenerated,
-            PROCESS_CASE_EVENT,
-            "CREATE_DASHBOARD_NOTIFICATION_COSC_GEN_FOR_DEFENDANT",
-            "DefendantDashboardNotificationCertificateGenerated"
+        //complete the dashboard notifications
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATIONS_PROCESS_COSC,
+                                   variables
         );
 
         if (joFlag) {
