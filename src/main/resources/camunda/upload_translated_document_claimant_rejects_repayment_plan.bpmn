@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ranzx9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ranzx9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="UPLOAD_TRANSLATED_CLAIMANTS_DOCUMENT_PROCESS_ID" name="Upload translated claimant rejects repayment plan" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:callActivity id="START_BUSINESS_PROCESS" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -49,9 +49,7 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_005d10x</bpmn:incoming>
-      <bpmn:incoming>Flow_0tiu1p8</bpmn:incoming>
-      <bpmn:incoming>Flow_0ip7v81</bpmn:incoming>
+      <bpmn:incoming>Flow_1p1siqy</bpmn:incoming>
       <bpmn:outgoing>Flow_0s09rb1</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_0s09rb1" sourceRef="END_BUSINESS_PROCESS" targetRef="Event_0262kdl" />
@@ -74,27 +72,7 @@
       <bpmn:incoming>Flow_1c3xg0g</bpmn:incoming>
       <bpmn:outgoing>Flow_0vf73ag</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0vf73ag" sourceRef="UpdateClaimStateAfterTranslatedDocUploaded" targetRef="GenerateClaimantDashboardNotificationClaimantResponse" />
-    <bpmn:serviceTask id="GenerateClaimantDashboardNotificationClaimantResponse" name="Generate Dashboard Notification Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0vf73ag</bpmn:incoming>
-      <bpmn:outgoing>Flow_066m4fv</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_066m4fv" sourceRef="GenerateClaimantDashboardNotificationClaimantResponse" targetRef="GenerateDashboardNotificationRespondent1" />
-    <bpmn:serviceTask id="GenerateDashboardNotificationRespondent1" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_066m4fv</bpmn:incoming>
-      <bpmn:outgoing>Flow_005d10x</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_005d10x" sourceRef="GenerateDashboardNotificationRespondent1" targetRef="END_BUSINESS_PROCESS" />
+    <bpmn:sequenceFlow id="Flow_0vf73ag" sourceRef="UpdateClaimStateAfterTranslatedDocUploaded" targetRef="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan" />
     <bpmn:serviceTask id="Activity_0fb0527" name="Proceed offline" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -117,27 +95,20 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; (!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION) &amp;&amp; !(!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0naqrrm" sourceRef="Activity_0fb0527" targetRef="Activity_0vcs82d" />
-    <bpmn:serviceTask id="Activity_1rgduq8" name="Dashboard Notification For Application Offline Claimant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_CLAIMANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1fbgsij</bpmn:incoming>
+      <bpmn:incoming>Flow_0vf73ag</bpmn:incoming>
+      <bpmn:incoming>Flow_0ziizku</bpmn:incoming>
+      <bpmn:incoming>Flow_0qjf0g9</bpmn:incoming>
       <bpmn:outgoing>Flow_1p1siqy</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1dt112k" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1p1siqy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0frpp1w</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1fbgsij" sourceRef="Activity_0vcs82d" targetRef="Activity_1rgduq8" />
-    <bpmn:sequenceFlow id="Flow_1p1siqy" sourceRef="Activity_1rgduq8" targetRef="Activity_1dt112k" />
-    <bpmn:sequenceFlow id="Flow_0frpp1w" sourceRef="Activity_1dt112k" targetRef="GenerateClaimantCCJDashboardNotificationClaimantResponse" />
+    <bpmn:sequenceFlow id="Flow_1fbgsij" sourceRef="Activity_0vcs82d" targetRef="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan" />
+    <bpmn:sequenceFlow id="Flow_1p1siqy" sourceRef="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan" targetRef="END_BUSINESS_PROCESS" />
     <bpmn:serviceTask id="UpdateClaimStateAfterTranslatedDocUpload" name="Update Claim State" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -186,22 +157,9 @@
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_08rlyk5">
       <bpmn:incoming>Flow_0ml9i2t</bpmn:incoming>
-      <bpmn:outgoing>Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED</bpmn:outgoing>
       <bpmn:outgoing>Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ziizku</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="GenerateClaimantCCJDashboardNotification" name="Generate Dashboard Notification for CCJ Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED</bpmn:incoming>
-      <bpmn:incoming>Flow_0nxd86z</bpmn:incoming>
-      <bpmn:outgoing>Flow_05alj4g</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED" name="JO live feed active disabled" sourceRef="Gateway_08rlyk5" targetRef="GenerateClaimantCCJDashboardNotification">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE || !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="NotifyJoRoboticsOnContinuousFeed" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -209,16 +167,7 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nxd86z</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="GenerateDefendantCCJDashboardNotification" name="Generate Dashboard Notification for CCJ Respondent1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_JUDGEMENT_BY_ADMISSION_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05alj4g</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tiu1p8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qjf0g9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED" name="JO live feed active enabled" sourceRef="Gateway_08rlyk5" targetRef="NotifyJoRoboticsOnContinuousFeed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.IS_JO_LIVE_FEED_ACTIVE &amp;&amp; flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
@@ -231,29 +180,6 @@
     <bpmn:sequenceFlow id="Flow_0c1rl9o" sourceRef="GenerateJudgmentByAdmissionDocClaimant" targetRef="GenerateJudgmentByAdmissionDocDefendant" />
     <bpmn:sequenceFlow id="Flow_1x042o9" sourceRef="GenerateJudgmentByAdmissionDocDefendant" targetRef="PostPINInLetterLIPDefendant" />
     <bpmn:sequenceFlow id="Flow_0ml9i2t" sourceRef="PostPINInLetterLIPDefendant" targetRef="Gateway_08rlyk5" />
-    <bpmn:sequenceFlow id="Flow_05alj4g" sourceRef="GenerateClaimantCCJDashboardNotification" targetRef="GenerateDefendantCCJDashboardNotification" />
-    <bpmn:sequenceFlow id="Flow_0tiu1p8" sourceRef="GenerateDefendantCCJDashboardNotification" targetRef="END_BUSINESS_PROCESS" />
-    <bpmn:sequenceFlow id="Flow_0nxd86z" sourceRef="NotifyJoRoboticsOnContinuousFeed" targetRef="GenerateClaimantCCJDashboardNotification" />
-    <bpmn:serviceTask id="GenerateClaimantCCJDashboardNotificationClaimantResponse" name="Generate Dashboard Notification for CCJ Claimant 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_CLAIMANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0frpp1w</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qqqn9k</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0qqqn9k" sourceRef="GenerateClaimantCCJDashboardNotificationClaimantResponse" targetRef="GenerateDefendantCCJDashboardNotificationForClaimantResponse" />
-    <bpmn:serviceTask id="GenerateDefendantCCJDashboardNotificationForClaimantResponse" name="Generate Dashboard Notification For CCJ Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_CCJ_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0qqqn9k</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ip7v81</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ip7v81" sourceRef="GenerateDefendantCCJDashboardNotificationForClaimantResponse" targetRef="END_BUSINESS_PROCESS" />
     <bpmn:exclusiveGateway id="Gateway_1ik4g6o">
       <bpmn:incoming>Flow_1k9eh3i</bpmn:incoming>
       <bpmn:outgoing>Flow_1re9717</bpmn:outgoing>
@@ -265,6 +191,10 @@
     <bpmn:sequenceFlow id="Flow_0xx8ld4" name="CJES Service Disabled" sourceRef="Gateway_1ik4g6o" targetRef="GenerateJudgmentByAdmissionDocClaimant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_CJES_SERVICE_ENABLED || !flowFlags.IS_CJES_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ziizku" name="JO live feed active disabled" sourceRef="Gateway_08rlyk5" targetRef="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${empty flowFlags.IS_JO_LIVE_FEED_ACTIVE ||  !flowFlags.IS_JO_LIVE_FEED_ACTIVE}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0qjf0g9" sourceRef="NotifyJoRoboticsOnContinuousFeed" targetRef="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan" />
   </bpmn:process>
   <bpmn:message id="Message_1pokpru" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_REJECTS_REPAYMENT_PLAN" />
   <bpmn:message id="Message_0r06v0l" name="UPLOAD_TRANSLATED_DOCUMENT_CLAIMANT_INTENTION" />
@@ -311,14 +241,6 @@
         <dc:Bounds x="900" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1hbua0t" bpmnElement="GenerateClaimantDashboardNotificationClaimantResponse">
-        <dc:Bounds x="1040" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0jk8i1x" bpmnElement="GenerateDashboardNotificationRespondent1">
-        <dc:Bounds x="1190" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_16mix7e" bpmnElement="Activity_0fb0527">
         <dc:Bounds x="830" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -327,12 +249,8 @@
         <dc:Bounds x="970" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0bxsnxe" bpmnElement="Activity_1rgduq8">
-        <dc:Bounds x="1090" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_10hn4y9" bpmnElement="Activity_1dt112k">
-        <dc:Bounds x="1220" y="370" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0bxsnxe" bpmnElement="GenerateDashboardNotificationsUploadTranslatedDocumentClaimantRejectsRepaymentPlan">
+        <dc:Bounds x="1180" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ec49q4" bpmnElement="UpdateClaimStateAfterTranslatedDocUpload">
@@ -356,29 +274,13 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ux7g49" bpmnElement="Gateway_08rlyk5" isMarkerVisible="true">
-        <dc:Bounds x="1495" y="505" width="50" height="50" />
+        <dc:Bounds x="1385" y="405" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="738" y="412" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_13k0xop" bpmnElement="GenerateClaimantCCJDashboardNotification">
-        <dc:Bounds x="1590" y="490" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_072bzew" bpmnElement="NotifyJoRoboticsOnContinuousFeed">
-        <dc:Bounds x="1470" y="630" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_149txem" bpmnElement="GenerateDefendantCCJDashboardNotification">
-        <dc:Bounds x="1720" y="490" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0c7yl9h" bpmnElement="GenerateClaimantCCJDashboardNotificationClaimantResponse">
-        <dc:Bounds x="1360" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1a8hd7m" bpmnElement="GenerateDefendantCCJDashboardNotificationForClaimantResponse">
-        <dc:Bounds x="1490" y="370" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="1360" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ik4g6o_di" bpmnElement="Gateway_1ik4g6o" isMarkerVisible="true">
         <dc:Bounds x="995" y="505" width="50" height="50" />
@@ -419,15 +321,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vf73ag_di" bpmnElement="Flow_0vf73ag">
         <di:waypoint x="1000" y="220" />
-        <di:waypoint x="1040" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_066m4fv_di" bpmnElement="Flow_066m4fv">
-        <di:waypoint x="1140" y="220" />
-        <di:waypoint x="1190" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_005d10x_di" bpmnElement="Flow_005d10x">
-        <di:waypoint x="1290" y="220" />
-        <di:waypoint x="1490" y="220" />
+        <di:waypoint x="1180" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06qewwe_di" bpmnElement="Flow_06qewwe">
         <di:waypoint x="770" y="245" />
@@ -443,28 +337,19 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fbgsij_di" bpmnElement="Flow_1fbgsij">
         <di:waypoint x="1070" y="410" />
-        <di:waypoint x="1090" y="410" />
+        <di:waypoint x="1115" y="410" />
+        <di:waypoint x="1115" y="220" />
+        <di:waypoint x="1180" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1p1siqy_di" bpmnElement="Flow_1p1siqy">
-        <di:waypoint x="1190" y="410" />
-        <di:waypoint x="1220" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0frpp1w_di" bpmnElement="Flow_0frpp1w">
-        <di:waypoint x="1320" y="410" />
-        <di:waypoint x="1360" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cp38md_di" bpmnElement="Flow_IS_JO_LIVE_FEED_ACTIVE_DISABLED">
-        <di:waypoint x="1545" y="530" />
-        <di:waypoint x="1590" y="530" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1523" y="466" width="73" height="27" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="1280" y="220" />
+        <di:waypoint x="1490" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gqpdyp_di" bpmnElement="Flow_IS_JO_LIVE_FEED_ACTIVE_ENABLED">
-        <di:waypoint x="1520" y="555" />
-        <di:waypoint x="1520" y="630" />
+        <di:waypoint x="1410" y="405" />
+        <di:waypoint x="1410" y="360" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1524" y="590" width="71" height="27" />
+          <dc:Bounds x="1424" y="366" width="71" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02qaqh4_di" bpmnElement="Flow_02qaqh4">
@@ -493,34 +378,8 @@
         <di:waypoint x="1360" y="530" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ml9i2t_di" bpmnElement="Flow_0ml9i2t">
-        <di:waypoint x="1460" y="530" />
-        <di:waypoint x="1495" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05alj4g_di" bpmnElement="Flow_05alj4g">
-        <di:waypoint x="1690" y="530" />
-        <di:waypoint x="1720" y="530" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tiu1p8_di" bpmnElement="Flow_0tiu1p8">
-        <di:waypoint x="1770" y="490" />
-        <di:waypoint x="1770" y="310" />
-        <di:waypoint x="1540" y="310" />
-        <di:waypoint x="1540" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nxd86z_di" bpmnElement="Flow_0nxd86z">
-        <di:waypoint x="1570" y="670" />
-        <di:waypoint x="1640" y="670" />
-        <di:waypoint x="1640" y="570" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qqqn9k_di" bpmnElement="Flow_0qqqn9k">
-        <di:waypoint x="1460" y="410" />
-        <di:waypoint x="1490" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ip7v81_di" bpmnElement="Flow_0ip7v81">
-        <di:waypoint x="1590" y="410" />
-        <di:waypoint x="1640" y="410" />
-        <di:waypoint x="1640" y="310" />
-        <di:waypoint x="1540" y="310" />
-        <di:waypoint x="1540" y="260" />
+        <di:waypoint x="1410" y="490" />
+        <di:waypoint x="1410" y="455" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1re9717_di" bpmnElement="Flow_1re9717">
         <di:waypoint x="1020" y="555" />
@@ -535,6 +394,19 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1026" y="496" width="68" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ziizku_di" bpmnElement="Flow_0ziizku">
+        <di:waypoint x="1405" y="410" />
+        <di:waypoint x="1230" y="410" />
+        <di:waypoint x="1230" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1253" y="376" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qjf0g9_di" bpmnElement="Flow_0qjf0g9">
+        <di:waypoint x="1360" y="320" />
+        <di:waypoint x="1230" y="320" />
+        <di:waypoint x="1230" y="260" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
