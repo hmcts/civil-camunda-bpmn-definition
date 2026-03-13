@@ -111,27 +111,8 @@ class RecordJudgmentDeterminationMeansNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(
             respondentNotification,
             PROCESS_CASE_EVENT,
-            "NOTIFY_RESPONDENT1_FOR_RECORD_JUDGMENT",
-            "RecordJudgmentNotifyRespondent1"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification for respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT2_FOR_RECORD_JUDGMENT",
-                "RecordJudgmentNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification for applicant solicitor
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                                   PROCESS_CASE_EVENT,
-                                   "NOTIFY_APPLICANT_FOR_RECORD_JUDGMENT",
-                                   "RecordJudgmentNotifyApplicantSolicitor1"
+            "NOTIFY_EVENT",
+            "RecordJudgementNotificationNotifier"
         );
 
         //end business process
