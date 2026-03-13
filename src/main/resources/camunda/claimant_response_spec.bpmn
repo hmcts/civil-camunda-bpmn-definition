@@ -308,23 +308,13 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1m8fu45</bpmn:incoming>
       <bpmn:incoming>Flow_1mxjyba</bpmn:incoming>
       <bpmn:incoming>Flow_0gtsgjp</bpmn:incoming>
+      <bpmn:incoming>Flow_0throvl</bpmn:incoming>
       <bpmn:outgoing>Flow_1ico438</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1ico438" sourceRef="Activity_0xp7fjj" targetRef="Event_07ek9xj" />
     <bpmn:sequenceFlow id="Flow_12hrz4u" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Gateway_10ndl16" />
-    <bpmn:serviceTask id="GenerateDashboardNotificationRespondent1" name="Generate Dashboard Notification Respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0throvl</bpmn:incoming>
-      <bpmn:outgoing>Flow_1m8fu45</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1m8fu45" sourceRef="GenerateDashboardNotificationRespondent1" targetRef="Activity_0xp7fjj" />
     <bpmn:sequenceFlow id="Flow_0rg51dv" sourceRef="NotifyRoboticsOnContinuousFeed" targetRef="Gateway_10ndl16" />
     <bpmn:sequenceFlow id="Flow_0unqxdq" sourceRef="ClaimantResponseAgreedSettledPartAdmitNotify" targetRef="Gateway_10ndl16" />
     <bpmn:exclusiveGateway id="Gateway_10ndl16">
@@ -337,7 +327,7 @@
       <bpmn:outgoing>Flow_0gv891n</bpmn:outgoing>
       <bpmn:outgoing>Flow_1mxjyba</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0gv891n" name="Dashboard Service Enabled" sourceRef="Gateway_10ndl16" targetRef="defendantLipApplicationOfflineDashboardNotification">
+    <bpmn:sequenceFlow id="Flow_0gv891n" name="Dashboard Service Enabled" sourceRef="Gateway_10ndl16" targetRef="GenerateDashboardNotificationsClaimantResponseSpec">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.DASHBOARD_SERVICE_ENABLED &amp;&amp; flowFlags.DASHBOARD_SERVICE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1mxjyba" name="Dashboard Service Disabled" sourceRef="Gateway_10ndl16" targetRef="Activity_0xp7fjj">
@@ -369,16 +359,16 @@
     <bpmn:sequenceFlow id="Flow_JO_ONLINE_ENABLED" name="JO ONLINE Enabled" sourceRef="Gateway_1jhr7mx" targetRef="Gateway_10ndl16">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="defendantLipApplicationOfflineDashboardNotification" name="Dashboard Notification For Application Offline Defendant" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsClaimantResponseSpec" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gv891n</bpmn:incoming>
       <bpmn:outgoing>Flow_0throvl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0throvl" sourceRef="defendantLipApplicationOfflineDashboardNotification" targetRef="GenerateDashboardNotificationRespondent1" />
+    <bpmn:sequenceFlow id="Flow_0throvl" sourceRef="GenerateDashboardNotificationsClaimantResponseSpec" targetRef="Activity_0xp7fjj" />
     <bpmn:sequenceFlow id="Flow_0fq9s3w" name="Applicant confirms not to proceed part admit(pay immediately) and JO online Enabled" sourceRef="Gateway_PROCEED_OR_NOT_PROCEED" targetRef="ClaimantResponsePartAdmitPayImmediatelyNotifier">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowFlags.JO_ONLINE_LIVE_ENABLED &amp;&amp; flowState == "MAIN.PART_ADMIT_PAY_IMMEDIATELY"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -415,7 +405,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(flowFlags.RESPONDENT_RESPONSE_LANGUAGE_IS_BILINGUAL and flowFlags.WELSH_ENABLED) and ((flowState == "MAIN.FULL_DEFENCE_PROCEED" or flowState == "MAIN.PART_ADMIT_NOT_SETTLED_NO_MEDIATION") or (flowState == "MAIN.FULL_ADMIT_PROCEED" or flowState == "MAIN.PART_ADMIT_PROCEED") or (flowState == "MAIN.IN_MEDIATION") )}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0gtsgjp" sourceRef="ClaimantResponseGenerateDirectionsQuestionnaireForTranslation" targetRef="Activity_0xp7fjj" />
-    <bpmn:serviceTask id="ClaimantResponsePartAdmitPayImmediatelyNotifier" name="Notify parties part admit pay immediately" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="ClaimantResponsePartAdmitPayImmediatelyNotifier" name="Notify parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
@@ -559,10 +549,6 @@ In mediation.</bpmn:text>
       <bpmndi:BPMNShape id="BPMNShape_1lmfxkd" bpmnElement="Activity_0xp7fjj">
         <dc:Bounds x="2540" y="483" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1d4axuj" bpmnElement="GenerateDashboardNotificationRespondent1">
-        <dc:Bounds x="2360" y="483" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_10ndl16_di" bpmnElement="Gateway_10ndl16" isMarkerVisible="true">
         <dc:Bounds x="2025" y="498" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -572,8 +558,8 @@ In mediation.</bpmn:text>
       <bpmndi:BPMNShape id="Gateway_1jhr7mx_di" bpmnElement="Gateway_1jhr7mx" isMarkerVisible="true">
         <dc:Bounds x="1339" y="1205" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ovf9ab_di" bpmnElement="defendantLipApplicationOfflineDashboardNotification">
-        <dc:Bounds x="2180" y="483" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1ovf9ab_di" bpmnElement="GenerateDashboardNotificationsClaimantResponseSpec">
+        <dc:Bounds x="2270" y="483" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1up0lu9_di" bpmnElement="ClaimantResponseConfirmsNotToProceedNotify">
@@ -791,10 +777,6 @@ In mediation.</bpmn:text>
         <di:waypoint x="1750" y="523" />
         <di:waypoint x="2025" y="523" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m8fu45_di" bpmnElement="Flow_1m8fu45">
-        <di:waypoint x="2460" y="523" />
-        <di:waypoint x="2540" y="523" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rg51dv_di" bpmnElement="Flow_0rg51dv">
         <di:waypoint x="1970" y="330" />
         <di:waypoint x="2050" y="330" />
@@ -807,9 +789,9 @@ In mediation.</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gv891n_di" bpmnElement="Flow_0gv891n">
         <di:waypoint x="2075" y="523" />
-        <di:waypoint x="2180" y="523" />
+        <di:waypoint x="2270" y="523" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2074" y="526" width="81" height="27" />
+          <dc:Bounds x="2109" y="526" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mxjyba_di" bpmnElement="Flow_1mxjyba">
@@ -866,15 +848,15 @@ In mediation.</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0throvl_di" bpmnElement="Flow_0throvl">
-        <di:waypoint x="2280" y="523" />
-        <di:waypoint x="2360" y="523" />
+        <di:waypoint x="2370" y="523" />
+        <di:waypoint x="2540" y="523" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fq9s3w_di" bpmnElement="Flow_0fq9s3w">
         <di:waypoint x="690" y="545" />
         <di:waypoint x="690" y="1620" />
         <di:waypoint x="940" y="1620" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="695" y="1540" width="90" height="80" />
+          <dc:Bounds x="673" y="1540" width="90" height="80" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zesk9e_di" bpmnElement="Flow_0zesk9e">
