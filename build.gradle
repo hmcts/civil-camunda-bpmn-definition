@@ -214,8 +214,12 @@ sonarqube {
   properties {
     property "sonar.projectName", "CIVIL :: camunda-bpmn-definition"
     property "sonar.projectKey", "civil-camunda-bpmn-definition"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.outputLocation}"
     property "sonar.host.url", "https://sonar.reform.hmcts.net/"
+    property "sonar.web.javaOpts", "-Xmx2G"
+    property "sonar.gradle.skipCompile", System.getenv("SONAR_SKIP_COMPILE") ?: "false"
+    property "sonar.branch.cache.enabled", "true"
+    property "sonar.working.directory", "${buildDir}/sonar"
   }
 }
 
@@ -226,14 +230,14 @@ jacocoTestReport {
     sourceSets it.sourceSets.main
   }
   reports {
-    xml.required = true
-    csv.required = false
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.required.set(true)
+    csv.required.set(false)
+    xml.outputLocation.set(file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml"))
   }
 }
 
-jacocoTestReport.dependsOn {
-  subprojects*.test
+tasks.named('test') {
+  finalizedBy jacocoTestReport
 }
 
 def versions = [
