@@ -32,6 +32,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "SendFinalOrderToDefendantLIP";
     private static final String SEND_FINAL_ORDER_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendFinalOrderToClaimantLIP";
+    
     public GenerateOrderNotificationTest() {
         super("generate_order_notification.bpmn", PROCESS_ID);
     }
