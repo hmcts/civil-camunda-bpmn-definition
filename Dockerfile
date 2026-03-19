@@ -1,4 +1,4 @@
-FROM hmctsprod.azurecr.io/base/java:17-distroless
+FROM hmctsprod.azurecr.io/base/java:21-distroless
 
 COPY build/libs/empty.jar /opt/app/
 
