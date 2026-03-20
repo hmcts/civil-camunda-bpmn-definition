@@ -1,6 +1,6 @@
 # civil-camunda-bpmn-definition
 
-Civil Camunda BPMN Definitio n
+Civil Camunda BPMN Definition
 
 
 ### Contents:
