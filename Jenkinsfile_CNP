@@ -224,6 +224,7 @@ withPipeline(type, product, component) {
     env.CCD_DATA_STORE_URL = "https://ccd-data-store-api-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.DM_STORE_URL = "http://dm-store-aat.service.core-compute-aat.internal"
     env.CIVIL_SERVICE_URL="https://civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.PR_FT_GROUPS = getFunctionalTestsGroups()
     env.PAYMENT_API_URL = "http://payment-api-aat.service.core-compute-aat.internal"
     env.AAC_API_URL="https://manage-case-assignment-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.WIREMOCK_URL="https://wiremock-civil-camunda-pr-${CHANGE_ID}.preview.platform.hmcts.net"
@@ -242,6 +243,7 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
+    env.UNASSIGN_CASES = true
     copyPreviousAllureHistory()
     if(checkForRunAllFunctionalTests(env.BRANCH_NAME)) {
       env.RUN_ALL_FUNCTIONAL_TESTS = true
@@ -293,6 +295,7 @@ withPipeline(type, product, component) {
   before('functionalTest:aat') {
     copyPrevFailedAndNotExecutedTestFilesJson()
     copyPreviousAllureHistory()
+    env.UNASSIGN_CASES = true
   }
 
   afterSuccess('functionalTest:aat') {
