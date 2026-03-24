@@ -16,6 +16,7 @@ class UploadTranslatedDocumentOrderNoticeTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE";
     public static final String PROCESS_ID = "UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     public UploadTranslatedDocumentOrderNoticeTest() {
         super("upload_translated_document_order_notice.bpmn", "UPLOAD_TRANSLATED_DOCUMENT_ORDER_NOTICE");
@@ -53,22 +54,13 @@ class UploadTranslatedDocumentOrderNoticeTest extends BpmnBaseTest {
             START_BUSINESS_ACTIVITY
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to all parties
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            respondentNotification,
+            notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_UPLOADED_DOCUMENT_ORDER_NOTICE",
-            "NotifyClaimantOfUploadedOrderNotice", variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            respondent2Notification,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_UPLOADED_DOCUMENT_ORDER_NOTICE",
-            "NotifyDefendantOfUploadedOrderNotice", variables
+            NOTIFY_EVENT,
+            "TranslatedOrderNoticeUploadedNotifyParties", variables
         );
 
         if (lipDefendant) {
