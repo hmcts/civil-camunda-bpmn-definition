@@ -28,11 +28,7 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ON_CONTINUOUS_FEED_ACTIVITY_ID = "NotifyRoboticsOnContinuousFeed";
 
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE";
-    private static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID = "GenerateDashboardNotificationRespondent1";
-
-    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT = "CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT";
-    private static final String CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID = "defendantLipApplicationOfflineDashboardNotification";
+    private static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsUploadTranslatedDocumentClaimantLrIntention";
 
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
@@ -118,14 +114,13 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
-        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -212,14 +207,13 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
-        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -300,15 +294,13 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
-
-        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -390,15 +382,13 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
-
-        createDefendantDashboardNotification();
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
@@ -455,30 +445,18 @@ class UploadTranslatedLrClaimantIntentionTest extends BpmnBaseTest {
             variables
         );
 
-        ExternalTask defendantGaDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        ExternalTask dashboardNotificationsTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            defendantGaDashboard,
+            dashboardNotificationsTask,
             PROCESS_CASE_EVENT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT,
-            CREATE_DASHBOARD_NOTIFICATION_APPLICATION_PROCEED_OFFLINE_DEFENDANT_ID
+            DASHBOARD_NOTIFICATION_EVENT,
+            DASHBOARD_NOTIFICATION_ACTIVITY_ID
         );
-
-        createDefendantDashboardNotification();
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
-    }
-
-    private void createDefendantDashboardNotification() {
-        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE,
-            CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_CLAIMANT_RESPONSE_EVENT_ID
-        );
     }
 
 }
