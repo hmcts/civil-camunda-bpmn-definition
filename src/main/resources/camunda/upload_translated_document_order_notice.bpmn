@@ -28,14 +28,14 @@
     <bpmn:endEvent id="Event_0jlhskg">
       <bpmn:incoming>Flow_1og0z75</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="NotifyClaimantOfUploadedOrderNotice" name="Notify Claimant Uploaded Document" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="TranslatedOrderNoticeUploadedNotifyParties" name="Notify Parties Uploaded Order Notice" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_UPLOADED_DOCUMENT_ORDER_NOTICE</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1vs08o9</bpmn:incoming>
-      <bpmn:outgoing>Flow_0posdss</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qjr8zn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0yava77">
       <bpmn:incoming>Flow_13wnkxr</bpmn:incoming>
@@ -66,24 +66,14 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1x45kty" sourceRef="Event_0x1sw6o" targetRef="UploadTranslatedDocumentOrderNotice" />
     <bpmn:sequenceFlow id="Flow_0nvdd4d" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="Event_0a6upqc" />
-    <bpmn:sequenceFlow id="Flow_1vs08o9" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="NotifyClaimantOfUploadedOrderNotice" />
+    <bpmn:sequenceFlow id="Flow_1vs08o9" sourceRef="UploadTranslatedDocumentOrderNotice" targetRef="TranslatedOrderNoticeUploadedNotifyParties" />
     <bpmn:sequenceFlow id="Flow_17vo15c" sourceRef="BulkPrintOrderClaimant" targetRef="Activity_0pqcpvc" />
     <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
-    <bpmn:sequenceFlow id="Flow_0posdss" sourceRef="NotifyClaimantOfUploadedOrderNotice" targetRef="NotifyDefendantOfUploadedOrderNotice" />
+    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="TranslatedOrderNoticeUploadedNotifyParties" targetRef="Gateway_1v0f8i4" />
     <bpmn:sequenceFlow id="Flow_13wnkxr" sourceRef="BulkPrintOrderDefendant" targetRef="Gateway_0yava77" />
     <bpmn:sequenceFlow id="Flow_1uwqvn9" name="Lip Claimant" sourceRef="Gateway_0yava77" targetRef="BulkPrintOrderClaimant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!empty flowFlags.LIP_CASE &amp;&amp; flowFlags.LIP_CASE}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="NotifyDefendantOfUploadedOrderNotice" name="Notify Defendant Uploaded Document" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_DEFENDANT_UPLOADED_DOCUMENT_ORDER_NOTICE</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0posdss</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qjr8zn</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0qjr8zn" sourceRef="NotifyDefendantOfUploadedOrderNotice" targetRef="Gateway_1v0f8i4" />
     <bpmn:exclusiveGateway id="Gateway_1v0f8i4" name="LR or Lip Claim?">
       <bpmn:incoming>Flow_0qjr8zn</bpmn:incoming>
       <bpmn:outgoing>Flow_0niosvp</bpmn:outgoing>
@@ -119,16 +109,13 @@
           <dc:Bounds x="158" y="205" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="NotifyClaimantOfUploadedOrderNotice_di" bpmnElement="NotifyClaimantOfUploadedOrderNotice">
+      <bpmndi:BPMNShape id="TranslatedOrderNoticeUploadedNotifyParties_di" bpmnElement="TranslatedOrderNoticeUploadedNotifyParties">
         <dc:Bounds x="410" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="NotifyDefendantOfUploadedOrderNotice_di" bpmnElement="NotifyDefendantOfUploadedOrderNotice">
-        <dc:Bounds x="570" y="140" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1v0f8i4_di" bpmnElement="Gateway_1v0f8i4" isMarkerVisible="true">
-        <dc:Bounds x="745" y="155" width="50" height="50" />
+        <dc:Bounds x="575" y="155" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="729" y="125" width="82" height="14" />
+          <dc:Bounds x="559" y="125" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BulkPrintOrderClaimant_di" bpmnElement="BulkPrintOrderClaimant">
@@ -180,9 +167,9 @@
         <di:waypoint x="1240" y="180" />
         <di:waypoint x="1302" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0posdss_di" bpmnElement="Flow_0posdss">
+      <bpmndi:BPMNEdge id="Flow_0qjr8zn_di" bpmnElement="Flow_0qjr8zn">
         <di:waypoint x="510" y="180" />
-        <di:waypoint x="570" y="180" />
+        <di:waypoint x="575" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13wnkxr_di" bpmnElement="Flow_13wnkxr">
         <di:waypoint x="900" y="340" />
@@ -197,23 +184,19 @@
           <dc:Bounds x="989" y="244" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qjr8zn_di" bpmnElement="Flow_0qjr8zn">
-        <di:waypoint x="670" y="180" />
-        <di:waypoint x="745" y="180" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0niosvp_di" bpmnElement="Flow_0niosvp">
-        <di:waypoint x="795" y="180" />
+        <di:waypoint x="625" y="180" />
         <di:waypoint x="945" y="180" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="837" y="162" width="68" height="14" />
+          <dc:Bounds x="752" y="162" width="68" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1p76uwz_di" bpmnElement="Flow_1p76uwz">
-        <di:waypoint x="770" y="205" />
-        <di:waypoint x="770" y="340" />
+        <di:waypoint x="600" y="205" />
+        <di:waypoint x="600" y="340" />
         <di:waypoint x="800" y="340" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="695" y="248" width="69" height="14" />
+          <dc:Bounds x="625" y="248" width="69" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
