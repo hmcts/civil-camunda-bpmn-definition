@@ -66,48 +66,15 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notifications to applicant
-        if (lipClaimant) {
-            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_LIP_APPLICANT_FOR_AGREED_EXTENSION_DATE_FOR_SPEC",
-                "AgreedExtensionDateNotifyApplicantLipForSpec",
-                variables
-            );
-        } else {
-            ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_FOR_SPEC",
-                "AgreedExtensionDateNotifyApplicantSolicitor1ForSpec",
-                variables
-            );
-        }
-
-        //complete the CC notification to respondent solicitor 1
+        //complete the notifications
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_APPLICANT_SOLICITOR1_FOR_AGREED_EXTENSION_DATE_FOR_SPEC_CC",
-            "AgreedExtensionDateNotifyRespondentSolicitor1CCForSpec",
+            "NOTIFY_EVENT",
+            "InformAgreedExtensionDateSpecNotifier",
             variables
         );
-
-        if (twoRepresentatives) {
-            //complete the CC notification to respondent solicitor 2
-            notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                notificationTask,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANT_RESPONDENT2_FOR_AGREED_EXTENSION_DATE_FOR_SPEC_CC",
-                "AgreedExtensionDateNotifyRespondentSolicitor2CCForSpec",
-                variables
-            );
-        }
 
         //complete the Robotics notification
         ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -157,23 +124,13 @@ class InformAgreedExtensionDateSpecTest extends BpmnBaseTest {
             variables
         );
 
-        //complete the notification of deadline to claimant
+        //complete the notification of deadline
         ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
             notificationTask,
             PROCESS_CASE_EVENT,
-            "NOTIFY_CLAIMANT_CUI_FOR_DEADLINE_EXTENSION",
-            "DefendantResponseDeadlineExtensionNotifyClaimant",
-            variables
-        );
-
-        //complete the notification of deadline to defendant
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            notificationTask,
-            PROCESS_CASE_EVENT,
-            "NOTIFY_DEFENDANT_CUI_FOR_DEADLINE_EXTENSION",
-            "DefendantResponseDeadlineExtensionNotifyDefendant",
+            "NOTIFY_EVENT",
+            "ExtendResponseDeadlineNotifier",
             variables
         );
 
