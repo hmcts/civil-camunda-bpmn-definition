@@ -18,12 +18,14 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
     public static final String PROCESS_ID = "JUDGMENT_PAID_IN_FULL";
     private static final String SEND_JUDGMENT_DETAILS_CJES = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
-
+    private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
+    private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoSCDocument";
     private static final String UPDATE_CLAIMANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_CLAIMANT";
     private static final String UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsClaimant";
     private static final String UPDATE_DEFENDANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_DEFENDANT";
     private static final String UPDATE_DEFENDANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsDefendant";
-
+    private static final String UPDATE_COSC_VARIABLE = "UPDATE_COSC_VARIABLE";
+    private static final String UPDATE_JUDGEMENT_ACTIVITY_ID = "UpdateJudgmentMarkedPaidInFull";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
 
@@ -33,10 +35,11 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
 
     @ParameterizedTest
     @CsvSource({
-        "false, false",
-        "true, true",
+        "false, false, false",
+        "true, true, true",
     })
-    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag, boolean isCjesServiceEnabled) {
+    void shouldSuccessfullyCompleteJudgmentPaidInFull_whenCalled(boolean joFlag, boolean isCjesServiceEnabled,
+                                                                 boolean isJudgmentMarkedPaidInFull) {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -48,6 +51,8 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             IS_JO_LIVE_FEED_ACTIVE, joFlag,
             IS_CJES_SERVICE_ENABLED, isCjesServiceEnabled
         ));
+
+        variables.put("isJudgmentMarkedPaidInFull", isJudgmentMarkedPaidInFull);
 
         //complete the start business process
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
@@ -69,6 +74,28 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
                 SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID
             );
         }
+
+        if (!isCjesServiceEnabled) {
+            ExternalTask paidInFull = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                paidInFull,
+                PROCESS_CASE_EVENT,
+                UPDATE_COSC_VARIABLE,
+                UPDATE_JUDGEMENT_ACTIVITY_ID
+            );
+        }
+
+        if (isJudgmentMarkedPaidInFull) {
+            //complete the Robotics notification
+            ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                forRobotics,
+                PROCESS_CASE_EVENT,
+                GENERATE_COSC_DOCUMENT,
+                GENERATE_COSC_DOCUMENT_ACTIVITY_ID
+            );
+        }
+
         //complete the claimant dashboard update
         ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
