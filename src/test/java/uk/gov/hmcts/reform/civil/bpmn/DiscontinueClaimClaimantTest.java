@@ -21,14 +21,14 @@ class DiscontinueClaimClaimantTest extends BpmnBaseTest {
     public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1 = "SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1";
     public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE =
-        "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE";
+        "DASHBOARD_NOTIFICATION_EVENT";
 
     public static final String GEN_NOTICE_OF_DISCONTINUANCE_ACTIVITY_ID = "GenerateNoticeOfDiscontinuance";
     public static final String NOTIFY_DISCONTINUANCE_PARTIES_ACTIVITY_ID = "DiscontinuanceClaimNotifyParties";
     public static final String SEND_DISCONTINUANCE_LETTER_LIP_DEFENDANT1_ACTIVITY_ID =
         "PostNoticeOfDiscontinuanceDefendant1LIP";
     public static final String DEFENDANT_LIP_DASHBOARD_NOTIFICATION_FOR_DISCONTINUANCE_ACTIVITY_ID =
-        "CreateDefendantDashboardNotificationsForDiscontinuance";
+        "GenerateDashboardNotificationsDiscontinueClaimClaimant";
 
     public DiscontinueClaimClaimantTest() {
         super("discontinue_claim_claimant.bpmn", PROCESS_ID);

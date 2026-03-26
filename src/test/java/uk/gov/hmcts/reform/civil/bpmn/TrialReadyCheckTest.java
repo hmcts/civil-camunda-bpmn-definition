@@ -10,10 +10,9 @@ public class TrialReadyCheckTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "TRIAL_READY_CHECK";
     private static final String PROCESS_ID = "TRIAL_READY_CHECK_PROCESS_ID";
-    private static final String CLAIMANT_DASHBOARD_CHANGES = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_READY_CHECK_CLAIMANT1";
-    private static final String CLAIMANT_DASHBOARD_CHANGES_ID = "TrialReadyCheckDashboardNotificationsForClaimant1";
-    private static final String DEFENDANT_DASHBOARD_CHANGES = "CREATE_DASHBOARD_NOTIFICATION_TRIAL_READY_CHECK_DEFENDANT1";
-    private static final String DEFENDANT_DASHBOARD_CHANGES_ID = "TrialReadyCheckDashboardNotificationsForDefendant1";
+
+    private static final String DASHBOARD_NOTIFICATION_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID = "GenerateDashboardNotificationsTrialReadyCheck";
 
     public TrialReadyCheckTest() {
         
@@ -21,7 +20,7 @@ public class TrialReadyCheckTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteAcknowledgeClaim_whenCalled() {
+    void shouldSuccessfullyCompleteTrialReadyCheck_whenCalled() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -35,22 +34,12 @@ public class TrialReadyCheckTest extends BpmnBaseTest {
                                    START_BUSINESS_EVENT,
                                    START_BUSINESS_ACTIVITY);
 
-        //complete the claimant dashboard changes
-        ExternalTask documentGeneration = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(documentGeneration,
+        //complete the dashboard notification
+        ExternalTask dashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(dashboardNotification,
                                    PROCESS_CASE_EVENT,
-                                   CLAIMANT_DASHBOARD_CHANGES,
-                                   CLAIMANT_DASHBOARD_CHANGES_ID
-        );
-
-        //complete the defendant dashboard changes
-        ExternalTask forRobotics = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            forRobotics,
-            PROCESS_CASE_EVENT,
-            DEFENDANT_DASHBOARD_CHANGES,
-            DEFENDANT_DASHBOARD_CHANGES_ID
-        );
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID);
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

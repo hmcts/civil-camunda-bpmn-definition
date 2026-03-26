@@ -22,8 +22,8 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
     public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull2";
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_ID = "SendLetterSettleClaimMarkedPaidInFullDefendantLiP";
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_EVENT = "SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1";
-    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT = "CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL";
-    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT_ID = "CreateDefendantDashboardNotificationSettleClaimPaidInFull";
+    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
+    public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT_ID = "GenerateDashboardNotificationsSettleClaimPaidInFull";
 
     public SettleClaimPaidInFullNotificationTest() {
         super("settle_claim_paid_in_full_notification.bpmn", PROCESS_ID);
