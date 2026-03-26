@@ -24,6 +24,8 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
     private static final String UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsClaimant";
     private static final String UPDATE_DEFENDANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_DEFENDANT";
     private static final String UPDATE_DEFENDANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsDefendant";
+    private static final String UPDATE_COSC_VARIABLE = "UPDATE_COSC_VARIABLE";
+    private static final String UPDATE_JUDGEMENT_ACTIVITY_ID = "UpdateJudgmentMarkedPaidInFull";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
 
@@ -73,14 +75,15 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             );
         }
 
-        //complete the claimant dashboard update
-        ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantDashboard,
-            PROCESS_CASE_EVENT,
-            UPDATE_CLAIMANT_DASHBOARD,
-            UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID
-        );
+        if (!isCjesServiceEnabled) {
+            ExternalTask paidInFull = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                paidInFull,
+                PROCESS_CASE_EVENT,
+                UPDATE_COSC_VARIABLE,
+                UPDATE_JUDGEMENT_ACTIVITY_ID
+            );
+        }
 
         if (isJudgmentMarkedPaidInFull) {
             //complete the Robotics notification
@@ -92,6 +95,15 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
                 GENERATE_COSC_DOCUMENT_ACTIVITY_ID
             );
         }
+
+        //complete the claimant dashboard update
+        ExternalTask claimantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantDashboard,
+            PROCESS_CASE_EVENT,
+            UPDATE_CLAIMANT_DASHBOARD,
+            UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID
+        );
 
         //complete the defendant dashboard update
         ExternalTask defendantDashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
