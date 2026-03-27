@@ -2,11 +2,19 @@ plugins {
   id 'application'
   id 'checkstyle'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.12.RELEASE'
-//  id 'org.springframework.boot' version '2.5.14'
-  id 'org.owasp.dependencycheck' version '9.0.4'
-  id 'com.github.ben-manes.versions' version '0.47.0'
-  id 'org.sonarqube' version '3.4.0.2513'
+  id 'io.spring.dependency-management' version '1.1.7'
+  id 'org.springframework.boot' version '3.3.7'
+  id 'org.owasp.dependencycheck' version '12.2.0'
+  id 'com.github.ben-manes.versions' version '0.53.0'
+  id 'org.sonarqube' version '6.3.1.5724'
+}
+
+tasks.named('bootJar') {
+  enabled = false
+}
+
+tasks.named('bootRun') {
+  enabled = false
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -15,7 +23,7 @@ version = '0.0.1'
 allprojects {
   java {
     toolchain {
-      languageVersion = JavaLanguageVersion.of(17)
+      languageVersion = JavaLanguageVersion.of(21)
     }
   }
 
@@ -27,12 +35,12 @@ allprojects {
 
   checkstyle {
     maxWarnings = 0
-    toolVersion = '10.4'
+    toolVersion = '10.26.1'
     getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
   }
 
   jacoco {
-    toolVersion = '0.8.8' // jacocoMavenPluginVersion
+    toolVersion = '0.8.14' // jacocoMavenPluginVersion
     reportsDirectory = file("$buildDir/reports/jacoco")
   }
 
@@ -64,11 +72,10 @@ allprojects {
   dependencyManagement {
     dependencies {
 
+      dependency group: 'org.springframework', name: 'spring-web', version: '6.1.14'
       dependency group: 'commons-io', name: 'commons-io', version: '2.10.0'
-      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.8.7'
-
-      //Solves CVE-2023-33202
-      dependency group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.1.1'
+      dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '6.3.5'
+      dependency group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.1.5'
 
 
       dependencySet(
@@ -89,14 +96,6 @@ allprojects {
 
       dependencySet(group: 'com.squareup.okio', version: '3.4.0') {
         entry 'okio'
-      }
-
-      // Solves CVE-2023-20883
-      dependencySet(group: 'org.springframework.boot', version: '2.7.18'){
-        entry 'spring-boot-autoconfigure'
-        entry 'spring-boot-starter'
-        entry 'spring-boot-starter-aop'
-        entry 'spring-boot-starter-logging'
       }
 
       //Solves CVE-2023-0833
@@ -120,7 +119,7 @@ allprojects {
 
     }
     imports {
-      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.6'
+      mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.4'
     }
   }
 
@@ -146,6 +145,23 @@ test {
   failFast = true
 }
 
+tasks.withType(Test).configureEach { t ->
+  useJUnitPlatform()
+
+  maxParallelForks = Runtime.runtime.availableProcessors() - 1 ?: 1
+  jvmArgs '-Xshare:off'
+  // Use Parallel GC for faster, short-lived test forks
+  jvmArgs '-XX:+UseParallelGC'
+
+  // Keep within typical Jenkins container limits
+  minHeapSize = "256m"
+  maxHeapSize = "1536m"
+  jvmArgs "-XX:MaxMetaspaceSize=512m"
+  jvmArgs '-XX:ReservedCodeCacheSize=512m'
+  // Temurin 21.0.7 occasionally crashes in C2 (BoolNode::Ideal SIGSEGV); stay on C1 until upstream fix.
+  jvmArgs "-XX:TieredStopAtLevel=1"
+}
+
 tasks.register('awaitApplicationReadiness', Exec) {
   commandLine './bin/wait-for.sh', System.getenv('URL') ?: 'https://localhost:4100'
   commandLine './bin/wait-for.sh', System.getenv('TEST_URL') ?: 'https://localhost:4100'
@@ -166,15 +182,7 @@ tasks.register('runNightlyApiTests', Exec) {
 }
 
 tasks.register('runSmokeTests', Exec) {
-  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:smoke'
-}
-
-tasks.register('runRpaHandOffTests', Exec) {
-  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:rpa'
-}
-
-tasks.register('runNightlyMultipartyTests', Exec) {
-  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:nightly-multiparty'
+  commandLine '/usr/bin/yarn', '--silent', 'run', 'test:civil-camunda-smoke'
 }
 
 static def inStrictOrder(Task... tasks) {
@@ -199,8 +207,12 @@ sonarqube {
   properties {
     property "sonar.projectName", "CIVIL :: camunda-bpmn-definition"
     property "sonar.projectKey", "civil-camunda-bpmn-definition"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.outputLocation}"
     property "sonar.host.url", "https://sonar.reform.hmcts.net/"
+    property "sonar.web.javaOpts", "-Xmx2G"
+    property "sonar.gradle.skipCompile", System.getenv("SONAR_SKIP_COMPILE") ?: "false"
+    property "sonar.branch.cache.enabled", "true"
+    property "sonar.working.directory", "${buildDir}/sonar"
   }
 }
 
@@ -211,14 +223,16 @@ jacocoTestReport {
     sourceSets it.sourceSets.main
   }
   reports {
-    xml.required = true
-    csv.required = false
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.required.set(true)
+    csv.required.set(false)
+    xml.outputLocation.set(file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml"))
   }
+  dependsOn tasks.named('bootStartScripts')
+  dependsOn tasks.named('startScripts')
 }
 
-jacocoTestReport.dependsOn {
-  subprojects*.test
+tasks.named('test') {
+  finalizedBy jacocoTestReport
 }
 
 def versions = [
@@ -237,8 +251,8 @@ ext.libraries = [
 ]
 
 dependencies {
-  implementation group: 'org.springframework', name: 'spring-core', version: '5.3.27'
-  implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.27'
+  implementation group: 'org.springframework', name: 'spring-core'
+  implementation group: 'org.springframework', name: 'spring-beans'
   implementation group: 'org.camunda.bpm', name: 'camunda-external-task-client', version: '7.18.0'
   implementation group: 'org.camunda.bpm.extension.rest', name: 'camunda-rest-client-spring-boot-starter', version: '0.0.6'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.0'
