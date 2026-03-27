@@ -50,31 +50,14 @@ class TrialReadyNotificationTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification for respondent 1
+        //complete the notifications to applicant / respondent solicitors
         ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_RESPONDENT_SOLICITOR1_FOR_TRIAL_READY",
-                "TrialReadyNotifyRespondentSolicitor1"
+                "NOTIFY_EVENT",
+                "TrialReadyNotificationNotifier"
         );
 
-        if (twoRepresentatives || defendant2Lip) {
-            //complete the notification for respondent 2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(respondent2Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_RESPONDENT_SOLICITOR2_FOR_TRIAL_READY",
-                    "TrialReadyNotifyRespondentSolicitor2"
-            );
-        }
-
-        //complete the notification for applicant solicitor
-        ExternalTask applicantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(applicantNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_APPLICANT_SOLICITOR1_FOR_TRIAL_READY",
-                "TrialReadyNotifyApplicantSolicitor1"
-        );
         //complete the dashboard notification
         ExternalTask respondentDashboardNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(respondentDashboardNotification,
