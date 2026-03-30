@@ -56,9 +56,9 @@ class DefendantResponseCuiTest extends BpmnBaseTest {
 
         verifyNotifyPartiesCompleted();
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
-        verifyRemoveClaimantDJNotification();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -84,9 +84,9 @@ class DefendantResponseCuiTest extends BpmnBaseTest {
         assertBusinessProcessHasStarted(variables);
 
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
-        verifyRemoveClaimantDJNotification();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
@@ -108,9 +108,9 @@ class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
-        verifyRemoveClaimantDJNotification();
 
         endBusinessProcess();
         assertNoExternalTasksLeft();
