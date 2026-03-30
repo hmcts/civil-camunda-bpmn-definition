@@ -14,6 +14,8 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "DECISION_ON_RECONSIDERATION_REQUEST";
     public static final String PROCESS_ID = "DECISION_ON_RECONSIDERATION_REQUEST";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    public static final String NOTIFY_ACTIVITY_ID = "NotifyDecisionOnReconsiderationRequestNotifier";
 
     public NotifyDecisionOnReconsiderationRequestTest() {
         super("notify_decision_on_reconsideration_request.bpmn", "DECISION_ON_RECONSIDERATION_REQUEST");
@@ -41,23 +43,13 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondentNotification,
+                partyNotifications,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
+                NOTIFY_EVENT,
+                NOTIFY_ACTIVITY_ID,
                 variables
         );
 
@@ -100,24 +92,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -162,16 +144,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -182,14 +154,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -234,24 +206,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -296,16 +258,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -316,14 +268,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -367,24 +319,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -429,16 +371,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForClaimant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -459,14 +391,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -510,16 +442,6 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
         //complete trigger Bulk Print for Claimant
         ExternalTask sendBulkPrintForDefendant = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -530,14 +452,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
@@ -582,24 +504,14 @@ class NotifyDecisionOnReconsiderationRequestTest extends BpmnBaseTest {
                 variables
         );
 
-        //complete the notification to Claimant
-        ExternalTask respondentNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the notification to parties
+        ExternalTask partyNotifications = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-                respondentNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT",
-                "Activity_0nyrqab",
-                variables
-        );
-
-        //complete the notification to Respondent
-        ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT",
-                "Activity_0txb7dk",
-                variables
+            partyNotifications,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            NOTIFY_ACTIVITY_ID,
+            variables
         );
 
         //complete the dashboard notification
