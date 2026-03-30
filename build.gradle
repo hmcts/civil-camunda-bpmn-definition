@@ -141,25 +141,18 @@ tasks.withType(Test).configureEach {
   }
 }
 
-test {
-  failFast = true
-}
-
 tasks.withType(Test).configureEach { t ->
   useJUnitPlatform()
 
-  maxParallelForks = Runtime.runtime.availableProcessors() - 1 ?: 1
-  jvmArgs '-Xshare:off'
+  failFast = true
+  maxParallelForks = Runtime.runtime.availableProcessors() / 2 ?: 1
+
   // Use Parallel GC for faster, short-lived test forks
   jvmArgs '-XX:+UseParallelGC'
 
   // Keep within typical Jenkins container limits
   minHeapSize = "256m"
   maxHeapSize = "1536m"
-  jvmArgs "-XX:MaxMetaspaceSize=512m"
-  jvmArgs '-XX:ReservedCodeCacheSize=512m'
-  // Temurin 21.0.7 occasionally crashes in C2 (BoolNode::Ideal SIGSEGV); stay on C1 until upstream fix.
-  jvmArgs "-XX:TieredStopAtLevel=1"
 }
 
 tasks.register('awaitApplicationReadiness', Exec) {
