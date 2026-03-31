@@ -122,8 +122,28 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             );
         }
 
-        // Send letter to LiP defendant if needed
-        if (isLiPDefendant) {
+        // Continue with the rest of the process as before
+        if (!isLiPDefendant) {
+            //complete the notification to Respondent
+            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1Notification,
+                PROCESS_CASE_EVENT,
+                NOTIFY_EVENT,
+                "NotifyDJNonDivergentDefendant1",
+                variables
+            );
+        } else { // Lip v Lip: different notification
+            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent1LIpNotification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
+                "NotifyDJNonDivergentDefendant1LiP",
+                variables
+            );
+
+            // should send letter to LiP respondent
             ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendLipLetter,
@@ -132,17 +152,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "PostPINInLetterLIPDefendant1",
                 variables
             );
-        }
 
-        // Complete the consolidated notification to all parties
-        ExternalTask allPartiesNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            allPartiesNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            "DJ_NON_DIVERGENT_NOTIFIER",
-            variables
-        );
+        }
 
         if (dashboardServiceEnabled && (isLiPDefendant || isLiPClaimant)) {
             //complete generate dashboard notifications
@@ -152,6 +163,27 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 PROCESS_CASE_EVENT,
                 "DASHBOARD_NOTIFICATION_EVENT",
                 "GenerateDashboardNotificationsDJNonDivergent",
+                variables
+            );
+        }
+
+        //complete the notification to Claimant
+        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            claimantNotification,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            "NotifyDJNonDivergentClaimant"
+        );
+
+        if (twoRepresentatives) {
+            //complete the notification to Respondent2
+            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
+            assertCompleteExternalTask(
+                respondent2Notification,
+                PROCESS_CASE_EVENT,
+                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
+                "NotifyDJNonDivergentDefendant2",
                 variables
             );
         }
