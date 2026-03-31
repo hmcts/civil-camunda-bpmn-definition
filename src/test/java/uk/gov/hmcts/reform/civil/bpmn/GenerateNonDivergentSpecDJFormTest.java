@@ -22,12 +22,12 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
     private static final String GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT = "GEN_DJ_FORM_NON_DIVERGENT_SPEC_DEFENDANT";
     private static final String SEND_JUDGMENT_DETAILS_TO_CJES = "SEND_JUDGMENT_DETAILS_CJES";
     private static final String NOTIFY_RPA_DJ_SPEC = "NOTIFY_RPA_DJ_SPEC";
-    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
 
     //ACTIVITY IDs
     private static final String GENERATE_DJ_CLAIMANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecClaimant";
     private static final String GENERATE_DJ_DEFENDANT_FORM_SPEC_ACTIVITY_ID = "GenerateDJFormNondivergentSpecDefendant";
     private static final String SEND_JUDGMENT_DETAILS_TO_CJES_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
+    private static final String DJ_NON_DIVERGENT_NOTIFIER_ACTIVITY_ID = "DJ_NON_DIVERGENT_NOTIFIER";
     private static final String NOTIFY_RPA_FEED_ACTIVITY_ID = "NotifyRPADJSPECID";
 
     public GenerateNonDivergentSpecDJFormTest() {
@@ -122,28 +122,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             );
         }
 
-        // Continue with the rest of the process as before
-        if (!isLiPDefendant) {
-            //complete the notification to Respondent
-            ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1Notification,
-                PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                "NotifyDJNonDivergentDefendant1",
-                variables
-            );
-        } else { // Lip v Lip: different notification
-            ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent1LIpNotification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT1_LIP",
-                "NotifyDJNonDivergentDefendant1LiP",
-                variables
-            );
-
-            // should send letter to LiP respondent
+        if (isLiPDefendant) {
+            // should send letter to LiP defendant
             ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
             assertCompleteExternalTask(
                 sendLipLetter,
@@ -152,8 +132,17 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
                 "PostPINInLetterLIPDefendant1",
                 variables
             );
-
         }
+
+        // Consolidated notification task for all parties
+        ExternalTask notifyAllParties = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(
+            notifyAllParties,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            DJ_NON_DIVERGENT_NOTIFIER_ACTIVITY_ID,
+            variables
+        );
 
         if (dashboardServiceEnabled && (isLiPDefendant || isLiPClaimant)) {
             //complete generate dashboard notifications
@@ -161,29 +150,8 @@ class GenerateNonDivergentSpecDJFormTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 dashboardNotification,
                 PROCESS_CASE_EVENT,
-                "DASHBOARD_NOTIFICATION_EVENT",
+                DASHBOARD_NOTIFICATION_EVENT,
                 "GenerateDashboardNotificationsDJNonDivergent",
-                variables
-            );
-        }
-
-        //complete the notification to Claimant
-        ExternalTask claimantNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(
-            claimantNotification,
-            PROCESS_CASE_EVENT,
-            NOTIFY_EVENT,
-            "NotifyDJNonDivergentClaimant"
-        );
-
-        if (twoRepresentatives) {
-            //complete the notification to Respondent2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                "NOTIFY_DJ_NON_DIVERGENT_SPEC_DEFENDANT2_LR",
-                "NotifyDJNonDivergentDefendant2",
                 variables
             );
         }
