@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
   <bpmn:process id="DECISION_ON_RECONSIDERATION_REQUEST" name="Decision on reconsideration request" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:callActivity id="NotifyDecisionOnReconsiderationRequest" name="Start Business Process" calledElement="StartBusinessProcess">
       <bpmn:extensionElements>
@@ -33,26 +33,7 @@
       <bpmn:incoming>Flow_1og0z75</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1og0z75" sourceRef="Activity_0pqcpvc" targetRef="Event_0jlhskg" />
-    <bpmn:sequenceFlow id="Flow_1vs00o9" sourceRef="NotifyDecisionOnReconsiderationRequest" targetRef="Activity_0nyrqab" />
-    <bpmn:serviceTask id="Activity_0nyrqab" name="Notify Claim Reconsideration Claimant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_RECONSIDERATION_UPHELD_CLAIMANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1vs00o9</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tocigs</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0txb7dk" name="Notify Claim Reconsideration Defendant" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIM_RECONSIDERATION_UPHELD_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_08avc9f</bpmn:incoming>
-      <bpmn:incoming>Flow_1737ozj</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yfyxrt</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1vs00o9" sourceRef="NotifyDecisionOnReconsiderationRequest" targetRef="Gateway_1fhcsxk" />
     <bpmn:serviceTask id="GenerateDashboardNotificationsDecisionReconsideration" name="Generate Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -64,20 +45,16 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1r02v0z" sourceRef="GenerateDashboardNotificationsDecisionReconsideration" targetRef="Activity_0pqcpvc" />
     <bpmn:exclusiveGateway id="Gateway_1fhcsxk">
-      <bpmn:incoming>Flow_0tocigs</bpmn:incoming>
+      <bpmn:incoming>Flow_1vs00o9</bpmn:incoming>
       <bpmn:outgoing>Flow_10kpido</bpmn:outgoing>
       <bpmn:outgoing>Flow_1wv90dl</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0tocigs" sourceRef="Activity_0nyrqab" targetRef="Gateway_1fhcsxk" />
     <bpmn:exclusiveGateway id="Gateway_0zj33b5">
       <bpmn:incoming>Flow_1wv90dl</bpmn:incoming>
       <bpmn:incoming>Flow_1idq44w</bpmn:incoming>
-      <bpmn:outgoing>Flow_08avc9f</bpmn:outgoing>
       <bpmn:outgoing>Flow_0a4a3kg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08avc9f</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_08avc9f" sourceRef="Gateway_0zj33b5" targetRef="Activity_0txb7dk">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED)) }</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="SendDORToClaimantLIP" name="Trigger Bulk Print for claimant" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -106,8 +83,21 @@
     <bpmn:sequenceFlow id="Flow_1wv90dl" sourceRef="Gateway_1fhcsxk" targetRef="Gateway_0zj33b5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.LIP_CASE || (!empty flowFlags.LIP_CASE &amp;&amp; !flowFlags.LIP_CASE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED))}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1737ozj" sourceRef="SendToDefendantLIP" targetRef="Activity_0txb7dk" />
-    <bpmn:sequenceFlow id="Flow_1yfyxrt" sourceRef="Activity_0txb7dk" targetRef="GenerateDashboardNotificationsDecisionReconsideration" />
+    <bpmn:serviceTask id="NotifyDecisionOnReconsiderationRequestNotifier" name="Notify parties" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1737ozj</bpmn:incoming>
+      <bpmn:incoming>Flow_08avc9f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yfyxrt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1yfyxrt" sourceRef="NotifyDecisionOnReconsiderationRequestNotifier" targetRef="GenerateDashboardNotificationsDecisionReconsideration" />
+    <bpmn:sequenceFlow id="Flow_1737ozj" sourceRef="SendToDefendantLIP" targetRef="NotifyDecisionOnReconsiderationRequestNotifier" />
+    <bpmn:sequenceFlow id="Flow_08avc9f" sourceRef="Gateway_0zj33b5" targetRef="NotifyDecisionOnReconsiderationRequestNotifier">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(empty flowFlags.UNREPRESENTED_DEFENDANT_ONE  || (!empty flowFlags.UNREPRESENTED_DEFENDANT_ONE &amp;&amp; !flowFlags.UNREPRESENTED_DEFENDANT_ONE)) || (empty flowFlags.WELSH_ENABLED || (!empty flowFlags.WELSH_ENABLED &amp;&amp; !flowFlags.WELSH_ENABLED)) }</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_1kl1nm4">
       <bpmn:text>LR or LiPclaimant ?</bpmn:text>
     </bpmn:textAnnotation>
@@ -137,12 +127,18 @@
           <dc:Bounds x="129" y="245" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0nyrqab_di" bpmnElement="Activity_0nyrqab">
-        <dc:Bounds x="350" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
+        <dc:Bounds x="1190" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
+        <dc:Bounds x="1432" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="NotifyDecisionOnReconsiderationRequestNotifier">
+        <dc:Bounds x="710" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0txb7dk_di" bpmnElement="Activity_0txb7dk">
-        <dc:Bounds x="710" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0mksa1f" bpmnElement="GenerateDashboardNotificationsDecisionReconsideration">
+        <dc:Bounds x="960" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1fhcsxk_di" bpmnElement="Gateway_1fhcsxk" isMarkerVisible="true">
@@ -158,16 +154,6 @@
       <bpmndi:BPMNShape id="Activity_1k6crm0_di" bpmnElement="SendToDefendantLIP">
         <dc:Bounds x="710" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0mksa1f" bpmnElement="GenerateDashboardNotificationsDecisionReconsideration">
-        <dc:Bounds x="960" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pqcpvc_di" bpmnElement="Activity_0pqcpvc">
-        <dc:Bounds x="1190" y="180" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0jlhskg_di" bpmnElement="Event_0jlhskg">
-        <dc:Bounds x="1432" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1kl1nm4_di" bpmnElement="TextAnnotation_1kl1nm4">
         <dc:Bounds x="490" y="95" width="100" height="41" />
@@ -197,15 +183,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vs00o9_di" bpmnElement="Flow_1vs00o9">
         <di:waypoint x="300" y="220" />
-        <di:waypoint x="350" y="220" />
+        <di:waypoint x="515" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r02v0z_di" bpmnElement="Flow_1r02v0z">
         <di:waypoint x="1060" y="220" />
         <di:waypoint x="1190" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tocigs_di" bpmnElement="Flow_0tocigs">
-        <di:waypoint x="450" y="220" />
-        <di:waypoint x="515" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08avc9f_di" bpmnElement="Flow_08avc9f">
         <di:waypoint x="675" y="220" />
