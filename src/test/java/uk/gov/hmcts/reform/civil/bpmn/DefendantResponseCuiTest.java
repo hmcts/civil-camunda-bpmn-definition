@@ -10,7 +10,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class DefendantResponseCuiTest extends BpmnBaseTest {
+class DefendantResponseCuiTest extends BpmnBaseTest {
 
     private static final String MESSAGE_NAME = "DEFENDANT_RESPONSE_CUI";
     private static final String PROCESS_ID = "DEFENDANT_RESPONSE_PROCESS_ID_CUI";
@@ -19,6 +19,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     private static final String GENERATE_RESPONSE_DQ_LIP_SEALED_PDF = "GENERATE_RESPONSE_DQ_LIP_SEALED";
     private static final String GENERATE_LIP_RESPONSE_PDF = "GENERATE_RESPONSE_CUI_SEALED";
+    private static final String REMOVE_CLAIMANT_DJ_NOTIFICATION = "REMOVE_CLAIMANT_DJ_DASHBOARD_NOTIFICATION";
 
     //ACTIVITY IDs
     private static final String NOTIFY_EVENT_ACTIVITY = "DefendantResponseCUINotify";
@@ -26,6 +27,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
     private static final String GENERATE_DASHBOARD_ACTIVITY
         = "GenerateDashboardNotificationsDefendantResponse";
+    private static final String REMOVE_CLAIMANT_DJ_NOTIFICATION_ACTIVITY = "Activity_1phjbuy";
 
     public DefendantResponseCuiTest() {
         super(
@@ -54,6 +56,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         verifyNotifyPartiesCompleted();
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -81,6 +84,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         assertBusinessProcessHasStarted(variables);
 
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -104,6 +108,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
 
         assertBusinessProcessHasStarted(variables);
         verifyGenerateDashboardNotifications();
+        verifyRemoveClaimantDJNotification();
         verifySealedDQGenerationCompleted();
         verifySealedResponseGenerationCompleted();
 
@@ -126,6 +131,13 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
         verifyTaskIsComplete(
             GENERATE_LIP_RESPONSE_PDF,
             GENERATE_LIP_RESPONSE_PDF_ACTIVITY
+        );
+    }
+
+    private void verifyRemoveClaimantDJNotification() {
+        verifyTaskIsComplete(
+            REMOVE_CLAIMANT_DJ_NOTIFICATION,
+            REMOVE_CLAIMANT_DJ_NOTIFICATION_ACTIVITY
         );
     }
 
