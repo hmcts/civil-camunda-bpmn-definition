@@ -20,12 +20,10 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
     private static final String SEND_JUDGMENT_DETAILS_CJES_ACTIVITY_ID = "SendJudgmentDetailsToCJES";
     private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoSCDocument";
-    private static final String UPDATE_CLAIMANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_CLAIMANT";
-    private static final String UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsClaimant";
-    private static final String UPDATE_DEFENDANT_DASHBOARD = "UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_DEFENDANT";
-    private static final String UPDATE_DEFENDANT_DASHBOARD_ACTIVITY_ID = "UpdateJudgmentPaidDashboardNotificationsDefendant";
+    private static final String UPDATE_DASHBOARD = "DASHBOARD_NOTIFICATION_EVENT";
+    private static final String UPDATE_DASHBOARD_ACTIVITY_ID = "GenerateDashboardNotifications";
     private static final String UPDATE_COSC_VARIABLE = "UPDATE_COSC_VARIABLE";
-    private static final String UPDATE_JUDGEMENT_ACTIVITY_ID = "UpdateJudgmentMarkedPaidInFull";
+    private static final String UPDATE_COSC_VARIABLE_ACTIVITY_ID = "UpdateJudgmentMarkedPaidInFull";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";
     private static final String NOTIFY_RPA_ACTIVITY_ID = "NotifyRPA";
 
@@ -81,7 +79,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
                 paidInFull,
                 PROCESS_CASE_EVENT,
                 UPDATE_COSC_VARIABLE,
-                UPDATE_JUDGEMENT_ACTIVITY_ID
+                UPDATE_COSC_VARIABLE_ACTIVITY_ID
             );
         }
 
@@ -96,15 +94,14 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
             );
         }
 
-        //complete the dashboard update
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        //complete the claimant dashboard update
+        ExternalTask dashboard = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
-            dashboardTask,
+            dashboard,
             PROCESS_CASE_EVENT,
-            UPDATE_CLAIMANT_DASHBOARD,
-            UPDATE_CLAIMANT_DASHBOARD_ACTIVITY_ID
+            UPDATE_DASHBOARD,
+            UPDATE_DASHBOARD_ACTIVITY_ID
         );
-
 
         if (joFlag) {
             ExternalTask notifyRPA = assertNextExternalTask(PROCESS_CASE_EVENT);
