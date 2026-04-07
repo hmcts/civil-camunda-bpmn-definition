@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.1">
   <bpmn:process id="JUDGMENT_PAID_IN_FULL" name="Judgment Paid In Full" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Event_JUDGMENT_PAID_IN_FULL" name="Start" camunda:initiator="JUDGMENT_PAID_IN_FULL">
       <bpmn:outgoing>Flow_1if0h68</bpmn:outgoing>
@@ -41,30 +41,21 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1r2vyq6</bpmn:incoming>
-      <bpmn:outgoing>Flow_0809scp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RPA_Continuous_Feed_Completed</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="SendJudgmentDetailsToCJES" targetRef="GenerateDashboardNotificationsJudgmentPaidInFull" />
     <bpmn:sequenceFlow id="Flow_04rigbl" sourceRef="Activity_StartBusinessProcess" targetRef="Gateway_0a53rfy" />
-    <bpmn:serviceTask id="UpdateJudgmentPaidDashboardNotificationsClaimant" name="Update Claimant Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsJudgmentPaidInFull" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_CLAIMANT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_04wenif</bpmn:incoming>
-      <bpmn:incoming>Flow_1yna2t7</bpmn:incoming>
+      <bpmn:incoming>Flow_RPA_Continuous_Feed_Completed</bpmn:incoming>
+      <bpmn:incoming>Flow_07xvxb8</bpmn:incoming>
       <bpmn:outgoing>Flow_03hypua</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_03hypua" sourceRef="UpdateJudgmentPaidDashboardNotificationsClaimant" targetRef="UpdateJudgmentPaidDashboardNotificationsDefendant" />
-    <bpmn:serviceTask id="UpdateJudgmentPaidDashboardNotificationsDefendant" name="Update Defendant Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">UPDATE_DASHBOARD_NOTIFICATIONS_JUDGMENT_PAID_DEFENDANT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_03hypua</bpmn:incoming>
-      <bpmn:outgoing>Flow_166j10g</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_166j10g" sourceRef="UpdateJudgmentPaidDashboardNotificationsDefendant" targetRef="Gateway_1u1okod" />
+    <bpmn:sequenceFlow id="Flow_03hypua" sourceRef="GenerateDashboardNotificationsJudgmentPaidInFull" targetRef="Gateway_1u1okod" />
     <bpmn:serviceTask id="NotifyRPA" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -76,7 +67,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_03c11h5" sourceRef="NotifyRPA" targetRef="Activity_EndBusinessProcess" />
     <bpmn:exclusiveGateway id="Gateway_1u1okod">
-      <bpmn:incoming>Flow_166j10g</bpmn:incoming>
+      <bpmn:incoming>Flow_03hypua</bpmn:incoming>
       <bpmn:outgoing>Flow_1aq8nyc</bpmn:outgoing>
       <bpmn:outgoing>Flow_1tx6lu9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -213,6 +204,10 @@
         <di:waypoint x="185" y="240" />
         <di:waypoint x="270" y="240" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bi5uzr_di" bpmnElement="Flow_RPA_Continuous_Feed_Completed">
+        <di:waypoint x="700" y="250" />
+        <di:waypoint x="790" y="250" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04rigbl_di" bpmnElement="Flow_04rigbl">
         <di:waypoint x="370" y="240" />
         <di:waypoint x="435" y="240" />
@@ -224,6 +219,8 @@
       <bpmndi:BPMNEdge id="Flow_166j10g_di" bpmnElement="Flow_166j10g">
         <di:waypoint x="1060" y="250" />
         <di:waypoint x="1105" y="250" />
+        <di:waypoint x="890" y="250" />
+        <di:waypoint x="1055" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03c11h5_di" bpmnElement="Flow_03c11h5">
         <di:waypoint x="1350" y="250" />
@@ -272,10 +269,15 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07xvxb8_di" bpmnElement="Flow_07xvxb8">
+        <di:waypoint x="485" y="215" />
+        <di:waypoint x="485" y="90" />
+        <di:waypoint x="840" y="90" />
+        <di:waypoint x="840" y="210" />
         <di:waypoint x="460" y="215" />
         <di:waypoint x="460" y="100" />
         <di:waypoint x="570" y="100" />
         <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="56" width="68" height="27" />
           <dc:Bounds x="486" y="66" width="68" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
