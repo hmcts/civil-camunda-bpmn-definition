@@ -25,7 +25,7 @@ public class DefendantResponseCuiTest extends BpmnBaseTest {
     private static final String GENERATE_LIP_DQ_PDF_ACTIVITY = "GenerateSealedLipDQPdf";
     private static final String GENERATE_LIP_RESPONSE_PDF_ACTIVITY = "GenerateSealedLipResponsePdf";
     private static final String GENERATE_DASHBOARD_ACTIVITY
-        = "GenerateDashboardNotificationsDefendantResponse";
+        = "GenerateDashboardNotificationsDefendantResponseCUI";
 
     public DefendantResponseCuiTest() {
         super(
