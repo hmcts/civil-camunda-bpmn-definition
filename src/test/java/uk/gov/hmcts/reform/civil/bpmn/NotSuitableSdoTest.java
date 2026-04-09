@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class NotSuitableSdoTest extends BpmnBaseTest {
 
-    private static final String MESSAGE_NAME = "NotSuitable_SDO";
-    private static final String PROCESS_ID = "NotSuitable_SDO";
+    private static final String MESSAGE_NAME = "NOT_SUITABLE_SDO";
+    private static final String PROCESS_ID = "NOT_SUITABLE_SDO";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM = "PROCEEDS_IN_HERITAGE_SYSTEM";
     private static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID = "ProceedOffline";
     private static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";

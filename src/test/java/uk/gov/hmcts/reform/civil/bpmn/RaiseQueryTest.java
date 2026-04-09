@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class RaiseQueryTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "queryManagementRaiseQuery";
-    public static final String PROCESS_ID = "queryManagementRaiseQuery";
+    public static final String MESSAGE_NAME = "QUERY_MANAGEMENT_RAISE_QUERY";
+    public static final String PROCESS_ID = "QUERY_MANAGEMENT_RAISE_QUERY";
     private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     private static final String NOTIFY_LR_ACTIVITY_ID = "RaiseQueryNotifier";
     private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "OtherPartyQueryRaisedNotifier";

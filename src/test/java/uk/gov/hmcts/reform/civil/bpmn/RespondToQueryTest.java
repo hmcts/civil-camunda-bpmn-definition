@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class RespondToQueryTest extends BpmnBaseTest {
 
-    public static final String MESSAGE_NAME = "queryManagementRespondQuery";
-    public static final String PROCESS_ID = "queryManagementRespondQuery";
+    public static final String MESSAGE_NAME = "QUERY_MANAGEMENT_RESPOND_QUERY";
+    public static final String PROCESS_ID = "QUERY_MANAGEMENT_RESPOND_QUERY";
     private static final String NOTIFY_LR = "NOTIFY_EVENT";
     private static final String NOTIFY_OTHER_PARTY = "NOTIFY_EVENT";
     private static final String NOTIFY_LR_ACTIVITY_ID = "RespondToQueryNotifier";
