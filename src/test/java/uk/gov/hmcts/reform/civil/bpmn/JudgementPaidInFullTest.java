@@ -21,7 +21,7 @@ class JudgementPaidInFullTest extends BpmnBaseTest {
     private static final String GENERATE_COSC_DOCUMENT = "GENERATE_COSC_DOCUMENT";
     private static final String GENERATE_COSC_DOCUMENT_ACTIVITY_ID = "GenerateCoSCDocument";
     private static final String UPDATE_DASHBOARD = "DASHBOARD_NOTIFICATION_EVENT";
-    private static final String UPDATE_DASHBOARD_ACTIVITY_ID = "GenerateDashboardNotifications";
+    private static final String UPDATE_DASHBOARD_ACTIVITY_ID = "GenerateDashboardNotificationsJudgmentPaidInFull";
     private static final String UPDATE_COSC_VARIABLE = "UPDATE_COSC_VARIABLE";
     private static final String UPDATE_COSC_VARIABLE_ACTIVITY_ID = "UpdateJudgmentMarkedPaidInFull";
     private static final String NOTIFY_RPA = "NOTIFY_RPA_ON_CONTINUOUS_FEED";

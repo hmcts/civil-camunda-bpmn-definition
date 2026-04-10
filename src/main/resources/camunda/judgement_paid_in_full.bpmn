@@ -45,7 +45,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_RPA_Continuous_Feed_Completed" sourceRef="SendJudgmentDetailsToCJES" targetRef="Gateway_0idlte1" />
     <bpmn:sequenceFlow id="Flow_04rigbl" sourceRef="Activity_StartBusinessProcess" targetRef="Gateway_0a53rfy" />
-    <bpmn:serviceTask id="GenerateDashboardNotifications" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:serviceTask id="GenerateDashboardNotificationsJudgmentPaidInFull" name="Update Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
@@ -55,7 +55,7 @@
       <bpmn:incoming>Flow_03wrw0r</bpmn:incoming>
       <bpmn:outgoing>Flow_03hypua</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_03hypua" sourceRef="GenerateDashboardNotifications" targetRef="Gateway_1u1okod" />
+    <bpmn:sequenceFlow id="Flow_03hypua" sourceRef="GenerateDashboardNotificationsJudgmentPaidInFull" targetRef="Gateway_1u1okod" />
     <bpmn:serviceTask id="NotifyRPA" name="Notify RPA on Continuous Feed" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -104,7 +104,7 @@
       <bpmn:outgoing>Flow_12bv68c</bpmn:outgoing>
       <bpmn:outgoing>Flow_1wkksth</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_12bv68c" name="No" sourceRef="Gateway_0idlte1" targetRef="GenerateDashboardNotifications">
+    <bpmn:sequenceFlow id="Flow_12bv68c" name="No" sourceRef="Gateway_0idlte1" targetRef="GenerateDashboardNotificationsJudgmentPaidInFull">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isJudgmentMarkedPaidInFull==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="GenerateCoSCDocument" name="Generate CoSC Document" camunda:type="external" camunda:topic="processCaseEvent">
@@ -119,7 +119,7 @@
     <bpmn:sequenceFlow id="Flow_1wkksth" name="Yes" sourceRef="Gateway_0idlte1" targetRef="GenerateCoSCDocument">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isJudgmentMarkedPaidInFull==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_03wrw0r" sourceRef="GenerateCoSCDocument" targetRef="GenerateDashboardNotifications" />
+    <bpmn:sequenceFlow id="Flow_03wrw0r" sourceRef="GenerateCoSCDocument" targetRef="GenerateDashboardNotificationsJudgmentPaidInFull" />
     <bpmn:textAnnotation id="TextAnnotation_18y651r">
       <bpmn:text>Has claimant confirmed they paid in full?</bpmn:text>
     </bpmn:textAnnotation>
@@ -152,6 +152,10 @@
         <dc:Bounds x="600" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1erxa6b_di" bpmnElement="GenerateDashboardNotificationsJudgmentPaidInFull">
+        <dc:Bounds x="910" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1gytcx1_di" bpmnElement="NotifyRPA">
         <dc:Bounds x="1250" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -165,10 +169,6 @@
         <dc:Bounds x="640" y="50" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1erxa6b_di" bpmnElement="GenerateDashboardNotifications">
-        <dc:Bounds x="910" y="210" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0pc8hfv" bpmnElement="Gateway_0idlte1" isMarkerVisible="true">
         <dc:Bounds x="795" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -176,10 +176,10 @@
         <dc:Bounds x="770" y="350" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1o4qhgq_di" bpmnElement="Association_1o4qhgq">
-        <di:waypoint x="829" y="234" />
-        <di:waypoint x="897" y="117" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_18y651r_di" bpmnElement="TextAnnotation_18y651r">
+        <dc:Bounds x="870" y="62" width="100" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o3sg3o_di" bpmnElement="Event_0o3sg3o">
         <dc:Bounds x="302" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -258,10 +258,6 @@
           <dc:Bounds x="870" y="232" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="TextAnnotation_18y651r_di" bpmnElement="TextAnnotation_18y651r">
-        <dc:Bounds x="870" y="62" width="100" height="55" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1wkksth_di" bpmnElement="Flow_1wkksth">
         <di:waypoint x="820" y="275" />
         <di:waypoint x="820" y="350" />
@@ -274,6 +270,10 @@
         <di:waypoint x="820" y="470" />
         <di:waypoint x="960" y="470" />
         <di:waypoint x="960" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1o4qhgq_di" bpmnElement="Association_1o4qhgq">
+        <di:waypoint x="829" y="234" />
+        <di:waypoint x="897" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
