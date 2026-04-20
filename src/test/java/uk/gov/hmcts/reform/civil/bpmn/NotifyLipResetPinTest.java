@@ -15,8 +15,8 @@ class NotifyLipResetPinTest extends BpmnBaseTest {
     public static final String MESSAGE_NAME = "RESET_PIN";
     public static final String PROCESS_ID = "NOTIFY_LIP_RESPONDENT1_RESET_PIN";
 
-    public static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN = "NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN";
-    private static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN_ACTIVITY_ID = "NotifyRespondent1ForResetPin";
+    public static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN = "NOTIFY_EVENT";
+    private static final String NOTIFY_LIP_RESPONDENT1_FOR_RESET_PIN_ACTIVITY_ID = "NotifyLipResetPinNotifier";
 
     public NotifyLipResetPinTest() {
         super("notify_lip_reset_pin.bpmn", PROCESS_ID);

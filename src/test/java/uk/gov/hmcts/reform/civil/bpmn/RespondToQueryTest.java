@@ -12,10 +12,10 @@ class RespondToQueryTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "queryManagementRespondQuery";
     public static final String PROCESS_ID = "queryManagementRespondQuery";
-    private static final String NOTIFY_LR = "NOTIFY_RESPONSE_TO_QUERY";
-    private static final String NOTIFY_OTHER_PARTY = "NOTIFY_OTHER_PARTY_QUERY_HAS_RESPONSE";
-    private static final String NOTIFY_LR_ACTIVITY_ID = "QueryResponseNotify";
-    private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "NotifyOtherPartyQueryHasResponse";
+    private static final String NOTIFY_LR = "NOTIFY_EVENT";
+    private static final String NOTIFY_OTHER_PARTY = "NOTIFY_EVENT";
+    private static final String NOTIFY_LR_ACTIVITY_ID = "RespondToQueryNotifier";
+    private static final String NOTIFY_OTHER_PARTY_ACTIVITY_ID = "OtherPartyQueryResponseNotifier";
     private static final String CREATE_DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsRespondToQuery";
 
     public RespondToQueryTest() {

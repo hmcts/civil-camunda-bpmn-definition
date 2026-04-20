@@ -10,8 +10,8 @@ class NotifyLipGenericTemplateTest extends BpmnBaseTest {
     private static final String MESSAGE_NAME = "CITIZEN_HEARING_FEE_PAYMENT";
     private static final String PROCESS_ID = "NOTIFY_LIP_GENERIC_TEMPLATE";
 
-    private static final String NOTIFY_APPLICANT1_GENERIC_TEMPLATE = "NOTIFY_APPLICANT1_GENERIC_TEMPLATE";
-    private static final String NOTIFY_APPLICANT1_GENERIC_TEMPLATE_ACTIVITY_ID = "NotifyApplicant1GenericTemplate";
+    private static final String NOTIFY_APPLICANT1_GENERIC_TEMPLATE = "NOTIFY_EVENT";
+    private static final String NOTIFY_APPLICANT1_GENERIC_TEMPLATE_ACTIVITY_ID = "NotifyLipGenericTemplateNotifier";
 
     private static final String GENERATE_DASHBOARD_NOTIFICATIONS_ACTIVITY_ID =
         "GenerateDashboardNotificationsCitizenHearingFeePayment";
