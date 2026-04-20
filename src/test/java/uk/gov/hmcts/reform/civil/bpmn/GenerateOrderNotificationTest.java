@@ -32,9 +32,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         = "SendFinalOrderToDefendantLIP";
     private static final String SEND_FINAL_ORDER_TO_LIP_CLAIMANT_ACTIVITY_ID
         = "SendFinalOrderToClaimantLIP";
-    private static final String GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER
-        = "GenerateDashboardNotificationFinalOrder";
-
+    
     public GenerateOrderNotificationTest() {
         super("generate_order_notification.bpmn", PROCESS_ID);
     }
@@ -66,15 +64,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
-        //Generate the Dashboard notifications
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardTask,
-                                   PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER,
-                                   variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -83,7 +72,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteGenerateOrderNotificationsLipAndGenerateDashboard() {
+    void shouldSuccessfullyCompleteGenerateOrderNotificationsLip() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -105,15 +94,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
                                    NOTIFY_EVENT,
                                    NOTIFY_PARTIES_FOR_GENERATE_ORDER_ACTIVITY_ID,
-                                   variables
-        );
-
-        //Generate the Dashboard notifications
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardTask,
-                                   PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER,
                                    variables
         );
 
@@ -179,15 +159,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
-        //Generate the Dashboard notifications
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardTask,
-                                   PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER,
-                                   variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -196,7 +167,7 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
     }
 
     @Test
-    void shouldSuccessfullyCompleteGenerateOrderNotificationsAndBulkPrintLipAndDashboard() {
+    void shouldSuccessfullyCompleteGenerateOrderNotificationsAndBulkPrintLip() {
         //assert process has started
         assertFalse(processInstance.isEnded());
 
@@ -235,15 +206,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
                                    variables
         );
 
-        //Generate the Dashboard notifications
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardTask,
-                                   PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER,
-                                   variables
-        );
-
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
@@ -276,15 +238,6 @@ class GenerateOrderNotificationTest extends BpmnBaseTest {
         ExternalTask startBusiness = assertNextExternalTask(START_BUSINESS_TOPIC);
         assertCompleteExternalTask(startBusiness, START_BUSINESS_TOPIC,
                                    START_BUSINESS_EVENT, START_BUSINESS_ACTIVITY, variables);
-
-        //Generate the Dashboard notifications
-        ExternalTask dashboardTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(dashboardTask,
-                                   PROCESS_CASE_EVENT,
-                                   DASHBOARD_NOTIFICATION_EVENT,
-                                   GENERATE_DASHBOARD_NOTIFICATION_FINAL_ORDER,
-                                   variables
-        );
 
         //end business process
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);

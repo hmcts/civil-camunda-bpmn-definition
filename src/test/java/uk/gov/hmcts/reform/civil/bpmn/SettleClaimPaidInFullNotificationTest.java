@@ -16,10 +16,8 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "SETTLE_CLAIM_MARKED_PAID_IN_FULL";
     public static final String PROCESS_ID = "SETTLE_CLAIM_MARKED_PAID_IN_FULL_ID";
-    public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1 = "NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
-    public static final String NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull1";
-    public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2 = "NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL";
-    public static final String NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "NotifyDefendantSettleClaimMarkedPaidInFull2";
+    public static final String NOTIFY_EVENT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID = "NOTIFY_EVENT";
+    public static final String NOTIFY_EVENT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID = "SettleClaimPaidInFullNotificationNotifier";
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_ID = "SendLetterSettleClaimMarkedPaidInFullDefendantLiP";
     public static final String SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1_EVENT = "SEND_SETTLE_CLAIM_PAID_IN_FULL_LETTER_TO_LIP_DEFENDANT1";
     public static final String CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT = "DASHBOARD_NOTIFICATION_EVENT";
@@ -84,28 +82,16 @@ class SettleClaimPaidInFullNotificationTest extends BpmnBaseTest {
                 CREATE_DEFENDANT_DASHBOARD_NOTIFICATION_SETTLE_CLAIM_PAID_IN_FULL_EVENT_ID,
                 variables
             );
-        } else {
-            //complete the notification to Respondent
-            assertCompleteExternalTask(
-                dashboardDefendant,
-                PROCESS_CASE_EVENT,
-                NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID1,
-                NOTIFY_SOLICITOR1_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
-                variables
-            );
         }
 
-        if (twoRepresentatives || (isLiPDefendant && !isLiPDefendant2)) {
-            //complete the notification to Respondent2
-            ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-            assertCompleteExternalTask(
-                respondent2Notification,
-                PROCESS_CASE_EVENT,
-                NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID2,
-                NOTIFY_SOLICITOR2_DEFENDANT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
-                variables
-            );
-        }
+        //complete the notification to Respondent
+        assertCompleteExternalTask(
+            dashboardDefendant,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_EVENT_ID,
+            NOTIFY_EVENT_SETTLE_CLAIM_MARKED_PAID_IN_FULL_ACTIVITY_ID,
+            variables
+        );
 
         ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
         completeBusinessProcess(endBusinessProcess);
