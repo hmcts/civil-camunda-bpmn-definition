@@ -110,7 +110,7 @@ public class UploadTranslatedSealedFormForLipVsLrTest extends BpmnBaseTest {
             notifyRespondent,
             PROCESS_CASE_EVENT,
             "NOTIFY_EVENT",
-            "DefendantResponseUnspecFullDefenceNotifyParties",
+            "DefendantResponseSpecOneRespRespondedNotifyParties",
             variables
         );
 
