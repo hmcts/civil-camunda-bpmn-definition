@@ -18,12 +18,7 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
     //CCD CASE EVENTS
     public static final String PROCEEDS_IN_HERITAGE_SYSTEM
         = "PROCEEDS_IN_HERITAGE_SYSTEM";
-    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION
-        = "NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION";
-    public static final String NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT
-        = "NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT";
-    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT
-        = "NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT";
+    public static final String NOTIFY_EVENT = "NOTIFY_EVENT";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE
         = "NOTIFY_RPA_ON_CASE_HANDED_OFFLINE";
     public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC
@@ -32,12 +27,8 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
     //ACTIVITY IDs
     public static final String PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         = "proceedsInHeritageSystem";
-    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_ACTIVITY_ID
-        = "RequestJudgementByAdmissionNotifyRespondent1";
-    public static final String NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
-        = "RequestJudgementByAdmissionLipClaimantNotifyApplicant1";
-    public static final String NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
-        = "RequestJudgementByAdmissionLipClaimantNotifyRespondent1";
+    public static final String NOTIFY_PARTIES_ACTIVITY_ID
+        = "RequestJudgementByAdmissionNotifyParties";
     public static final String NOTIFY_RPA_ON_CASE_HANDED_OFFLINE_ACTIVITY_ID = "NotifyRoboticsOnCaseHandedOffline";
     public static final String GENERATE_DEFAULT_JUDGMENT_BY_ADMISSION_RESPONSE_DOC_ACTIVITY_ID
         = "GenerateJudgmentByAdmissonDoc";
@@ -76,12 +67,12 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-        //complete the respondent notification
+        //complete the notify parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION,
-                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_ACTIVITY_ID
+                                   NOTIFY_EVENT,
+                                   NOTIFY_PARTIES_ACTIVITY_ID
         );
 
         //complete the Robotics notification
@@ -133,20 +124,12 @@ public class RequestJudgementByAdmissionTest extends BpmnBaseTest {
                                    PROCEEDS_IN_HERITAGE_SYSTEM_ACTIVITY_ID
         );
 
-        //complete the applicant lip notification
+        //complete the notify parties
         notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(notificationTask,
                                    PROCESS_CASE_EVENT,
-                                   NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT,
-                                   NOTIFY_APPLICANT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
-        );
-
-        //complete the respondent lip notification
-        notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        assertCompleteExternalTask(notificationTask,
-                                   PROCESS_CASE_EVENT,
-                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT,
-                                   NOTIFY_RESPONDENT1_FOR_REQUEST_JUDGEMENT_BY_ADMISSION_LIP_CLAIMANT_ACTIVITY_ID
+                                   NOTIFY_EVENT,
+                                   NOTIFY_PARTIES_ACTIVITY_ID
         );
 
         //generate the Judgment By Admission Document
