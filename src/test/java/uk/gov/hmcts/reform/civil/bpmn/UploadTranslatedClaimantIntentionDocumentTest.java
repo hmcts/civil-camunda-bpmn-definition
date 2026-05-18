@@ -17,10 +17,6 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
     public static final String MESSAGE_NAME = "UPLOAD_TRANSLATED_DOCUMENT_LIP";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_EVENT = "SET_SETTLEMENT_AGREEMENT_DEADLINE";
     private static final String SET_SETTLEMENT_AGREEMENT_DEADLINE_ACTIVITY_ID = "SetSettlementAgreementDeadline";
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT
-        = "NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_TRANSLATED_DOC";
-    private static final String NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-        = "NotifyLiPRespondentClaimantConfirmToProceed";
     private static final String UPDATE_CLAIM_STATE_EVENT
         = "UPDATE_CLAIM_STATE_AFTER_DOC_UPLOADED";
     private static final String UPDATE_CLAIM_STATE_ACTIVITY_ID
@@ -86,8 +82,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             notificationRespondentTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
         );
 
         //complete the state change task
@@ -147,8 +143,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             notificationRespondentTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
         );
 
         //complete the state change task
@@ -212,21 +208,12 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
 
         //complete the notification
         ExternalTask notificationRespondentTask = assertNextExternalTask(PROCESS_CASE_EVENT);
-        if (welshEnabled) {
-            assertCompleteExternalTask(
-                notificationRespondentTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_EVENT,
-                CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
-            );
-        } else {
-            assertCompleteExternalTask(
-                notificationRespondentTask,
-                PROCESS_CASE_EVENT,
-                NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
-                NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
-            );
-        }
+        assertCompleteExternalTask(
+            notificationRespondentTask,
+            PROCESS_CASE_EVENT,
+            NOTIFY_EVENT,
+            CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
+        );
 
         //complete the RPA notification
         ExternalTask proceedCaseOffline = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -295,8 +282,8 @@ public class UploadTranslatedClaimantIntentionDocumentTest extends BpmnBaseTest 
         assertCompleteExternalTask(
             notificationRespondentTask,
             PROCESS_CASE_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_EVENT,
-            NOTIFY_LIP_RESPONDENT_CLAIMANT_CONFIRM_TO_PROCEED_ACTIVITY_ID
+            NOTIFY_EVENT,
+            CLAIMANT_CONFIRMS_PROCEED_NOTIFY_PARTIES_ACTIVITY_ID
         );
         //complete the state change task
         ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);
