@@ -7,9 +7,10 @@ java:
   image: hmctsprod.azurecr.io/civil/service:${CIVIL_SERVICE_IMAGE}
   imagePullPolicy: Always
   ingressHost: ${SERVICE_NAME}.preview.platform.hmcts.net
-  devcpuRequests: 500m
-  devmemoryRequests: 2048Mi
-  devmemoryLimits: 4096Mi
+  devcpuRequests: 25m
+  devcpuLimits: 100m
+  devmemoryRequests: 1536Mi
+  devmemoryLimits: 2048Mi
   keyVaults:
     civil:
       resourceGroup: civil
@@ -133,7 +134,11 @@ java:
         enabled: false
       resources:
         requests:
-          cpu: 500m
+          cpu: 25m
+          memory: 256Mi
+        limits:
+          cpu: 100m
+          memory: 512Mi
       initdb:
         scripts:
           init.sql: |
@@ -159,9 +164,9 @@ xui-webapp:
     releaseNameOverride: ${SERVICE_NAME}-xui-webapp
     image: hmctsprod.azurecr.io/xui/webapp:latest
     ingressHost: xui-${SERVICE_FQDN}
-    devcpuRequests: 500m
+    devcpuRequests: 25m
     devmemoryRequests: 512Mi
-    devcpuLimits: 1
+    devcpuLimits: 100m
     devmemoryLimits: 1Gi
     environment:
       HEALTH_CCD_COMPONENT_API: http://${SERVICE_NAME}-ccd-api-gw/health
@@ -219,9 +224,10 @@ ccd:
   ccd-data-store-api:
     java:
       imagePullPolicy: Always
-      devcpuRequests: 500m
-      devmemoryRequests: 4096Mi
-      devmemoryLimits: 8192Mi
+      devcpuRequests: 25m
+      devcpuLimits: 100m
+      devmemoryRequests: 1536Mi
+      devmemoryLimits: 2048Mi
       autoscaling:
         enabled: false
       environment:
@@ -255,9 +261,10 @@ ccd:
   ccd-definition-store-api:
     java:
       imagePullPolicy: Always
-      devcpuRequests: 500m
-      devmemoryRequests: 4096Mi
-      devmemoryLimits: 8192Mi
+      devcpuRequests: 25m
+      devcpuLimits: 100m
+      devmemoryRequests: 1536Mi
+      devmemoryLimits: 2048Mi
       environment:
         APPLICATION_LOGGING_LEVEL: DEBUG
         SPRING_DATASOURCE_HIKARI_CONNECTIONTIMEOUT: 90000
@@ -287,10 +294,10 @@ camunda-bpm:
     releaseNameOverride: ${SERVICE_NAME}-camunda
     ingressHost: camunda-${SERVICE_FQDN}
     imagePullPolicy: Always
-    devcpuRequests: 500m
-    devmemoryRequests: 512Mi
-    devcpuLimits: 1
-    devmemoryLimits: 1Gi
+    devcpuRequests: 25m
+    devmemoryRequests: 1024Mi
+    devcpuLimits: 100m
+    devmemoryLimits: 1536Mi
     environment:
       CAMUNDA_API_AUTH_ENABLED: false
       CAMUNDA_DB_HOST: ${SERVICE_NAME}-postgresql
@@ -308,6 +315,10 @@ aac-manage-case-assignment:
     releaseNameOverride: ${SERVICE_NAME}-aac-manage-case-assignment
     image: hmctsprod.azurecr.io/aac/manage-case-assignment:latest
     ingressHost: manage-case-assignment-${SERVICE_NAME}.preview.platform.hmcts.net
+    devcpuRequests: 25m
+    devcpuLimits: 100m
+    devmemoryRequests: 1024Mi
+    devmemoryLimits: 1536Mi
     environment:
       IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
       IDAM_OIDC_URL: https://idam-web-public.aat.platform.hmcts.net
@@ -345,4 +356,3 @@ wiremock:
     - name: wiremock-mocks
       mountPath: /home/wiremock/mappings
       subPath: mappings
-
