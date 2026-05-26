@@ -22,24 +22,14 @@
       <bpmn:incoming>Flow_1xm6eza</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1xm6eza" sourceRef="Event_1dduelw" targetRef="Event_0qbq48j" />
-    <bpmn:sequenceFlow id="Flow_1b0wlsx" sourceRef="START_BUSINESS_PROCESS" targetRef="ClaimantDisAgreedRepaymentPlanNotifyLip" />
-    <bpmn:serviceTask id="ClaimantDisAgreedRepaymentPlanNotifyLip" name="Notify respondent 1" camunda:type="external" camunda:topic="processCaseEvent">
+    <bpmn:sequenceFlow id="Flow_1b0wlsx" sourceRef="START_BUSINESS_PROCESS" targetRef="ClaimantResponseNotAgreedRepaymentNotify" />
+    <bpmn:serviceTask id="ClaimantResponseNotAgreedRepaymentNotify" name="Notify Relevant Parties" camunda:type="external" camunda:topic="processCaseEvent">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT</camunda:inputParameter>
+          <camunda:inputParameter name="caseEvent">NOTIFY_EVENT</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1b0wlsx</bpmn:incoming>
-      <bpmn:outgoing>Flow_09axe9d</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_09axe9d" sourceRef="ClaimantDisAgreedRepaymentPlanNotifyLip" targetRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" />
-    <bpmn:serviceTask id="ClaimantDisAgreeRepaymentPlanNotifyApplicant" name="Notify applicant 1 (CC)" camunda:type="external" camunda:topic="processCaseEvent">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="caseEvent">NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_09axe9d</bpmn:incoming>
       <bpmn:outgoing>Flow_1frgk8s</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_0262kdl">
@@ -59,7 +49,7 @@
       <bpmn:outgoing>Flow_06qewwe</bpmn:outgoing>
       <bpmn:outgoing>Flow_02qaqh4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1frgk8s" sourceRef="ClaimantDisAgreeRepaymentPlanNotifyApplicant" targetRef="Gateway_0d76l1r" />
+    <bpmn:sequenceFlow id="Flow_1frgk8s" sourceRef="ClaimantResponseNotAgreedRepaymentNotify" targetRef="Gateway_0d76l1r" />
     <bpmn:sequenceFlow id="Flow_1c3xg0g" sourceRef="Gateway_0d76l1r" targetRef="UpdateClaimStateAfterTranslatedDocUploaded">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${flowState != "MAIN.IN_MEDIATION" &amp;&amp; !(!empty flowFlags.LIP_JUDGMENT_ADMISSION &amp;&amp; flowFlags.LIP_JUDGMENT_ADMISSION)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -213,12 +203,8 @@
       <bpmndi:BPMNShape id="Event_0qbq48j_di" bpmnElement="Event_0qbq48j">
         <dc:Bounds x="272" y="72" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1i7id8i" bpmnElement="ClaimantDisAgreedRepaymentPlanNotifyLip">
-        <dc:Bounds x="410" y="180" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_13aq65z" bpmnElement="ClaimantDisAgreeRepaymentPlanNotifyApplicant">
-        <dc:Bounds x="560" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_13aq65z" bpmnElement="ClaimantResponseNotAgreedRepaymentNotify">
+        <dc:Bounds x="490" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0262kdl_di" bpmnElement="Event_0262kdl">
@@ -301,18 +287,14 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b0wlsx_di" bpmnElement="Flow_1b0wlsx">
         <di:waypoint x="340" y="220" />
-        <di:waypoint x="410" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09axe9d_di" bpmnElement="Flow_09axe9d">
-        <di:waypoint x="510" y="220" />
-        <di:waypoint x="560" y="220" />
+        <di:waypoint x="490" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s09rb1_di" bpmnElement="Flow_0s09rb1">
         <di:waypoint x="1590" y="220" />
         <di:waypoint x="1802" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1frgk8s_di" bpmnElement="Flow_1frgk8s">
-        <di:waypoint x="660" y="220" />
+        <di:waypoint x="590" y="220" />
         <di:waypoint x="745" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1c3xg0g_di" bpmnElement="Flow_1c3xg0g">

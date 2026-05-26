@@ -14,16 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends BpmnBaseTest {
 
     private static final String PROCESS_ID = "UPLOAD_TRANSLATED_CLAIMANTS_DOCUMENT_PROCESS_ID";
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT
-        = "NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT
-        = "NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT";
-    private static final String NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreedRepaymentPlanNotifyLip";
-
-    private static final String NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID
-        = "ClaimantDisAgreeRepaymentPlanNotifyApplicant";
+    private static final String NOTIFY_EVENT = "NOTIFY_EVENT";
+    private static final String NOTIFY_RELEVANT_PARTIES_ACTIVITY_ID
+        = "ClaimantResponseNotAgreedRepaymentNotify";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT";
     public static final String GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT_EVENT = "GEN_JUDGMENT_BY_ADMISSION_DOC_DEFENDANT";
     public static final String GENERATE_JUDGMENT_BY_ADMISSION_DOC_CLAIMANT_ACTIVITY_ID = "GenerateJudgmentByAdmissionDocClaimant";
@@ -50,12 +43,8 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
         );
     }
 
-    private void notifyClaimantClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT, NOTIFY_CLAIMANT_FOR_RESPONDENT1_REJECT_REPAYMENT_ACTIVITY_ID);
-    }
-
-    private void notifyRespondentClaimantRejectRepayment() {
-        assertCompletedCaseEvent(NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT, NOTIFY_LIP_DEFENDANT_REJECT_REPAYMENT_ACTIVITY_ID);
+    private void notifyRelevantParties() {
+        assertCompletedCaseEvent(NOTIFY_EVENT, NOTIFY_RELEVANT_PARTIES_ACTIVITY_ID);
     }
 
     private void generateDashboardNotifications() {
@@ -91,8 +80,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
             variables
         );
 
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyRelevantParties();
 
         //complete the state change task
         ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);
@@ -131,8 +119,7 @@ public class UploadTranslatedClaimantsRejectsRepaymentPlanDocumentTest extends B
             START_BUSINESS_ACTIVITY,
             variables
         );
-        notifyRespondentClaimantRejectRepayment();
-        notifyClaimantClaimantRejectRepayment();
+        notifyRelevantParties();
 
         //complete the state change task
         ExternalTask updateClaimStateTask = assertNextExternalTask(PROCESS_CASE_EVENT);

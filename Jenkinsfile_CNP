@@ -152,6 +152,12 @@ def uploadBpmnDiagrams(String env) {
   }
 }
 
+def checkForSkipFunctionalTests(branch_name) {
+  return new GithubAPI(this)
+    .getLabelsbyPattern(branch_name, "pr-values:skip-functional-tests")
+    .contains("pr-values:skip-functional-tests")
+}
+
 def checkForRunAllFunctionalTests(branch_name) {
   return new GithubAPI(this).getLabelsbyPattern(branch_name, "runAllFunctionalTests").contains("runAllFunctionalTests")
 }
@@ -243,6 +249,10 @@ withPipeline(type, product, component) {
   }
 
   before('functionalTest:preview') {
+    if(checkForSkipFunctionalTests(env.BRANCH_NAME)) {
+      env.SKIP_FUNCTIONAL_TESTS = true
+      return
+    }
     env.UNASSIGN_CASES = true
     copyPreviousAllureHistory()
     if(checkForRunAllFunctionalTests(env.BRANCH_NAME)) {
@@ -253,6 +263,10 @@ withPipeline(type, product, component) {
   }
 
   afterAlways('functionalTest:preview') {
+    if(checkForSkipFunctionalTests(env.BRANCH_NAME)) {
+      echo "Skipping Allure report generation due to label: pr-values:skip-functional-tests"
+      return
+    }
     steps.sh 'npx allure generate test-results/functional/allure-results --clean -o test-results/functional/allure-report'
     publishHTML([
       allowMissing: false,
