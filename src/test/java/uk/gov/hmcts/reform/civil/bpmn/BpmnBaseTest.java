@@ -308,13 +308,6 @@ public abstract class BpmnBaseTest {
         return topicName;
     }
 
-    private boolean dashboardNotificationTopic(String requestedTopic, String actualTopic) {
-        return (PROCESS_CASE_EVENT.equals(requestedTopic) && DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic))
-            || (("applicationProcessCaseEventGASpec".equals(requestedTopic)
-            || "processExternalCaseEventGASpec".equals(requestedTopic))
-            && GA_DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic));
-    }
-
     private String expectedTopicName(String topicName, String caseEvent) {
         if (DASHBOARD_NOTIFICATION_EVENT.equals(caseEvent)) {
             if (PROCESS_CASE_EVENT.equals(topicName)) {
@@ -326,6 +319,13 @@ public abstract class BpmnBaseTest {
             }
         }
         return topicName;
+    }
+
+    private boolean dashboardNotificationTopic(String requestedTopic, String actualTopic) {
+        return (PROCESS_CASE_EVENT.equals(requestedTopic) && DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic))
+            || (("applicationProcessCaseEventGASpec".equals(requestedTopic)
+            || "processExternalCaseEventGASpec".equals(requestedTopic))
+            && GA_DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic));
     }
 
     public void assertNoExternalTasksLeft() {
