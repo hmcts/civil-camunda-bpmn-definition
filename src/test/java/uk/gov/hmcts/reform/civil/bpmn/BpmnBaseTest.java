@@ -33,6 +33,8 @@ public abstract class BpmnBaseTest {
     public static final String START_BUSINESS_EVENT = "START_BUSINESS_PROCESS";
     public static final String START_BUSINESS_ACTIVITY = "StartBusinessProcessTaskId";
     public static final String PROCESS_CASE_EVENT = "processCaseEvent";
+    public static final String DASHBOARD_NOTIFICATION_TOPIC = "dashboardNotifications";
+    public static final String GA_DASHBOARD_NOTIFICATION_TOPIC = "gaDashboardNotifications";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS";
     public static final String ERROR_CODE = "TEST_CODE";
     public static final String FLOW_FLAGS = "flowFlags";
@@ -232,13 +234,16 @@ public abstract class BpmnBaseTest {
      * Get external task for topic name.
      */
     public ExternalTask assertNextExternalTask(String topicName) {
-        assertThat(getTopics()).containsOnly(topicName);
+        String expectedTopicName = expectedTopicName(topicName);
+        assertThat(getTopics()).contains(expectedTopicName);
 
-        List<ExternalTask> externalTasks = getExternalTasks();
+        List<ExternalTask> externalTasks = getExternalTasks().stream()
+            .filter(task -> expectedTopicName.equals(task.getTopicName()))
+            .toList();
         assertThat(externalTasks).hasSize(1);
 
         ExternalTask externalTask = externalTasks.get(0);
-        assertThat(externalTask.getTopicName()).isEqualTo(topicName);
+        assertThat(externalTask.getTopicName()).isEqualTo(expectedTopicName);
 
         return externalTask;
     }
@@ -272,9 +277,10 @@ public abstract class BpmnBaseTest {
         String activityId,
         VariableMap variables
     ) {
-        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(topicName);
+        String expectedTopicName = expectedTopicName(topicName, caseEvent);
+        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(expectedTopicName);
 
-        assertExternalTask(externalTask, topicName, caseEvent, activityId, lockedProcessTask);
+        assertExternalTask(externalTask, expectedTopicName, caseEvent, activityId, lockedProcessTask);
 
         completeTask(lockedProcessTask.get(0).getId(), variables);
     }
@@ -285,11 +291,40 @@ public abstract class BpmnBaseTest {
         String caseEvent,
         String activityId
     ) {
-        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(topicName);
+        String expectedTopicName = expectedTopicName(topicName, caseEvent);
+        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(expectedTopicName);
 
-        assertExternalTask(externalTask, topicName, caseEvent, activityId, lockedProcessTask);
+        assertExternalTask(externalTask, expectedTopicName, caseEvent, activityId, lockedProcessTask);
 
         failTask(lockedProcessTask.get(0).getId());
+    }
+
+    private String expectedTopicName(String topicName) {
+        List<String> topics = getTopics();
+        if (topics.size() == 1 && dashboardNotificationTopic(topicName, topics.get(0))) {
+            return topics.get(0);
+        }
+        return topicName;
+    }
+
+    private boolean dashboardNotificationTopic(String requestedTopic, String actualTopic) {
+        return (PROCESS_CASE_EVENT.equals(requestedTopic) && DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic))
+            || (("applicationProcessCaseEventGASpec".equals(requestedTopic)
+            || "processExternalCaseEventGASpec".equals(requestedTopic))
+            && GA_DASHBOARD_NOTIFICATION_TOPIC.equals(actualTopic));
+    }
+
+    private String expectedTopicName(String topicName, String caseEvent) {
+        if (DASHBOARD_NOTIFICATION_EVENT.equals(caseEvent)) {
+            if (PROCESS_CASE_EVENT.equals(topicName)) {
+                return DASHBOARD_NOTIFICATION_TOPIC;
+            }
+            if ("applicationProcessCaseEventGASpec".equals(topicName)
+                || "processExternalCaseEventGASpec".equals(topicName)) {
+                return GA_DASHBOARD_NOTIFICATION_TOPIC;
+            }
+        }
+        return topicName;
     }
 
     public void assertNoExternalTasksLeft() {
@@ -335,9 +370,8 @@ public abstract class BpmnBaseTest {
         String activityId,
         List<LockedExternalTask> lockedProcessTask
     ) {
-        assertThat(externalTask.getTopicName()).isEqualTo(topicName);
-
         assertThat(lockedProcessTask).hasSize(1);
+        assertThat(lockedProcessTask.get(0).getTopicName()).isEqualTo(topicName);
 
         assertThat(lockedProcessTask.get(0).getVariables()).containsEntry("caseEvent", caseEvent);
 

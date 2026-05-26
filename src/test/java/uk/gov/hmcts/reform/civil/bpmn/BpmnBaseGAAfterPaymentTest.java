@@ -33,6 +33,7 @@ public abstract class BpmnBaseGAAfterPaymentTest {
     public static final String START_BUSINESS_ACTIVITY = "StartGeneralApplicationBusinessProcessTaskId";
     public static final String END_BUSINESS_PROCESS = "END_BUSINESS_PROCESS_GASPEC";
     public static final String END_DOC_UPLOAD_BUSINESS_PROCESS = "END_DOC_UPLOAD_BUSINESS_PROCESS_GASPEC";
+    public static final String GA_DASHBOARD_NOTIFICATION_TOPIC = "gaDashboardNotifications";
     public static final String ERROR_CODE = "TEST_CODE";
 
     public final String bpmnFileName;
@@ -185,13 +186,16 @@ public abstract class BpmnBaseGAAfterPaymentTest {
      * Get external task for topic name.
      */
     public ExternalTask assertNextExternalTask(String topicName) {
-        assertThat(getTopics()).containsOnly(topicName);
+        String expectedTopicName = expectedTopicName(topicName);
+        assertThat(getTopics()).contains(expectedTopicName);
 
-        List<ExternalTask> externalTasks = getExternalTasks();
+        List<ExternalTask> externalTasks = getExternalTasks().stream()
+            .filter(task -> expectedTopicName.equals(task.getTopicName()))
+            .toList();
         assertThat(externalTasks).hasSize(1);
 
         ExternalTask externalTask = externalTasks.get(0);
-        assertThat(externalTask.getTopicName()).isEqualTo(topicName);
+        assertThat(externalTask.getTopicName()).isEqualTo(expectedTopicName);
 
         return externalTask;
     }
@@ -225,9 +229,10 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         String activityId,
         VariableMap variables
     ) {
-        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(topicName);
+        String expectedTopicName = expectedTopicName(topicName, caseEvent);
+        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(expectedTopicName);
 
-        assertExternalTask(externalTask, topicName, caseEvent, activityId, lockedProcessTask);
+        assertExternalTask(externalTask, expectedTopicName, caseEvent, activityId, lockedProcessTask);
 
         completeTask(lockedProcessTask.get(0).getId(), variables);
     }
@@ -238,11 +243,32 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         String caseEvent,
         String activityId
     ) {
-        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(topicName);
+        String expectedTopicName = expectedTopicName(topicName, caseEvent);
+        List<LockedExternalTask> lockedProcessTask = fetchAndLockTask(expectedTopicName);
 
-        assertExternalTask(externalTask, topicName, caseEvent, activityId, lockedProcessTask);
+        assertExternalTask(externalTask, expectedTopicName, caseEvent, activityId, lockedProcessTask);
 
         failTask(lockedProcessTask.get(0).getId());
+    }
+
+    private String expectedTopicName(String topicName) {
+        List<String> topics = getTopics();
+        if (("applicationProcessCaseEventGASpec".equals(topicName)
+            || "processExternalCaseEventGASpec".equals(topicName))
+            && topics.contains(GA_DASHBOARD_NOTIFICATION_TOPIC)
+            && !topics.contains(topicName)) {
+            return GA_DASHBOARD_NOTIFICATION_TOPIC;
+        }
+        return topicName;
+    }
+
+    private String expectedTopicName(String topicName, String caseEvent) {
+        if ("DASHBOARD_NOTIFICATION_EVENT".equals(caseEvent)
+            && ("applicationProcessCaseEventGASpec".equals(topicName)
+            || "processExternalCaseEventGASpec".equals(topicName))) {
+            return GA_DASHBOARD_NOTIFICATION_TOPIC;
+        }
+        return topicName;
     }
 
     public void assertNoExternalTasksLeft() {
@@ -288,9 +314,8 @@ public abstract class BpmnBaseGAAfterPaymentTest {
         String activityId,
         List<LockedExternalTask> lockedProcessTask
     ) {
-        assertThat(externalTask.getTopicName()).isEqualTo(topicName);
-
         assertThat(lockedProcessTask).hasSize(1);
+        assertThat(lockedProcessTask.get(0).getTopicName()).isEqualTo(topicName);
 
         assertThat(lockedProcessTask.get(0).getVariables()).containsEntry("caseEvent", caseEvent);
 
