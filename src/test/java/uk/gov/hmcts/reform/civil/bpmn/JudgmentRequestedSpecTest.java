@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class JudgmentRequestedSpecTest extends BpmnBaseTest {
 
     public static final String MESSAGE_NAME = "JUDGMENT_REQUESTED_SPEC";
-    public static final String PROCESS_ID = "Process_1guez0w";
+    public static final String PROCESS_ID = "JUDGMENT_REQUESTED_SPEC";
     public static final String NOTIFY_ACTIVITY_ID = "DJ_NON_DIVERGENT_NOTIFIER";
     public static final String DASHBOARD_NOTIFICATION_ACTIVITY_ID = "GenerateDashboardNotificationsDJNonDivergent";
 
@@ -53,6 +53,9 @@ class JudgmentRequestedSpecTest extends BpmnBaseTest {
             DASHBOARD_NOTIFICATION_ACTIVITY_ID,
             variables
         );
+
+        ExternalTask endBusinessProcess = assertNextExternalTask(END_BUSINESS_PROCESS);
+        completeBusinessProcess(endBusinessProcess);
 
         assertNoExternalTasksLeft();
     }
