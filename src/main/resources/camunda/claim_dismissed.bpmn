@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rn46su" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0">
   <bpmn:process id="DISMISS_CLAIM" name="Dismiss claim" isExecutable="true" camunda:historyTimeToLive="P90D">
     <bpmn:startEvent id="Event_0t2zome" name="Start">
       <bpmn:outgoing>Flow_08myj65</bpmn:outgoing>
@@ -48,7 +48,7 @@
           <camunda:inputParameter name="caseEvent">NOTIFY_RPA_ON_CASE_HANDED_OFFLINE</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0urkbiq</bpmn:incoming>
+      <bpmn:incoming>Flow_1nekd7g</bpmn:incoming>
       <bpmn:outgoing>Flow_1n57cdt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1n57cdt" sourceRef="NotifyRoboticsOnCaseHandedOffline" targetRef="Activity_0wretog" />
@@ -71,9 +71,19 @@
       <bpmn:outgoing>Flow_0o65a0g</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1im5p4o" sourceRef="UpdateGeneralApplicationStatus" targetRef="UpdateClaimWithApplicationStatus" />
-    <bpmn:sequenceFlow id="Flow_0urkbiq" sourceRef="ClaimDismissedNotifyParties" targetRef="NotifyRoboticsOnCaseHandedOffline" />
+    <bpmn:sequenceFlow id="Flow_0urkbiq" sourceRef="ClaimDismissedNotifyParties" targetRef="GenerateDashboardNotificationsClaimDismissed" />
     <bpmn:sequenceFlow id="Flow_0o65a0g" sourceRef="UpdateClaimWithApplicationStatus" targetRef="ClaimDismissedNotifyParties" />
     <bpmn:sequenceFlow id="Flow_0y6x89y" sourceRef="Activity_0emdthr" targetRef="UpdateGeneralApplicationStatus" />
+    <bpmn:serviceTask id="GenerateDashboardNotificationsClaimDismissed" name="Dashboard Notifications" camunda:type="external" camunda:topic="processCaseEvent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="caseEvent">DASHBOARD_NOTIFICATION_EVENT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0urkbiq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nekd7g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1nekd7g" sourceRef="GenerateDashboardNotificationsClaimDismissed" targetRef="NotifyRoboticsOnCaseHandedOffline" />
   </bpmn:process>
   <bpmn:message id="Message_0slk3de" name="DISMISS_CLAIM" />
   <bpmn:error id="Error_0t2ju7k" name="StartBusinessAbort" errorCode="ABORT" />
@@ -97,18 +107,22 @@
       <bpmndi:BPMNShape id="Event_1nsmt51_di" bpmnElement="Event_1nsmt51">
         <dc:Bounds x="322" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="ClaimDismissedNotifyParties">
-        <dc:Bounds x="1040" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ov4t1h_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
-        <dc:Bounds x="1270" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ki042v_di" bpmnElement="UpdateGeneralApplicationStatus">
         <dc:Bounds x="520" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ov4t1h_di" bpmnElement="NotifyRoboticsOnCaseHandedOffline">
+        <dc:Bounds x="1310" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0m7yww1_di" bpmnElement="UpdateClaimWithApplicationStatus">
-        <dc:Bounds x="790" y="170" width="100" height="80" />
+        <dc:Bounds x="730" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n01tzr_di" bpmnElement="ClaimDismissedNotifyParties">
+        <dc:Bounds x="940" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a1znjf_di" bpmnElement="GenerateDashboardNotificationsClaimDismissed">
+        <dc:Bounds x="1130" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fn0bf1_di" bpmnElement="Event_1fn0bf1">
         <dc:Bounds x="252" y="152" width="36" height="36" />
@@ -130,20 +144,20 @@
         <di:waypoint x="220" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1n57cdt_di" bpmnElement="Flow_1n57cdt">
-        <di:waypoint x="1370" y="210" />
+        <di:waypoint x="1410" y="210" />
         <di:waypoint x="1490" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1o1vvul_di" bpmnElement="Flow_1im5p4o">
         <di:waypoint x="620" y="210" />
-        <di:waypoint x="790" y="210" />
+        <di:waypoint x="730" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0urkbiq_di" bpmnElement="Flow_0urkbiq">
-        <di:waypoint x="1140" y="210" />
-        <di:waypoint x="1270" y="210" />
+        <di:waypoint x="1040" y="210" />
+        <di:waypoint x="1130" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o65a0g_di" bpmnElement="Flow_0o65a0g">
-        <di:waypoint x="890" y="210" />
-        <di:waypoint x="1040" y="210" />
+        <di:waypoint x="830" y="210" />
+        <di:waypoint x="940" y="210" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="947" y="96" width="89" height="27" />
         </bpmndi:BPMNLabel>
@@ -151,6 +165,10 @@
       <bpmndi:BPMNEdge id="Flow_0y6x89y_di" bpmnElement="Flow_0y6x89y">
         <di:waypoint x="320" y="210" />
         <di:waypoint x="520" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nekd7g_di" bpmnElement="Flow_1nekd7g">
+        <di:waypoint x="1230" y="210" />
+        <di:waypoint x="1310" y="210" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

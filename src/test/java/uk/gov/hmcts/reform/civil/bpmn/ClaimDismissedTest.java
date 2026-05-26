@@ -76,6 +76,14 @@ class ClaimDismissedTest extends BpmnBaseTest {
             "ClaimDismissedNotifyParties"
         );
 
+        //complete the dashboard notification event
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   "GenerateDashboardNotificationsClaimDismissed",
+                                   variables
+        );
+
         //complete the RPA notification
         ExternalTask rpaNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
         assertCompleteExternalTask(
@@ -138,6 +146,14 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
+        );
+
+        //complete the dashboard notification event
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   "GenerateDashboardNotificationsClaimDismissed",
+                                   variables
         );
 
         //complete the RPA notification
@@ -203,6 +219,14 @@ class ClaimDismissedTest extends BpmnBaseTest {
             PROCESS_CASE_EVENT,
             "NOTIFY_EVENT",
             "ClaimDismissedNotifyParties"
+        );
+
+        //complete the dashboard notification event
+        ExternalTask notificationTask = assertNextExternalTask(PROCESS_CASE_EVENT);
+        assertCompleteExternalTask(notificationTask, PROCESS_CASE_EVENT,
+                                   DASHBOARD_NOTIFICATION_EVENT,
+                                   "GenerateDashboardNotificationsClaimDismissed",
+                                   variables
         );
 
         //complete the RPA notification
