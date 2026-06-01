@@ -98,8 +98,8 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
             assertCompleteExternalTask(
                 claimantNotification,
                 PROCESS_CASE_EVENT,
-                "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_CLAIMANT",
-                "NotifyClaimSetAsideJudgmentClaimant"
+                "NOTIFY_EVENT",
+                "SetAsideJudgementRequestNotifier"
             );
 
             //complete generate dashboard notification to claimant
@@ -112,38 +112,7 @@ class SetAsideJudgmentTest extends BpmnBaseTest {
                 variables
             );
 
-            if (!isLiPDefendant) {
-                //complete the notification to Respondent
-                ExternalTask respondent1Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent1Notification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1",
-                    "NotifyClaimSetAsideJudgmentDefendant1",
-                    variables
-                );
-
-                if (twoRepresentatives) {
-                    //complete the notification to Respondent2
-                    ExternalTask respondent2Notification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                    assertCompleteExternalTask(
-                        respondent2Notification,
-                        PROCESS_CASE_EVENT,
-                        "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT2",
-                        "NotifyClaimSetAsideJudgmentDefendant2",
-                        variables
-                    );
-                }
-            } else if (isLiPDefendant) {
-                //complete the notification to LiP respondent
-                ExternalTask respondent1LIpNotification = assertNextExternalTask(PROCESS_CASE_EVENT);
-                assertCompleteExternalTask(
-                    respondent1LIpNotification,
-                    PROCESS_CASE_EVENT,
-                    "NOTIFY_CLAIM_SET_ASIDE_JUDGMENT_DEFENDANT1_LIP",
-                    "NotifyClaimSetAsideJudgmentDefendant1LiP",
-                    variables
-                );
+            if (isLiPDefendant) {
 
                 // should send letter to LiP respondent
                 ExternalTask sendLipLetter = assertNextExternalTask(PROCESS_CASE_EVENT);
